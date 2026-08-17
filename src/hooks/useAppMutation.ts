@@ -1,5 +1,5 @@
-import { useMutation, UseMutationOptions, DefaultError } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
+import { useMutation, UseMutationOptions, DefaultError } from "@tanstack/react-query";
 
 /**
  * Custom wrapper around useMutation that provides consistent error handling
@@ -25,7 +25,6 @@ export function useAppMutation<TData = unknown, TError = DefaultError, TVariable
       }
 
       if (options.onError) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (options.onError as any)(...args);
       }
     },

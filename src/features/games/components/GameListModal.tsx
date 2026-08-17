@@ -1,17 +1,20 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useForm, schemaResolver } from "@mantine/form";
-import { z } from "zod";
-
-import { notifications } from "@mantine/notifications";
 import { Modal, Select, Group, Stack, Textarea, NumberInput, Box } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
 
-import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
-import { Button } from "@/components/ui/Button";
 import { GameListStatusEnum } from "@/client";
-import code_to_value_mapping from "../utils/GameListStatuses";
+import { Button } from "@/components/ui/Button";
+import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { useCurrentUserId } from "@/features/auth";
+import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
+import { parseDate, formatDate } from "@/utils/dateUtils";
+import { getRatingColor } from "@/utils/ratingUtils";
+
 import {
   useCreateGameList,
   useDeleteGameList,
@@ -19,10 +22,7 @@ import {
   useGetGameMediasInfiniteQuery,
   usePartialUpdateGameList,
 } from "../hooks/gameQueries";
-import { useCurrentUserId } from "@/features/auth";
-import { parseDate, formatDate } from "@/utils/dateUtils";
-import { getRatingColor } from "@/utils/ratingUtils";
-import i18n from "@/lib/i18n";
+import code_to_value_mapping from "../utils/GameListStatuses";
 
 const validationSchema = z.object({
   status: z.enum(GameListStatusEnum),
@@ -93,8 +93,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.reset();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameListDetails, opened]);
+  }, [gameListDetails, opened, form]);
 
   // Autopopulate dates when status changes
   React.useEffect(() => {
@@ -105,7 +104,10 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.setFieldValue("completed_at", new Date());
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Deliberately triggered only by status changes, not by started_at/completed_at themselves —
+    // this is a one-time autofill, not a continuous sync, and including the date fields here would
+    // re-fire on every manual edit to them and overwrite the user's own clearing of the field.
+    // oxlint-disable-next-line react/exhaustive-deps
   }, [form.values.status]);
 
   const onSubmitHandler = async (data: ValidationSchema) => {

@@ -1,8 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import GameReviewsPage from "@/features/games/pages/GameReviewsPage";
-import { slugSchema, idSchema } from "@/lib/validation";
-import { gameKeys } from "@/lib/queryKeys";
+
 import { getGamesDetail } from "@/features/games/api/game";
+import GameReviewsPage from "@/features/games/pages/GameReviewsPage";
+import { gameKeys } from "@/lib/queryKeys";
+import { slugSchema, idSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/game_/$id/$slug/reviews")({
   beforeLoad: ({ params }) => {

@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
 import { Box, Group, Loader, Stack, Text, Title } from "@mantine/core";
-import { useTranslation } from "react-i18next";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import React, { useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import { cn } from "@/utils/cn";
 
 interface VirtualListProps<T> {
@@ -74,7 +75,7 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
   const virtualItems = virtualizer.getVirtualItems();
 
   useEffect(() => {
-    if (!virtualItems.length || !hasNextPage || isFetchingNextPage || !fetchNextPage) {
+    if (virtualItems.length === 0 || !hasNextPage || isFetchingNextPage || !fetchNextPage) {
       return;
     }
 

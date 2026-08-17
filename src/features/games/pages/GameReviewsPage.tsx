@@ -1,15 +1,17 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { getRouteApi, Link } from "@tanstack/react-router";
 import { Box, Group, Pagination, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { getRouteApi, Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
+import { Button } from "@/components/ui/Button";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { useCurrentUserId } from "@/features/auth";
+import { useAuth } from "@/features/auth/context/AuthProvider";
+
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import { useGetGameReviewsList, useGetGamesDetails } from "../hooks/gameQueries";
-import { useAuth } from "@/features/auth/context/AuthProvider";
-import { useCurrentUserId } from "@/features/auth";
-import { Button } from "@/components/ui/Button";
-import { PageMeta } from "@/components/ui/PageMeta";
 
 const PAGE_SIZE = 10;
 
@@ -23,7 +25,7 @@ export default function GameReviewsPage(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
 
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const currentUserId = useCurrentUserId();
 
   const { data: gameDetails } = useGetGamesDetails(gameId);
@@ -68,7 +70,7 @@ export default function GameReviewsPage(): React.JSX.Element {
               {gameDetails?.title ?? t("reviewsPage.backToGame")}
             </Link>
           </Group>
-          {user && (
+          {isAuthenticated && (
             <Button size="sm" onClick={() => setIsReviewModalOpen(true)}>
               {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
             </Button>

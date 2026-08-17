@@ -1,24 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { checkKeyParity } from "@/locales/checkKeyParity";
 
-import enCommon from "@/locales/en/common.json";
-import plCommon from "@/locales/pl/common.json";
-import enAuth from "@/locales/en/auth.json";
-import plAuth from "@/locales/pl/auth.json";
-import enValidation from "@/locales/en/validation.json";
-import plValidation from "@/locales/pl/validation.json";
+import { checkKeyParity } from "@/locales/checkKeyParity";
 import enAdmin from "@/locales/en/admin.json";
-import plAdmin from "@/locales/pl/admin.json";
-import enGames from "@/locales/en/games.json";
-import plGames from "@/locales/pl/games.json";
+import enAuth from "@/locales/en/auth.json";
 import enCollections from "@/locales/en/collections.json";
-import plCollections from "@/locales/pl/collections.json";
-import enUsers from "@/locales/en/users.json";
-import plUsers from "@/locales/pl/users.json";
+import enCommon from "@/locales/en/common.json";
+import enGames from "@/locales/en/games.json";
 import enNotifications from "@/locales/en/notifications.json";
-import plNotifications from "@/locales/pl/notifications.json";
 import enRanking from "@/locales/en/ranking.json";
+import enUsers from "@/locales/en/users.json";
+import enValidation from "@/locales/en/validation.json";
+import plAdmin from "@/locales/pl/admin.json";
+import plAuth from "@/locales/pl/auth.json";
+import plCollections from "@/locales/pl/collections.json";
+import plCommon from "@/locales/pl/common.json";
+import plGames from "@/locales/pl/games.json";
+import plNotifications from "@/locales/pl/notifications.json";
 import plRanking from "@/locales/pl/ranking.json";
+import plUsers from "@/locales/pl/users.json";
+import plValidation from "@/locales/pl/validation.json";
 
 const namespaces = [
   { name: "common", en: enCommon, pl: plCommon },

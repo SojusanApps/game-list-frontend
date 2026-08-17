@@ -1,21 +1,24 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { theme } from "./theme/theme";
-import App, { router } from "./App";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/dates/styles.css";
 import "./index.css";
-import clientSetup from "./clientSetup";
+import React from "react";
+
 import "./lib/i18n";
 import "dayjs/locale/pl";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import ReactDOM from "react-dom/client";
+
+import App, { router } from "./App";
+import clientSetup from "./clientSetup";
+import { theme } from "./theme/theme";
 import { ApiError } from "./utils/apiUtils";
 
 clientSetup();
@@ -23,8 +26,8 @@ clientSetup();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1_000 * 60 * 5, // 5 minutes
-      gcTime: 1_000 * 60 * 10, // 10 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
       retry: (failureCount, error) => {
         // Don't retry if it's a 4xx or 5xx error
         if (error instanceof Response || error instanceof ApiError) {
@@ -36,7 +39,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-const rootElement = document.getElementById("root") as HTMLElement;
+const rootElement = document.querySelector("#root") as HTMLElement;
 if (!rootElement) {
   throw new Error("Failed to find root element");
 }

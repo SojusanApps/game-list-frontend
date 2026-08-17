@@ -1,14 +1,16 @@
+import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
-import { useGetCompanyDetail } from "../hooks/gameQueries";
-import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
-import { SafeImage } from "@/components/ui/SafeImage";
+
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+
+import { useGetCompanyDetail } from "../hooks/gameQueries";
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
 const routeApi = getRouteApi("/company/$id/$slug");
 

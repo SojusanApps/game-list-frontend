@@ -1,15 +1,18 @@
+import { Box, Stack, Text, Stepper, Group, Textarea } from "@mantine/core";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useForm, schemaResolver } from "@mantine/form";
 import { z } from "zod";
-import { notifications } from "@mantine/notifications";
-import { Box, Stack, Text, Stepper, Group, Textarea } from "@mantine/core";
-import { IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/Button";
 import { GameListCreateWritable, GameSimpleList, TitleImportResult } from "@/client";
-import { useTitleImport, useBulkCreateGameList } from "../../hooks/gameQueries";
+import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
+import i18n from "@/lib/i18n";
+import { formatDate } from "@/utils/dateUtils";
+
+import { useTitleImport, useBulkCreateGameList } from "../../hooks/gameQueries";
 import {
   TITLE_IMPORT_BATCH_SIZE,
   parseTitles,
@@ -19,15 +22,14 @@ import {
   TitleGamePick,
   DuplicateGroup,
 } from "../../utils/titleImport";
-import { formatDate } from "@/utils/dateUtils";
-import i18n from "@/lib/i18n";
 import { ConfigureGameList } from "./ConfigureGameList";
 import { SuccessStep } from "./SuccessStep";
 import { TitleMatchStep } from "./TitleMatchStep";
-import { TitleResolveStep, UnmatchedTitle } from "./TitleResolveStep";
 import { TitleMergeStep } from "./TitleMergeStep";
-import { useGameRows } from "./useGameRows";
+import { TitleResolveStep, UnmatchedTitle } from "./TitleResolveStep";
 import { createGameRow, GameRow, ImportedGame, MatchDecision } from "./types";
+import { useGameRows } from "./useGameRows";
+
 import styles from "./TitleImportFlow.module.css";
 
 const titleFormSchema = z.object({
@@ -49,11 +51,11 @@ function withAutoUnmatched(
   offset: number,
 ): Record<number, MatchDecision> {
   const next = { ...prev };
-  results.forEach((result, i) => {
+  for (const [i, result] of results.entries()) {
     if (result.matches.length === 0 && !next[offset + i]) {
       next[offset + i] = { kind: "no-matches" };
     }
-  });
+  }
   return next;
 }
 

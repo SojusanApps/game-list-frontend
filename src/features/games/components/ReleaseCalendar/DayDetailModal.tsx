@@ -1,11 +1,13 @@
+import { Modal, Loader, Center, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Loader, Center, Text } from "@mantine/core";
-import { useGetGamesInfinite } from "../../hooks/gameQueries";
-import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
+
+import type { GameSimpleList } from "@/client/types.gen";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import type { GameSimpleList } from "@/client/types.gen";
+
+import { useGetGamesInfinite } from "../../hooks/gameQueries";
+import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 
 interface DayDetailModalProps {
   opened: boolean;

@@ -1,7 +1,7 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { Select, Group } from "@mantine/core";
 import { IconBrandSteam, IconListDetails } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 export type ImportSource = "steam" | "title";
 

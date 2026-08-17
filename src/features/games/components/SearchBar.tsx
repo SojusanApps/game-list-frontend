@@ -1,13 +1,14 @@
+import { Box, Stack, Text, UnstyledButton } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Stack, Text, UnstyledButton } from "@mantine/core";
-import { Link } from "@tanstack/react-router";
-import { useGetGamesList } from "@/features/games/hooks/gameQueries";
+
 import { GameSimpleList } from "@/client";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { IconSearch, IconX } from "@tabler/icons-react";
-import { useDebouncedValue } from "@mantine/hooks";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useGetGamesList } from "@/features/games/hooks/gameQueries";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
 interface SearchBarProps {
   variant?: "light" | "dark";

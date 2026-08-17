@@ -14,7 +14,7 @@ The app supports **English (en)** and **Polish (pl)**. Every user-visible string
 
 ```tsx
 const { t } = useTranslation("namespace");
-<Text>{t("section.key")}</Text>
+<Text>{t("section.key")}</Text>;
 ```
 
 ## In utility/module-level code (outside React)
@@ -45,7 +45,7 @@ import { Trans } from "react-i18next";
   ns="namespace"
   values={{ username }}
   components={[<span style={{ color: "var(--mantine-color-primary-6)" }} key="u" />]}
-/>
+/>;
 ```
 
 ## Checklist for new components / pages

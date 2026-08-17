@@ -1,5 +1,5 @@
-import React from "react";
 import { Button as MantineButton } from "@mantine/core";
+import React from "react";
 
 type ButtonVariant = "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
 type ButtonSize = "default" | "sm" | "lg" | "icon" | "xl";

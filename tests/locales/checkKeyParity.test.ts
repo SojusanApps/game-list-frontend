@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { checkKeyParity } from "@/locales/checkKeyParity";
 
 describe("checkKeyParity", () => {

@@ -1,11 +1,13 @@
+import { Modal, Textarea, Stack, Group, Text } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useForm } from "@mantine/form";
-import { Modal, Textarea, Stack, Group, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+
 import { Button } from "@/components/ui/Button";
-import { useCreateGameReview, useUpdateGameReview, useDeleteGameReview } from "../hooks/gameQueries";
 import { useCurrentUserId } from "@/features/auth";
+
+import { useCreateGameReview, useUpdateGameReview, useDeleteGameReview } from "../hooks/gameQueries";
 
 const MAX_REVIEW_LENGTH = 1000;
 
@@ -47,8 +49,7 @@ export function GameReviewModal({
     if (opened) {
       form.setValues({ review: existingReviewText ?? "" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, existingReviewText]);
+  }, [opened, existingReviewText, form]);
 
   const { mutateAsync: createReview, isPending: isCreating } = useCreateGameReview();
   const { mutateAsync: updateReview, isPending: isUpdating } = useUpdateGameReview();
@@ -60,6 +61,9 @@ export function GameReviewModal({
       return;
     }
     try {
+      // Both branches are side-effecting calls with no value to assign; a ternary statement
+      // here would trip no-unused-expressions instead.
+      // oxlint-disable-next-line unicorn/prefer-ternary
       if (isEditing) {
         await updateReview({ id: existingReviewId, body: { review: values.review } });
       } else {

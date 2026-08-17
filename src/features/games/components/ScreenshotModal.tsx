@@ -1,8 +1,9 @@
+import { Box, Loader, Modal, UnstyledButton } from "@mantine/core";
+import { IconX, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
-import { IconX, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { Box, Loader, Modal, UnstyledButton } from "@mantine/core";
 
 interface ScreenshotModalProps {
   initialScreenshot: string;

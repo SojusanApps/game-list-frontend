@@ -1,9 +1,22 @@
+import { ActionIcon, Box, Grid, Group, Skeleton, Stack, Tabs, Title, Tooltip } from "@mantine/core";
+import { IconBell, IconBellFilled } from "@tabler/icons-react";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
-import { GameListModal } from "../components/GameListModal";
+
+import { Button } from "@/components/ui/Button";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { useCurrentUserId } from "@/features/auth";
+import { useAuth } from "@/features/auth/context/AuthProvider";
+import AddToCollectionModal from "@/features/collections/components/AddToCollectionModal";
+
+import GameDetailsMainTab from "../components/GameDetailsMainTab";
+import GameDetailsRelatedTab from "../components/GameDetailsRelatedTab";
+import GameDetailsScreenshotsTab from "../components/GameDetailsScreenshotsTab";
 import GameInformation from "../components/GameInformation";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import { GameListModal } from "../components/GameListModal";
+import ScreenshotModal from "../components/ScreenshotModal";
 import {
   useGetGameReviewsList,
   useGetGamesDetails,
@@ -12,18 +25,7 @@ import {
   useCreateGameFollow,
   useDeleteGameFollow,
 } from "../hooks/gameQueries";
-import { ActionIcon, Box, Grid, Group, Skeleton, Stack, Tabs, Title, Tooltip } from "@mantine/core";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { SafeImage } from "@/components/ui/SafeImage";
-import GameDetailsMainTab from "../components/GameDetailsMainTab";
-import GameDetailsRelatedTab from "../components/GameDetailsRelatedTab";
-import GameDetailsScreenshotsTab from "../components/GameDetailsScreenshotsTab";
-import ScreenshotModal from "../components/ScreenshotModal";
-import AddToCollectionModal from "@/features/collections/components/AddToCollectionModal";
-import { useAuth } from "@/features/auth/context/AuthProvider";
-import { useCurrentUserId } from "@/features/auth";
-import { Button } from "@/components/ui/Button";
-import { IconBell, IconBellFilled } from "@tabler/icons-react";
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
 const routeApi = getRouteApi("/game/$id/$slug");
 
@@ -134,7 +136,7 @@ export default function GameDetailPage(): React.JSX.Element {
   const [selectedScreenshot, setSelectedScreenshot] = React.useState<string | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = React.useState(false);
   const [isListModalOpen, setIsListModalOpen] = React.useState(false);
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const currentUserId = useCurrentUserId();
 
   const { data: userReviewData } = useGetGameReviewsList(
@@ -175,7 +177,7 @@ export default function GameDetailPage(): React.JSX.Element {
                   />
                 </Box>
 
-                {user && currentUserId && (
+                {isAuthenticated && currentUserId && (
                   <UserGameActions
                     gameId={gameId}
                     userId={currentUserId}
@@ -201,7 +203,7 @@ export default function GameDetailPage(): React.JSX.Element {
                     >
                       {gameDetails?.title}
                     </Title>
-                    {user && currentUserId && <GameFollowButton gameId={gameId} userId={currentUserId} />}
+                    {isAuthenticated && currentUserId && <GameFollowButton gameId={gameId} userId={currentUserId} />}
                   </Group>
                 </Group>
 
@@ -222,7 +224,7 @@ export default function GameDetailPage(): React.JSX.Element {
                       gameDetails={gameDetails}
                       gameReviewItems={gameReviewItems}
                       isGameReviewsLoading={isGameReviewsLoading}
-                      isLoggedIn={!!user}
+                      isLoggedIn={isAuthenticated}
                       userReview={userReview}
                       gameSlug={slug}
                     />

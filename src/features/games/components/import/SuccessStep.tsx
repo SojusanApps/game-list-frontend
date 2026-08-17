@@ -1,12 +1,13 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
 import { Box, Stack, Title, Text } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
-import { useGetUserDetails } from "@/features/users/hooks/userQueries";
 import { useCurrentUserId } from "@/features/auth";
+import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+
 import styles from "./SuccessStep.module.css";
 
 interface SuccessStepProps {

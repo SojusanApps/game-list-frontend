@@ -1,5 +1,5 @@
-import * as React from "react";
 import { Accordion, Group, Text, Title } from "@mantine/core";
+import * as React from "react";
 
 export function CollapsibleSection({
   title,

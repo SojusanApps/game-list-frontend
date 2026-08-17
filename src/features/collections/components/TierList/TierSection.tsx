@@ -1,13 +1,15 @@
-import * as React from "react";
+import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { Box, Group, Stack, Text, ActionIcon } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { CollectionItem, TierEnum } from "@/client";
 import { GridList } from "@/components/ui/GridList";
+
+import { useCollectionItemsByTierQuery } from "../../hooks/useCollectionQueries";
 import { SortableGameCard } from "./SortableGameCard";
 import { TierDropZone } from "./TierDropZone";
-import { useCollectionItemsByTierQuery } from "../../hooks/useCollectionQueries";
-import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 
 interface TierSectionProps {
   collectionId: number;

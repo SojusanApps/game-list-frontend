@@ -1,15 +1,3 @@
-import * as React from "react";
-import { useTranslation, Trans } from "react-i18next";
-import { getRouteApi, Link } from "@tanstack/react-router";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
-import { STATUS_CONFIG } from "../utils/statusConfig";
-import { GameList, GameListStatusEnum } from "@/client";
-import { useGetUserDetails } from "@/features/users/hooks/userQueries";
-import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
-import { PageMeta } from "@/components/ui/PageMeta";
-import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
-import { GridList } from "@/components/ui/GridList";
 import {
   Box,
   Button,
@@ -33,12 +21,26 @@ import {
   IconSearch,
   IconUpload,
 } from "@tabler/icons-react";
-import { exportGameList } from "../api/game";
+import { getRouteApi, Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation, Trans } from "react-i18next";
+
+import { GameList, GameListStatusEnum } from "@/client";
+import { GridList } from "@/components/ui/GridList";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { PageMeta } from "@/components/ui/PageMeta";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { VirtualList } from "@/components/ui/VirtualList";
 import { useIsOwner } from "@/features/auth";
+import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+
+import { exportGameList } from "../api/game";
 import { GameListModal } from "../components/GameListModal";
 import { GameListRow } from "../components/GameListRow";
+import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
+import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import { STATUS_CONFIG } from "../utils/statusConfig";
 
 interface GameListItemProps {
   gameListItem: GameList;
@@ -196,27 +198,23 @@ export default function GameListPage(): React.JSX.Element {
 
   const renderContent = () => {
     if (isLoading && !isFetchingNextPage) {
-      if (viewMode === "grid") {
-        return (
-          <GridList>
-            {Array.from({ length: 21 }).map((_, i) => {
-              const skeletonKey = `game-skeleton-${i}`;
-              return (
-                <Skeleton key={skeletonKey} style={{ aspectRatio: "264/374", width: "100%", borderRadius: "12px" }} />
-              );
-            })}
-          </GridList>
-        );
-      } else {
-        return (
-          <Stack gap={12}>
-            {Array.from({ length: 10 }).map((_, i) => {
-              const skeletonKey = `list-skeleton-${i}`;
-              return <Skeleton key={skeletonKey} height={90} width="100%" radius="12px" />;
-            })}
-          </Stack>
-        );
-      }
+      return viewMode === "grid" ? (
+        <GridList>
+          {Array.from({ length: 21 }).map((_, i) => {
+            const skeletonKey = `game-skeleton-${i}`;
+            return (
+              <Skeleton key={skeletonKey} style={{ aspectRatio: "264/374", width: "100%", borderRadius: "12px" }} />
+            );
+          })}
+        </GridList>
+      ) : (
+        <Stack gap={12}>
+          {Array.from({ length: 10 }).map((_, i) => {
+            const skeletonKey = `list-skeleton-${i}`;
+            return <Skeleton key={skeletonKey} height={90} width="100%" radius="12px" />;
+          })}
+        </Stack>
+      );
     }
 
     if (viewMode === "grid") {

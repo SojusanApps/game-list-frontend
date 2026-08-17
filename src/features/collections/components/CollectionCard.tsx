@@ -1,11 +1,12 @@
+import { Stack, Group, Box, Title, Text } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
+
 import { Collection, TypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { Stack, Group, Box, Title, Text } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
 
 interface CollectionCardProps {
   collection: Collection;
@@ -64,25 +65,29 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
 
   const typeStyle = React.useMemo((): React.CSSProperties => {
     switch (collection.type) {
-      case TypeEnum.RNK:
+      case TypeEnum.RNK: {
         return { background: "#fef3c7", color: "#b45309", border: "1px solid #fde68a" };
-      case TypeEnum.TIE:
+      }
+      case TypeEnum.TIE: {
         return { background: "#f3e8ff", color: "#7e22ce", border: "1px solid #e9d5ff" };
-      case TypeEnum.NOR:
-      default:
+      }
+      default: {
         return { background: "#dbeafe", color: "#1d4ed8", border: "1px solid #bfdbfe" };
+      }
     }
   }, [collection.type]);
 
   const typeDisplay = React.useMemo(() => {
     switch (collection.type) {
-      case TypeEnum.RNK:
+      case TypeEnum.RNK: {
         return t("type.ranking");
-      case TypeEnum.TIE:
+      }
+      case TypeEnum.TIE: {
         return t("type.tierList");
-      case TypeEnum.NOR:
-      default:
+      }
+      default: {
         return t("type.normal");
+      }
     }
   }, [collection.type, t]);
 
@@ -133,7 +138,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
         ) : (
           images
             .slice(0, deckLimit)
-            .reverse()
+            .toReversed()
             .map((hash, index) => {
               const total = Math.min(images.length, deckLimit);
               const pos = total - 1 - index;

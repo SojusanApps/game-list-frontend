@@ -1,7 +1,7 @@
-import * as React from "react";
 import { Select, Loader, ComboboxProps } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { InfiniteData } from "@tanstack/react-query";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 type PaginatedResponse<T> = {
@@ -85,10 +85,8 @@ export default function AsyncAutocomplete<T>({
     const viewport = dropdownRef.current;
     if (!viewport) return;
     const { scrollTop, scrollHeight, clientHeight } = viewport;
-    if (scrollHeight - scrollTop - clientHeight < 50) {
-      if (hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
+    if (scrollHeight - scrollTop - clientHeight < 50 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 

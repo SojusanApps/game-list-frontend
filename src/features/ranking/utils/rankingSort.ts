@@ -5,7 +5,7 @@ import type { RankedItem, ConfidenceLevel } from "../types";
  * Ties broken by: more wins → fewer losses → more matches played.
  */
 export function sortByRating(items: RankedItem[]): RankedItem[] {
-  return [...items].sort((a, b) => {
+  return items.toSorted((a, b) => {
     if (b.rating !== a.rating) {
       return b.rating - a.rating;
     }

@@ -1,6 +1,4 @@
-import * as React from "react";
 import { Group, Stack, Text } from "@mantine/core";
-import { useTranslation } from "react-i18next";
 import {
   IconBrandAndroid,
   IconBrandApple,
@@ -9,6 +7,9 @@ import {
   IconBrandXbox,
   IconExternalLink,
 } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { ExternalGame } from "@/client";
 import {
   IconBrandEpic,

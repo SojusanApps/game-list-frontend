@@ -1,18 +1,20 @@
+import { Skeleton, Stack, Group, Box, Title, Text, Select, UnstyledButton } from "@mantine/core";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
+
 import { Collection, CollectionCollectionsListData } from "@/client";
-import { useGetUserDetails } from "@/features/users/hooks/userQueries";
-import { useCollectionsInfiniteQuery } from "../hooks/useCollectionQueries";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { GridList } from "@/components/ui/GridList";
-import { Skeleton, Stack, Group, Box, Title, Text, Select, UnstyledButton } from "@mantine/core";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { Button } from "@/components/ui/Button";
+import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import { GridList } from "@/components/ui/GridList";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useIsOwner } from "@/features/auth";
+import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+
 import CollectionCard from "../components/CollectionCard";
 import CreateCollectionModal from "../components/CreateCollectionModal";
-import { useIsOwner } from "@/features/auth";
-import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import { useCollectionsInfiniteQuery } from "../hooks/useCollectionQueries";
 
 const routeApi = getRouteApi("/profile_/$id/$slug/collections");
 

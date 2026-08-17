@@ -1,4 +1,5 @@
 import type React from "react";
+
 import { GameListStatusEnum } from "@/client";
 import i18n from "@/lib/i18n";
 
@@ -59,7 +60,6 @@ export const getStatusConfig = (status: GameListStatusEnum | string | undefined)
   }
   const key = status as GameListStatusEnum;
   return {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     label: i18n.t(STATUS_TRANSLATION_KEYS[key] as any),
     emoji: STATUS_EMOJIS[key],
     badgeStyle: BADGE_STYLES[key],

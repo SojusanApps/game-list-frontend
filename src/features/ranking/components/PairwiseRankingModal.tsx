@@ -1,17 +1,19 @@
+import { Box, Flex, Group, Modal, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import type { CollectionItem } from "@/client";
 import { Button } from "@/components/ui/Button";
-import { IconX } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
-import { Box, Flex, Group, Modal, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useBulkReorderCollectionItems } from "@/features/collections/hooks/useCollectionQueries";
-import { getTotalRounds, getTotalDuels } from "../utils/swissTournament";
+
 import { useRankingSession } from "../hooks/useRankingSession";
+import { getTotalRounds, getTotalDuels } from "../utils/swissTournament";
 import { DuelView } from "./DuelView";
 import { PairwiseRankingResults } from "./PairwiseRankingResults";
 import { ProgressBar } from "./ProgressBar";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface PairwiseRankingModalProps {
   collectionId: number;

@@ -1,4 +1,9 @@
 import { useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+
+import { PaginatedFriendshipList } from "@/client";
+import { useAppMutation } from "@/hooks/useAppMutation";
+import { friendshipKeys } from "@/lib/queryKeys";
+
 import {
   getFriendshipRequests,
   sendFriendRequest,
@@ -13,9 +18,6 @@ import {
   FriendshipFriendshipsListDataQuery,
   FriendshipFriendshipsDestroyDataPath,
 } from "../api/friendship";
-import { friendshipKeys } from "@/lib/queryKeys";
-import { useAppMutation } from "@/hooks/useAppMutation";
-import { PaginatedFriendshipList } from "@/client";
 
 export const useGetFriendshipRequests = (query?: FriendshipFriendshipRequestsListDataQuery) => {
   return useQuery({
@@ -82,7 +84,7 @@ export const useGetFriendshipsInfiniteQuery = (query?: FriendshipFriendshipsList
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
     enabled: !!query?.user,
   });

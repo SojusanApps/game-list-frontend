@@ -1,9 +1,12 @@
+import { Box, Group, Text, UnstyledButton } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Group, Text, UnstyledButton } from "@mantine/core";
+
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+
 import type { RankedItem } from "../types";
+
 import styles from "./DuelGameCard.module.css";
 
 interface DuelGameCardProps {

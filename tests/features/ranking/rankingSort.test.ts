@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { sortByRating, getConfidenceLevel, getSuggestedMinimumDuels } from "@/features/ranking/utils/rankingSort";
+
 import type { RankedItem } from "@/features/ranking/types";
+import { sortByRating, getConfidenceLevel, getSuggestedMinimumDuels } from "@/features/ranking/utils/rankingSort";
 
 function makeItem(overrides: Partial<RankedItem> & { itemId: number }): RankedItem {
   return {

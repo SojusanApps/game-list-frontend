@@ -1,16 +1,18 @@
-import * as React from "react";
-import { useForm, schemaResolver } from "@mantine/form";
-import { z } from "zod";
-import { notifications } from "@mantine/notifications";
-import { VisibilityEnum, ModeEnum, TypeEnum, Friendship, CollectionDetail } from "@/client";
-import { useCreateCollection, useFriendSearch, useUpdateCollection } from "../hooks/useCollectionQueries";
-import { Button } from "@/components/ui/Button";
-import { SafeImage } from "@/components/ui/SafeImage";
 import { TextInput, Select, Checkbox, ActionIcon, Modal, Stack, Group, Box, Title, Text } from "@mantine/core";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
-import i18n from "@/lib/i18n";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+
+import { VisibilityEnum, ModeEnum, TypeEnum, Friendship, CollectionDetail } from "@/client";
+import { Button } from "@/components/ui/Button";
+import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { SafeImage } from "@/components/ui/SafeImage";
+import i18n from "@/lib/i18n";
+
+import { useCreateCollection, useFriendSearch, useUpdateCollection } from "../hooks/useCollectionQueries";
 
 const validationSchema = z.object({
   name: z.string().min(1, i18n.t("validation:nameRequired")).max(100),

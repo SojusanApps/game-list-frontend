@@ -1,29 +1,32 @@
+import { Skeleton, Stack, Group, Box, Title, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconTrash } from "@tabler/icons-react";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
+
+import { CollectionItem, ModeEnum, TypeEnum } from "@/client";
+import { Button } from "@/components/ui/Button";
+import { GridList } from "@/components/ui/GridList";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useCurrentUserId, useIsOwner } from "@/features/auth";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { PairwiseRankingModal } from "@/features/ranking";
 import { cn } from "@/utils/cn";
+
+import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
+import { CollectionHeader } from "../components/CollectionHeader";
+import CreateCollectionModal from "../components/CreateCollectionModal";
+import { RankingListView } from "../components/RankingList/RankingListView";
+import { TierListView } from "../components/TierList/TierListView";
 import {
   useCollectionDetail,
   useCollectionItemsInfiniteQuery,
   useRemoveCollectionItem,
 } from "../hooks/useCollectionQueries";
-import { useCurrentUserId, useIsOwner } from "@/features/auth";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { Skeleton, Stack, Group, Box, Title, Text } from "@mantine/core";
-import { CollectionHeader } from "../components/CollectionHeader";
-import CreateCollectionModal from "../components/CreateCollectionModal";
-import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import { CollectionItem, ModeEnum, TypeEnum } from "@/client";
-import { GridList } from "@/components/ui/GridList";
-import { IconTrash } from "@tabler/icons-react";
-import { Button } from "@/components/ui/Button";
-import { notifications } from "@mantine/notifications";
-import { TierListView } from "../components/TierList/TierListView";
-import { RankingListView } from "../components/RankingList/RankingListView";
-import { PairwiseRankingModal } from "@/features/ranking";
+
 import pageStyles from "./CollectionPage.module.css";
 
 const routeApi = getRouteApi("/collection/$id/$slug");
@@ -107,12 +110,13 @@ export default function CollectionPage(): React.JSX.Element {
     }
 
     switch (collection.type) {
-      case TypeEnum.TIE:
+      case TypeEnum.TIE: {
         return <TierListView collectionId={collectionId} isOwner={canEdit} onRemove={handleDeleteItem} />;
-      case TypeEnum.RNK:
+      }
+      case TypeEnum.RNK: {
         return <RankingListView collectionId={collectionId} isOwner={canEdit} onRemove={handleDeleteItem} />;
-      case TypeEnum.NOR:
-      default:
+      }
+      default: {
         return isItemsLoading && !isFetchingNextPage ? (
           <GridList columnCount={8}>
             {skeletonIds.map(skeletonId => (
@@ -237,6 +241,7 @@ export default function CollectionPage(): React.JSX.Element {
             />
           </>
         );
+      }
     }
   };
 

@@ -1,7 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getGamesList, getCompaniesList } from "../api/game";
+
 import { getUserLists } from "@/features/users/api/user";
 import { searchKeys } from "@/lib/queryKeys";
+
+import { getGamesList, getCompaniesList } from "../api/game";
 
 export type SearchCategory = "games" | "companies" | "users";
 
@@ -16,14 +18,18 @@ const fetchSearchResults = async ({
   const query = { page: pageParam, ...filters };
 
   switch (category) {
-    case "games":
+    case "games": {
       return await getGamesList(query);
-    case "companies":
+    }
+    case "companies": {
       return await getCompaniesList(query);
-    case "users":
+    }
+    case "users": {
       return await getUserLists(query);
-    default:
+    }
+    default: {
       throw new Error("Invalid search category");
+    }
   }
 };
 

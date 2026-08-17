@@ -1,8 +1,9 @@
-import React from "react";
-import { Outlet } from "@tanstack/react-router";
 import { Box } from "@mantine/core";
-import TopBar from "@/components/layout/TopBar";
+import { Outlet } from "@tanstack/react-router";
+import React from "react";
+
 import Footer from "@/components/layout/Footer";
+import TopBar from "@/components/layout/TopBar";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 
 const Layout = (): React.JSX.Element => {

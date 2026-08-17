@@ -1,10 +1,12 @@
+import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
-import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
+
 import { Game, GameEngine, GameMode, Genre, Platform, PlayerPerspective } from "@/client";
-import { ExternalLinksSection } from "./ExternalLinksSection";
 import { useLanguageStore } from "@/lib/languageStore";
+
+import { ExternalLinksSection } from "./ExternalLinksSection";
 
 interface GameInformationProps {
   gameDetails?: Game;
@@ -47,7 +49,7 @@ function GameTags<T>({
       </Text>
       <Group gap={8} wrap="wrap">
         {items && items.length > 0 ? (
-          items.map(renderItem)
+          items.map(item => renderItem(item))
         ) : (
           <Text size="sm" c="var(--color-text-900)">
             ---

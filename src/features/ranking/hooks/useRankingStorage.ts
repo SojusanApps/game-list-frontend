@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
-import type { RankingProfile } from "../types";
+
 import { useRankingStore } from "../store/rankingStore";
+import type { RankingProfile } from "../types";
 
 /**
  * Hook providing read/write access to a pairwise ranking profile for a collection.

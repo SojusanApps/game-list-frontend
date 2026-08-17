@@ -1,16 +1,18 @@
-import * as React from "react";
-import { Box } from "@mantine/core";
-import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import {
   attachClosestEdge,
   extractClosestEdge,
   type Edge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box";
-import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
+import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+import { Box } from "@mantine/core";
+import * as React from "react";
+
 import type { User } from "@/client";
+
 import { GameCard } from "./GameCard";
 
 interface SortableGameCardProps {
@@ -82,7 +84,7 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
                 opacity: 0.9;
                 pointer-events: none;
               `;
-              container.appendChild(preview);
+              container.append(preview);
             },
             nativeSetDragImage,
             getOffset: pointerOutsideOfPreview({

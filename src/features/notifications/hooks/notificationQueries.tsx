@@ -1,4 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { useAppMutation } from "@/hooks/useAppMutation";
+import { notificationKeys } from "@/lib/queryKeys";
+
 import {
   getNotifications,
   getUnreadNotificationCount,
@@ -10,8 +14,6 @@ import {
   NotificationMarkAsReadCreateDataPath,
   NotificationDestroyDataPath,
 } from "../api/notification";
-import { notificationKeys } from "@/lib/queryKeys";
-import { useAppMutation } from "@/hooks/useAppMutation";
 
 export const useGetNotifications = (query?: NotificationListDataQuery) => {
   return useQuery({

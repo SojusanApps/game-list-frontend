@@ -1,5 +1,10 @@
-import * as React from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as React from "react";
+
+import { BlankEnum, TierEnum } from "@/client";
+import { useCurrentUserId } from "@/features/auth";
+import { useGetFriendshipsInfiniteQuery } from "@/features/users/hooks/friendshipQueries";
+import { collectionKeys } from "@/lib/queryKeys";
 
 import {
   getCollectionsList,
@@ -15,13 +20,9 @@ import {
   bulkReorderCollectionItems,
   updateCollectionItemTier,
 } from "../api/collection";
-import { collectionKeys } from "@/lib/queryKeys";
-import { useGetFriendshipsInfiniteQuery } from "@/features/users/hooks/friendshipQueries";
-import { useCurrentUserId } from "@/features/auth";
-import { BlankEnum, TierEnum } from "@/client";
 
 const fetchCollections = async ({ pageParam = 1, queryKey }: { pageParam?: number; queryKey: readonly unknown[] }) => {
-  const [, , userId, filters, useMember] = queryKey as [string, string, number, object, boolean];
+  const [, _kind, userId, filters, useMember] = queryKey as [string, string, number, object, boolean];
   const query = useMember
     ? { page: pageParam, member: String(userId), ...filters }
     : { page: pageParam, user: String(userId), ...filters };
@@ -91,7 +92,7 @@ const fetchCollectionItems = async ({
   pageParam?: number;
   queryKey: readonly unknown[];
 }) => {
-  const [, , collectionId, filters] = queryKey as [string, string, number, object];
+  const [, _kind, collectionId, filters] = queryKey as [string, string, number, object];
   const query = {
     page: pageParam,
     collection: String(collectionId),
@@ -215,7 +216,6 @@ export const useUpdateCollectionItemTier = () => {
       tier,
       position,
       // oldTier is used in the onSuccess handler
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       oldTier,
     }: {
       collectionId: number;

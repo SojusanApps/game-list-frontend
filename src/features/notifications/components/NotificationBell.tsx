@@ -1,16 +1,19 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { Popover, Box, Group, Text, Stack, UnstyledButton } from "@mantine/core";
 import { IconBell } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { Notification } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
+
 import {
   useGetNotifications,
   useGetUnreadNotificationCount,
   useMarkNotificationAsRead,
 } from "../hooks/notificationQueries";
-import { Popover, Box, Group, Text, Stack, UnstyledButton } from "@mantine/core";
+
 import bellStyles from "./NotificationBell.module.css";
-import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function NotificationBell(): React.JSX.Element {
   const { t } = useTranslation("notifications");
@@ -119,7 +122,7 @@ export default function NotificationBell(): React.JSX.Element {
               const actor = notification.actor;
               const target = notification.target;
 
-              let displayEntity = undefined;
+              let displayEntity;
               if (actor?.type === "user") {
                 displayEntity = actor;
               } else if (target?.type === "user") {

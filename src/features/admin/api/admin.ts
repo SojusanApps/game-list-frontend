@@ -1,6 +1,6 @@
 import { VersionService } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export const getApiVersion = async () => {
   const { data, response } = await VersionService.versionRetrieve();

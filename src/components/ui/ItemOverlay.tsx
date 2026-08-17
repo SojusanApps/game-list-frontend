@@ -1,13 +1,16 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
 import { Group, Stack, Title, Box, UnstyledButton } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import { SafeImage } from "./SafeImage";
-import { getStatusConfig } from "@/features/games/utils/statusConfig";
-import { getRatingColor } from "@/utils/ratingUtils";
-import { cn } from "@/utils/cn";
-import styles from "./ItemOverlay.module.css";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
+import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { cn } from "@/utils/cn";
+import { getRatingColor } from "@/utils/ratingUtils";
+
+import { SafeImage } from "./SafeImage";
+
+import styles from "./ItemOverlay.module.css";
 
 type ItemOverlayProps = {
   className?: string;

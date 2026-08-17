@@ -1,8 +1,10 @@
+import { Group } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Group } from "@mantine/core";
-import { Button } from "@/components/ui/Button";
+
 import { Friendship, FriendshipRequest } from "@/client";
+import { Button } from "@/components/ui/Button";
+
 import {
   useSendFriendRequest,
   useGetFriendshipRequests,

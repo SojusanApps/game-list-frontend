@@ -1,15 +1,42 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
-import { SafeImage } from "@/components/ui/SafeImage";
-import ReactMarkdown from "react-markdown";
 import { Box, Group, Stack, Text, UnstyledButton } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+
+import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 
 type GameReviewProps = {
   gameReview: GameReviewType;
 };
+
+function getScoreStyles(score: number): React.CSSProperties {
+  if (score >= 8)
+    return {
+      background: "var(--color-success-100)",
+      color: "var(--color-success-900)",
+      border: "1px solid var(--color-success-200)",
+    };
+  if (score >= 5)
+    return {
+      background: "var(--color-secondary-100)",
+      color: "var(--color-secondary-900)",
+      border: "1px solid var(--color-secondary-200)",
+    };
+  return {
+    background: "var(--color-error-100)",
+    color: "var(--color-error-900)",
+    border: "1px solid var(--color-error-200)",
+  };
+}
+
+function getScoreLabelColor(score: number): string {
+  if (score >= 8) return "var(--color-success-700)";
+  if (score >= 5) return "var(--color-secondary-700)";
+  return "var(--color-error-700)";
+}
 
 function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Element {
   const { t } = useTranslation("games");
@@ -19,38 +46,10 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
 
   const CreatedAt = new Date(gameReview.created_at);
 
-  const getScoreStyles = (score: number): React.CSSProperties => {
-    if (score >= 8)
-      return {
-        background: "var(--color-success-100)",
-        color: "var(--color-success-900)",
-        border: "1px solid var(--color-success-200)",
-      };
-    if (score >= 5)
-      return {
-        background: "var(--color-secondary-100)",
-        color: "var(--color-secondary-900)",
-        border: "1px solid var(--color-secondary-200)",
-      };
-    return {
-      background: "var(--color-error-100)",
-      color: "var(--color-error-900)",
-      border: "1px solid var(--color-error-200)",
-    };
-  };
-
-  const getScoreLabelColor = (score: number): string => {
-    if (score >= 8) return "var(--color-success-700)";
-    if (score >= 5) return "var(--color-secondary-700)";
-    return "var(--color-error-700)";
-  };
-
   React.useLayoutEffect(() => {
-    if (contentRef.current) {
-      // 160px is approx 6-7 lines
-      if (contentRef.current.scrollHeight > 160) {
-        setShouldTruncate(true);
-      }
+    // 160px is approx 6-7 lines
+    if (contentRef.current && contentRef.current.scrollHeight > 160) {
+      setShouldTruncate(true);
     }
   }, [gameReview.review]);
 

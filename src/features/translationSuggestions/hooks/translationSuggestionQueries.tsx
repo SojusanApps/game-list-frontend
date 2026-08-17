@@ -1,5 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { TranslationSuggestionCreateWritable } from "@/client";
+import { useAppMutation } from "@/hooks/useAppMutation";
+import { translationSuggestionKeys, gameKeys } from "@/lib/queryKeys";
+
 import {
   getTranslationSuggestions,
   createTranslationSuggestion,
@@ -11,8 +15,6 @@ import {
   TranslationSuggestionModerationPath,
   TranslationSuggestionRejectBody,
 } from "../api/translationSuggestion";
-import { translationSuggestionKeys, gameKeys } from "@/lib/queryKeys";
-import { useAppMutation } from "@/hooks/useAppMutation";
 
 export const useGetTranslationSuggestions = (
   query?: TranslationSuggestionListQuery,

@@ -1,5 +1,5 @@
-import * as React from "react";
 import { Box, Text } from "@mantine/core";
+import * as React from "react";
 
 type AppLogoProps = {
   size?: "sm" | "md" | "lg";

@@ -1,17 +1,19 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { Box, Select, Text, Group, Textarea, NumberInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { IconSearch, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
+import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
-import { GameListStatusEnum } from "@/client";
+import { getRatingColor } from "@/utils/ratingUtils";
+
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
 import code_to_value_mapping from "../../utils/GameListStatuses";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
-import { getRatingColor } from "@/utils/ratingUtils";
 import { GameRow } from "./types";
+
 import styles from "./GameRowItem.module.css";
 
 interface GameRowItemProps {

@@ -1,17 +1,20 @@
+import { Box, Text, Tooltip, Menu, ActionIcon, Group } from "@mantine/core";
+import { IconPencil, IconX, IconQuestionMark, IconInfoCircle, IconDotsVertical, IconFlag } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { SafeImage } from "@/components/ui/SafeImage";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { IconPencil, IconX, IconQuestionMark, IconInfoCircle, IconDotsVertical, IconFlag } from "@tabler/icons-react";
-import { Box, Text, Tooltip, Menu, ActionIcon, Group } from "@mantine/core";
+
 import type { User } from "@/client";
 import { TargetTypeEnum } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
-import { EditDescriptionModal } from "./EditDescriptionModal";
 import { cn } from "@/utils/cn";
-import { Link } from "@tanstack/react-router";
-import cardStyles from "./GameCard.module.css";
+
+import { EditDescriptionModal } from "./EditDescriptionModal";
 import { TIERS } from "./TierListView";
+
+import cardStyles from "./GameCard.module.css";
 
 interface GameCardProps {
   collectionItemId: number;

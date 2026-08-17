@@ -1,10 +1,11 @@
-import * as React from "react";
 import { Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { GameList, GameListStatusEnum } from "@/client";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { SafeImage } from "@/components/ui/SafeImage";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 
 interface GameListUpdateProps {
@@ -59,9 +60,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
             c="var(--color-text-400)"
             style={{ whiteSpace: "nowrap", flexShrink: 0, opacity: 0.7 }}
           >
-            {new Date(
-              latestGameListUpdate?.last_modified_at ? latestGameListUpdate.last_modified_at : "",
-            ).toLocaleDateString()}
+            {new Date(latestGameListUpdate?.last_modified_at || "").toLocaleDateString()}
           </Text>
         </Group>
 

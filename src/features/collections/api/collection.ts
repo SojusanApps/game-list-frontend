@@ -1,5 +1,3 @@
-import StatusCode from "@/utils/StatusCode";
-import { handleApiError } from "@/utils/apiUtils";
 import {
   CollectionService,
   CollectionCollectionsListData,
@@ -13,6 +11,8 @@ import {
   TierEnum,
   BlankEnum,
 } from "@/client";
+import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type CollectionCollectionsListDataQuery = CollectionCollectionsListData["query"];
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { selectNextPair } from "@/features/ranking/utils/pairSelection";
+
 import type { RankedItem, DuelResult } from "@/features/ranking/types";
+import { selectNextPair } from "@/features/ranking/utils/pairSelection";
 
 function makeItem(id: number, rating: number = 1000, matchesPlayed: number = 0): RankedItem {
   return {
@@ -39,7 +40,7 @@ describe("pairSelection", () => {
     const pair = selectNextPair(items, history);
     expect(pair).not.toBeNull();
     // With 3 items and 2 recent pairs (1-2, 2-3), the remaining pair is 1-3
-    const ids = [pair![0].itemId, pair![1].itemId].sort((a, b) => a - b);
+    const ids = [pair![0].itemId, pair![1].itemId].toSorted((a, b) => a - b);
     expect(ids).toEqual([1, 3]);
   });
 

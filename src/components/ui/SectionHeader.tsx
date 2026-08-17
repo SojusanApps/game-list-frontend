@@ -1,7 +1,8 @@
+import { Box, Group, Text, Title } from "@mantine/core";
+import { Link, LinkComponentProps } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, LinkComponentProps } from "@tanstack/react-router";
-import { Box, Group, Text, Title } from "@mantine/core";
+
 import styles from "./SectionHeader.module.css";
 
 interface SectionHeaderProps {

@@ -1,8 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import CollectionPage from "@/features/collections/pages/CollectionPage";
-import { idSchema, slugSchema } from "@/lib/validation";
-import { collectionKeys } from "@/lib/queryKeys";
+
 import { getCollectionDetail } from "@/features/collections/api/collection";
+import CollectionPage from "@/features/collections/pages/CollectionPage";
+import { collectionKeys } from "@/lib/queryKeys";
+import { idSchema, slugSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/collection/$id/$slug")({
   beforeLoad: ({ params }) => {

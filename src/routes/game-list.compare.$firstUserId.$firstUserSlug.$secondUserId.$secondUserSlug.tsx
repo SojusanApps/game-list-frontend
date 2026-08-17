@@ -1,9 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { GameListComparePage } from "@/features/games";
 import { getGameListCompare } from "@/features/games/api/game";
-import { slugSchema, idSchema } from "@/lib/validation";
-import { gameListKeys, userKeys } from "@/lib/queryKeys";
 import { getUserDetails } from "@/features/users/api/user";
+import { gameListKeys, userKeys } from "@/lib/queryKeys";
+import { slugSchema, idSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug")({
   beforeLoad: ({ params }) => {

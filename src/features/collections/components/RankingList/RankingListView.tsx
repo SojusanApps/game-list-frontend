@@ -1,17 +1,19 @@
+import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
+import { Box, Group, Loader, Stack, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { CollectionItem } from "@/client";
-import { SortableRankingRow } from "./SortableRankingRow";
 import { VirtualList } from "@/components/ui/VirtualList";
+
 import {
   useReorderCollectionItem,
   useUpdateCollectionItem,
   useCollectionItemsInfiniteQuery,
 } from "../../hooks/useCollectionQueries";
-import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Box, Group, Loader, Stack, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import EditDescriptionModal from "./EditDescriptionModal";
+import { SortableRankingRow } from "./SortableRankingRow";
 
 interface RankingListViewProps {
   collectionId: number;
@@ -45,7 +47,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
 
   // Sort by order initially
   const sortedInitialItems = React.useMemo(() => {
-    return [...allItems].sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
+    return allItems.toSorted((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
   }, [allItems]);
 
   const [items, setItems] = React.useState<CollectionItem[]>(sortedInitialItems);
@@ -99,7 +101,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
         return;
       }
 
-      const itemId = Number.parseInt(draggedId, 10);
+      const itemId = Math.trunc(Number(draggedId));
       const currentIndex = items.findIndex(i => i.id === itemId);
       if (currentIndex === -1 || currentIndex === targetIndex) {
         return;
@@ -347,7 +349,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
       try {
         const queryResult = await fetchPagesIfNeeded(newPosition);
         const currentAllItems = queryResult?.pages.flatMap(page => page.results) || [];
-        const sortedItems = [...currentAllItems].sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
+        const sortedItems = currentAllItems.toSorted((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
 
         const validation = validateReorder(sortedItems, id, newPosition);
         if (!validation) {

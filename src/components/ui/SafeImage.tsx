@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
 import { Box, Skeleton } from "@mantine/core";
+import React, { useState, useEffect, useRef } from "react";
+
 import { ImageFallback } from "./ImageFallback";
 
 interface SafeImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {

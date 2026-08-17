@@ -1,13 +1,15 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { Center, Loader, Text, Group, Stack } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useGetGamesInfinite } from "../../hooks/gameQueries";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
-import { formatISODate, getEndOfMonth } from "../../utils/calendarUtils";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import type { GameSimpleList } from "@/client/types.gen";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+
+import { useGetGamesInfinite } from "../../hooks/gameQueries";
+import { formatISODate, getEndOfMonth } from "../../utils/calendarUtils";
+import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 
 export default function ListView(): React.JSX.Element {
   const { t } = useTranslation("games");

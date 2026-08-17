@@ -33,27 +33,10 @@
       "changeButton": "Zmień avatar na Gravatar",
       "description": "Twój avatar pochodzi z serwisu Gravatar. Kliknij przycisk poniżej, aby go zmienić."
     },
-    "username": {
-      "sectionTitle": "Nazwa użytkownika",
-      "usernameLabel": "Nazwa użytkownika",
-      "usernamePlaceholder": "Wpisz nową nazwę użytkownika",
-      "saveButton": "Zapisz nazwę użytkownika",
-      "helperText": "Możesz zmienić nazwę użytkownika ponownie w dowolnym momencie — nie ma okresu oczekiwania.",
-      "successTitle": "Nazwa użytkownika zaktualizowana",
-      "successMessage": "Twoja nazwa użytkownika została zmieniona."
-    },
-    "password": {
-      "sectionTitle": "Hasło",
-      "currentPasswordLabel": "Obecne hasło",
-      "currentPasswordPlaceholder": "Wpisz obecne hasło",
-      "newPasswordLabel": "Nowe hasło",
-      "newPasswordPlaceholder": "Wpisz nowe hasło",
-      "confirmPasswordLabel": "Potwierdź nowe hasło",
-      "confirmPasswordPlaceholder": "Wpisz ponownie nowe hasło",
-      "saveButton": "Zapisz hasło",
-      "helperText": "Inne zalogowane urządzenia pozostaną zalogowane — dotyczy to tylko przyszłych logowań.",
-      "successTitle": "Hasło zaktualizowane",
-      "successMessage": "Twoje hasło zostało zmienione."
+    "credentials": {
+      "sectionTitle": "Dane logowania",
+      "description": "Aby zmienić swoje dane osobowe, płeć, nazwę użytkownika lub hasło, przejdź do naszego zewnętrznego dostawcy tożsamości, Sojusan Auth.",
+      "manageAccountButton": "Zarządzaj kontem w Sojusan Auth"
     }
   },
   "info": {
@@ -87,4 +70,3 @@
     "addFriend": "Dodaj do znajomych"
   }
 }
-

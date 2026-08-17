@@ -1,21 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { jwtDecode } from "jwt-decode";
+
 import { useAuth } from "@/features/auth/context/AuthProvider";
-import { useGetUserDetails } from "@/features/users/hooks/userQueries";
-import { TokenInfoType } from "@/types";
+import { getCurrentUser } from "@/features/users/api/user";
+import { userKeys } from "@/lib/queryKeys";
+
+export const useCurrentUser = () => {
+  const { isAuthenticated } = useAuth();
+
+  return useQuery({
+    queryKey: userKeys.me(),
+    queryFn: getCurrentUser,
+    enabled: isAuthenticated,
+  });
+};
 
 export const useCurrentUserId = () => {
-  const { user } = useAuth();
-
-  return useMemo(() => {
-    if (!user) return null;
-    try {
-      const decoded = jwtDecode<TokenInfoType>(user.token);
-      return Number(decoded.user_id);
-    } catch {
-      return null;
-    }
-  }, [user]);
+  const { data } = useCurrentUser();
+  return data?.id ?? null;
 };
 
 export const useIsOwner = (ownerId?: number | string | null) => {
@@ -28,8 +30,6 @@ export const useIsOwner = (ownerId?: number | string | null) => {
 };
 
 export const useIsStaff = () => {
-  const currentUserId = useCurrentUserId();
-  const { data: userDetails } = useGetUserDetails(currentUserId ?? undefined);
-
-  return !!userDetails?.is_staff;
+  const { data } = useCurrentUser();
+  return !!data?.is_staff;
 };

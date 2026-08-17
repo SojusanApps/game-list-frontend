@@ -1,21 +1,23 @@
+import { Box, Stack, Text, Stepper, TextInput, Group, Accordion, Badge } from "@mantine/core";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { IconDownload, IconCheck, IconInfoCircle } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useForm, schemaResolver } from "@mantine/form";
 import { z } from "zod";
-import { notifications } from "@mantine/notifications";
-import { Box, Stack, Text, Stepper, TextInput, Group, Accordion, Badge } from "@mantine/core";
-import { IconDownload, IconCheck, IconInfoCircle } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/Button";
 import { GameListCreateWritable, SteamImportNotFound } from "@/client";
-import { useSteamImport, useBulkCreateGameList, useGetGameMediasByName } from "../../hooks/gameQueries";
+import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
-import { formatDate } from "@/utils/dateUtils";
 import i18n from "@/lib/i18n";
+import { formatDate } from "@/utils/dateUtils";
+
+import { useSteamImport, useBulkCreateGameList, useGetGameMediasByName } from "../../hooks/gameQueries";
 import { ConfigureGameList } from "./ConfigureGameList";
 import { SuccessStep } from "./SuccessStep";
-import { useGameRows } from "./useGameRows";
 import { createGameRow } from "./types";
+import { useGameRows } from "./useGameRows";
+
 import styles from "./SteamImportFlow.module.css";
 
 const steamFormSchema = z.object({

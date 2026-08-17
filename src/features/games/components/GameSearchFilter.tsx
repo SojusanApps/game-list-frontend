@@ -1,14 +1,16 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { useForm, schemaResolver } from "@mantine/form";
-import { z } from "zod";
-
 import { Select, Box, Group, Stack } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
+import { useForm, schemaResolver } from "@mantine/form";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
+
+import { Company, Platform, Genre, GameEngine, GameMode, GameStatus, GameType, PlayerPerspective } from "@/client";
 import { Button } from "@/components/ui/Button";
-import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import AsyncAutocomplete from "@/components/ui/Form/AsyncAutocomplete";
+import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import i18n from "@/lib/i18n";
+
 import {
   useGetGenresInfiniteQuery,
   useGetPlatformsInfiniteQuery,
@@ -19,7 +21,6 @@ import {
   useGetGameTypesInfiniteQuery,
   useGetPlayerPerspectivesInfiniteQuery,
 } from "../hooks/gameQueries";
-import { Company, Platform, Genre, GameEngine, GameMode, GameStatus, GameType, PlayerPerspective } from "@/client";
 
 const ORDERING_OPTIONS = [
   "-created_at",

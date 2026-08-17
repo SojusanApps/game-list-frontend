@@ -1,41 +1,52 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import { ActionIcon, Group, Modal, Stack, Text, Textarea, Tooltip } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconFlag } from "@tabler/icons-react";
+import type { TFunction } from "i18next";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { ReportCreateWritable, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
+
 import { useCreateReport } from "../hooks/moderationQueries";
 import { canReport, validateReportReason, type ReportReasonError } from "../utils/report";
 
 function getReasonErrorMessage(error: ReportReasonError | null, t: TFunction<"moderation">): string | undefined {
   switch (error) {
-    case "required":
+    case "required": {
       return t("reportModal.reasonRequired");
-    case "tooShort":
+    }
+    case "tooShort": {
       return t("reportModal.reasonTooShort");
-    default:
+    }
+    default: {
       return undefined;
+    }
   }
 }
 
 function buildReportBody(targetType: TargetTypeEnum, targetId: number, reason: string): ReportCreateWritable {
   switch (targetType) {
-    case TargetTypeEnum.REVIEW:
+    case TargetTypeEnum.REVIEW: {
       return { target_type: targetType, target_review: targetId, reason };
-    case TargetTypeEnum.TRANSLATION_SUGGESTION:
+    }
+    case TargetTypeEnum.TRANSLATION_SUGGESTION: {
       return { target_type: targetType, target_translation_suggestion: targetId, reason };
-    case TargetTypeEnum.GAME_LIST_NOTE:
+    }
+    case TargetTypeEnum.GAME_LIST_NOTE: {
       return { target_type: targetType, target_game_list: targetId, reason };
-    case TargetTypeEnum.COLLECTION:
+    }
+    case TargetTypeEnum.COLLECTION: {
       return { target_type: targetType, target_collection: targetId, reason };
-    case TargetTypeEnum.COLLECTION_ITEM_NOTE:
+    }
+    case TargetTypeEnum.COLLECTION_ITEM_NOTE: {
       return { target_type: targetType, target_collection_item: targetId, reason };
+    }
     case TargetTypeEnum.AVATAR:
-    case TargetTypeEnum.USERNAME:
+    case TargetTypeEnum.USERNAME: {
       return { target_type: targetType, reported_user: targetId, reason };
+    }
   }
 }
 

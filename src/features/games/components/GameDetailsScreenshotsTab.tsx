@@ -1,10 +1,12 @@
-import * as React from "react";
 import { Box, SimpleGrid, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { IconPhotoOff } from "@tabler/icons-react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { SafeImage } from "@/components/ui/SafeImage";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+
 import { Game } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
+
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
 interface GameDetailsScreenshotsTabProps {
   gameDetails?: Game;

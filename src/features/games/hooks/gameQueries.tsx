@@ -1,4 +1,16 @@
 import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+  UseInfiniteQueryOptions,
+  InfiniteData,
+} from "@tanstack/react-query";
+
+import { GameList, PaginatedGameSimpleListList, PaginatedGameListList, GameListCreateWritable } from "@/client";
+import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
+
+import {
   getGenresList,
   getGamesList,
   GameGamesListDataQuery,
@@ -40,16 +52,6 @@ import {
   GameReviewCreateDataBody,
   GameReviewPartialUpdateDataBody,
 } from "../api/game";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-  UseInfiniteQueryOptions,
-  InfiniteData,
-} from "@tanstack/react-query";
-import { GameList, PaginatedGameSimpleListList, PaginatedGameListList, GameListCreateWritable } from "@/client";
-import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
 
 export const useGetPlatformsInfiniteQuery = (name?: string) => {
   return useInfiniteQuery({
@@ -60,7 +62,7 @@ export const useGetPlatformsInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -74,7 +76,7 @@ export const useGetGameEnginesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -88,7 +90,7 @@ export const useGetGameModesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -102,7 +104,7 @@ export const useGetGameStatusesInfiniteQuery = (status?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -116,7 +118,7 @@ export const useGetGameTypesInfiniteQuery = (type?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -130,7 +132,7 @@ export const useGetPlayerPerspectivesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -145,7 +147,7 @@ export const useGetGenresInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -159,7 +161,7 @@ export const useGetGameMediasInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -179,9 +181,7 @@ export const useGetGamesInfinite = (
       PaginatedGameSimpleListList,
       Error,
       InfiniteData<PaginatedGameSimpleListList, unknown>,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any
     >,
     "queryKey" | "queryFn" | "initialPageParam" | "getNextPageParam"
@@ -195,7 +195,7 @@ export const useGetGamesInfinite = (
       if (lastPage?.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
     ...options,
   });
@@ -327,7 +327,7 @@ export const useGetCompaniesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };

@@ -1,15 +1,20 @@
+import { Carousel } from "@mantine/carousel";
+import { Box, SimpleGrid, Skeleton, Stack } from "@mantine/core";
+import Autoplay from "embla-carousel-autoplay";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Carousel } from "@mantine/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
-import { useGetGamesList } from "../hooks/gameQueries";
-import { PageMeta } from "@/components/ui/PageMeta";
+
 import { GameSimpleList } from "@/client";
-import { Box, SimpleGrid, Skeleton, Stack } from "@mantine/core";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+
+import { useGetGamesList } from "../hooks/gameQueries";
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+
 import styles from "./HomePage.module.css";
+
+const autoplayPlugin = () => Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true });
 
 export default function HomePage(): React.JSX.Element {
   const { t } = useTranslation("games");
@@ -25,8 +30,6 @@ export default function HomePage(): React.JSX.Element {
     { ordering: "-created_at" },
     { staleTime: 1000 * 60 * 60 * 24, gcTime: 1000 * 60 * 60 * 24 },
   );
-
-  const autoplayPlugin = () => Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true });
 
   const renderGameCarousel = (games: GameSimpleList[] | undefined, isLoading: boolean) => {
     if (isLoading) {

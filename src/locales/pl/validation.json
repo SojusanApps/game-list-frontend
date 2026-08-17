@@ -1,12 +1,4 @@
 {
-  "emailInvalid": "Podaj prawidłowy adres e-mail",
-  "emailRequired": "Adres e-mail jest wymagany",
-  "passwordRequired": "Hasło jest wymagane",
-  "passwordMin": "Hasło musi mieć więcej niż 8 znaków",
-  "passwordMax": "Hasło musi mieć mniej niż 32 znaki",
-  "usernameRequired": "Nazwa użytkownika jest wymagana",
-  "confirmPasswordRequired": "Potwierdzenie hasła jest wymagane",
-  "passwordsNoMatch": "Hasła nie pasują do siebie",
   "scoreMin": "Minimalna ocena to 1",
   "scoreMax": "Maksymalna ocena to 10",
   "noteMax": "Maksymalnie 200 znaków",
@@ -16,12 +8,5 @@
   "selectAtLeastOne": "Wybierz co najmniej jedną kolekcję",
   "descriptionMax": "Opis musi mieć 500 znaków lub mniej",
   "steamProfileIdRequired": "Identyfikator profilu Steam jest wymagany",
-  "titlesRequired": "Wymagany jest co najmniej jeden tytuł gry",
-  "usernameFormat": "Podaj prawidłową nazwę użytkownika. Może zawierać tylko litery, cyfry oraz znaki @/./+/-/_.",
-  "usernameSameAsCurrent": "Nowa nazwa użytkownika musi różnić się od obecnej.",
-  "currentPasswordRequired": "Obecne hasło jest wymagane",
-  "newPasswordRequired": "Nowe hasło jest wymagane",
-  "newPasswordMin": "Nowe hasło musi mieć więcej niż 8 znaków",
-  "newPasswordMax": "Nowe hasło musi mieć mniej niż 32 znaki",
-  "newPasswordConfirmRequired": "Potwierdzenie nowego hasła jest wymagane"
+  "titlesRequired": "Wymagany jest co najmniej jeden tytuł gry"
 }

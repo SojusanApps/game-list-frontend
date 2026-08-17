@@ -1,17 +1,19 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { cn } from "@/utils/cn";
 import { Box, Stack, Text, Group, Badge, Grid, TextInput, Loader, ActionIcon, UnstyledButton } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch, IconX } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
+import { GameSimpleList } from "@/client";
 import { Button } from "@/components/ui/Button";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import { GameSimpleList } from "@/client";
+import { cn } from "@/utils/cn";
+
 import { useGetGamesInfinite, useGetExportedGameList } from "../../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 import { ImportedGame } from "./types";
+
 import styles from "./TitleResolveStep.module.css";
 
 export interface UnmatchedTitle {

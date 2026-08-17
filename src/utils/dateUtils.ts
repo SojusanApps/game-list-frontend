@@ -50,9 +50,9 @@ export function timeAgo(dateInput?: Date | string | number | null): string | nul
   if (seconds < 60) return i18n.t("timeAgo.justNow");
 
   const intervals: Array<[number, (n: number) => string]> = [
-    [31536000, n => i18n.t("timeAgo.year", { count: n })],
-    [2592000, n => i18n.t("timeAgo.month", { count: n })],
-    [86400, n => i18n.t("timeAgo.day", { count: n })],
+    [31_536_000, n => i18n.t("timeAgo.year", { count: n })],
+    [2_592_000, n => i18n.t("timeAgo.month", { count: n })],
+    [86_400, n => i18n.t("timeAgo.day", { count: n })],
     [3600, n => i18n.t("timeAgo.hour", { count: n })],
     [60, n => i18n.t("timeAgo.minute", { count: n })],
   ];

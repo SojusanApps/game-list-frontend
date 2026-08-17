@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getGameListCompare, getGameListsList, getRandomPtpGame } from "../api/game";
-import { gameListKeys } from "@/lib/queryKeys";
+
 import { GameListStatusEnum } from "@/client";
+import { gameListKeys } from "@/lib/queryKeys";
+
+import { getGameListCompare, getGameListsList, getRandomPtpGame } from "../api/game";
 
 export type GameListGameFilters = {
   developer?: string;
@@ -24,7 +26,7 @@ const fetchGameListItems = async ({
   pageParam?: number;
   queryKey: readonly unknown[];
 }) => {
-  const [, , userId, status, filters] = queryKey as [
+  const [, _kind, userId, status, filters] = queryKey as [
     string,
     string,
     number,

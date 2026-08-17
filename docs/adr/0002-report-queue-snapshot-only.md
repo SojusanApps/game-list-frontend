@@ -5,7 +5,7 @@
 
 ## Context
 
-The `Report` API response carries a bare target id per type (`target_review`, `target_collection`, etc.) plus a `reported_value` text snapshot taken at submission time — it never nests the actual `GameReview`/`Collection`/`TranslationSuggestion`/etc. object. Building a moderator queue that deep-links to the *live* source content would require a bespoke resolver per target type (5 of the 7 types), each needing extra lookups the backend handoff doc doesn't describe an endpoint for (e.g., there's no "fetch a single review by id" outside a game's review list).
+The `Report` API response carries a bare target id per type (`target_review`, `target_collection`, etc.) plus a `reported_value` text snapshot taken at submission time — it never nests the actual `GameReview`/`Collection`/`TranslationSuggestion`/etc. object. Building a moderator queue that deep-links to the _live_ source content would require a bespoke resolver per target type (5 of the 7 types), each needing extra lookups the backend handoff doc doesn't describe an endpoint for (e.g., there's no "fetch a single review by id" outside a game's review list).
 
 ## Decision
 

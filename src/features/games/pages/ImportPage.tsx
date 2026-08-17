@@ -1,8 +1,9 @@
+import { Box, Stack, Title, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Stack, Title, Text } from "@mantine/core";
 
 import { PageMeta } from "@/components/ui/PageMeta";
+
 import { ImportSourceSelect, ImportSource } from "../components/import/ImportSourceSelect";
 import { SteamImportFlow } from "../components/import/SteamImportFlow";
 import { TitleImportFlow } from "../components/import/TitleImportFlow";

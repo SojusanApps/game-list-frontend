@@ -1,11 +1,14 @@
+import { Box, Group, Stack, Text, Title } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Group, Stack, Text, Title } from "@mantine/core";
-import { SafeImage } from "@/components/ui/SafeImage";
+
 import { Button } from "@/components/ui/Button";
+import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { getConfidenceLevel } from "../utils/rankingSort";
+
 import type { RankedItem } from "../types";
+import { getConfidenceLevel } from "../utils/rankingSort";
+
 import styles from "./PairwiseRankingResults.module.css";
 
 interface PairwiseRankingResultsProps {

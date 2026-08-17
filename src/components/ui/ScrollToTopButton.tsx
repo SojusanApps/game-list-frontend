@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
 import { ActionIcon, Affix, Tooltip, Transition } from "@mantine/core";
 import { IconArrowUp } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const ScrollToTopButton = (): React.JSX.Element => {

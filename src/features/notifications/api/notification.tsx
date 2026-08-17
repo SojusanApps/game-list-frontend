@@ -4,8 +4,8 @@ import {
   NotificationMarkAsReadCreateData,
   NotificationDestroyData,
 } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type NotificationListDataQuery = NotificationListData["query"];
 

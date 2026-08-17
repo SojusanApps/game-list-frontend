@@ -1,11 +1,13 @@
+import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { Box, Group, Stack, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Group, Stack, Text } from "@mantine/core";
+
 import { TierEnum, BlankEnum } from "@/client";
-import { TierSection } from "./TierSection";
+
 import { useUpdateCollectionItemTier, useUpdateCollectionItem } from "../../hooks/useCollectionQueries";
-import { notifications } from "@mantine/notifications";
-import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { TierSection } from "./TierSection";
 
 interface TierListViewProps {
   collectionId: number;
@@ -47,7 +49,7 @@ export const TierListView = React.memo(function TierListViewInner({
         return;
       }
 
-      const numericItemId = Number.parseInt(itemId, 10);
+      const numericItemId = Math.trunc(Number(itemId));
       const tierConfig = TIERS.find(tier => tier.id === targetTierId);
       if (!tierConfig) {
         return;
@@ -86,7 +88,7 @@ export const TierListView = React.memo(function TierListViewInner({
         return;
       }
 
-      const numericItemId = Number.parseInt(itemId, 10);
+      const numericItemId = Math.trunc(Number(itemId));
       const tierConfig = TIERS.find(tier => tier.id === targetTierId);
       if (!tierConfig) {
         return;
@@ -106,11 +108,9 @@ export const TierListView = React.memo(function TierListViewInner({
       }
 
       // If moving within the same tier, adjust for the item being removed first
-      if (sourceTierId === targetTierId) {
-        // sourceIndex is already absolute (calculated in SortableGameCard)
-        if (sourceIndex < position) {
-          position -= 1;
-        }
+      // (sourceIndex is already absolute, calculated in SortableGameCard)
+      if (sourceTierId === targetTierId && sourceIndex < position) {
+        position -= 1;
       }
 
       try {
