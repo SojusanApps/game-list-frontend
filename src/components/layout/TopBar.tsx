@@ -18,7 +18,6 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
   const { data: currentUser } = useCurrentUser();
   const { t } = useTranslation();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profileParams: any = { id: currentUser?.id?.toString() || "", slug: currentUser?.slug || "" };
 
   return (

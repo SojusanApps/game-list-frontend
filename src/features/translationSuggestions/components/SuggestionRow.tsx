@@ -71,7 +71,8 @@ function ValueDiff({ current, proposed }: Readonly<{ current: string; proposed: 
     <Box style={CODE_BLOCK_STYLE}>
       {parts.map((part, index) => (
         <Text
-          // eslint-disable-next-line react/no-array-index-key -- diff chunks have no stable identity of their own
+          // Diff chunks have no stable identity of their own, so the index is the only usable key.
+          // oxlint-disable-next-line react/no-array-index-key
           key={index}
           component="span"
           style={diffPartStyle(part)}

@@ -181,9 +181,7 @@ export const useGetGamesInfinite = (
       PaginatedGameSimpleListList,
       Error,
       InfiniteData<PaginatedGameSimpleListList, unknown>,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any
     >,
     "queryKey" | "queryFn" | "initialPageParam" | "getNextPageParam"

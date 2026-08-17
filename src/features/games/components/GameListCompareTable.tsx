@@ -80,9 +80,7 @@ export function GameListCompareTable({
     headingUsername = secondUserDetails.username;
   }
 
-  const heading =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    t(section.headingKey as any, { username: headingUsername });
+  const heading = t(section.headingKey as any, { username: headingUsername });
 
   return (
     <CollapsibleSection title={heading} count={section.count} defaultOpen>

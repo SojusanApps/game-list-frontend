@@ -216,7 +216,6 @@ export const useUpdateCollectionItemTier = () => {
       tier,
       position,
       // oldTier is used in the onSuccess handler
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       oldTier,
     }: {
       collectionId: number;

@@ -26,7 +26,6 @@ import plUsers from "@/locales/pl/users.json";
 import plValidation from "@/locales/pl/validation.json";
 import { getStoredLanguage } from "@/utils/languageUtils";
 
-// eslint-disable-next-line import/no-named-as-default-member
 i18n.use(initReactI18next).init({
   lng: getStoredLanguage(),
   fallbackLng: "en",

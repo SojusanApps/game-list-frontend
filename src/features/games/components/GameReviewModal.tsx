@@ -49,8 +49,7 @@ export function GameReviewModal({
     if (opened) {
       form.setValues({ review: existingReviewText ?? "" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, existingReviewText]);
+  }, [opened, existingReviewText, form]);
 
   const { mutateAsync: createReview, isPending: isCreating } = useCreateGameReview();
   const { mutateAsync: updateReview, isPending: isUpdating } = useUpdateGameReview();

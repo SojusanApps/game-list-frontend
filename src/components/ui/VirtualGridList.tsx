@@ -119,7 +119,6 @@ export function VirtualGridList<T>({
 
   const rowCount = items.length > 0 ? Math.ceil(items.length / columnCount) + 1 : 0;
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => parentRef.current,

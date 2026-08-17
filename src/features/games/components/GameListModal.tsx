@@ -93,8 +93,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.reset();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameListDetails, opened]);
+  }, [gameListDetails, opened, form]);
 
   // Autopopulate dates when status changes
   React.useEffect(() => {
@@ -105,7 +104,10 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.setFieldValue("completed_at", new Date());
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Deliberately triggered only by status changes, not by started_at/completed_at themselves —
+    // this is a one-time autofill, not a continuous sync, and including the date fields here would
+    // re-fire on every manual edit to them and overwrite the user's own clearing of the field.
+    // oxlint-disable-next-line react/exhaustive-deps
   }, [form.values.status]);
 
   const onSubmitHandler = async (data: ValidationSchema) => {

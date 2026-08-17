@@ -93,8 +93,7 @@ export function TranslationSuggestionModal({
     if (opened) {
       form.setValues({ field: FieldEnum.SUMMARY, proposedValue: currentSummary, isOfficialTitleConfirmed: false });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, currentSummary]);
+  }, [opened, currentSummary, form]);
 
   const handleFieldChange = (value: string | null) => {
     if (!value) {
