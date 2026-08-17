@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { DatesProvider } from "@mantine/dates";
 
 import "./index.css";
-import { useAuth } from "./features/auth";
+import { useAuth, SessionGate } from "./features/auth";
 import { PageMeta } from "./components/ui/PageMeta";
 import { useLanguageStore } from "./lib/languageStore";
 
@@ -42,7 +42,9 @@ function App(): React.JSX.Element {
     <HelmetProvider>
       <DatesProvider settings={{ locale: language }}>
         <PageMeta />
-        <InnerApp />
+        <SessionGate>
+          <InnerApp />
+        </SessionGate>
       </DatesProvider>
     </HelmetProvider>
   );

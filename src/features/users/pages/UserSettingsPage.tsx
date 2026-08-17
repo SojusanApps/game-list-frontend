@@ -9,8 +9,11 @@ import { useGetUserDetails } from "../hooks/userQueries";
 import { GravatarQuickEditorCore } from "@gravatar-com/quick-editor";
 import { useQueryClient } from "@tanstack/react-query";
 import { userKeys } from "@/lib/queryKeys";
-import ChangeUsernameForm from "../components/ChangeUsernameForm";
-import ChangePasswordForm from "../components/ChangePasswordForm";
+import { env } from "@/config/env";
+
+const KEYCLOAK_ACCOUNT_CONSOLE_URL = `${env.VITE_KEYCLOAK_URL}/realms/${env.VITE_KEYCLOAK_REALM}/account`;
+const KEYCLOAK_USERNAME_URL = `${KEYCLOAK_ACCOUNT_CONSOLE_URL}/#/personal-info`;
+const KEYCLOAK_PASSWORD_URL = `${KEYCLOAK_ACCOUNT_CONSOLE_URL}/#/account-security/signing-in`;
 
 export default function UserSettingsPage(): React.JSX.Element {
   const { t, i18n } = useTranslation("users");
@@ -101,10 +104,56 @@ export default function UserSettingsPage(): React.JSX.Element {
         </Box>
 
         {userDetails && currentUserId && (
-          <>
-            <ChangeUsernameForm userId={currentUserId} currentUsername={userDetails.username} />
-            <ChangePasswordForm />
-          </>
+          <Box
+            style={{
+              background: "white",
+              borderRadius: 12,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              border: "1px solid var(--color-background-200)",
+              overflow: "hidden",
+            }}
+            mt={24}
+          >
+            <Box
+              style={{
+                background: "var(--color-background-50)",
+                padding: "12px 16px",
+                borderBottom: "1px solid var(--color-background-200)",
+              }}
+            >
+              <Text fw={600} c="var(--color-text-900)">
+                {t("settings.credentials.sectionTitle")}
+              </Text>
+            </Box>
+
+            <Stack gap={16} p={24}>
+              <Text fz="sm" c="var(--color-text-500)">
+                {t("settings.credentials.description")}
+              </Text>
+              <Stack gap={12}>
+                <a
+                  href={KEYCLOAK_USERNAME_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button variant="outline" fullWidth>
+                    {t("settings.credentials.changeUsernameButton")}
+                  </Button>
+                </a>
+                <a
+                  href={KEYCLOAK_PASSWORD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button variant="outline" fullWidth>
+                    {t("settings.credentials.changePasswordButton")}
+                  </Button>
+                </a>
+              </Stack>
+            </Stack>
+          </Box>
         )}
       </Box>
     </Box>

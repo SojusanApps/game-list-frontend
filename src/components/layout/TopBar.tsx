@@ -6,28 +6,21 @@ import { Button } from "@/components/ui/Button";
 import SearchBar from "@/features/games/components/SearchBar";
 
 import NotificationBell from "@/features/notifications/components/NotificationBell";
-import { useAuth, useCurrentUserId } from "@/features/auth";
+import { useAuth, useCurrentUser } from "@/features/auth";
 import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield } from "@tabler/icons-react";
 import { Box, Group, Menu, Text, UnstyledButton, Burger, Drawer, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import styles from "./TopBar.module.css";
 import { useTranslation } from "react-i18next";
 
-import { useGetUserDetails } from "@/features/users/hooks/userQueries";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.Element {
-  const currentUserId = useCurrentUserId();
-  const { data: userDetails } = useGetUserDetails(currentUserId || undefined);
+  const { data: currentUser } = useCurrentUser();
   const { t } = useTranslation();
 
-  const handleClick = () => {
-    logout();
-    globalThis.location.reload();
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const profileParams: any = { id: currentUserId?.toString() || "", slug: userDetails?.slug || "" };
+  const profileParams: any = { id: currentUser?.id?.toString() || "", slug: currentUser?.slug || "" };
 
   return (
     <Group gap={16}>
@@ -36,10 +29,10 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
         <Menu.Target>
           <UnstyledButton className={styles.userMenuBtn}>
             <Text component="span" fz="sm" fw={500} c="var(--color-primary-100)" visibleFrom="md">
-              {userDetails?.username}
+              {currentUser?.username}
             </Text>
             <SafeImage
-              src={userDetails?.gravatar_url || undefined}
+              src={currentUser?.gravatar_url || undefined}
               alt={t("userAvatarAlt")}
               style={{
                 width: "36px",
@@ -64,7 +57,7 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
           <Menu.Item component={Link} to="/settings" leftSection={<IconSettings size={16} />}>
             {t("nav.accountSettings")}
           </Menu.Item>
-          {userDetails?.is_staff && (
+          {currentUser?.is_staff && (
             <>
               <Menu.Divider />
               <Menu.Item component={Link} to="/admin" leftSection={<IconShield size={16} />}>
@@ -73,7 +66,7 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
             </>
           )}
           <Menu.Divider />
-          <Menu.Item color="red" onClick={handleClick} leftSection={<IconLogout size={16} />}>
+          <Menu.Item color="red" onClick={logout} leftSection={<IconLogout size={16} />}>
             {t("nav.logout")}
           </Menu.Item>
         </Menu.Dropdown>
@@ -84,25 +77,21 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
 
 function NotLoggedInView(): React.JSX.Element {
   const { t } = useTranslation();
+  const { login } = useAuth();
   return (
     <Group gap={12}>
-      <Link to="/register">
-        <Button variant="ghost" size="sm">
-          {t("nav.register")}
-        </Button>
-      </Link>
-      <Link to="/login">
-        <Button size="sm">{t("nav.login")}</Button>
-      </Link>
+      <Button size="sm" onClick={() => login()}>
+        {t("nav.login")}
+      </Button>
     </Group>
   );
 }
 
 function TopBar(): React.JSX.Element {
-  const { user, logout } = useAuth();
-  const currentUserId = useCurrentUserId();
-  const { data: userDetails } = useGetUserDetails(currentUserId || undefined);
-  const userSlug = userDetails?.slug || currentUserId?.toString() || "";
+  const { isAuthenticated, logout } = useAuth();
+  const { data: currentUser } = useCurrentUser();
+  const currentUserId = currentUser?.id;
+  const userSlug = currentUser?.slug || currentUserId?.toString() || "";
   const [opened, { toggle, close }] = useDisclosure();
   const { t } = useTranslation();
 
@@ -138,12 +127,12 @@ function TopBar(): React.JSX.Element {
               </Link>
             </Box>
 
-            {user && (
+            {isAuthenticated && currentUserId && (
               <>
                 <Box component="li" className={styles.navItem}>
                   <Link
                     to={"/game-list/$id/$slug"}
-                    params={{ id: currentUserId?.toString() || "", slug: userSlug }}
+                    params={{ id: currentUserId.toString(), slug: userSlug }}
                     className={styles.navLink}
                   >
                     {t("nav.gameList")}
@@ -152,7 +141,7 @@ function TopBar(): React.JSX.Element {
                 <Box component="li" className={styles.navItem}>
                   <Link
                     to={"/profile/$id/$slug/collections"}
-                    params={{ id: currentUserId?.toString() || "", slug: userSlug }}
+                    params={{ id: currentUserId.toString(), slug: userSlug }}
                     className={styles.navLink}
                   >
                     {t("nav.collections")}
@@ -167,7 +156,7 @@ function TopBar(): React.JSX.Element {
           <SearchBar />
         </Box>
 
-        <Group gap={16}>{user ? <LoggedInView logout={logout} /> : <NotLoggedInView />}</Group>
+        <Group gap={16}>{isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}</Group>
       </Group>
 
       <Drawer
@@ -198,12 +187,12 @@ function TopBar(): React.JSX.Element {
             </Link>
           </Box>
 
-          {user && (
+          {isAuthenticated && currentUserId && (
             <>
               <Box component="li">
                 <Link
                   to={"/game-list/$id/$slug"}
-                  params={{ id: currentUserId?.toString() || "", slug: userSlug }}
+                  params={{ id: currentUserId.toString(), slug: userSlug }}
                   className={styles.mobileNavLink}
                   onClick={close}
                 >
@@ -213,7 +202,7 @@ function TopBar(): React.JSX.Element {
               <Box component="li">
                 <Link
                   to={"/profile/$id/$slug/collections"}
-                  params={{ id: currentUserId?.toString() || "", slug: userSlug }}
+                  params={{ id: currentUserId.toString(), slug: userSlug }}
                   className={styles.mobileNavLink}
                   onClick={close}
                 >

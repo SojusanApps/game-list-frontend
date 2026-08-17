@@ -1,12 +1,4 @@
 {
-  "emailInvalid": "Please enter a valid email address",
-  "emailRequired": "Email is required",
-  "passwordRequired": "Password is required",
-  "passwordMin": "Password must be more than 8 characters",
-  "passwordMax": "Password must be less than 32 characters",
-  "usernameRequired": "Username is required",
-  "confirmPasswordRequired": "Confirm Password is required",
-  "passwordsNoMatch": "The passwords don't match",
   "scoreMin": "The minimum score is 1",
   "scoreMax": "The maximum score is 10",
   "noteMax": "Maximum 200 characters",
@@ -16,12 +8,5 @@
   "selectAtLeastOne": "Select at least one collection",
   "descriptionMax": "Description must be 500 characters or less",
   "steamProfileIdRequired": "Steam Profile ID is required",
-  "titlesRequired": "At least one game title is required",
-  "usernameFormat": "Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.",
-  "usernameSameAsCurrent": "The new username must be different from the current one.",
-  "currentPasswordRequired": "Current password is required",
-  "newPasswordRequired": "New password is required",
-  "newPasswordMin": "New password must be more than 8 characters",
-  "newPasswordMax": "New password must be less than 32 characters",
-  "newPasswordConfirmRequired": "Confirm new password is required"
+  "titlesRequired": "At least one game title is required"
 }

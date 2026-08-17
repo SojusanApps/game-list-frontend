@@ -12,9 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReleaseCalendarRouteImport } from './routes/release-calendar'
-import { Route as RegisterRouteImport } from './routes/register'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -47,19 +45,9 @@ const ReleaseCalendarRoute = ReleaseCalendarRouteImport.update({
   path: '/release-calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImportRoute = ImportRouteImport.update({
@@ -154,9 +142,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/import': typeof ImportRoute
-  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
-  '/register': typeof RegisterRoute
   '/release-calendar': typeof ReleaseCalendarRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -178,9 +164,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/import': typeof ImportRoute
-  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
-  '/register': typeof RegisterRoute
   '/release-calendar': typeof ReleaseCalendarRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -203,9 +187,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/import': typeof ImportRoute
-  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
-  '/register': typeof RegisterRoute
   '/release-calendar': typeof ReleaseCalendarRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -229,9 +211,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/home'
     | '/import'
-    | '/login'
     | '/notifications'
-    | '/register'
     | '/release-calendar'
     | '/search'
     | '/settings'
@@ -253,9 +233,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/home'
     | '/import'
-    | '/login'
     | '/notifications'
-    | '/register'
     | '/release-calendar'
     | '/search'
     | '/settings'
@@ -277,9 +255,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/home'
     | '/import'
-    | '/login'
     | '/notifications'
-    | '/register'
     | '/release-calendar'
     | '/search'
     | '/settings'
@@ -302,9 +278,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   HomeRoute: typeof HomeRoute
   ImportRoute: typeof ImportRoute
-  LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
-  RegisterRoute: typeof RegisterRoute
   ReleaseCalendarRoute: typeof ReleaseCalendarRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
@@ -344,25 +318,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReleaseCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/import': {
@@ -486,9 +446,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   HomeRoute: HomeRoute,
   ImportRoute: ImportRoute,
-  LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
-  RegisterRoute: RegisterRoute,
   ReleaseCalendarRoute: ReleaseCalendarRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,

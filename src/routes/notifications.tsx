@@ -1,13 +1,13 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { NotificationsPage } from "@/features/notifications";
+import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
 
 export const Route = createFileRoute("/notifications")({
   beforeLoad: ({ context, location }) => {
-    if (!context.auth?.user?.email) {
-      throw redirect({
-        to: "/login",
-        search: { redirect: location.pathname },
-      });
+    const outcome = resolveAuthGuardOutcome({ isAuthenticated: context.auth.isAuthenticated }, "authenticated");
+    if (outcome === "require-login") {
+      context.auth.login(location.pathname);
+      return new Promise<never>(() => {});
     }
   },
   component: NotificationsPage,

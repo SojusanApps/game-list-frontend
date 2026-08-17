@@ -31,27 +31,11 @@
       "changeButton": "Change avatar on Gravatar",
       "description": "Your avatar is powered by Gravatar. Click the button below to change it."
     },
-    "username": {
-      "sectionTitle": "Username",
-      "usernameLabel": "Username",
-      "usernamePlaceholder": "Enter a new username",
-      "saveButton": "Save username",
-      "helperText": "You can change your username again anytime — there's no cooldown.",
-      "successTitle": "Username updated",
-      "successMessage": "Your username has been changed."
-    },
-    "password": {
-      "sectionTitle": "Password",
-      "currentPasswordLabel": "Current password",
-      "currentPasswordPlaceholder": "Enter your current password",
-      "newPasswordLabel": "New password",
-      "newPasswordPlaceholder": "Enter a new password",
-      "confirmPasswordLabel": "Confirm new password",
-      "confirmPasswordPlaceholder": "Re-enter your new password",
-      "saveButton": "Save password",
-      "helperText": "Other signed-in devices stay signed in — this only affects future sign-ins.",
-      "successTitle": "Password updated",
-      "successMessage": "Your password has been changed."
+    "credentials": {
+      "sectionTitle": "Account credentials",
+      "description": "Your username and password are managed by our login provider, not here.",
+      "changeUsernameButton": "Change username",
+      "changePasswordButton": "Change password"
     }
   },
   "info": {

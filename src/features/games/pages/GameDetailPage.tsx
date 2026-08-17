@@ -134,7 +134,7 @@ export default function GameDetailPage(): React.JSX.Element {
   const [selectedScreenshot, setSelectedScreenshot] = React.useState<string | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = React.useState(false);
   const [isListModalOpen, setIsListModalOpen] = React.useState(false);
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const currentUserId = useCurrentUserId();
 
   const { data: userReviewData } = useGetGameReviewsList(
@@ -175,7 +175,7 @@ export default function GameDetailPage(): React.JSX.Element {
                   />
                 </Box>
 
-                {user && currentUserId && (
+                {isAuthenticated && currentUserId && (
                   <UserGameActions
                     gameId={gameId}
                     userId={currentUserId}
@@ -201,7 +201,7 @@ export default function GameDetailPage(): React.JSX.Element {
                     >
                       {gameDetails?.title}
                     </Title>
-                    {user && currentUserId && <GameFollowButton gameId={gameId} userId={currentUserId} />}
+                    {isAuthenticated && currentUserId && <GameFollowButton gameId={gameId} userId={currentUserId} />}
                   </Group>
                 </Group>
 
@@ -222,7 +222,7 @@ export default function GameDetailPage(): React.JSX.Element {
                       gameDetails={gameDetails}
                       gameReviewItems={gameReviewItems}
                       isGameReviewsLoading={isGameReviewsLoading}
-                      isLoggedIn={!!user}
+                      isLoggedIn={isAuthenticated}
                       userReview={userReview}
                       gameSlug={slug}
                     />
