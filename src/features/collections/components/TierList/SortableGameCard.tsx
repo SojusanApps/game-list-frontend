@@ -82,7 +82,7 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
                 opacity: 0.9;
                 pointer-events: none;
               `;
-              container.appendChild(preview);
+              container.append(preview);
             },
             nativeSetDragImage,
             getOffset: pointerOutsideOfPreview({

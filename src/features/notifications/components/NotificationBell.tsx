@@ -119,7 +119,7 @@ export default function NotificationBell(): React.JSX.Element {
               const actor = notification.actor;
               const target = notification.target;
 
-              let displayEntity = undefined;
+              let displayEntity;
               if (actor?.type === "user") {
                 displayEntity = actor;
               } else if (target?.type === "user") {

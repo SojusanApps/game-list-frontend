@@ -89,7 +89,7 @@ export function selectNextPair(items: RankedItem[], history: DuelResult[]): [Ran
   }
 
   const recentPairs = buildRecentPairs(history);
-  const sorted = [...items].sort((a, b) => a.rating - b.rating);
+  const sorted = items.toSorted((a, b) => a.rating - b.rating);
 
   const avgMatches = items.reduce((sum, it) => sum + it.matchesPlayed, 0) / items.length;
   const maxRating = Math.max(...items.map(it => it.rating));

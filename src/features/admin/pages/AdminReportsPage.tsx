@@ -228,8 +228,8 @@ export default function AdminReportsPage(): React.JSX.Element {
   const { t: tModeration } = useTranslation("moderation");
   const [page, setPage] = React.useState(1);
   const [status, setStatus] = React.useState<ReportStatusEnum | "all">(ReportStatusEnum.PENDING);
-  const [targetType, setTargetType] = React.useState<TargetTypeEnum | undefined>(undefined);
-  const [reportedUser, setReportedUser] = React.useState<number | undefined>(undefined);
+  const [targetType, setTargetType] = React.useState<TargetTypeEnum | undefined>();
+  const [reportedUser, setReportedUser] = React.useState<number | undefined>();
 
   const filterState: ReportFilterState = { status, targetType, reportedUser, page };
   const query = buildReportFilters(filterState);

@@ -82,7 +82,7 @@ export const useGetFriendshipsInfiniteQuery = (query?: FriendshipFriendshipsList
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
     enabled: !!query?.user,
   });

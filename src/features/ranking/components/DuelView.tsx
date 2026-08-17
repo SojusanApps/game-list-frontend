@@ -23,24 +23,28 @@ export const DuelView = React.memo(function ({ duel, onChoice, onSkip }: Readonl
 
       switch (e.key) {
         case "ArrowLeft":
-        case "1":
+        case "1": {
           e.preventDefault();
           onChoice("A");
           break;
+        }
         case "ArrowRight":
-        case "2":
+        case "2": {
           e.preventDefault();
           onChoice("B");
           break;
+        }
         case "Enter":
-        case "3":
+        case "3": {
           e.preventDefault();
           onChoice("tie");
           break;
-        case "s":
+        }
+        case "s": {
           e.preventDefault();
           onSkip();
           break;
+        }
       }
     };
 

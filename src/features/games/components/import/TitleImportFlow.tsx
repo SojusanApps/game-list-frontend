@@ -49,11 +49,11 @@ function withAutoUnmatched(
   offset: number,
 ): Record<number, MatchDecision> {
   const next = { ...prev };
-  results.forEach((result, i) => {
+  for (const [i, result] of results.entries()) {
     if (result.matches.length === 0 && !next[offset + i]) {
       next[offset + i] = { kind: "no-matches" };
     }
-  });
+  }
   return next;
 }
 

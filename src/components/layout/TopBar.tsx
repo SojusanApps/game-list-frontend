@@ -170,7 +170,7 @@ function TopBar(): React.JSX.Element {
           </Text>
         }
         hiddenFrom="lg"
-        zIndex={1000000}
+        zIndex={1_000_000}
       >
         <Stack gap="sm" mt="md" component="ul" style={{ listStyle: "none", padding: 0 }}>
           <Box component="li" mb="md">

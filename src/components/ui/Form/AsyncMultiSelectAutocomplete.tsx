@@ -91,10 +91,8 @@ export default function AsyncMultiSelectAutocomplete<T>({
     const viewport = dropdownRef.current;
     if (!viewport) return;
     const { scrollTop, scrollHeight, clientHeight } = viewport;
-    if (scrollHeight - scrollTop - clientHeight < 50) {
-      if (hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
+    if (scrollHeight - scrollTop - clientHeight < 50 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 

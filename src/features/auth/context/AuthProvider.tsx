@@ -12,11 +12,11 @@ export function useAuth(): AuthContextType {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 
   const login = useCallback((redirectTo?: string) => {
-    keycloak.login({ redirectUri: `${window.location.origin}${redirectTo ?? window.location.pathname}` });
+    keycloak.login({ redirectUri: `${globalThis.location.origin}${redirectTo ?? globalThis.location.pathname}` });
   }, []);
 
   const logout = useCallback(() => {
-    keycloak.logout({ redirectUri: window.location.origin });
+    keycloak.logout({ redirectUri: globalThis.location.origin });
   }, []);
 
   return useMemo(() => ({ isAuthenticated, login, logout }), [isAuthenticated, login, logout]);

@@ -29,6 +29,53 @@ import {
 } from "@mantine/core";
 import { Button } from "@/components/ui/Button";
 
+function getLevelColor(level?: string) {
+  switch (level?.toLowerCase()) {
+    case "info":
+    case "informacja": {
+      return "blue";
+    }
+    case "warning":
+    case "ostrzeżenie": {
+      return "yellow";
+    }
+    case "success":
+    case "sukces": {
+      return "green";
+    }
+    case "error":
+    case "błąd": {
+      return "red";
+    }
+    default: {
+      return "gray";
+    }
+  }
+}
+
+function getCategoryColor(category?: string) {
+  switch (category?.toLowerCase()) {
+    case "system": {
+      return "gray";
+    }
+    case "friendship":
+    case "znajomość": {
+      return "violet";
+    }
+    case "game release":
+    case "premiera gry": {
+      return "orange";
+    }
+    case "translation":
+    case "tłumaczenie": {
+      return "grape";
+    }
+    default: {
+      return "blue";
+    }
+  }
+}
+
 export default function NotificationsPage(): React.JSX.Element {
   const { t } = useTranslation("notifications");
   const [page, setPage] = React.useState(1);
@@ -94,43 +141,6 @@ export default function NotificationsPage(): React.JSX.Element {
 
   const hasUnread = notifications.some((n: Notification) => n.unread);
   const hasRead = notifications.some((n: Notification) => !n.unread);
-
-  const getLevelColor = (level?: string) => {
-    switch (level?.toLowerCase()) {
-      case "info":
-      case "informacja":
-        return "blue";
-      case "warning":
-      case "ostrzeżenie":
-        return "yellow";
-      case "success":
-      case "sukces":
-        return "green";
-      case "error":
-      case "błąd":
-        return "red";
-      default:
-        return "gray";
-    }
-  };
-
-  const getCategoryColor = (category?: string) => {
-    switch (category?.toLowerCase()) {
-      case "system":
-        return "gray";
-      case "friendship":
-      case "znajomość":
-        return "violet";
-      case "game release":
-      case "premiera gry":
-        return "orange";
-      case "translation":
-      case "tłumaczenie":
-        return "grape";
-      default:
-        return "blue";
-    }
-  };
 
   const formatText = (text?: string) => {
     if (!text) {
@@ -258,7 +268,7 @@ export default function NotificationsPage(): React.JSX.Element {
                 const actor = notification.actor;
                 const target = notification.target;
 
-                let displayEntity = undefined;
+                let displayEntity;
                 if (actor?.type === "user") {
                   displayEntity = actor;
                 } else if (target?.type === "user") {

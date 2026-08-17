@@ -12,6 +12,8 @@ const ORDERING_OPTIONS = [
 ] as const;
 
 const searchSchema = z.object({
+  // Zod's `.catch()` fallback-value method, not a Promise; there is no actual await to hoist here.
+  // oxlint-disable-next-line unicorn/prefer-top-level-await
   category: z.enum(["games", "companies", "users"]).optional().catch("games"), // NOSONAR
   q: z.string().optional(),
   release_date_after: z.string().optional(),

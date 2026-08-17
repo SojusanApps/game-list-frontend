@@ -98,7 +98,7 @@ export function buildRoundPairings(
   seenPairs: Set<string>,
   byeHistory: number[] = [],
 ): Array<[number, number]> {
-  let sorted = [...items].sort((a, b) => b.rating - a.rating);
+  let sorted = items.toSorted((a, b) => b.rating - a.rating);
 
   if (sorted.length % 2 === 1) {
     const byeIdx = selectByeIndex(sorted, byeHistory);

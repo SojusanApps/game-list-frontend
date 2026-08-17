@@ -16,14 +16,18 @@ const fetchSearchResults = async ({
   const query = { page: pageParam, ...filters };
 
   switch (category) {
-    case "games":
+    case "games": {
       return await getGamesList(query);
-    case "companies":
+    }
+    case "companies": {
       return await getCompaniesList(query);
-    case "users":
+    }
+    case "users": {
       return await getUserLists(query);
-    default:
+    }
+    default: {
       throw new Error("Invalid search category");
+    }
   }
 };
 

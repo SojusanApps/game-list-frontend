@@ -40,7 +40,7 @@ interface RankingRowProps {
 }
 
 function resolvePositionInput(value: number | string): number {
-  return typeof value === "number" ? value : Number.parseInt(String(value), 10);
+  return typeof value === "number" ? value : Math.trunc(Number(String(value)));
 }
 
 function isValidNewPosition(pos: number, rank: number, total: number): boolean {

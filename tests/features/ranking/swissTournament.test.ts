@@ -118,7 +118,7 @@ describe("buildRoundPairings", () => {
     const pairings = buildRoundPairings(items, new Set());
     expect(pairings).toHaveLength(2);
     const pairedIds = pairings.flat();
-    expect(pairedIds.sort()).toEqual([1, 2, 3, 4]);
+    expect(pairedIds.toSorted()).toEqual([1, 2, 3, 4]);
   });
 
   it("leaves one item unpaired when n is odd", () => {
@@ -156,7 +156,7 @@ describe("buildRoundPairings", () => {
     const pairings = buildRoundPairings(items, seenPairs);
     // Must return the only available pair even though seen
     expect(pairings).toHaveLength(1);
-    expect(pairings[0].sort()).toEqual([1, 2]);
+    expect(pairings[0].toSorted()).toEqual([1, 2]);
   });
 
   it("each item appears in at most one pairing per round", () => {
@@ -194,8 +194,8 @@ describe("buildRoundPairings", () => {
     const pairings = buildRoundPairings(items, new Set());
     // Items sorted: 1 (1200), 2 (1100), 3 (900), 4 (800)
     // Expected: [1,2] and [3,4]
-    const firstPair = pairings[0].slice().sort((a, b) => a - b);
-    const secondPair = pairings[1].slice().sort((a, b) => a - b);
+    const firstPair = pairings[0].toSorted((a, b) => a - b);
+    const secondPair = pairings[1].toSorted((a, b) => a - b);
     expect(firstPair).toEqual([1, 2]);
     expect(secondPair).toEqual([3, 4]);
   });

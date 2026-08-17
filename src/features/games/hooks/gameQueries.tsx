@@ -60,7 +60,7 @@ export const useGetPlatformsInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -74,7 +74,7 @@ export const useGetGameEnginesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -88,7 +88,7 @@ export const useGetGameModesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -102,7 +102,7 @@ export const useGetGameStatusesInfiniteQuery = (status?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -116,7 +116,7 @@ export const useGetGameTypesInfiniteQuery = (type?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -130,7 +130,7 @@ export const useGetPlayerPerspectivesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -145,7 +145,7 @@ export const useGetGenresInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -159,7 +159,7 @@ export const useGetGameMediasInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };
@@ -195,7 +195,7 @@ export const useGetGamesInfinite = (
       if (lastPage?.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
     ...options,
   });
@@ -327,7 +327,7 @@ export const useGetCompaniesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return undefined;
+      return;
     },
   });
 };

@@ -45,7 +45,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
 
   // Sort by order initially
   const sortedInitialItems = React.useMemo(() => {
-    return [...allItems].sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
+    return allItems.toSorted((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
   }, [allItems]);
 
   const [items, setItems] = React.useState<CollectionItem[]>(sortedInitialItems);
@@ -99,7 +99,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
         return;
       }
 
-      const itemId = Number.parseInt(draggedId, 10);
+      const itemId = Math.trunc(Number(draggedId));
       const currentIndex = items.findIndex(i => i.id === itemId);
       if (currentIndex === -1 || currentIndex === targetIndex) {
         return;
@@ -347,7 +347,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
       try {
         const queryResult = await fetchPagesIfNeeded(newPosition);
         const currentAllItems = queryResult?.pages.flatMap(page => page.results) || [];
-        const sortedItems = [...currentAllItems].sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
+        const sortedItems = currentAllItems.toSorted((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
 
         const validation = validateReorder(sortedItems, id, newPosition);
         if (!validation) {

@@ -59,9 +59,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
             c="var(--color-text-400)"
             style={{ whiteSpace: "nowrap", flexShrink: 0, opacity: 0.7 }}
           >
-            {new Date(
-              latestGameListUpdate?.last_modified_at ? latestGameListUpdate.last_modified_at : "",
-            ).toLocaleDateString()}
+            {new Date(latestGameListUpdate?.last_modified_at || "").toLocaleDateString()}
           </Text>
         </Group>
 

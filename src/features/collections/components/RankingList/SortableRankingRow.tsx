@@ -84,7 +84,7 @@ export const SortableRankingRow = React.memo(function SortableRankingRowInner({
                 opacity: 0.95;
                 pointer-events: none;
               `;
-              container.appendChild(preview);
+              container.append(preview);
             },
             nativeSetDragImage,
             getOffset: preserveOffsetOnSource({

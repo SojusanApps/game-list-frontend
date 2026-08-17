@@ -21,7 +21,7 @@ import { useCurrentUserId } from "@/features/auth";
 import { BlankEnum, TierEnum } from "@/client";
 
 const fetchCollections = async ({ pageParam = 1, queryKey }: { pageParam?: number; queryKey: readonly unknown[] }) => {
-  const [, , userId, filters, useMember] = queryKey as [string, string, number, object, boolean];
+  const [, _kind, userId, filters, useMember] = queryKey as [string, string, number, object, boolean];
   const query = useMember
     ? { page: pageParam, member: String(userId), ...filters }
     : { page: pageParam, user: String(userId), ...filters };
@@ -91,7 +91,7 @@ const fetchCollectionItems = async ({
   pageParam?: number;
   queryKey: readonly unknown[];
 }) => {
-  const [, , collectionId, filters] = queryKey as [string, string, number, object];
+  const [, _kind, collectionId, filters] = queryKey as [string, string, number, object];
   const query = {
     page: pageParam,
     collection: String(collectionId),

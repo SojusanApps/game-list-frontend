@@ -24,7 +24,7 @@ const fetchGameListItems = async ({
   pageParam?: number;
   queryKey: readonly unknown[];
 }) => {
-  const [, , userId, status, filters] = queryKey as [
+  const [, _kind, userId, status, filters] = queryKey as [
     string,
     string,
     number,

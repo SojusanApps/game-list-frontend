@@ -39,18 +39,21 @@ export function updateEloRatings(
   let scoreB: number;
 
   switch (choice) {
-    case "A":
+    case "A": {
       scoreA = 1;
       scoreB = 0;
       break;
-    case "B":
+    }
+    case "B": {
       scoreA = 0;
       scoreB = 1;
       break;
-    case "tie":
+    }
+    case "tie": {
       scoreA = 0.5;
       scoreB = 0.5;
       break;
+    }
   }
 
   return {

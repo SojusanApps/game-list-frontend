@@ -23,8 +23,8 @@ clientSetup();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1_000 * 60 * 5, // 5 minutes
-      gcTime: 1_000 * 60 * 10, // 10 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
       retry: (failureCount, error) => {
         // Don't retry if it's a 4xx or 5xx error
         if (error instanceof Response || error instanceof ApiError) {
@@ -36,7 +36,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-const rootElement = document.getElementById("root") as HTMLElement;
+const rootElement = document.querySelector("#root") as HTMLElement;
 if (!rootElement) {
   throw new Error("Failed to find root element");
 }

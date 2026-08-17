@@ -60,6 +60,9 @@ export function GameReviewModal({
       return;
     }
     try {
+      // Both branches are side-effecting calls with no value to assign; a ternary statement
+      // here would trip no-unused-expressions instead.
+      // oxlint-disable-next-line unicorn/prefer-ternary
       if (isEditing) {
         await updateReview({ id: existingReviewId, body: { review: values.review } });
       } else {

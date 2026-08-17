@@ -20,7 +20,7 @@ export function initKeycloak(): Promise<void> {
   initPromise ??= keycloak
     .init({
       onLoad: "check-sso",
-      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+      silentCheckSsoRedirectUri: `${globalThis.location.origin}/silent-check-sso.html`,
       pkceMethod: "S256",
     })
     .then(authenticated => {

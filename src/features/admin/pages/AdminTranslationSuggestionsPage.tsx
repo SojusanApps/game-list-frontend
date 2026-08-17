@@ -66,8 +66,8 @@ export default function AdminTranslationSuggestionsPage(): React.JSX.Element {
   const [status, setStatus] = React.useState<TranslationSuggestionStatusEnum | "all">(
     TranslationSuggestionStatusEnum.PENDING,
   );
-  const [game, setGame] = React.useState<number | undefined>(undefined);
-  const [submittedBy, setSubmittedBy] = React.useState<number | undefined>(undefined);
+  const [game, setGame] = React.useState<number | undefined>();
+  const [submittedBy, setSubmittedBy] = React.useState<number | undefined>();
 
   const filterState: SuggestionFilterState = { status, game, submittedBy, page };
   const query = buildSuggestionFilters(filterState);

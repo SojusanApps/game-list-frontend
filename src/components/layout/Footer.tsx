@@ -18,7 +18,7 @@ const Footer = (): React.JSX.Element => {
     const lang = value as Language;
     setLanguage(lang);
     void i18n.changeLanguage(lang);
-    queryClient.invalidateQueries().catch(() => undefined);
+    queryClient.invalidateQueries().catch(() => {});
   };
 
   return (

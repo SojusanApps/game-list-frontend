@@ -94,8 +94,9 @@ function DisplaySearchResults({
           />
         );
       }
-      default:
+      default: {
         return null;
+      }
     }
   };
 
@@ -115,6 +116,12 @@ function DisplaySearchResults({
   );
 }
 
+function getQueryKey(cat: SearchCategory | null) {
+  if (cat === "users") return "username";
+  if (cat === "companies") return "name";
+  return "title";
+}
+
 export default function SearchEnginePage(): React.JSX.Element {
   const { t } = useTranslation("games");
   const searchParams = Route.useSearch();
@@ -132,12 +139,6 @@ export default function SearchEnginePage(): React.JSX.Element {
   }
 
   const { q, ...otherFilters } = searchParams;
-
-  const getQueryKey = (cat: SearchCategory | null) => {
-    if (cat === "users") return "username";
-    if (cat === "companies") return "name";
-    return "title";
-  };
 
   const queryKey = getQueryKey(selectedCategory);
 
@@ -181,13 +182,13 @@ export default function SearchEnginePage(): React.JSX.Element {
   };
 
   const prepareFiltersForRequest = (data: SearchFilterValidatorsType) => {
-    let filterData: Record<string, unknown> = {};
+    const filterData: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(data)) {
       if (value === "" || value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
         continue;
       }
-      filterData = { ...filterData, [key]: value instanceof Date ? value.toISOString().split("T")[0] : value };
+      Object.assign(filterData, { [key]: value instanceof Date ? value.toISOString().split("T")[0] : value });
     }
 
     navigate({

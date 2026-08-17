@@ -11,6 +11,8 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import styles from "./HomePage.module.css";
 
+const autoplayPlugin = () => Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true });
+
 export default function HomePage(): React.JSX.Element {
   const { t } = useTranslation("games");
   const { data: highestRatedGames, isLoading: isHighestRatedLoading } = useGetGamesList(
@@ -25,8 +27,6 @@ export default function HomePage(): React.JSX.Element {
     { ordering: "-created_at" },
     { staleTime: 1000 * 60 * 60 * 24, gcTime: 1000 * 60 * 60 * 24 },
   );
-
-  const autoplayPlugin = () => Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true });
 
   const renderGameCarousel = (games: GameSimpleList[] | undefined, isLoading: boolean) => {
     if (isLoading) {

@@ -75,16 +75,21 @@ export function VirtualGridList<T>({
     if (!breakpoint || viewportWidth === 0) return defaultCols;
 
     switch (defaultCols) {
-      case 8:
+      case 8: {
         return breakpoint.maxCols8;
-      case 7:
+      }
+      case 7: {
         return breakpoint.maxCols7;
-      case 5:
+      }
+      case 5: {
         return breakpoint.maxCols5;
-      case 4:
+      }
+      case 4: {
         return breakpoint.maxCols4;
-      default:
+      }
+      default: {
         return defaultCols;
+      }
     }
   };
   const columnCount = getCols();
@@ -124,7 +129,7 @@ export function VirtualGridList<T>({
   const virtualRows = rowVirtualizer.getVirtualItems();
 
   useEffect(() => {
-    if (!virtualRows.length || !hasNextPage || isFetchingNextPage || !fetchNextPage) return;
+    if (virtualRows.length === 0 || !hasNextPage || isFetchingNextPage || !fetchNextPage) return;
 
     const lastVirtualRow = virtualRows.at(-1);
     if (lastVirtualRow && lastVirtualRow.index >= rowCount - 2) {

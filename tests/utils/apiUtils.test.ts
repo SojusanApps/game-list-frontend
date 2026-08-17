@@ -2,17 +2,18 @@ import { describe, expect, it } from "vitest";
 import { ApiError, handleApiError } from "@/utils/apiUtils";
 
 function jsonResponse(status: number, body: unknown): Response {
-  return new Response(JSON.stringify(body), { status });
+  return Response.json(body, { status });
 }
 
 async function captureApiError(response: Response | undefined, defaultMessage: string): Promise<ApiError> {
-  try {
-    await handleApiError(response, defaultMessage);
-  } catch (error) {
-    expect(error).toBeInstanceOf(ApiError);
-    return error as ApiError;
-  }
-  throw new Error("handleApiError did not throw");
+  const result = await handleApiError(response, defaultMessage).then(
+    () => {
+      throw new Error("handleApiError did not throw");
+    },
+    (error: unknown) => error,
+  );
+  expect(result).toBeInstanceOf(ApiError);
+  return result as ApiError;
 }
 
 describe("handleApiError", () => {

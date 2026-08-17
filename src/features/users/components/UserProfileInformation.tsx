@@ -40,7 +40,7 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
             {t("info.joined")}
           </Text>
           <Text c="var(--color-text-900)">
-            {new Date(userDetails?.date_joined ? userDetails.date_joined : "").toLocaleDateString()}
+            {new Date(userDetails?.date_joined || "").toLocaleDateString()}
           </Text>
         </Group>
         <Group justify="space-between" fz="sm">

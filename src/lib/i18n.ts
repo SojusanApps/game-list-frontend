@@ -1,3 +1,6 @@
+// i18n is configured via .use().init() below, not merely re-exported;
+// `export { default } from "i18next"` would skip that setup entirely.
+// oxlint-disable-next-line unicorn/prefer-export-from
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { getStoredLanguage } from "@/utils/languageUtils";

@@ -196,27 +196,23 @@ export default function GameListPage(): React.JSX.Element {
 
   const renderContent = () => {
     if (isLoading && !isFetchingNextPage) {
-      if (viewMode === "grid") {
-        return (
-          <GridList>
-            {Array.from({ length: 21 }).map((_, i) => {
-              const skeletonKey = `game-skeleton-${i}`;
-              return (
-                <Skeleton key={skeletonKey} style={{ aspectRatio: "264/374", width: "100%", borderRadius: "12px" }} />
-              );
-            })}
-          </GridList>
-        );
-      } else {
-        return (
-          <Stack gap={12}>
-            {Array.from({ length: 10 }).map((_, i) => {
-              const skeletonKey = `list-skeleton-${i}`;
-              return <Skeleton key={skeletonKey} height={90} width="100%" radius="12px" />;
-            })}
-          </Stack>
-        );
-      }
+      return viewMode === "grid" ? (
+        <GridList>
+          {Array.from({ length: 21 }).map((_, i) => {
+            const skeletonKey = `game-skeleton-${i}`;
+            return (
+              <Skeleton key={skeletonKey} style={{ aspectRatio: "264/374", width: "100%", borderRadius: "12px" }} />
+            );
+          })}
+        </GridList>
+      ) : (
+        <Stack gap={12}>
+          {Array.from({ length: 10 }).map((_, i) => {
+            const skeletonKey = `list-skeleton-${i}`;
+            return <Skeleton key={skeletonKey} height={90} width="100%" radius="12px" />;
+          })}
+        </Stack>
+      );
     }
 
     if (viewMode === "grid") {

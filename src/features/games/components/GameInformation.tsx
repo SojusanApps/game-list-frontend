@@ -47,7 +47,7 @@ function GameTags<T>({
       </Text>
       <Group gap={8} wrap="wrap">
         {items && items.length > 0 ? (
-          items.map(renderItem)
+          items.map(item => renderItem(item))
         ) : (
           <Text size="sm" c="var(--color-text-900)">
             ---

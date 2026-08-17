@@ -74,7 +74,7 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
   const virtualItems = virtualizer.getVirtualItems();
 
   useEffect(() => {
-    if (!virtualItems.length || !hasNextPage || isFetchingNextPage || !fetchNextPage) {
+    if (virtualItems.length === 0 || !hasNextPage || isFetchingNextPage || !fetchNextPage) {
       return;
     }
 

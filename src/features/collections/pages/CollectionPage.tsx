@@ -107,12 +107,13 @@ export default function CollectionPage(): React.JSX.Element {
     }
 
     switch (collection.type) {
-      case TypeEnum.TIE:
+      case TypeEnum.TIE: {
         return <TierListView collectionId={collectionId} isOwner={canEdit} onRemove={handleDeleteItem} />;
-      case TypeEnum.RNK:
+      }
+      case TypeEnum.RNK: {
         return <RankingListView collectionId={collectionId} isOwner={canEdit} onRemove={handleDeleteItem} />;
-      case TypeEnum.NOR:
-      default:
+      }
+      default: {
         return isItemsLoading && !isFetchingNextPage ? (
           <GridList columnCount={8}>
             {skeletonIds.map(skeletonId => (
@@ -237,6 +238,7 @@ export default function CollectionPage(): React.JSX.Element {
             />
           </>
         );
+      }
     }
   };
 
