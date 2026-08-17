@@ -30,39 +30,9 @@ import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
 import { Route as SearchRouteImport } from "./routes/search";
 import { Route as SettingsRouteImport } from "./routes/settings";
 
-const SettingsRoute = SettingsRouteImport.update({
-  id: "/settings",
-  path: "/settings",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const SearchRoute = SearchRouteImport.update({
-  id: "/search",
-  path: "/search",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const ReleaseCalendarRoute = ReleaseCalendarRouteImport.update({
-  id: "/release-calendar",
-  path: "/release-calendar",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: "/notifications",
-  path: "/notifications",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const ImportRoute = ImportRouteImport.update({
-  id: "/import",
-  path: "/import",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const HomeRoute = HomeRouteImport.update({
-  id: "/home",
-  path: "/home",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const AdminRoute = AdminRouteImport.update({
-  id: "/admin",
-  path: "/admin",
+const IndexRoute = IndexRouteImport.update({
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
 const SplatRoute = SplatRouteImport.update({
@@ -70,14 +40,39 @@ const SplatRoute = SplatRouteImport.update({
   path: "/$",
   getParentRoute: () => rootRouteImport,
 } as any);
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+const AdminRoute = AdminRouteImport.update({
+  id: "/admin",
+  path: "/admin",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminTranslationSuggestionsRoute = AdminTranslationSuggestionsRouteImport.update({
-  id: "/admin_/translation-suggestions",
-  path: "/admin/translation-suggestions",
+const HomeRoute = HomeRouteImport.update({
+  id: "/home",
+  path: "/home",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ImportRoute = ImportRouteImport.update({
+  id: "/import",
+  path: "/import",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: "/notifications",
+  path: "/notifications",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ReleaseCalendarRoute = ReleaseCalendarRouteImport.update({
+  id: "/release-calendar",
+  path: "/release-calendar",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const SearchRoute = SearchRouteImport.update({
+  id: "/search",
+  path: "/search",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const SettingsRoute = SettingsRouteImport.update({
+  id: "/settings",
+  path: "/settings",
   getParentRoute: () => rootRouteImport,
 } as any);
 const AdminReportsRoute = AdminReportsRouteImport.update({
@@ -85,24 +80,9 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: "/admin/reports",
   getParentRoute: () => rootRouteImport,
 } as any);
-const ProfileIdSlugRoute = ProfileIdSlugRouteImport.update({
-  id: "/profile/$id/$slug",
-  path: "/profile/$id/$slug",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const GameIdSlugRoute = GameIdSlugRouteImport.update({
-  id: "/game/$id/$slug",
-  path: "/game/$id/$slug",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const GameListIdSlugRoute = GameListIdSlugRouteImport.update({
-  id: "/game-list/$id/$slug",
-  path: "/game-list/$id/$slug",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const CompanyIdSlugRoute = CompanyIdSlugRouteImport.update({
-  id: "/company/$id/$slug",
-  path: "/company/$id/$slug",
+const AdminTranslationSuggestionsRoute = AdminTranslationSuggestionsRouteImport.update({
+  id: "/admin_/translation-suggestions",
+  path: "/admin/translation-suggestions",
   getParentRoute: () => rootRouteImport,
 } as any);
 const CollectionIdSlugRoute = CollectionIdSlugRouteImport.update({
@@ -110,9 +90,29 @@ const CollectionIdSlugRoute = CollectionIdSlugRouteImport.update({
   path: "/collection/$id/$slug",
   getParentRoute: () => rootRouteImport,
 } as any);
-const ProfileIdSlugFriendsRoute = ProfileIdSlugFriendsRouteImport.update({
-  id: "/profile_/$id/$slug/friends",
-  path: "/profile/$id/$slug/friends",
+const CompanyIdSlugRoute = CompanyIdSlugRouteImport.update({
+  id: "/company/$id/$slug",
+  path: "/company/$id/$slug",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const GameListIdSlugRoute = GameListIdSlugRouteImport.update({
+  id: "/game-list/$id/$slug",
+  path: "/game-list/$id/$slug",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const GameIdSlugRoute = GameIdSlugRouteImport.update({
+  id: "/game/$id/$slug",
+  path: "/game/$id/$slug",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ProfileIdSlugRoute = ProfileIdSlugRouteImport.update({
+  id: "/profile/$id/$slug",
+  path: "/profile/$id/$slug",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const GameIdSlugReviewsRoute = GameIdSlugReviewsRouteImport.update({
+  id: "/game_/$id/$slug/reviews",
+  path: "/game/$id/$slug/reviews",
   getParentRoute: () => rootRouteImport,
 } as any);
 const ProfileIdSlugCollectionsRoute = ProfileIdSlugCollectionsRouteImport.update({
@@ -120,9 +120,9 @@ const ProfileIdSlugCollectionsRoute = ProfileIdSlugCollectionsRouteImport.update
   path: "/profile/$id/$slug/collections",
   getParentRoute: () => rootRouteImport,
 } as any);
-const GameIdSlugReviewsRoute = GameIdSlugReviewsRouteImport.update({
-  id: "/game_/$id/$slug/reviews",
-  path: "/game/$id/$slug/reviews",
+const ProfileIdSlugFriendsRoute = ProfileIdSlugFriendsRouteImport.update({
+  id: "/profile_/$id/$slug/friends",
+  path: "/profile/$id/$slug/friends",
   getParentRoute: () => rootRouteImport,
 } as any);
 const GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute =
@@ -293,53 +293,11 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/settings": {
-      id: "/settings";
-      path: "/settings";
-      fullPath: "/settings";
-      preLoaderRoute: typeof SettingsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/search": {
-      id: "/search";
-      path: "/search";
-      fullPath: "/search";
-      preLoaderRoute: typeof SearchRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/release-calendar": {
-      id: "/release-calendar";
-      path: "/release-calendar";
-      fullPath: "/release-calendar";
-      preLoaderRoute: typeof ReleaseCalendarRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/notifications": {
-      id: "/notifications";
-      path: "/notifications";
-      fullPath: "/notifications";
-      preLoaderRoute: typeof NotificationsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/import": {
-      id: "/import";
-      path: "/import";
-      fullPath: "/import";
-      preLoaderRoute: typeof ImportRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/home": {
-      id: "/home";
-      path: "/home";
-      fullPath: "/home";
-      preLoaderRoute: typeof HomeRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/admin": {
-      id: "/admin";
-      path: "/admin";
-      fullPath: "/admin";
-      preLoaderRoute: typeof AdminRouteImport;
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/$": {
@@ -349,18 +307,53 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SplatRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
+    "/admin": {
+      id: "/admin";
+      path: "/admin";
+      fullPath: "/admin";
+      preLoaderRoute: typeof AdminRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/admin_/translation-suggestions": {
-      id: "/admin_/translation-suggestions";
-      path: "/admin/translation-suggestions";
-      fullPath: "/admin/translation-suggestions";
-      preLoaderRoute: typeof AdminTranslationSuggestionsRouteImport;
+    "/home": {
+      id: "/home";
+      path: "/home";
+      fullPath: "/home";
+      preLoaderRoute: typeof HomeRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/import": {
+      id: "/import";
+      path: "/import";
+      fullPath: "/import";
+      preLoaderRoute: typeof ImportRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/notifications": {
+      id: "/notifications";
+      path: "/notifications";
+      fullPath: "/notifications";
+      preLoaderRoute: typeof NotificationsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/release-calendar": {
+      id: "/release-calendar";
+      path: "/release-calendar";
+      fullPath: "/release-calendar";
+      preLoaderRoute: typeof ReleaseCalendarRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/search": {
+      id: "/search";
+      path: "/search";
+      fullPath: "/search";
+      preLoaderRoute: typeof SearchRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/settings": {
+      id: "/settings";
+      path: "/settings";
+      fullPath: "/settings";
+      preLoaderRoute: typeof SettingsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/admin_/reports": {
@@ -370,32 +363,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AdminReportsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/profile/$id/$slug": {
-      id: "/profile/$id/$slug";
-      path: "/profile/$id/$slug";
-      fullPath: "/profile/$id/$slug";
-      preLoaderRoute: typeof ProfileIdSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/game/$id/$slug": {
-      id: "/game/$id/$slug";
-      path: "/game/$id/$slug";
-      fullPath: "/game/$id/$slug";
-      preLoaderRoute: typeof GameIdSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/game-list/$id/$slug": {
-      id: "/game-list/$id/$slug";
-      path: "/game-list/$id/$slug";
-      fullPath: "/game-list/$id/$slug";
-      preLoaderRoute: typeof GameListIdSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/company/$id/$slug": {
-      id: "/company/$id/$slug";
-      path: "/company/$id/$slug";
-      fullPath: "/company/$id/$slug";
-      preLoaderRoute: typeof CompanyIdSlugRouteImport;
+    "/admin_/translation-suggestions": {
+      id: "/admin_/translation-suggestions";
+      path: "/admin/translation-suggestions";
+      fullPath: "/admin/translation-suggestions";
+      preLoaderRoute: typeof AdminTranslationSuggestionsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/collection/$id/$slug": {
@@ -405,11 +377,39 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof CollectionIdSlugRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/profile_/$id/$slug/friends": {
-      id: "/profile_/$id/$slug/friends";
-      path: "/profile/$id/$slug/friends";
-      fullPath: "/profile/$id/$slug/friends";
-      preLoaderRoute: typeof ProfileIdSlugFriendsRouteImport;
+    "/company/$id/$slug": {
+      id: "/company/$id/$slug";
+      path: "/company/$id/$slug";
+      fullPath: "/company/$id/$slug";
+      preLoaderRoute: typeof CompanyIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game-list/$id/$slug": {
+      id: "/game-list/$id/$slug";
+      path: "/game-list/$id/$slug";
+      fullPath: "/game-list/$id/$slug";
+      preLoaderRoute: typeof GameListIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game/$id/$slug": {
+      id: "/game/$id/$slug";
+      path: "/game/$id/$slug";
+      fullPath: "/game/$id/$slug";
+      preLoaderRoute: typeof GameIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/profile/$id/$slug": {
+      id: "/profile/$id/$slug";
+      path: "/profile/$id/$slug";
+      fullPath: "/profile/$id/$slug";
+      preLoaderRoute: typeof ProfileIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game_/$id/$slug/reviews": {
+      id: "/game_/$id/$slug/reviews";
+      path: "/game/$id/$slug/reviews";
+      fullPath: "/game/$id/$slug/reviews";
+      preLoaderRoute: typeof GameIdSlugReviewsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/profile_/$id/$slug/collections": {
@@ -419,11 +419,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ProfileIdSlugCollectionsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/game_/$id/$slug/reviews": {
-      id: "/game_/$id/$slug/reviews";
-      path: "/game/$id/$slug/reviews";
-      fullPath: "/game/$id/$slug/reviews";
-      preLoaderRoute: typeof GameIdSlugReviewsRouteImport;
+    "/profile_/$id/$slug/friends": {
+      id: "/profile_/$id/$slug/friends";
+      path: "/profile/$id/$slug/friends";
+      fullPath: "/profile/$id/$slug/friends";
+      preLoaderRoute: typeof ProfileIdSlugFriendsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug": {

@@ -9,14 +9,5 @@ minimumReleaseAgeExclude:
   - "@mantine/hooks@9.3.1"
   - "@mantine/notifications@9.3.1"
   - "@mantine/store@9.3.1"
-  - "@typescript-eslint/eslint-plugin@8.61.0"
-  - "@typescript-eslint/parser@8.61.0"
-  - "@typescript-eslint/project-service@8.61.0"
-  - "@typescript-eslint/scope-manager@8.61.0"
-  - "@typescript-eslint/tsconfig-utils@8.61.0"
-  - "@typescript-eslint/type-utils@8.61.0"
-  - "@typescript-eslint/types@8.61.0"
-  - "@typescript-eslint/typescript-estree@8.61.0"
-  - "@typescript-eslint/utils@8.61.0"
-  - "@typescript-eslint/visitor-keys@8.61.0"
-  - typescript-eslint@8.61.0
+  - "@atlaskit/pragmatic-drag-and-drop-hitbox@2.1.0"
+  - dayjs@1.11.23
