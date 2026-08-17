@@ -8,435 +8,435 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as ReleaseCalendarRouteImport } from './routes/release-calendar'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as ImportRouteImport } from './routes/import'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as SplatRouteImport } from './routes/$'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminTranslationSuggestionsRouteImport } from './routes/admin_.translation-suggestions'
-import { Route as AdminReportsRouteImport } from './routes/admin_.reports'
-import { Route as ProfileIdSlugRouteImport } from './routes/profile.$id.$slug'
-import { Route as GameIdSlugRouteImport } from './routes/game.$id.$slug'
-import { Route as GameListIdSlugRouteImport } from './routes/game-list.$id.$slug'
-import { Route as CompanyIdSlugRouteImport } from './routes/company.$id.$slug'
-import { Route as CollectionIdSlugRouteImport } from './routes/collection.$id.$slug'
-import { Route as ProfileIdSlugFriendsRouteImport } from './routes/profile_.$id.$slug.friends'
-import { Route as ProfileIdSlugCollectionsRouteImport } from './routes/profile_.$id.$slug.collections'
-import { Route as GameIdSlugReviewsRouteImport } from './routes/game_.$id.$slug.reviews'
-import { Route as GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport } from './routes/game-list.compare.$firstUserId.$firstUserSlug.$secondUserId.$secondUserSlug'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as SearchRouteImport } from "./routes/search";
+import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
+import { Route as NotificationsRouteImport } from "./routes/notifications";
+import { Route as ImportRouteImport } from "./routes/import";
+import { Route as HomeRouteImport } from "./routes/home";
+import { Route as AdminRouteImport } from "./routes/admin";
+import { Route as SplatRouteImport } from "./routes/$";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
+import { Route as AdminReportsRouteImport } from "./routes/admin_.reports";
+import { Route as ProfileIdSlugRouteImport } from "./routes/profile.$id.$slug";
+import { Route as GameIdSlugRouteImport } from "./routes/game.$id.$slug";
+import { Route as GameListIdSlugRouteImport } from "./routes/game-list.$id.$slug";
+import { Route as CompanyIdSlugRouteImport } from "./routes/company.$id.$slug";
+import { Route as CollectionIdSlugRouteImport } from "./routes/collection.$id.$slug";
+import { Route as ProfileIdSlugFriendsRouteImport } from "./routes/profile_.$id.$slug.friends";
+import { Route as ProfileIdSlugCollectionsRouteImport } from "./routes/profile_.$id.$slug.collections";
+import { Route as GameIdSlugReviewsRouteImport } from "./routes/game_.$id.$slug.reviews";
+import { Route as GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport } from "./routes/game-list.compare.$firstUserId.$firstUserSlug.$secondUserId.$secondUserSlug";
 
 const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+  id: "/settings",
+  path: "/settings",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
+  id: "/search",
+  path: "/search",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ReleaseCalendarRoute = ReleaseCalendarRouteImport.update({
-  id: '/release-calendar',
-  path: '/release-calendar',
+  id: "/release-calendar",
+  path: "/release-calendar",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
+  id: "/notifications",
+  path: "/notifications",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ImportRoute = ImportRouteImport.update({
-  id: '/import',
-  path: '/import',
+  id: "/import",
+  path: "/import",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
+  id: "/home",
+  path: "/home",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+  id: "/admin",
+  path: "/admin",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
+  id: "/$",
+  path: "/$",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminTranslationSuggestionsRoute =
   AdminTranslationSuggestionsRouteImport.update({
-    id: '/admin_/translation-suggestions',
-    path: '/admin/translation-suggestions',
+    id: "/admin_/translation-suggestions",
+    path: "/admin/translation-suggestions",
     getParentRoute: () => rootRouteImport,
-  } as any)
+  } as any);
 const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: '/admin_/reports',
-  path: '/admin/reports',
+  id: "/admin_/reports",
+  path: "/admin/reports",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProfileIdSlugRoute = ProfileIdSlugRouteImport.update({
-  id: '/profile/$id/$slug',
-  path: '/profile/$id/$slug',
+  id: "/profile/$id/$slug",
+  path: "/profile/$id/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const GameIdSlugRoute = GameIdSlugRouteImport.update({
-  id: '/game/$id/$slug',
-  path: '/game/$id/$slug',
+  id: "/game/$id/$slug",
+  path: "/game/$id/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const GameListIdSlugRoute = GameListIdSlugRouteImport.update({
-  id: '/game-list/$id/$slug',
-  path: '/game-list/$id/$slug',
+  id: "/game-list/$id/$slug",
+  path: "/game-list/$id/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CompanyIdSlugRoute = CompanyIdSlugRouteImport.update({
-  id: '/company/$id/$slug',
-  path: '/company/$id/$slug',
+  id: "/company/$id/$slug",
+  path: "/company/$id/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CollectionIdSlugRoute = CollectionIdSlugRouteImport.update({
-  id: '/collection/$id/$slug',
-  path: '/collection/$id/$slug',
+  id: "/collection/$id/$slug",
+  path: "/collection/$id/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProfileIdSlugFriendsRoute = ProfileIdSlugFriendsRouteImport.update({
-  id: '/profile_/$id/$slug/friends',
-  path: '/profile/$id/$slug/friends',
+  id: "/profile_/$id/$slug/friends",
+  path: "/profile/$id/$slug/friends",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProfileIdSlugCollectionsRoute =
   ProfileIdSlugCollectionsRouteImport.update({
-    id: '/profile_/$id/$slug/collections',
-    path: '/profile/$id/$slug/collections',
+    id: "/profile_/$id/$slug/collections",
+    path: "/profile/$id/$slug/collections",
     getParentRoute: () => rootRouteImport,
-  } as any)
+  } as any);
 const GameIdSlugReviewsRoute = GameIdSlugReviewsRouteImport.update({
-  id: '/game_/$id/$slug/reviews',
-  path: '/game/$id/$slug/reviews',
+  id: "/game_/$id/$slug/reviews",
+  path: "/game/$id/$slug/reviews",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute =
   GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport.update(
     {
-      id: '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug',
-      path: '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug',
+      id: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
+      path: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
       getParentRoute: () => rootRouteImport,
     } as any,
-  )
+  );
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
-  '/admin': typeof AdminRoute
-  '/home': typeof HomeRoute
-  '/import': typeof ImportRoute
-  '/notifications': typeof NotificationsRoute
-  '/release-calendar': typeof ReleaseCalendarRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/admin/reports': typeof AdminReportsRoute
-  '/admin/translation-suggestions': typeof AdminTranslationSuggestionsRoute
-  '/collection/$id/$slug': typeof CollectionIdSlugRoute
-  '/company/$id/$slug': typeof CompanyIdSlugRoute
-  '/game-list/$id/$slug': typeof GameListIdSlugRoute
-  '/game/$id/$slug': typeof GameIdSlugRoute
-  '/profile/$id/$slug': typeof ProfileIdSlugRoute
-  '/game/$id/$slug/reviews': typeof GameIdSlugReviewsRoute
-  '/profile/$id/$slug/collections': typeof ProfileIdSlugCollectionsRoute
-  '/profile/$id/$slug/friends': typeof ProfileIdSlugFriendsRoute
-  '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug': typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute
+  "/": typeof IndexRoute;
+  "/$": typeof SplatRoute;
+  "/admin": typeof AdminRoute;
+  "/home": typeof HomeRoute;
+  "/import": typeof ImportRoute;
+  "/notifications": typeof NotificationsRoute;
+  "/release-calendar": typeof ReleaseCalendarRoute;
+  "/search": typeof SearchRoute;
+  "/settings": typeof SettingsRoute;
+  "/admin/reports": typeof AdminReportsRoute;
+  "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/collection/$id/$slug": typeof CollectionIdSlugRoute;
+  "/company/$id/$slug": typeof CompanyIdSlugRoute;
+  "/game-list/$id/$slug": typeof GameListIdSlugRoute;
+  "/game/$id/$slug": typeof GameIdSlugRoute;
+  "/profile/$id/$slug": typeof ProfileIdSlugRoute;
+  "/game/$id/$slug/reviews": typeof GameIdSlugReviewsRoute;
+  "/profile/$id/$slug/collections": typeof ProfileIdSlugCollectionsRoute;
+  "/profile/$id/$slug/friends": typeof ProfileIdSlugFriendsRoute;
+  "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug": typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
-  '/admin': typeof AdminRoute
-  '/home': typeof HomeRoute
-  '/import': typeof ImportRoute
-  '/notifications': typeof NotificationsRoute
-  '/release-calendar': typeof ReleaseCalendarRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/admin/reports': typeof AdminReportsRoute
-  '/admin/translation-suggestions': typeof AdminTranslationSuggestionsRoute
-  '/collection/$id/$slug': typeof CollectionIdSlugRoute
-  '/company/$id/$slug': typeof CompanyIdSlugRoute
-  '/game-list/$id/$slug': typeof GameListIdSlugRoute
-  '/game/$id/$slug': typeof GameIdSlugRoute
-  '/profile/$id/$slug': typeof ProfileIdSlugRoute
-  '/game/$id/$slug/reviews': typeof GameIdSlugReviewsRoute
-  '/profile/$id/$slug/collections': typeof ProfileIdSlugCollectionsRoute
-  '/profile/$id/$slug/friends': typeof ProfileIdSlugFriendsRoute
-  '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug': typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute
+  "/": typeof IndexRoute;
+  "/$": typeof SplatRoute;
+  "/admin": typeof AdminRoute;
+  "/home": typeof HomeRoute;
+  "/import": typeof ImportRoute;
+  "/notifications": typeof NotificationsRoute;
+  "/release-calendar": typeof ReleaseCalendarRoute;
+  "/search": typeof SearchRoute;
+  "/settings": typeof SettingsRoute;
+  "/admin/reports": typeof AdminReportsRoute;
+  "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/collection/$id/$slug": typeof CollectionIdSlugRoute;
+  "/company/$id/$slug": typeof CompanyIdSlugRoute;
+  "/game-list/$id/$slug": typeof GameListIdSlugRoute;
+  "/game/$id/$slug": typeof GameIdSlugRoute;
+  "/profile/$id/$slug": typeof ProfileIdSlugRoute;
+  "/game/$id/$slug/reviews": typeof GameIdSlugReviewsRoute;
+  "/profile/$id/$slug/collections": typeof ProfileIdSlugCollectionsRoute;
+  "/profile/$id/$slug/friends": typeof ProfileIdSlugFriendsRoute;
+  "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug": typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
-  '/admin': typeof AdminRoute
-  '/home': typeof HomeRoute
-  '/import': typeof ImportRoute
-  '/notifications': typeof NotificationsRoute
-  '/release-calendar': typeof ReleaseCalendarRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/admin_/reports': typeof AdminReportsRoute
-  '/admin_/translation-suggestions': typeof AdminTranslationSuggestionsRoute
-  '/collection/$id/$slug': typeof CollectionIdSlugRoute
-  '/company/$id/$slug': typeof CompanyIdSlugRoute
-  '/game-list/$id/$slug': typeof GameListIdSlugRoute
-  '/game/$id/$slug': typeof GameIdSlugRoute
-  '/profile/$id/$slug': typeof ProfileIdSlugRoute
-  '/game_/$id/$slug/reviews': typeof GameIdSlugReviewsRoute
-  '/profile_/$id/$slug/collections': typeof ProfileIdSlugCollectionsRoute
-  '/profile_/$id/$slug/friends': typeof ProfileIdSlugFriendsRoute
-  '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug': typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/$": typeof SplatRoute;
+  "/admin": typeof AdminRoute;
+  "/home": typeof HomeRoute;
+  "/import": typeof ImportRoute;
+  "/notifications": typeof NotificationsRoute;
+  "/release-calendar": typeof ReleaseCalendarRoute;
+  "/search": typeof SearchRoute;
+  "/settings": typeof SettingsRoute;
+  "/admin_/reports": typeof AdminReportsRoute;
+  "/admin_/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/collection/$id/$slug": typeof CollectionIdSlugRoute;
+  "/company/$id/$slug": typeof CompanyIdSlugRoute;
+  "/game-list/$id/$slug": typeof GameListIdSlugRoute;
+  "/game/$id/$slug": typeof GameIdSlugRoute;
+  "/profile/$id/$slug": typeof ProfileIdSlugRoute;
+  "/game_/$id/$slug/reviews": typeof GameIdSlugReviewsRoute;
+  "/profile_/$id/$slug/collections": typeof ProfileIdSlugCollectionsRoute;
+  "/profile_/$id/$slug/friends": typeof ProfileIdSlugFriendsRoute;
+  "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug": typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/$'
-    | '/admin'
-    | '/home'
-    | '/import'
-    | '/notifications'
-    | '/release-calendar'
-    | '/search'
-    | '/settings'
-    | '/admin/reports'
-    | '/admin/translation-suggestions'
-    | '/collection/$id/$slug'
-    | '/company/$id/$slug'
-    | '/game-list/$id/$slug'
-    | '/game/$id/$slug'
-    | '/profile/$id/$slug'
-    | '/game/$id/$slug/reviews'
-    | '/profile/$id/$slug/collections'
-    | '/profile/$id/$slug/friends'
-    | '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/$"
+    | "/admin"
+    | "/home"
+    | "/import"
+    | "/notifications"
+    | "/release-calendar"
+    | "/search"
+    | "/settings"
+    | "/admin/reports"
+    | "/admin/translation-suggestions"
+    | "/collection/$id/$slug"
+    | "/company/$id/$slug"
+    | "/game-list/$id/$slug"
+    | "/game/$id/$slug"
+    | "/profile/$id/$slug"
+    | "/game/$id/$slug/reviews"
+    | "/profile/$id/$slug/collections"
+    | "/profile/$id/$slug/friends"
+    | "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/$'
-    | '/admin'
-    | '/home'
-    | '/import'
-    | '/notifications'
-    | '/release-calendar'
-    | '/search'
-    | '/settings'
-    | '/admin/reports'
-    | '/admin/translation-suggestions'
-    | '/collection/$id/$slug'
-    | '/company/$id/$slug'
-    | '/game-list/$id/$slug'
-    | '/game/$id/$slug'
-    | '/profile/$id/$slug'
-    | '/game/$id/$slug/reviews'
-    | '/profile/$id/$slug/collections'
-    | '/profile/$id/$slug/friends'
-    | '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
+    | "/"
+    | "/$"
+    | "/admin"
+    | "/home"
+    | "/import"
+    | "/notifications"
+    | "/release-calendar"
+    | "/search"
+    | "/settings"
+    | "/admin/reports"
+    | "/admin/translation-suggestions"
+    | "/collection/$id/$slug"
+    | "/company/$id/$slug"
+    | "/game-list/$id/$slug"
+    | "/game/$id/$slug"
+    | "/profile/$id/$slug"
+    | "/game/$id/$slug/reviews"
+    | "/profile/$id/$slug/collections"
+    | "/profile/$id/$slug/friends"
+    | "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
   id:
-    | '__root__'
-    | '/'
-    | '/$'
-    | '/admin'
-    | '/home'
-    | '/import'
-    | '/notifications'
-    | '/release-calendar'
-    | '/search'
-    | '/settings'
-    | '/admin_/reports'
-    | '/admin_/translation-suggestions'
-    | '/collection/$id/$slug'
-    | '/company/$id/$slug'
-    | '/game-list/$id/$slug'
-    | '/game/$id/$slug'
-    | '/profile/$id/$slug'
-    | '/game_/$id/$slug/reviews'
-    | '/profile_/$id/$slug/collections'
-    | '/profile_/$id/$slug/friends'
-    | '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/$"
+    | "/admin"
+    | "/home"
+    | "/import"
+    | "/notifications"
+    | "/release-calendar"
+    | "/search"
+    | "/settings"
+    | "/admin_/reports"
+    | "/admin_/translation-suggestions"
+    | "/collection/$id/$slug"
+    | "/company/$id/$slug"
+    | "/game-list/$id/$slug"
+    | "/game/$id/$slug"
+    | "/profile/$id/$slug"
+    | "/game_/$id/$slug/reviews"
+    | "/profile_/$id/$slug/collections"
+    | "/profile_/$id/$slug/friends"
+    | "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  SplatRoute: typeof SplatRoute
-  AdminRoute: typeof AdminRoute
-  HomeRoute: typeof HomeRoute
-  ImportRoute: typeof ImportRoute
-  NotificationsRoute: typeof NotificationsRoute
-  ReleaseCalendarRoute: typeof ReleaseCalendarRoute
-  SearchRoute: typeof SearchRoute
-  SettingsRoute: typeof SettingsRoute
-  AdminReportsRoute: typeof AdminReportsRoute
-  AdminTranslationSuggestionsRoute: typeof AdminTranslationSuggestionsRoute
-  CollectionIdSlugRoute: typeof CollectionIdSlugRoute
-  CompanyIdSlugRoute: typeof CompanyIdSlugRoute
-  GameListIdSlugRoute: typeof GameListIdSlugRoute
-  GameIdSlugRoute: typeof GameIdSlugRoute
-  ProfileIdSlugRoute: typeof ProfileIdSlugRoute
-  GameIdSlugReviewsRoute: typeof GameIdSlugReviewsRoute
-  ProfileIdSlugCollectionsRoute: typeof ProfileIdSlugCollectionsRoute
-  ProfileIdSlugFriendsRoute: typeof ProfileIdSlugFriendsRoute
-  GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute: typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute
+  IndexRoute: typeof IndexRoute;
+  SplatRoute: typeof SplatRoute;
+  AdminRoute: typeof AdminRoute;
+  HomeRoute: typeof HomeRoute;
+  ImportRoute: typeof ImportRoute;
+  NotificationsRoute: typeof NotificationsRoute;
+  ReleaseCalendarRoute: typeof ReleaseCalendarRoute;
+  SearchRoute: typeof SearchRoute;
+  SettingsRoute: typeof SettingsRoute;
+  AdminReportsRoute: typeof AdminReportsRoute;
+  AdminTranslationSuggestionsRoute: typeof AdminTranslationSuggestionsRoute;
+  CollectionIdSlugRoute: typeof CollectionIdSlugRoute;
+  CompanyIdSlugRoute: typeof CompanyIdSlugRoute;
+  GameListIdSlugRoute: typeof GameListIdSlugRoute;
+  GameIdSlugRoute: typeof GameIdSlugRoute;
+  ProfileIdSlugRoute: typeof ProfileIdSlugRoute;
+  GameIdSlugReviewsRoute: typeof GameIdSlugReviewsRoute;
+  ProfileIdSlugCollectionsRoute: typeof ProfileIdSlugCollectionsRoute;
+  ProfileIdSlugFriendsRoute: typeof ProfileIdSlugFriendsRoute;
+  GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute: typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/release-calendar': {
-      id: '/release-calendar'
-      path: '/release-calendar'
-      fullPath: '/release-calendar'
-      preLoaderRoute: typeof ReleaseCalendarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/import': {
-      id: '/import'
-      path: '/import'
-      fullPath: '/import'
-      preLoaderRoute: typeof ImportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin_/translation-suggestions': {
-      id: '/admin_/translation-suggestions'
-      path: '/admin/translation-suggestions'
-      fullPath: '/admin/translation-suggestions'
-      preLoaderRoute: typeof AdminTranslationSuggestionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin_/reports': {
-      id: '/admin_/reports'
-      path: '/admin/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/$id/$slug': {
-      id: '/profile/$id/$slug'
-      path: '/profile/$id/$slug'
-      fullPath: '/profile/$id/$slug'
-      preLoaderRoute: typeof ProfileIdSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game/$id/$slug': {
-      id: '/game/$id/$slug'
-      path: '/game/$id/$slug'
-      fullPath: '/game/$id/$slug'
-      preLoaderRoute: typeof GameIdSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game-list/$id/$slug': {
-      id: '/game-list/$id/$slug'
-      path: '/game-list/$id/$slug'
-      fullPath: '/game-list/$id/$slug'
-      preLoaderRoute: typeof GameListIdSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/company/$id/$slug': {
-      id: '/company/$id/$slug'
-      path: '/company/$id/$slug'
-      fullPath: '/company/$id/$slug'
-      preLoaderRoute: typeof CompanyIdSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collection/$id/$slug': {
-      id: '/collection/$id/$slug'
-      path: '/collection/$id/$slug'
-      fullPath: '/collection/$id/$slug'
-      preLoaderRoute: typeof CollectionIdSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile_/$id/$slug/friends': {
-      id: '/profile_/$id/$slug/friends'
-      path: '/profile/$id/$slug/friends'
-      fullPath: '/profile/$id/$slug/friends'
-      preLoaderRoute: typeof ProfileIdSlugFriendsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile_/$id/$slug/collections': {
-      id: '/profile_/$id/$slug/collections'
-      path: '/profile/$id/$slug/collections'
-      fullPath: '/profile/$id/$slug/collections'
-      preLoaderRoute: typeof ProfileIdSlugCollectionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game_/$id/$slug/reviews': {
-      id: '/game_/$id/$slug/reviews'
-      path: '/game/$id/$slug/reviews'
-      fullPath: '/game/$id/$slug/reviews'
-      preLoaderRoute: typeof GameIdSlugReviewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug': {
-      id: '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
-      path: '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
-      fullPath: '/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug'
-      preLoaderRoute: typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/settings": {
+      id: "/settings";
+      path: "/settings";
+      fullPath: "/settings";
+      preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/search": {
+      id: "/search";
+      path: "/search";
+      fullPath: "/search";
+      preLoaderRoute: typeof SearchRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/release-calendar": {
+      id: "/release-calendar";
+      path: "/release-calendar";
+      fullPath: "/release-calendar";
+      preLoaderRoute: typeof ReleaseCalendarRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/notifications": {
+      id: "/notifications";
+      path: "/notifications";
+      fullPath: "/notifications";
+      preLoaderRoute: typeof NotificationsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/import": {
+      id: "/import";
+      path: "/import";
+      fullPath: "/import";
+      preLoaderRoute: typeof ImportRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/home": {
+      id: "/home";
+      path: "/home";
+      fullPath: "/home";
+      preLoaderRoute: typeof HomeRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin": {
+      id: "/admin";
+      path: "/admin";
+      fullPath: "/admin";
+      preLoaderRoute: typeof AdminRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/$": {
+      id: "/$";
+      path: "/$";
+      fullPath: "/$";
+      preLoaderRoute: typeof SplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin_/translation-suggestions": {
+      id: "/admin_/translation-suggestions";
+      path: "/admin/translation-suggestions";
+      fullPath: "/admin/translation-suggestions";
+      preLoaderRoute: typeof AdminTranslationSuggestionsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin_/reports": {
+      id: "/admin_/reports";
+      path: "/admin/reports";
+      fullPath: "/admin/reports";
+      preLoaderRoute: typeof AdminReportsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/profile/$id/$slug": {
+      id: "/profile/$id/$slug";
+      path: "/profile/$id/$slug";
+      fullPath: "/profile/$id/$slug";
+      preLoaderRoute: typeof ProfileIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game/$id/$slug": {
+      id: "/game/$id/$slug";
+      path: "/game/$id/$slug";
+      fullPath: "/game/$id/$slug";
+      preLoaderRoute: typeof GameIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game-list/$id/$slug": {
+      id: "/game-list/$id/$slug";
+      path: "/game-list/$id/$slug";
+      fullPath: "/game-list/$id/$slug";
+      preLoaderRoute: typeof GameListIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/company/$id/$slug": {
+      id: "/company/$id/$slug";
+      path: "/company/$id/$slug";
+      fullPath: "/company/$id/$slug";
+      preLoaderRoute: typeof CompanyIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/collection/$id/$slug": {
+      id: "/collection/$id/$slug";
+      path: "/collection/$id/$slug";
+      fullPath: "/collection/$id/$slug";
+      preLoaderRoute: typeof CollectionIdSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/profile_/$id/$slug/friends": {
+      id: "/profile_/$id/$slug/friends";
+      path: "/profile/$id/$slug/friends";
+      fullPath: "/profile/$id/$slug/friends";
+      preLoaderRoute: typeof ProfileIdSlugFriendsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/profile_/$id/$slug/collections": {
+      id: "/profile_/$id/$slug/collections";
+      path: "/profile/$id/$slug/collections";
+      fullPath: "/profile/$id/$slug/collections";
+      preLoaderRoute: typeof ProfileIdSlugCollectionsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game_/$id/$slug/reviews": {
+      id: "/game_/$id/$slug/reviews";
+      path: "/game/$id/$slug/reviews";
+      fullPath: "/game/$id/$slug/reviews";
+      preLoaderRoute: typeof GameIdSlugReviewsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug": {
+      id: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
+      path: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
+      fullPath: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug";
+      preLoaderRoute: typeof GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -462,7 +462,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileIdSlugFriendsRoute: ProfileIdSlugFriendsRoute,
   GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute:
     GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
