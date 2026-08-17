@@ -1,12 +1,14 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { Box, Stack, Text, Group } from "@mantine/core";
 import { IconCheck, IconSearch } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
+
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 import { DuplicateGroup } from "../../utils/titleImport";
 import { ImportedGame } from "./types";
+
 import styles from "./TitleMergeStep.module.css";
 
 interface TitleMergeStepProps {

@@ -1,6 +1,6 @@
 import { UserService, UserUsersListData } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type UserUsersListDataQuery = UserUsersListData["query"];
 

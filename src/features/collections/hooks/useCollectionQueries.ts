@@ -1,5 +1,10 @@
-import * as React from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as React from "react";
+
+import { BlankEnum, TierEnum } from "@/client";
+import { useCurrentUserId } from "@/features/auth";
+import { useGetFriendshipsInfiniteQuery } from "@/features/users/hooks/friendshipQueries";
+import { collectionKeys } from "@/lib/queryKeys";
 
 import {
   getCollectionsList,
@@ -15,10 +20,6 @@ import {
   bulkReorderCollectionItems,
   updateCollectionItemTier,
 } from "../api/collection";
-import { collectionKeys } from "@/lib/queryKeys";
-import { useGetFriendshipsInfiniteQuery } from "@/features/users/hooks/friendshipQueries";
-import { useCurrentUserId } from "@/features/auth";
-import { BlankEnum, TierEnum } from "@/client";
 
 const fetchCollections = async ({ pageParam = 1, queryKey }: { pageParam?: number; queryKey: readonly unknown[] }) => {
   const [, _kind, userId, filters, useMember] = queryKey as [string, string, number, object, boolean];

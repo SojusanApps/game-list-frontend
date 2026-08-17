@@ -1,14 +1,16 @@
+import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
-import GameStatistics from "../components/GameStatistics";
-import GameReview from "../components/GameReview";
-import { GameReviewModal } from "../components/GameReviewModal";
-import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+
 import { Game, GameReview as GameReviewType, PaginatedGameReviewList } from "@/client";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/Button";
 import { TranslationSuggestionModal } from "@/features/translationSuggestions/components/TranslationSuggestionModal";
+
+import GameReview from "../components/GameReview";
+import { GameReviewModal } from "../components/GameReviewModal";
+import GameStatistics from "../components/GameStatistics";
 
 const REVIEWS_PREVIEW_COUNT = 3;
 

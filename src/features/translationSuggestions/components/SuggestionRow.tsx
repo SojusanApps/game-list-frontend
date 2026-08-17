@@ -1,14 +1,16 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
-import { diffWords, type Change } from "diff";
 import { Badge, Box, Group, Popover, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { Link } from "@tanstack/react-router";
+import { diffWords, type Change } from "diff";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import { TargetTypeEnum, TranslationSuggestion, TranslationSuggestionStatusEnum, type UserSimple } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { TargetTypeEnum, TranslationSuggestion, TranslationSuggestionStatusEnum, type UserSimple } from "@/client";
-import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { useCurrentUserId, useIsStaff } from "@/features/auth";
+import { ReportButton } from "@/features/moderation/components/ReportButton";
+
 import {
   useAcceptTranslationSuggestion,
   useRejectTranslationSuggestion,

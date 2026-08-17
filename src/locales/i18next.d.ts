@@ -1,13 +1,13 @@
-import type enCommon from "./en/common.json";
-import type enAuth from "./en/auth.json";
-import type enValidation from "./en/validation.json";
 import type enAdmin from "./en/admin.json";
-import type enGames from "./en/games.json";
+import type enAuth from "./en/auth.json";
 import type enCollections from "./en/collections.json";
-import type enUsers from "./en/users.json";
+import type enCommon from "./en/common.json";
+import type enGames from "./en/games.json";
+import type enModeration from "./en/moderation.json";
 import type enNotifications from "./en/notifications.json";
 import type enRanking from "./en/ranking.json";
-import type enModeration from "./en/moderation.json";
+import type enUsers from "./en/users.json";
+import type enValidation from "./en/validation.json";
 
 declare module "i18next" {
   interface CustomTypeOptions {

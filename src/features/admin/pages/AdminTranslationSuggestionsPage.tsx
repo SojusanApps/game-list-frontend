@@ -1,11 +1,12 @@
+import { Badge, Box, Group, NumberInput, Paper, Pagination, Select, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
-import { Badge, Box, Group, NumberInput, Paper, Pagination, Select, Skeleton, Stack, Text, Title } from "@mantine/core";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { Button } from "@/components/ui/Button";
-import { SafeImage } from "@/components/ui/SafeImage";
+
 import { FieldEnum, TranslationSuggestion, TranslationSuggestionStatusEnum } from "@/client";
+import { Button } from "@/components/ui/Button";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { SuggestionRow } from "@/features/translationSuggestions/components/SuggestionRow";
 import { useGetTranslationSuggestions } from "@/features/translationSuggestions/hooks/translationSuggestionQueries";

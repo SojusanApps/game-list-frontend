@@ -1,7 +1,7 @@
-import * as React from "react";
 import { MultiSelect, Loader, ComboboxProps } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { InfiniteData } from "@tanstack/react-query";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 type PaginatedResponse<T> = {

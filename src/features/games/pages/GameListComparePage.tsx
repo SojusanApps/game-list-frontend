@@ -1,13 +1,15 @@
+import { Box, Skeleton, Stack, Title } from "@mantine/core";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
-import { Box, Skeleton, Stack, Title } from "@mantine/core";
+
+import { PageMeta } from "@/components/ui/PageMeta";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+
+import { CompareUserChip } from "../components/CompareUserChip";
+import { GameListCompareTable } from "../components/GameListCompareTable";
 import { useGameListCompareQuery } from "../hooks/useGameListQueries";
 import { buildCompareSections } from "../utils/gameListCompare";
-import { GameListCompareTable } from "../components/GameListCompareTable";
-import { CompareUserChip } from "../components/CompareUserChip";
-import { PageMeta } from "@/components/ui/PageMeta";
 
 const routeApi = getRouteApi("/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug");
 

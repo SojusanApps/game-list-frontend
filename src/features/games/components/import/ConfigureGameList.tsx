@@ -1,10 +1,12 @@
+import { Box, Stack, Title, Text, Group, Badge, Divider } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Stack, Title, Text, Group, Badge, Divider } from "@mantine/core";
 
 import { GameListStatusEnum } from "@/client";
+
 import { GameRowItem } from "./GameRowItem";
 import { GameRow } from "./types";
+
 import styles from "./ConfigureGameList.module.css";
 
 interface ConfigureGameListProps {

@@ -1,20 +1,21 @@
+import { Box, Grid, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { getRouteApi, Link } from "@tanstack/react-router";
 
-import { useGetUserDetails } from "../hooks/userQueries";
-import { useCurrentUserId } from "@/features/auth";
-import FriendshipButtons from "../components/FriendshipButtons";
-import UserProfileInformation from "../components/UserProfileInformation";
-import UserFriendsList from "../components/UserFriendsList";
-import UserStatistics from "../components/UserStatistics";
-import GameListUpdate from "../components/GameListUpdate";
-import { Box, Grid, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { TargetTypeEnum } from "@/client";
+import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { Button } from "@/components/ui/Button";
-import { TargetTypeEnum } from "@/client";
+import { useCurrentUserId } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+
+import FriendshipButtons from "../components/FriendshipButtons";
+import GameListUpdate from "../components/GameListUpdate";
+import UserFriendsList from "../components/UserFriendsList";
+import UserProfileInformation from "../components/UserProfileInformation";
+import UserStatistics from "../components/UserStatistics";
+import { useGetUserDetails } from "../hooks/userQueries";
 
 const routeApi = getRouteApi("/profile/$id/$slug");
 

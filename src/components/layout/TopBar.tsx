@@ -1,19 +1,18 @@
-import * as React from "react";
-
-import { Link } from "@tanstack/react-router";
-import AppLogo from "@/components/ui/AppLogo";
-import { Button } from "@/components/ui/Button";
-import SearchBar from "@/features/games/components/SearchBar";
-
-import NotificationBell from "@/features/notifications/components/NotificationBell";
-import { useAuth, useCurrentUser } from "@/features/auth";
-import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield } from "@tabler/icons-react";
 import { Box, Group, Menu, Text, UnstyledButton, Burger, Drawer, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import styles from "./TopBar.module.css";
+import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import AppLogo from "@/components/ui/AppLogo";
+import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useAuth, useCurrentUser } from "@/features/auth";
+import SearchBar from "@/features/games/components/SearchBar";
+import NotificationBell from "@/features/notifications/components/NotificationBell";
+
+import styles from "./TopBar.module.css";
 
 function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.Element {
   const { data: currentUser } = useCurrentUser();

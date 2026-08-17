@@ -1,8 +1,10 @@
-import { Link } from "@tanstack/react-router";
 import { Box, Stack, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+
 import { Friendship } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+
 import styles from "./FriendCard.module.css";
 
 interface FriendCardProps {

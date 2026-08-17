@@ -1,6 +1,7 @@
-import React from "react";
 import { Box, Stack, Text } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
+import React from "react";
+
 import AppLogo from "./AppLogo";
 
 interface ImageFallbackProps {

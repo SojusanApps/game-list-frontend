@@ -3,28 +3,28 @@
 // oxlint-disable-next-line unicorn/prefer-export-from
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { getStoredLanguage } from "@/utils/languageUtils";
 
-import enCommon from "@/locales/en/common.json";
-import plCommon from "@/locales/pl/common.json";
-import enAuth from "@/locales/en/auth.json";
-import plAuth from "@/locales/pl/auth.json";
-import enValidation from "@/locales/en/validation.json";
-import plValidation from "@/locales/pl/validation.json";
 import enAdmin from "@/locales/en/admin.json";
-import plAdmin from "@/locales/pl/admin.json";
-import enGames from "@/locales/en/games.json";
-import plGames from "@/locales/pl/games.json";
+import enAuth from "@/locales/en/auth.json";
 import enCollections from "@/locales/en/collections.json";
-import plCollections from "@/locales/pl/collections.json";
-import enUsers from "@/locales/en/users.json";
-import plUsers from "@/locales/pl/users.json";
-import enNotifications from "@/locales/en/notifications.json";
-import plNotifications from "@/locales/pl/notifications.json";
-import enRanking from "@/locales/en/ranking.json";
-import plRanking from "@/locales/pl/ranking.json";
+import enCommon from "@/locales/en/common.json";
+import enGames from "@/locales/en/games.json";
 import enModeration from "@/locales/en/moderation.json";
+import enNotifications from "@/locales/en/notifications.json";
+import enRanking from "@/locales/en/ranking.json";
+import enUsers from "@/locales/en/users.json";
+import enValidation from "@/locales/en/validation.json";
+import plAdmin from "@/locales/pl/admin.json";
+import plAuth from "@/locales/pl/auth.json";
+import plCollections from "@/locales/pl/collections.json";
+import plCommon from "@/locales/pl/common.json";
+import plGames from "@/locales/pl/games.json";
 import plModeration from "@/locales/pl/moderation.json";
+import plNotifications from "@/locales/pl/notifications.json";
+import plRanking from "@/locales/pl/ranking.json";
+import plUsers from "@/locales/pl/users.json";
+import plValidation from "@/locales/pl/validation.json";
+import { getStoredLanguage } from "@/utils/languageUtils";
 
 // eslint-disable-next-line import/no-named-as-default-member
 i18n.use(initReactI18next).init({

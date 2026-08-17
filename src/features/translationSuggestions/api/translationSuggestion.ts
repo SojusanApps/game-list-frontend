@@ -5,8 +5,8 @@ import {
   GameTranslationSuggestionsWithdrawCreateData,
   TranslationSuggestionCreateWritable,
 } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type TranslationSuggestionListQuery = GameTranslationSuggestionsListData["query"];
 export type TranslationSuggestionWithdrawPath = GameTranslationSuggestionsWithdrawCreateData["path"];

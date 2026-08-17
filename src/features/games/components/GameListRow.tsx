@@ -1,15 +1,17 @@
-import React from "react";
-import { Link } from "@tanstack/react-router";
 import { Box, Group, Text, Badge, ActionIcon, Stack, Tooltip } from "@mantine/core";
 import { IconEdit, IconNote } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import { GameList, GameListStatusEnum, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { STATUS_CONFIG } from "@/features/games/utils/statusConfig";
-import { getRatingColor } from "@/utils/ratingUtils";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { getRatingColor } from "@/utils/ratingUtils";
+
 import styles from "./GameListRow.module.css";
-import { useTranslation } from "react-i18next";
 
 interface GameListRowProps {
   gameListItem: GameList;

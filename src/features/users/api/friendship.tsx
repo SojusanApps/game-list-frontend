@@ -7,8 +7,8 @@ import {
   FriendshipFriendshipsListData,
   FriendshipFriendshipsDestroyData,
 } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 // --- Friendship Requests ---
 

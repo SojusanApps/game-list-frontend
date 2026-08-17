@@ -1,7 +1,8 @@
-import * as React from "react";
 import { Modal, Text, Group, Box, Title, UnstyledButton } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { Button } from "./Button";
 
 export interface ConfirmModalProps {

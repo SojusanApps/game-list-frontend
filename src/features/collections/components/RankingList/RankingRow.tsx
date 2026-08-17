@@ -1,5 +1,4 @@
 import { Box, Group, NumberInput, Stack, Text, UnstyledButton, ActionIcon, Tooltip, Menu } from "@mantine/core";
-import { useTranslation } from "react-i18next";
 import {
   IconGripVertical,
   IconChevronUp,
@@ -11,13 +10,16 @@ import {
   IconDotsVertical,
   IconFlag,
 } from "@tabler/icons-react";
-import * as React from "react";
 import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import type { User } from "@/client";
 import { TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { ReportButton } from "@/features/moderation/components/ReportButton";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { ReportButton } from "@/features/moderation/components/ReportButton";
+
 import rowStyles from "./RankingRow.module.css";
 
 interface RankingRowProps {

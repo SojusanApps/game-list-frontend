@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
 
 describe("resolveAuthGuardOutcome", () => {

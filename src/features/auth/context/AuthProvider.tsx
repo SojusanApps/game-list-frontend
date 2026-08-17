@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from "react";
+
 import { keycloak } from "@/lib/keycloak";
+
 import { useAuthStore } from "../store/authStore";
 
 export interface AuthContextType {

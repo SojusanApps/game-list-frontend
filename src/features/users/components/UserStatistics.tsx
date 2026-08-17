@@ -1,6 +1,7 @@
+import { Box, Group, SimpleGrid, Stack, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Group, SimpleGrid, Stack, Text } from "@mantine/core";
+
 import { UserDetail, GameListStatusEnum } from "@/client";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 

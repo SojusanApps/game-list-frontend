@@ -1,7 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getGamesList, getCompaniesList } from "../api/game";
+
 import { getUserLists } from "@/features/users/api/user";
 import { searchKeys } from "@/lib/queryKeys";
+
+import { getGamesList, getCompaniesList } from "../api/game";
 
 export type SearchCategory = "games" | "companies" | "users";
 

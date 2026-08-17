@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+
+import type { RankedItem } from "@/features/ranking/types";
 import {
   getTotalRounds,
   getTotalDuels,
@@ -6,7 +8,6 @@ import {
   getByeItemId,
   pairKey,
 } from "@/features/ranking/utils/swissTournament";
-import type { RankedItem } from "@/features/ranking/types";
 
 // ---------------------------------------------------------------------------
 // Helpers

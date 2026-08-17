@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useIntersection } from "@mantine/hooks";
+import { useEffect } from "react";
 
 interface UseInfiniteScrollOptions {
   hasNextPage?: boolean;

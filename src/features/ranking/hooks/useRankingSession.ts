@@ -1,5 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
+
 import type { CollectionItem } from "@/client";
+
 import type {
   RankedItem,
   CurrentDuel,
@@ -10,8 +12,8 @@ import type {
   RankingProgress,
 } from "../types";
 import { DEFAULT_RATING, updateEloRatings } from "../utils/eloRating";
-import { buildRoundPairings, getTotalRounds, getTotalDuels, getByeItemId, pairKey } from "../utils/swissTournament";
 import { sortByRating } from "../utils/rankingSort";
+import { buildRoundPairings, getTotalRounds, getTotalDuels, getByeItemId, pairKey } from "../utils/swissTournament";
 import { useRankingStorage } from "./useRankingStorage";
 
 // ---------------------------------------------------------------------------

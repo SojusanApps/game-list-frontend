@@ -1,10 +1,12 @@
+import { Paper, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
+
 import { PageMeta } from "@/components/ui/PageMeta";
-import { Paper, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
-import { useGetApiVersion } from "../hooks/adminQueries";
+
 import { version as uiVersion } from "../../../../package.json";
+import { useGetApiVersion } from "../hooks/adminQueries";
 
 function VersionCard({
   label,

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NotificationsPage } from "@/features/notifications";
+
 import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
+import { NotificationsPage } from "@/features/notifications";
 
 export const Route = createFileRoute("/notifications")({
   beforeLoad: ({ context, location }) => {

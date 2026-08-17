@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getGameListCompare, getGameListsList, getRandomPtpGame } from "../api/game";
-import { gameListKeys } from "@/lib/queryKeys";
+
 import { GameListStatusEnum } from "@/client";
+import { gameListKeys } from "@/lib/queryKeys";
+
+import { getGameListCompare, getGameListsList, getRandomPtpGame } from "../api/game";
 
 export type GameListGameFilters = {
   developer?: string;

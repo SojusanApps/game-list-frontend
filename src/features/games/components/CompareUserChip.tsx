@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
 import { Box, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
+
 import { UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+
 import styles from "./CompareUserChip.module.css";
 
 interface CompareUserChipProps {

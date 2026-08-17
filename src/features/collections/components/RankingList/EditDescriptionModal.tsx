@@ -1,12 +1,13 @@
-import * as React from "react";
-import { useForm, schemaResolver } from "@mantine/form";
-import { z } from "zod";
-import { notifications } from "@mantine/notifications";
-import { Button } from "@/components/ui/Button";
 import { Box, Group, Loader, Modal, Stack, Text, Title, Textarea, UnstyledButton } from "@mantine/core";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import i18n from "@/lib/i18n";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/Button";
+import i18n from "@/lib/i18n";
 
 const validationSchema = z.object({
   description: z.string().max(500, i18n.t("validation:descriptionMax")).optional(),

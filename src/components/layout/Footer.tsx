@@ -1,12 +1,14 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
 import { Box, Text, SegmentedControl } from "@mantine/core";
-import AppLogo from "@/components/ui/AppLogo";
-import styles from "./Footer.module.css";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
+import AppLogo from "@/components/ui/AppLogo";
 import i18n from "@/lib/i18n";
 import { useLanguageStore, type Language } from "@/lib/languageStore";
-import { useQueryClient } from "@tanstack/react-query";
+
+import styles from "./Footer.module.css";
 
 const Footer = (): React.JSX.Element => {
   const currentYear = new Date().getFullYear();

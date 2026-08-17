@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { selectNextPair } from "@/features/ranking/utils/pairSelection";
+
 import type { RankedItem, DuelResult } from "@/features/ranking/types";
+import { selectNextPair } from "@/features/ranking/utils/pairSelection";
 
 function makeItem(id: number, rating: number = 1000, matchesPlayed: number = 0): RankedItem {
   return {

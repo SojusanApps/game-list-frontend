@@ -1,5 +1,5 @@
-import { useMutation, UseMutationOptions, DefaultError } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
+import { useMutation, UseMutationOptions, DefaultError } from "@tanstack/react-query";
 
 /**
  * Custom wrapper around useMutation that provides consistent error handling

@@ -1,6 +1,7 @@
+import { SimpleGrid, Stack, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { SimpleGrid, Stack, Text } from "@mantine/core";
+
 import { Game } from "@/client";
 
 interface GameStatisticsProps {

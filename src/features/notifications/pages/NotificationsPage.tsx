@@ -1,18 +1,3 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { Notification } from "@/client";
-import {
-  useGetNotifications,
-  useMarkNotificationAsRead,
-  useMarkAllNotificationsAsRead,
-  useDeleteNotification,
-  useDeleteAllReadNotifications,
-} from "../hooks/notificationQueries";
-import { IconTrash, IconCheck } from "@tabler/icons-react";
-import pageStyles from "./NotificationsPage.module.css";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { SafeImage } from "@/components/ui/SafeImage";
 import {
   Table,
   Badge,
@@ -27,7 +12,25 @@ import {
   SegmentedControl,
   Select,
 } from "@mantine/core";
+import { IconTrash, IconCheck } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
+import { Notification } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { SafeImage } from "@/components/ui/SafeImage";
+
+import {
+  useGetNotifications,
+  useMarkNotificationAsRead,
+  useMarkAllNotificationsAsRead,
+  useDeleteNotification,
+  useDeleteAllReadNotifications,
+} from "../hooks/notificationQueries";
+
+import pageStyles from "./NotificationsPage.module.css";
 
 function getLevelColor(level?: string) {
   switch (level?.toLowerCase()) {

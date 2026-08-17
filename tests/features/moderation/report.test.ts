@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { ReportStatusEnum, TargetTypeEnum, type Report, type UserSimple } from "@/client/types.gen";
 import {
   buildReportFilters,

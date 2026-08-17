@@ -1,7 +1,8 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { UserDetail } from "@/client";
 import { timeAgo } from "@/utils/dateUtils";
 
@@ -39,9 +40,7 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
           <Text fw={500} c="var(--color-text-600)">
             {t("info.joined")}
           </Text>
-          <Text c="var(--color-text-900)">
-            {new Date(userDetails?.date_joined || "").toLocaleDateString()}
-          </Text>
+          <Text c="var(--color-text-900)">{new Date(userDetails?.date_joined || "").toLocaleDateString()}</Text>
         </Group>
         <Group justify="space-between" fz="sm">
           <Text fw={500} c="var(--color-text-600)">

@@ -1,8 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { UserProfilePage } from "@/features/users";
-import { slugSchema, idSchema } from "@/lib/validation";
-import { userKeys } from "@/lib/queryKeys";
 import { getUserDetails } from "@/features/users/api/user";
+import { userKeys } from "@/lib/queryKeys";
+import { slugSchema, idSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/profile/$id/$slug")({
   beforeLoad: ({ params }) => {

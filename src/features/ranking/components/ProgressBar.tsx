@@ -1,6 +1,7 @@
-import * as React from "react";
 import { Box, Group, Stack, Text } from "@mantine/core";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import type { RankingProgress } from "../types";
 
 interface ProgressBarProps {

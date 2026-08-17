@@ -1,5 +1,6 @@
-import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import { getCurrentUser } from "@/features/users/api/user";
 import { userKeys } from "@/lib/queryKeys";

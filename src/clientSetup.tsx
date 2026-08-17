@@ -1,6 +1,6 @@
 import { client } from "./client/client.gen";
-import { keycloak } from "./lib/keycloak";
 import { env } from "./config/env";
+import { keycloak } from "./lib/keycloak";
 import { useLanguageStore } from "./lib/languageStore";
 
 const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {

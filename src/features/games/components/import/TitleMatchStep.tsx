@@ -1,14 +1,16 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { cn } from "@/utils/cn";
 import { Box, Stack, Text, Title, Group, Badge, Divider, Progress, Loader } from "@mantine/core";
 import { IconAlertTriangle, IconRefresh } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
+import { TitleImportResult, TitleImportMatch } from "@/client";
 import { Button } from "@/components/ui/Button";
 import ItemOverlay from "@/components/ui/ItemOverlay";
-import { TitleImportResult, TitleImportMatch } from "@/client";
+import { cn } from "@/utils/cn";
+
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 import { MatchDecision } from "./types";
+
 import styles from "./TitleMatchStep.module.css";
 
 interface CandidateCardProps {

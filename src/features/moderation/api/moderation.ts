@@ -4,8 +4,8 @@ import {
   ModerationService,
   ReportCreateWritable,
 } from "@/client";
-import StatusCode from "@/utils/StatusCode";
 import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type ModerationReportsListQuery = ModerationReportsListData["query"];
 export interface ReportRejectBody {

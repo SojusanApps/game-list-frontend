@@ -1,4 +1,16 @@
 import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+  UseInfiniteQueryOptions,
+  InfiniteData,
+} from "@tanstack/react-query";
+
+import { GameList, PaginatedGameSimpleListList, PaginatedGameListList, GameListCreateWritable } from "@/client";
+import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
+
+import {
   getGenresList,
   getGamesList,
   GameGamesListDataQuery,
@@ -40,16 +52,6 @@ import {
   GameReviewCreateDataBody,
   GameReviewPartialUpdateDataBody,
 } from "../api/game";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-  UseInfiniteQueryOptions,
-  InfiniteData,
-} from "@tanstack/react-query";
-import { GameList, PaginatedGameSimpleListList, PaginatedGameListList, GameListCreateWritable } from "@/client";
-import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
 
 export const useGetPlatformsInfiniteQuery = (name?: string) => {
   return useInfiniteQuery({

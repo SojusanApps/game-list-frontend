@@ -1,6 +1,3 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
 import {
   Badge,
   Box,
@@ -17,10 +14,14 @@ import {
   Title,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
+import { Report, ReportStatusEnum, TargetTypeEnum, type UserSimple } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { Report, ReportStatusEnum, TargetTypeEnum, type UserSimple } from "@/client";
 import { useIsStaff } from "@/features/auth";
 import { useAcceptReport, useGetReports, useRejectReport } from "@/features/moderation/hooks/moderationQueries";
 import { buildReportFilters, canModerateReport, ReportFilterState } from "@/features/moderation/utils/report";

@@ -1,9 +1,10 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
 import { Box, Center, Paper, Stack, Text, Title } from "@mantine/core";
-import { PageMeta } from "@/components/ui/PageMeta";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/Button";
+import { PageMeta } from "@/components/ui/PageMeta";
 
 export default function NotFound(): React.JSX.Element {
   const { t } = useTranslation();

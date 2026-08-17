@@ -1,11 +1,13 @@
-import * as React from "react";
 import { Box, Stack } from "@mantine/core";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+
 import { Game, CompanyGame } from "@/client";
+import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+
+import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
 interface GameDetailsRelatedTabProps {
   gameDetails?: Game;

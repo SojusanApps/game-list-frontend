@@ -1,8 +1,15 @@
+import { Box, Group, ActionIcon, Title, SegmentedControl, Text, Loader, Center, Stack, Button } from "@mantine/core";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import * as React from "react";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Group, ActionIcon, Title, SegmentedControl, Text, Loader, Center, Stack, Button } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+
+import { GameSimpleList } from "@/client";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { useLanguageStore } from "@/lib/languageStore";
+import { cn } from "@/utils/cn";
+
 import { useGetReleaseCalendar } from "../../hooks/gameQueries";
 import {
   getStartOfMonth,
@@ -13,13 +20,9 @@ import {
   getCalendarGridDays,
   getWeekGridDays,
 } from "../../utils/calendarUtils";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import DayDetailModal from "./DayDetailModal";
+
 import styles from "./CalendarView.module.css";
-import { cn } from "@/utils/cn";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import { GameSimpleList } from "@/client";
-import { useLanguageStore } from "@/lib/languageStore";
 
 export default function CalendarView(): React.JSX.Element {
   const { t } = useTranslation("games");

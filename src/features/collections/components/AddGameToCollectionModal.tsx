@@ -1,14 +1,16 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { useGetGamesList } from "@/features/games/hooks/gameQueries";
-import { GameSimpleList } from "@/client";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { IconSearch, IconX } from "@tabler/icons-react";
 import { ActionIcon, Modal, Stack, Group, Box, Title, Text, TextInput, UnstyledButton } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { SafeImage } from "@/components/ui/SafeImage";
-import { useAddCollectionItem } from "../hooks/useCollectionQueries";
 import { notifications } from "@mantine/notifications";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
+import { GameSimpleList } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { useGetGamesList } from "@/features/games/hooks/gameQueries";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+
+import { useAddCollectionItem } from "../hooks/useCollectionQueries";
 
 interface AddGameToCollectionModalProps {
   onClose: () => void;

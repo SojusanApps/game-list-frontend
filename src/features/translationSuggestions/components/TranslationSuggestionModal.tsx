@@ -1,7 +1,3 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useForm } from "@mantine/form";
-import { IconChevronDown } from "@tabler/icons-react";
 import {
   Box,
   Checkbox,
@@ -16,17 +12,23 @@ import {
   Textarea,
   UnstyledButton,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { Button } from "@/components/ui/Button";
+import { IconChevronDown } from "@tabler/icons-react";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import { FieldEnum } from "@/client";
+import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
-import { SuggestionRow } from "./SuggestionRow";
+
 import { useCreateTranslationSuggestion, useGetTranslationSuggestions } from "../hooks/translationSuggestionQueries";
 import {
   PROPOSED_VALUE_MAX_LENGTH,
   findOwnPendingSuggestion,
   validateProposedValue,
 } from "../utils/translationSuggestion";
+import { SuggestionRow } from "./SuggestionRow";
 
 const REFERENCE_VALUE_STYLE: React.CSSProperties = {
   whiteSpace: "pre-wrap",

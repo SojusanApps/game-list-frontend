@@ -1,10 +1,11 @@
-import * as React from "react";
 import { Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { GameList, GameListStatusEnum } from "@/client";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { SafeImage } from "@/components/ui/SafeImage";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 
 interface GameListUpdateProps {

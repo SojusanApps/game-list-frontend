@@ -1,8 +1,10 @@
+import { Box, Stack, SegmentedControl, Title, Container } from "@mantine/core";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Stack, SegmentedControl, Title, Container } from "@mantine/core";
+
 import { PageMeta } from "@/components/ui/PageMeta";
+
 import CalendarView from "../components/ReleaseCalendar/CalendarView";
 import ListView from "../components/ReleaseCalendar/ListView";
 

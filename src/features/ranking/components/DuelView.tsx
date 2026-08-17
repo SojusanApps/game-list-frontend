@@ -1,9 +1,11 @@
+import { Box, Flex, Group, Kbd, Stack, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Flex, Group, Kbd, Stack, Text } from "@mantine/core";
+
 import { Button } from "@/components/ui/Button";
-import { DuelGameCard } from "./DuelGameCard";
+
 import type { CurrentDuel, DuelChoice } from "../types";
+import { DuelGameCard } from "./DuelGameCard";
 
 interface DuelViewProps {
   duel: CurrentDuel;

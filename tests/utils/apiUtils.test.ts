@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { ApiError, handleApiError } from "@/utils/apiUtils";
 
 function jsonResponse(status: number, body: unknown): Response {

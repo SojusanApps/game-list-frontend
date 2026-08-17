@@ -1,15 +1,17 @@
+import { GravatarQuickEditorCore } from "@gravatar-com/quick-editor";
+import { Box, Stack, Text, Title } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Stack, Text, Title } from "@mantine/core";
+
+import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { Button } from "@/components/ui/Button";
-import { useCurrentUserId } from "@/features/auth";
-import { useGetUserDetails } from "../hooks/userQueries";
-import { GravatarQuickEditorCore } from "@gravatar-com/quick-editor";
-import { useQueryClient } from "@tanstack/react-query";
-import { userKeys } from "@/lib/queryKeys";
 import { env } from "@/config/env";
+import { useCurrentUserId } from "@/features/auth";
+import { userKeys } from "@/lib/queryKeys";
+
+import { useGetUserDetails } from "../hooks/userQueries";
 
 const KEYCLOAK_ACCOUNT_CONSOLE_URL = `${env.VITE_KEYCLOAK_URL}/realms/${env.VITE_KEYCLOAK_REALM}/account`;
 const KEYCLOAK_USERNAME_URL = `${KEYCLOAK_ACCOUNT_CONSOLE_URL}/#/personal-info`;

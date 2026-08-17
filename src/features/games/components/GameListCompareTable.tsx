@@ -1,14 +1,17 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
 import { Badge, Box, Table, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+
 import { GameListCompareRow, UserDetail } from "@/client";
-import { SafeImage } from "@/components/ui/SafeImage";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { getRatingColor } from "@/utils/ratingUtils";
+
+import { CompareSection } from "../utils/gameListCompare";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { getStatusConfig } from "../utils/statusConfig";
-import { getRatingColor } from "@/utils/ratingUtils";
-import { CompareSection } from "../utils/gameListCompare";
 import { CompareUserChip } from "./CompareUserChip";
+
 import styles from "./GameListCompareTable.module.css";
 
 interface GameListCompareTableProps {

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomePage } from "@/features/games";
+
 import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
+import { HomePage } from "@/features/games";
 
 export const Route = createFileRoute("/home")({
   beforeLoad: ({ context, location }) => {

@@ -1,17 +1,19 @@
+import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
+import { Box, Group, Loader, Stack, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+
 import { CollectionItem } from "@/client";
-import { SortableRankingRow } from "./SortableRankingRow";
 import { VirtualList } from "@/components/ui/VirtualList";
+
 import {
   useReorderCollectionItem,
   useUpdateCollectionItem,
   useCollectionItemsInfiniteQuery,
 } from "../../hooks/useCollectionQueries";
-import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Box, Group, Loader, Stack, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import EditDescriptionModal from "./EditDescriptionModal";
+import { SortableRankingRow } from "./SortableRankingRow";
 
 interface RankingListViewProps {
   collectionId: number;

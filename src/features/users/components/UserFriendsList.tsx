@@ -1,7 +1,8 @@
+import { Box, Group, Text, Tooltip } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
-import { Box, Group, Text, Tooltip } from "@mantine/core";
+
 import { UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 

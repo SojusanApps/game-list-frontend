@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { GameListStatusEnum } from "@/client";
+
 import { GameRow } from "./types";
 
 /** Owns the list of configurable game rows shared by both import flows. */

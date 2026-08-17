@@ -1,5 +1,3 @@
-import StatusCode from "@/utils/StatusCode";
-import { handleApiError } from "@/utils/apiUtils";
 import {
   GameService,
   GameGamesListData,
@@ -23,6 +21,8 @@ import {
   GameGameReviewsCreateData,
   GameGameReviewsPartialUpdateData,
 } from "@/client";
+import { handleApiError } from "@/utils/apiUtils";
+import StatusCode from "@/utils/StatusCode";
 
 export type GameCompaniesListDataQuery = GameCompaniesListData["query"];
 export type GameGamesListDataQuery = GameGamesListData["query"];

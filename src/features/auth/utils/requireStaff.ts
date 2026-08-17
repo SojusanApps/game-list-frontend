@@ -1,8 +1,9 @@
 import { redirect } from "@tanstack/react-router";
-import type { MyRouterContext } from "@/routes/__root";
+
 import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
 import { getCurrentUser } from "@/features/users/api/user";
 import { userKeys } from "@/lib/queryKeys";
+import type { MyRouterContext } from "@/routes/__root";
 
 interface RequireStaffArgs {
   context: MyRouterContext;

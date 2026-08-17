@@ -1,10 +1,10 @@
+import { Box, Group, Skeleton, Stack, Text, Title, UnstyledButton, TextInput, Drawer } from "@mantine/core";
+import { IconSearch, IconFilter } from "@tabler/icons-react";
+import { InfiniteData } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import ItemOverlay from "@/components/ui/ItemOverlay";
-import GameSearchFilter, {
-  ValidationSchema as GameSearchFilterValidationSchema,
-} from "@/features/games/components/GameSearchFilter";
-import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+
 import {
   GameSimpleList,
   Company,
@@ -13,16 +13,17 @@ import {
   PaginatedGameSimpleListList,
   PaginatedUserList,
 } from "@/client";
-import { useSearchInfiniteQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
-import { InfiniteData } from "@tanstack/react-query";
-import { Route } from "@/routes/search";
-import { useNavigate } from "@tanstack/react-router";
-import { PageMeta } from "@/components/ui/PageMeta";
-import { Box, Group, Skeleton, Stack, Text, Title, UnstyledButton, TextInput, Drawer } from "@mantine/core";
-import { GridList } from "@/components/ui/GridList";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import { IconSearch, IconFilter } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
+import { GridList } from "@/components/ui/GridList";
+import ItemOverlay from "@/components/ui/ItemOverlay";
+import { PageMeta } from "@/components/ui/PageMeta";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import GameSearchFilter, {
+  ValidationSchema as GameSearchFilterValidationSchema,
+} from "@/features/games/components/GameSearchFilter";
+import { useSearchInfiniteQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
+import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { Route } from "@/routes/search";
 
 type searchResultsType = PaginatedCompanyList | PaginatedGameSimpleListList | PaginatedUserList | undefined;
 

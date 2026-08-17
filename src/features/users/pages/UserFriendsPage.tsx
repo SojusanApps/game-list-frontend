@@ -1,12 +1,14 @@
+import { Box, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { getRouteApi } from "@tanstack/react-router";
-import { useGetUserDetails } from "../hooks/userQueries";
-import { useGetFriendshipsInfiniteQuery } from "../hooks/friendshipQueries";
+
 import { PageMeta } from "@/components/ui/PageMeta";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+
 import FriendCard from "../components/FriendCard";
-import { Box, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { useGetFriendshipsInfiniteQuery } from "../hooks/friendshipQueries";
+import { useGetUserDetails } from "../hooks/userQueries";
 
 const routeApi = getRouteApi("/profile_/$id/$slug/friends");
 

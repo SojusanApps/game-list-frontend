@@ -1,11 +1,12 @@
+import { Stack, Group, Box, Title, Text } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
+
 import { Collection, TypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
-import { Stack, Group, Box, Title, Text } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
 
 interface CollectionCardProps {
   collection: Collection;

@@ -1,10 +1,11 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
-import { SafeImage } from "@/components/ui/SafeImage";
-import ReactMarkdown from "react-markdown";
 import { Box, Group, Stack, Text, UnstyledButton } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+
+import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 
 type GameReviewProps = {

@@ -1,12 +1,14 @@
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import { ActionIcon, Group, Modal, Stack, Text, Textarea, Tooltip } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconFlag } from "@tabler/icons-react";
+import type { TFunction } from "i18next";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+
 import { ReportCreateWritable, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
+
 import { useCreateReport } from "../hooks/moderationQueries";
 import { canReport, validateReportReason, type ReportReasonError } from "../utils/report";
 

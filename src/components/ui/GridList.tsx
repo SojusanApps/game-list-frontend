@@ -1,5 +1,5 @@
-import React from "react";
 import { SimpleGrid } from "@mantine/core";
+import React from "react";
 
 interface GridListProps {
   children: React.ReactNode;

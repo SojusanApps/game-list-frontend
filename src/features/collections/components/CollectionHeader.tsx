@@ -1,11 +1,12 @@
+import { Stack, Group, Title, Text, Flex } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
+
 import { CollectionDetail, ModeEnum, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
-import { Stack, Group, Title, Text, Flex } from "@mantine/core";
 
 interface CollectionHeaderProps {
   collection: CollectionDetail;

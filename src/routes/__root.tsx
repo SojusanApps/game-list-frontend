@@ -1,10 +1,11 @@
-import React from "react";
-import { createRootRouteWithContext } from "@tanstack/react-router";
 import { HelmetProvider } from "@dr.pogodin/react-helmet";
+import { QueryClient } from "@tanstack/react-query";
+import { createRootRouteWithContext } from "@tanstack/react-router";
+import React from "react";
+
 import Layout from "@/components/layout/Layout";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { AuthContextType } from "@/features/auth/context/AuthProvider";
-import { QueryClient } from "@tanstack/react-query";
 import { NotFound } from "@/features/misc";
 
 export interface MyRouterContext {

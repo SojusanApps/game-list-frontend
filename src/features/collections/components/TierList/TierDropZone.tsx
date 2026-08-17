@@ -1,6 +1,7 @@
-import * as React from "react";
-import { Box } from "@mantine/core";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { Box } from "@mantine/core";
+import * as React from "react";
+
 import { cn } from "@/utils/cn";
 
 interface TierDropZoneProps {

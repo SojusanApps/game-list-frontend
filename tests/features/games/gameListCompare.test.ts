@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { buildCompareSections } from "@/features/games/utils/gameListCompare";
+
 import { GameListCompareRow, GameListCompareResponse } from "@/client";
+import { buildCompareSections } from "@/features/games/utils/gameListCompare";
 
 const makeRow = (overrides: Partial<GameListCompareRow> = {}): GameListCompareRow => ({
   game_id: 1,

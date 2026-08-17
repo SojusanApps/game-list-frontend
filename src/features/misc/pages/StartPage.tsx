@@ -1,6 +1,7 @@
-import * as React from "react";
-import { Link } from "@tanstack/react-router";
 import { Box, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+
 import { PageMeta } from "@/components/ui/PageMeta";
 import { useAuth } from "@/features/auth";
 

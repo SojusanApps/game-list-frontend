@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchEnginePage } from "@/features/games";
 import { z } from "zod";
+
+import { SearchEnginePage } from "@/features/games";
 
 const ORDERING_OPTIONS = [
   "-created_at",

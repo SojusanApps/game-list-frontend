@@ -1,10 +1,11 @@
+import { Center, Loader, Paper, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Center, Loader, Paper, SegmentedControl, Stack, Text, Title } from "@mantine/core";
-import { Button } from "@/components/ui/Button";
+
 import AppLogo from "@/components/ui/AppLogo";
-import { initKeycloak } from "@/lib/keycloak";
+import { Button } from "@/components/ui/Button";
 import i18n from "@/lib/i18n";
+import { initKeycloak } from "@/lib/keycloak";
 import { useLanguageStore, type Language } from "@/lib/languageStore";
 
 type SessionState = "pending" | "ready" | "error";

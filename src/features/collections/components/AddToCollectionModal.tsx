@@ -1,16 +1,18 @@
-import * as React from "react";
-import { useForm, schemaResolver } from "@mantine/form";
-import { z } from "zod";
-import { notifications } from "@mantine/notifications";
-import { Button } from "@/components/ui/Button";
 import { ActionIcon, Modal, Stack, Group, Box, Title } from "@mantine/core";
+import { useForm, schemaResolver } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
-import { useCollectionsInfiniteQuery, useAddCollectionItem } from "../hooks/useCollectionQueries";
-import { useCurrentUserId } from "@/features/auth";
-import { Collection } from "@/client";
-import i18n from "@/lib/i18n";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+
+import { Collection } from "@/client";
+import { Button } from "@/components/ui/Button";
+import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { useCurrentUserId } from "@/features/auth";
+import i18n from "@/lib/i18n";
+
+import { useCollectionsInfiniteQuery, useAddCollectionItem } from "../hooks/useCollectionQueries";
 
 const validationSchema = z.object({
   collections: z.array(z.string()).min(1, i18n.t("validation:selectAtLeastOne")),
