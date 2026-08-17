@@ -25,7 +25,6 @@ export function useAppMutation<TData = unknown, TError = DefaultError, TVariable
       }
 
       if (options.onError) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (options.onError as any)(...args);
       }
     },
