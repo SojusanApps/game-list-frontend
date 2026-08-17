@@ -7,7 +7,14 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tanstackRouter({ quoteStyle: "double", semicolons: true }), react()],
+  plugins: [
+    tanstackRouter({
+      quoteStyle: "double",
+      semicolons: true,
+      routeTreeFileHeader: ["/* oxlint-disable */", "// @ts-nocheck", "// noinspection JSUnusedGlobalSymbols"],
+    }),
+    react(),
+  ],
   envDir: "env",
   resolve: {
     alias: {

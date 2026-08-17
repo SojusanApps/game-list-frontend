@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* oxlint-disable */
 
 // @ts-nocheck
 
@@ -8,27 +8,27 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as SettingsRouteImport } from "./routes/settings";
-import { Route as SearchRouteImport } from "./routes/search";
-import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
-import { Route as NotificationsRouteImport } from "./routes/notifications";
-import { Route as ImportRouteImport } from "./routes/import";
-import { Route as HomeRouteImport } from "./routes/home";
-import { Route as AdminRouteImport } from "./routes/admin";
 import { Route as SplatRouteImport } from "./routes/$";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as AdminRouteImport } from "./routes/admin";
 import { Route as AdminReportsRouteImport } from "./routes/admin_.reports";
-import { Route as ProfileIdSlugRouteImport } from "./routes/profile.$id.$slug";
-import { Route as GameIdSlugRouteImport } from "./routes/game.$id.$slug";
-import { Route as GameListIdSlugRouteImport } from "./routes/game-list.$id.$slug";
-import { Route as CompanyIdSlugRouteImport } from "./routes/company.$id.$slug";
+import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
 import { Route as CollectionIdSlugRouteImport } from "./routes/collection.$id.$slug";
-import { Route as ProfileIdSlugFriendsRouteImport } from "./routes/profile_.$id.$slug.friends";
-import { Route as ProfileIdSlugCollectionsRouteImport } from "./routes/profile_.$id.$slug.collections";
-import { Route as GameIdSlugReviewsRouteImport } from "./routes/game_.$id.$slug.reviews";
+import { Route as CompanyIdSlugRouteImport } from "./routes/company.$id.$slug";
+import { Route as GameListIdSlugRouteImport } from "./routes/game-list.$id.$slug";
 import { Route as GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport } from "./routes/game-list.compare.$firstUserId.$firstUserSlug.$secondUserId.$secondUserSlug";
+import { Route as GameIdSlugRouteImport } from "./routes/game.$id.$slug";
+import { Route as GameIdSlugReviewsRouteImport } from "./routes/game_.$id.$slug.reviews";
+import { Route as HomeRouteImport } from "./routes/home";
+import { Route as ImportRouteImport } from "./routes/import";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as NotificationsRouteImport } from "./routes/notifications";
+import { Route as ProfileIdSlugRouteImport } from "./routes/profile.$id.$slug";
+import { Route as ProfileIdSlugCollectionsRouteImport } from "./routes/profile_.$id.$slug.collections";
+import { Route as ProfileIdSlugFriendsRouteImport } from "./routes/profile_.$id.$slug.friends";
+import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
+import { Route as SearchRouteImport } from "./routes/search";
+import { Route as SettingsRouteImport } from "./routes/settings";
 
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
@@ -75,12 +75,11 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminTranslationSuggestionsRoute =
-  AdminTranslationSuggestionsRouteImport.update({
-    id: "/admin_/translation-suggestions",
-    path: "/admin/translation-suggestions",
-    getParentRoute: () => rootRouteImport,
-  } as any);
+const AdminTranslationSuggestionsRoute = AdminTranslationSuggestionsRouteImport.update({
+  id: "/admin_/translation-suggestions",
+  path: "/admin/translation-suggestions",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: "/admin_/reports",
   path: "/admin/reports",
@@ -116,25 +115,22 @@ const ProfileIdSlugFriendsRoute = ProfileIdSlugFriendsRouteImport.update({
   path: "/profile/$id/$slug/friends",
   getParentRoute: () => rootRouteImport,
 } as any);
-const ProfileIdSlugCollectionsRoute =
-  ProfileIdSlugCollectionsRouteImport.update({
-    id: "/profile_/$id/$slug/collections",
-    path: "/profile/$id/$slug/collections",
-    getParentRoute: () => rootRouteImport,
-  } as any);
+const ProfileIdSlugCollectionsRoute = ProfileIdSlugCollectionsRouteImport.update({
+  id: "/profile_/$id/$slug/collections",
+  path: "/profile/$id/$slug/collections",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const GameIdSlugReviewsRoute = GameIdSlugReviewsRouteImport.update({
   id: "/game_/$id/$slug/reviews",
   path: "/game/$id/$slug/reviews",
   getParentRoute: () => rootRouteImport,
 } as any);
 const GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute =
-  GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport.update(
-    {
-      id: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
-      path: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
-      getParentRoute: () => rootRouteImport,
-    } as any,
-  );
+  GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRouteImport.update({
+    id: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
+    path: "/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug",
+    getParentRoute: () => rootRouteImport,
+  } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -463,6 +459,4 @@ const rootRouteChildren: RootRouteChildren = {
   GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute:
     GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute,
 };
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
