@@ -35,9 +35,8 @@
     },
     "credentials": {
       "sectionTitle": "Dane logowania",
-      "description": "Twoją nazwą użytkownika i hasłem zarządza nasz dostawca logowania, nie ta strona.",
-      "changeUsernameButton": "Zmień nazwę użytkownika",
-      "changePasswordButton": "Zmień hasło"
+      "description": "Aby zmienić swoje dane osobowe, płeć, nazwę użytkownika lub hasło, przejdź do naszego zewnętrznego dostawcy tożsamości, Sojusan Auth.",
+      "manageAccountButton": "Zarządzaj kontem w Sojusan Auth"
     }
   },
   "info": {

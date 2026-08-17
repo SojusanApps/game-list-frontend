@@ -1,7 +1,7 @@
 {
   "name": "my-game-list-frontend",
   "version": "0.1.0",
-  "packageManager": "pnpm@11.7.0",
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "dev": "cp ../my-game-list-backend/openapi.json . && openapi-ts && vite",
     "build": "tsc && vite build",

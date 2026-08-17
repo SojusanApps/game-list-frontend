@@ -33,9 +33,8 @@
     },
     "credentials": {
       "sectionTitle": "Account credentials",
-      "description": "Your username and password are managed by our login provider, not here.",
-      "changeUsernameButton": "Change username",
-      "changePasswordButton": "Change password"
+      "description": "To change your personal information, gender, username, or password, go to our external identity provider, Sojusan Auth.",
+      "manageAccountButton": "Manage account on Sojusan Auth"
     }
   },
   "info": {

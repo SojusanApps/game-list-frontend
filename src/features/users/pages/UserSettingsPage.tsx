@@ -14,8 +14,6 @@ import { userKeys } from "@/lib/queryKeys";
 import { useGetUserDetails } from "../hooks/userQueries";
 
 const KEYCLOAK_ACCOUNT_CONSOLE_URL = `${env.VITE_KEYCLOAK_URL}/realms/${env.VITE_KEYCLOAK_REALM}/account`;
-const KEYCLOAK_USERNAME_URL = `${KEYCLOAK_ACCOUNT_CONSOLE_URL}/#/personal-info`;
-const KEYCLOAK_PASSWORD_URL = `${KEYCLOAK_ACCOUNT_CONSOLE_URL}/#/account-security/signing-in`;
 
 export default function UserSettingsPage(): React.JSX.Element {
   const { t, i18n } = useTranslation("users");
@@ -132,28 +130,16 @@ export default function UserSettingsPage(): React.JSX.Element {
               <Text fz="sm" c="var(--color-text-500)">
                 {t("settings.credentials.description")}
               </Text>
-              <Stack gap={12}>
-                <a
-                  href={KEYCLOAK_USERNAME_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  <Button variant="outline" fullWidth>
-                    {t("settings.credentials.changeUsernameButton")}
-                  </Button>
-                </a>
-                <a
-                  href={KEYCLOAK_PASSWORD_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  <Button variant="outline" fullWidth>
-                    {t("settings.credentials.changePasswordButton")}
-                  </Button>
-                </a>
-              </Stack>
+              <a
+                href={KEYCLOAK_ACCOUNT_CONSOLE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none" }}
+              >
+                <Button variant="default" fullWidth>
+                  {t("settings.credentials.manageAccountButton")}
+                </Button>
+              </a>
             </Stack>
           </Box>
         )}
