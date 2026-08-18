@@ -92,6 +92,7 @@ function DisplaySearchResults({
             name={user.username}
             itemPageUrl={`/profile/${user.id}/${user.slug}`}
             itemCoverUrl={user.gravatar_url}
+            isInactive={user.is_active === false}
           />
         );
       }

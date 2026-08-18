@@ -1,5 +1,6 @@
-import { Group, Stack, Title, Box, UnstyledButton } from "@mantine/core";
+import { Group, Stack, Title, Box, UnstyledButton, Tooltip } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
+import { IconUserOff } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -28,6 +29,7 @@ type ItemOverlayProps = {
   status?: string | null;
   showFullReleaseDate?: boolean;
   actionSlot?: React.ReactNode | ((hovered: boolean) => React.ReactNode);
+  isInactive?: boolean;
 };
 
 function ItemOverlay({
@@ -44,8 +46,9 @@ function ItemOverlay({
   status,
   showFullReleaseDate = false,
   actionSlot,
+  isInactive = false,
 }: Readonly<ItemOverlayProps>): React.JSX.Element {
-  useTranslation(); // subscribe to language changes so status ribbon label re-renders
+  const { t } = useTranslation("common"); // also subscribes to language changes so status ribbon label re-renders
   const isLogo = variant === "logo";
   const { hovered, ref } = useHover<HTMLDivElement>();
 
@@ -117,6 +120,14 @@ function ItemOverlay({
         >
           {getStatusConfig(status)?.label}
         </Box>
+      )}
+
+      {isInactive && (
+        <Tooltip label={t("inactiveUser")} withArrow>
+          <Box className={styles.inactiveBadge}>
+            <IconUserOff size={14} />
+          </Box>
+        </Tooltip>
       )}
 
       {/* Dynamic Info Anchor (Bottom) */}
