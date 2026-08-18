@@ -46,7 +46,7 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
           <Text fw={500} c="var(--color-text-600)">
             {t("info.gender")}
           </Text>
-          <Text c="var(--color-text-900)">{t("info.private")}</Text>
+          <Text c="var(--color-text-900)">{userDetails?.gender || "—"}</Text>
         </Group>
         <Group justify="space-between" fz="sm">
           <Text fw={500} c="var(--color-text-600)">
