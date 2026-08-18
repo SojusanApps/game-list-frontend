@@ -21,8 +21,14 @@
 }
 
 .scrollContainer {
-  max-height: 480px;
   overflow-y: auto;
+}
+
+/* Fixed layout so column widths come from the <colgroup>, not from row content —
+   otherwise widths recompute as different rows scroll into view. */
+.compareTable {
+  table-layout: fixed;
+  width: 100%;
 }
 
 /* Sticky on each th, not thead/tr — thead/tr sticky support is inconsistent across browsers. */

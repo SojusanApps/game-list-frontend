@@ -357,6 +357,7 @@
     "title": "Compare <0></0> vs <1></1>",
     "loading": "Loading comparison...",
     "gameColumn": "Game",
+    "scoreColumn": "Score",
     "bothHave": "Both Have",
     "onlyFirstUser": "Only {{username}}",
     "onlySecondUser": "Only {{username}}",
