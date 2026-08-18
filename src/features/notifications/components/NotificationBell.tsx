@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Notification } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import {
   useGetNotifications,
@@ -166,7 +167,7 @@ export default function NotificationBell(): React.JSX.Element {
                             paddingTop: "2px",
                           }}
                         >
-                          {new Date(notification.timestamp).toLocaleDateString()}
+                          {formatDisplayDate(notification.timestamp)}
                         </Text>
                       </Group>
                       <Text

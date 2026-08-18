@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { GameSimpleList } from "@/client/types.gen";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import { useGetGamesInfinite } from "../../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
@@ -89,7 +90,7 @@ export default function DayDetailModal({ opened, onClose, dateStr }: Readonly<Da
         <Text size="xl" fw={600}>
           {t("calendar.releasesFor")}{" "}
           <Text span c="var(--color-primary-500)" fw={800}>
-            {dateStr}
+            {formatDisplayDate(dateStr)}
           </Text>
         </Text>
       }

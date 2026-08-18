@@ -25,6 +25,7 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsStaff } from "@/features/auth";
 import { useAcceptReport, useGetReports, useRejectReport } from "@/features/moderation/hooks/moderationQueries";
 import { buildReportFilters, canModerateReport, ReportFilterState } from "@/features/moderation/utils/report";
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 const STATUS_COLORS: Record<ReportStatusEnum, string> = {
   [ReportStatusEnum.PENDING]: "yellow",
@@ -115,7 +116,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
             <Badge variant="light">{tModeration(`targetType.${report.target_type}`)}</Badge>
           </Group>
           <Text fz="xs" c="dimmed">
-            {t("reports.submittedAtLabel", { date: new Date(report.submitted_at).toLocaleString() })}
+            {t("reports.submittedAtLabel", { date: formatDisplayDateTime(report.submitted_at) })}
           </Text>
         </Group>
 
@@ -162,7 +163,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
             <UserChip user={report.reviewed_by} size={18} />
             {report.reviewed_at && (
               <Text fz="xs" c="dimmed">
-                {t("reports.reviewedAtLabel", { date: new Date(report.reviewed_at).toLocaleString() })}
+                {t("reports.reviewedAtLabel", { date: formatDisplayDateTime(report.reviewed_at) })}
               </Text>
             )}
           </Group>

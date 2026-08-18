@@ -182,7 +182,7 @@ export default function CalendarView(): React.JSX.Element {
                   )}
                 >
                   <Box className={styles.dayHeader}>
-                    <Text size="sm" className={[0, 6].includes(dayObj.getDay()) ? styles.weekend : undefined}>
+                    <Text size="sm" fw={700} className={[0, 6].includes(dayObj.getDay()) ? styles.weekend : undefined}>
                       {dayObj.getDate()}
                     </Text>
                   </Box>

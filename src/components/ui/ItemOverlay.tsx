@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { cn } from "@/utils/cn";
+import { formatDisplayDate } from "@/utils/dateUtils";
 import { getRatingColor } from "@/utils/ratingUtils";
 
 import { SafeImage } from "./SafeImage";
@@ -61,9 +62,7 @@ function ItemOverlay({
       if (Number.isNaN(date.getTime())) {
         return null;
       }
-      return showFullReleaseDate
-        ? date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-        : date.getFullYear().toString();
+      return showFullReleaseDate ? formatDisplayDate(date) : date.getFullYear().toString();
     } catch {
       return null;
     }

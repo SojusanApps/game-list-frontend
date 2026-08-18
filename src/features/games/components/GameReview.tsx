@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 type GameReviewProps = {
   gameReview: GameReviewType;
@@ -44,7 +45,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
   const [shouldTruncate, setShouldTruncate] = React.useState(false);
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const CreatedAt = new Date(gameReview.created_at);
+  const createdAt = formatDisplayDate(gameReview.created_at);
 
   React.useLayoutEffect(() => {
     // 160px is approx 6-7 lines
@@ -95,7 +96,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
               {gameReview?.user.username}
             </Text>
             <Text fz="xs" c="var(--color-text-500)" fw={500} fs="italic">
-              {CreatedAt.toLocaleDateString()}
+              {createdAt}
             </Text>
           </Stack>
         </Group>

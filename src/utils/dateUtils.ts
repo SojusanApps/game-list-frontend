@@ -2,7 +2,10 @@
  * Parses a date string based on simple format tokens.
  * Currently supports extracting parts from common formats like "YYYY-MM-DD".
  */
-export function parseDate(dateStr?: string | null, format = "YYYY-MM-DD"): Date | null {
+export function parseDate(
+  dateStr?: string | null,
+  format = "YYYY-MM-DD",
+): Date | null {
   if (!dateStr) return null;
 
   if (format === "YYYY-MM-DD" && /^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
@@ -16,13 +19,18 @@ export function parseDate(dateStr?: string | null, format = "YYYY-MM-DD"): Date 
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+import dayjs from "dayjs";
+
 import i18n from "@/lib/i18n";
 
 /**
  * Formats a Date object using simple format tokens.
  * Supports: YYYY, MM, DD
  */
-export function formatDate(date?: Date | null, format = "YYYY-MM-DD"): string | null {
+export function formatDate(
+  date?: Date | null,
+  format = "YYYY-MM-DD",
+): string | null {
   if (!date || Number.isNaN(date.getTime())) return null;
 
   const year = date.getFullYear().toString();
@@ -37,10 +45,31 @@ export function formatDate(date?: Date | null, format = "YYYY-MM-DD"): string | 
   return result;
 }
 
+type DateInput = Date | string | number | null | undefined;
+/**
+ * App-wide display format for dates without time, using the browser's locale.
+ */
+export function formatDisplayDate(dateInput?: DateInput): string | null {
+  if (!dateInput) return null;
+  const d = dayjs(dateInput);
+  return d.isValid() ? d.toDate().toLocaleDateString() : null;
+}
+
+/**
+ * App-wide display format for dates with time, using the browser's locale.
+ */
+export function formatDisplayDateTime(dateInput?: DateInput): string | null {
+  if (!dateInput) return null;
+  const d = dayjs(dateInput);
+  return d.isValid() ? d.toDate().toLocaleString() : null;
+}
+
 /**
  * Returns a relative time string (e.g., "5 minutes ago", "just now").
  */
-export function timeAgo(dateInput?: Date | string | number | null): string | null {
+export function timeAgo(
+  dateInput?: Date | string | number | null,
+): string | null {
   if (!dateInput) return null;
   const date = new Date(dateInput);
   if (Number.isNaN(date.getTime())) return null;
@@ -50,11 +79,11 @@ export function timeAgo(dateInput?: Date | string | number | null): string | nul
   if (seconds < 60) return i18n.t("timeAgo.justNow");
 
   const intervals: Array<[number, (n: number) => string]> = [
-    [31_536_000, n => i18n.t("timeAgo.year", { count: n })],
-    [2_592_000, n => i18n.t("timeAgo.month", { count: n })],
-    [86_400, n => i18n.t("timeAgo.day", { count: n })],
-    [3600, n => i18n.t("timeAgo.hour", { count: n })],
-    [60, n => i18n.t("timeAgo.minute", { count: n })],
+    [31_536_000, (n) => i18n.t("timeAgo.year", { count: n })],
+    [2_592_000, (n) => i18n.t("timeAgo.month", { count: n })],
+    [86_400, (n) => i18n.t("timeAgo.day", { count: n })],
+    [3600, (n) => i18n.t("timeAgo.hour", { count: n })],
+    [60, (n) => i18n.t("timeAgo.minute", { count: n })],
   ];
 
   for (const [threshold, format] of intervals) {

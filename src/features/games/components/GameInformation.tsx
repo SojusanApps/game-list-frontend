@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Game, GameEngine, GameMode, Genre, Platform, PlayerPerspective } from "@/client";
 import { useLanguageStore } from "@/lib/languageStore";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import { ExternalLinksSection } from "./ExternalLinksSection";
 
@@ -102,7 +103,7 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
         )}
         <GameInfoRow
           label={t("info.releaseDate")}
-          value={gameDetails?.release_date ? gameDetails.release_date.toString() : undefined}
+          value={formatDisplayDate(gameDetails?.release_date) ?? undefined}
         />
         <GameInfoRow label={t("info.gameStatus")} value={gameDetails?.game_status?.status || t("info.released")} />
         <GameInfoRow label={t("info.gameType")} value={gameDetails?.game_type?.type} />

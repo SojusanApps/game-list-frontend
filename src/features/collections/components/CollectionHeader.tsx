@@ -7,6 +7,7 @@ import { CollectionDetail, ModeEnum, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 interface CollectionHeaderProps {
   collection: CollectionDetail;
@@ -45,7 +46,7 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
               {t("header.collectionsLink")}
             </Link>
             <Text span>•</Text>
-            <Text span>{new Date(collection.created_at).toLocaleDateString()}</Text>
+            <Text span>{formatDisplayDate(collection.created_at)}</Text>
             <Text span>•</Text>
             <Text span c="var(--color-primary-500)">
               {collection.visibility_display}

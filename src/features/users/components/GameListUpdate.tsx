@@ -7,6 +7,7 @@ import { GameList, GameListStatusEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 interface GameListUpdateProps {
   latestGameListUpdate: GameList;
@@ -60,7 +61,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
             c="var(--color-text-400)"
             style={{ whiteSpace: "nowrap", flexShrink: 0, opacity: 0.7 }}
           >
-            {new Date(latestGameListUpdate?.last_modified_at || "").toLocaleDateString()}
+            {formatDisplayDate(latestGameListUpdate?.last_modified_at)}
           </Text>
         </Group>
 

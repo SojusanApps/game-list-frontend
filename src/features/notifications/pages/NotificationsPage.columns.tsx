@@ -6,6 +6,7 @@ import type { TFunction } from "i18next";
 
 import { Notification } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 import pageStyles from "./NotificationsPage.module.css";
 
@@ -162,7 +163,7 @@ export function createNotificationColumns({
       header: t("page.tableDate"),
       cell: info => (
         <Text component="span" fz="sm" style={{ opacity: 0.7 }}>
-          {new Date(info.getValue()).toLocaleString()}
+          {formatDisplayDateTime(info.getValue())}
         </Text>
       ),
     }),
