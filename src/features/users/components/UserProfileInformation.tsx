@@ -1,5 +1,6 @@
 import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
-import { IconInfoCircle } from "@tabler/icons-react";
+import { IconInfoCircle, IconGenderMale, IconGenderFemale, IconMinus } from "@tabler/icons-react";
+import { TFunction } from "i18next";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -12,8 +13,35 @@ interface UserProfileInformationProps {
   userDetails?: UserDetail;
 }
 
+const MALE_VALUES = new Set(["male", "mężczyzna"]);
+const FEMALE_VALUES = new Set(["female", "kobieta"]);
+
+function getGenderDisplay(
+  gender: string | undefined,
+  t: TFunction<"users">,
+): { icon: React.JSX.Element; label: string } {
+  const normalizedGender = gender?.toLowerCase();
+  if (normalizedGender && MALE_VALUES.has(normalizedGender)) {
+    return {
+      icon: <IconGenderMale size={24} style={{ color: "var(--mantine-color-blue-6)" }} />,
+      label: t("info.genderMale"),
+    };
+  }
+  if (normalizedGender && FEMALE_VALUES.has(normalizedGender)) {
+    return {
+      icon: <IconGenderFemale size={24} style={{ color: "var(--mantine-color-pink-6)" }} />,
+      label: t("info.genderFemale"),
+    };
+  }
+  return {
+    icon: <IconMinus size={24} style={{ color: "var(--color-text-400)" }} />,
+    label: t("info.genderNotSpecified"),
+  };
+}
+
 export default function UserProfileInformation({ userDetails }: Readonly<UserProfileInformationProps>) {
   const { t } = useTranslation("users");
+  const genderDisplay = getGenderDisplay(userDetails?.gender, t);
   return (
     <Box
       style={{
@@ -46,7 +74,11 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
           <Text fw={500} c="var(--color-text-600)">
             {t("info.gender")}
           </Text>
-          <Text c="var(--color-text-900)">{userDetails?.gender || "—"}</Text>
+          <Tooltip label={genderDisplay.label} withArrow>
+            <Box component="span" style={{ display: "inline-flex" }}>
+              {genderDisplay.icon}
+            </Box>
+          </Tooltip>
         </Group>
         <Group justify="space-between" fz="sm">
           <Text fw={500} c="var(--color-text-600)">
