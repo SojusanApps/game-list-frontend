@@ -167,7 +167,7 @@ export default function CreateCollectionModal({
           style={{
             padding: "24px 32px",
             borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(248,250,252,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
           }}
         >
           <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
@@ -311,7 +311,7 @@ export default function CreateCollectionModal({
                               paddingLeft: 6,
                               paddingRight: 10,
                               paddingBlock: 6,
-                              background: "white",
+                              background: "var(--color-background-100)",
                               borderRadius: "9999px",
                               border: "1px solid var(--color-background-200)",
                             }}
@@ -364,7 +364,7 @@ export default function CreateCollectionModal({
           style={{
             padding: "24px 32px",
             borderTop: "1px solid var(--color-background-100)",
-            background: "rgba(248,250,252,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
           }}
         >
           <Button

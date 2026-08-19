@@ -55,7 +55,7 @@ export default function UserSettingsPage(): React.JSX.Element {
 
         <Box
           style={{
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: 12,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",
@@ -106,7 +106,7 @@ export default function UserSettingsPage(): React.JSX.Element {
         {userDetails && currentUserId && (
           <Box
             style={{
-              background: "white",
+              background: "var(--color-background-100)",
               borderRadius: 12,
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               border: "1px solid var(--color-background-200)",

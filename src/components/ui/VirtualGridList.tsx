@@ -205,14 +205,14 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconSearchOff style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconSearchOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">

@@ -34,7 +34,7 @@ const REFERENCE_VALUE_STYLE: React.CSSProperties = {
   whiteSpace: "pre-wrap",
   wordBreak: "break-word",
   fontSize: "13px",
-  background: "var(--color-background-50, #f8fafc)",
+  background: "var(--color-background-200)",
   border: "1px solid var(--color-background-200)",
   borderRadius: 6,
   padding: "8px 10px",

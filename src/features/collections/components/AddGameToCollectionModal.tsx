@@ -249,7 +249,7 @@ export default function AddGameToCollectionModal({
           style={{
             padding: "24px 32px",
             borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(248,250,252,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
           }}
         >
           <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>

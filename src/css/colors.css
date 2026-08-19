@@ -1,5 +1,9 @@
 :root {
   /* Primary: Indigo - Modern, trustworthy, vibrant */
+  /* An even-paler step below -100, matching the Mantine primary tuple's own
+     shade 0 (theme.ts). Doesn't flip in dark mode, same as the rest of this
+     ramp — see the dark-mode note on the background ramp below. */
+  --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
   --color-primary-300: #a5b4fc;
@@ -10,8 +14,13 @@
   --color-primary-800: #3730a3;
   --color-primary-900: #312e81;
   --color-primary-950: #1e1b4b;
+  /* Raw R,G,B channels of primary-200, for spots that need their own alpha
+     via rgba(var(--color-primary-200-rgb), X) — e.g. a hover glow shadow.
+     Same value in both schemes since the primary ramp itself doesn't flip. */
+  --color-primary-200-rgb: 199, 210, 254;
 
   /* Secondary: Amber/Orange - A nice complementary accent, modern & friendly */
+  --color-secondary-50: #fff7ed;
   --color-secondary-100: #ffedd5;
   --color-secondary-200: #fed7aa;
   --color-secondary-300: #fdba74;
@@ -22,8 +31,15 @@
   --color-secondary-800: #9a3412;
   --color-secondary-900: #7c2d12;
   --color-secondary-950: #431407;
+  /* Raw R,G,B channels of secondary-200, same reasoning as primary-200-rgb. */
+  --color-secondary-200-rgb: 254, 215, 170;
 
   /* Background: Slate - Clean, cool greys */
+  /* Aliases -200 rather than defining its own value: -100 is already pure
+     white, so there's no room for a paler step, and the many call sites
+     using this name clearly want -200's "just off the card surface" role.
+     No dark-mode override needed — it tracks -200's dark value live. */
+  --color-background-50: var(--color-background-200);
   --color-background-100: #ffffff;
   --color-background-200: #f8fafc;
   --color-background-300: #f1f5f9;
@@ -36,6 +52,7 @@
   --color-background-950: #0f172a;
 
   /* Error: Red - Standard but refined */
+  --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
   --color-error-300: #fca5a5;
@@ -77,4 +94,122 @@
   --shadow-glow-secondary: 0 0 8px rgba(251, 146, 60, 0.4);
   --shadow-glow-error: 0 0 8px rgba(239, 68, 68, 0.4);
   --shadow-glow-background: 0 0 8px rgba(148, 163, 184, 0.4);
+
+  /* Button elevation shadow (e.g. the primary CTA on the pairwise ranking
+     modal's idle screen). Dropped entirely in dark mode below, by request —
+     no amount of alpha tuning reads right for a glow like this against a
+     dark surface, so it's just off there rather than dimmed. */
+  --shadow-button-glow: 0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
+    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+
+  /* Collection page's stats banner. A two-hue gradient reads fine in light
+     mode, but blending two different deep tint colors in dark mode looks
+     muddy rather than intentional — dark mode below collapses it to a flat
+     fill instead, matching the accent icon badge it sits next to. */
+  --gradient-collection-stats: linear-gradient(to right, var(--color-primary-tint-bg), var(--color-secondary-tint-bg));
+
+  /* Raw R,G,B channels (no alpha) of a neutral surface wash, for spots that
+     need their own bespoke alpha via rgba(var(--color-veil-rgb), X) — e.g.
+     a translucent panel highlight over a card. Matches --color-background-200. */
+  --color-veil-rgb: 248, 250, 252;
+
+  /* "Tinted callout" role: a pale, brand-tinted card background paired with
+     saturated text of the same hue (e.g. a stat card, a highlighted row).
+     Unlike the raw success/primary ramp steps above, these flip which end
+     of the ramp plays "background" vs "text" per scheme, so the pairing
+     stays readable instead of staying pale in dark mode too. */
+  --color-success-tint-bg: var(--color-success-100);
+  --color-success-tint-text: var(--color-success-800);
+  --color-success-tint-border: var(--color-success-200);
+  --color-primary-tint-bg: var(--color-primary-100);
+  --color-primary-tint-text: var(--color-primary-800);
+  --color-primary-tint-border: var(--color-primary-200);
+  --color-secondary-tint-bg: var(--color-secondary-100);
+  --color-secondary-tint-text: var(--color-secondary-800);
+  --color-secondary-tint-border: var(--color-secondary-200);
+  --color-error-tint-bg: var(--color-error-100);
+  --color-error-tint-text: var(--color-error-800);
+  --color-error-tint-border: var(--color-error-200);
+
+  /* Collection-type badge hues (ranking/tier-list/normal) — none of these
+     hues (amber, purple, blue) exist as a full ramp elsewhere in the app,
+     so rather than build three new 10-step ramps for one badge cluster,
+     these are scoped, self-contained tint pairs following the same
+     light-bg/dark-text ↔ dark-bg/light-text flip as the tokens above. */
+  --color-type-ranking-bg: #fef3c7;
+  --color-type-ranking-text: #b45309;
+  --color-type-ranking-border: #fde68a;
+  --color-type-tierlist-bg: #f3e8ff;
+  --color-type-tierlist-text: #7e22ce;
+  --color-type-tierlist-border: #e9d5ff;
+  --color-type-normal-bg: #dbeafe;
+  --color-type-normal-text: #1d4ed8;
+  --color-type-normal-border: #bfdbfe;
+
+  /* "Colored chip" role: a badge background that has to stay legible under
+     arbitrary, uncontrolled text colors (third-party brand colors we don't
+     pick — several, like Steam's near-black or Epic's dark grey, are only
+     readable against a pale surface). Deliberately NOT overridden in dark
+     mode below: any single dark shade would still fail for the darkest
+     brand colors, so this chip stays pale in both schemes on purpose. */
+  --color-primary-chip-bg: var(--color-primary-100);
+  --color-primary-chip-border: var(--color-primary-200);
+}
+
+/* Dark mode: background & text ramps are flipped end-to-end (100 stays "the
+   lightest step", 950 stays "the darkest step" — only which physical color
+   sits at each step changes). Brand ramps (primary/secondary/error/success)
+   are intentionally left unchanged in both schemes. */
+:root[data-mantine-color-scheme="dark"] {
+  --color-background-100: #0f172a;
+  --color-background-200: #17213a;
+  --color-background-300: #1e293b;
+  --color-background-400: #334155;
+  --color-background-500: #475569;
+  --color-background-600: #64748b;
+  --color-background-700: #94a3b8;
+  --color-background-800: #cbd5e1;
+  --color-background-900: #e2e8f0;
+  --color-background-950: #f1f5f9;
+
+  --color-text-100: #0f172a;
+  --color-text-200: #1e293b;
+  --color-text-300: #334155;
+  --color-text-400: #64748b;
+  --color-text-500: #94a3b8;
+  --color-text-600: #cbd5e1;
+  --color-text-700: #e2e8f0;
+  --color-text-800: #f1f5f9;
+  --color-text-900: #f8fafc;
+  --color-text-950: #ffffff;
+
+  /* Matches --color-background-300 dark value: a wash that reads as "raised"
+     against the dark body, mirroring the light-mode role of this token. */
+  --color-veil-rgb: 30, 41, 59;
+
+  --color-success-tint-bg: var(--color-success-950);
+  --color-success-tint-text: var(--color-success-200);
+  --color-success-tint-border: var(--color-success-800);
+  --color-primary-tint-bg: var(--color-primary-950);
+  --color-primary-tint-text: var(--color-primary-200);
+  --color-primary-tint-border: var(--color-primary-800);
+  --color-secondary-tint-bg: var(--color-secondary-950);
+  --color-secondary-tint-text: var(--color-secondary-200);
+  --color-secondary-tint-border: var(--color-secondary-800);
+  --color-error-tint-bg: var(--color-error-950);
+  --color-error-tint-text: var(--color-error-200);
+  --color-error-tint-border: var(--color-error-800);
+
+  --color-type-ranking-bg: #451a03;
+  --color-type-ranking-text: #fde68a;
+  --color-type-ranking-border: #92400e;
+  --color-type-tierlist-bg: #3b0764;
+  --color-type-tierlist-text: #e9d5ff;
+  --color-type-tierlist-border: #6b21a8;
+  --color-type-normal-bg: #172554;
+  --color-type-normal-text: #bfdbfe;
+  --color-type-normal-border: #1e40af;
+
+  --shadow-button-glow: none;
+  --gradient-collection-stats: var(--color-primary-tint-bg);
 }

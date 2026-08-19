@@ -17,7 +17,7 @@ export function CollapsibleSection({
       defaultValue={defaultOpen ? "section" : undefined}
       styles={{
         root: {
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: "16px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           border: "1px solid var(--color-background-200)",

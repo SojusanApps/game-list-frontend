@@ -15,7 +15,7 @@
 }
 
 .notificationCard {
-  background: rgba(226, 232, 240, 0.5);
+  background: rgba(var(--color-veil-rgb), 0.5);
   border: 1px solid rgba(203, 213, 225, 0.5);
   border-radius: 12px;
   overflow: hidden;
@@ -44,10 +44,10 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 0.25rem 0;
-  color: var(--mantine-color-primary-6);
+  color: var(--color-primary-tint-text);
   text-decoration: none;
-  transition: color 150ms;
+  transition: opacity 150ms;
 }
 .notificationsAllLink:hover {
-  color: var(--mantine-color-primary-7);
+  opacity: 0.75;
 }

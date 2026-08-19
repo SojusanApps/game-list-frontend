@@ -113,7 +113,7 @@ export const TitleResolveStep = ({
                           {item.title}
                         </Text>
                         {pick ? (
-                          <Text fz="xs" c="var(--mantine-color-green-7)" truncate>
+                          <Text fz="xs" c="var(--color-success-tint-text)" truncate>
                             → {pick.title}
                           </Text>
                         ) : (

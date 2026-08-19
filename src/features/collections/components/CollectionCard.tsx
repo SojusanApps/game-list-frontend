@@ -66,13 +66,25 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
   const typeStyle = React.useMemo((): React.CSSProperties => {
     switch (collection.type) {
       case TypeEnum.RNK: {
-        return { background: "#fef3c7", color: "#b45309", border: "1px solid #fde68a" };
+        return {
+          background: "var(--color-type-ranking-bg)",
+          color: "var(--color-type-ranking-text)",
+          border: "1px solid var(--color-type-ranking-border)",
+        };
       }
       case TypeEnum.TIE: {
-        return { background: "#f3e8ff", color: "#7e22ce", border: "1px solid #e9d5ff" };
+        return {
+          background: "var(--color-type-tierlist-bg)",
+          color: "var(--color-type-tierlist-text)",
+          border: "1px solid var(--color-type-tierlist-border)",
+        };
       }
       default: {
-        return { background: "#dbeafe", color: "#1d4ed8", border: "1px solid #bfdbfe" };
+        return {
+          background: "var(--color-type-normal-bg)",
+          color: "var(--color-type-normal-text)",
+          border: "1px solid var(--color-type-normal-border)",
+        };
       }
     }
   }, [collection.type]);
@@ -177,7 +189,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
               zIndex: 20,
               padding: "6px",
               borderRadius: "9999px",
-              background: "white",
+              background: "var(--color-background-100)",
               boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
               border: "1px solid var(--color-background-100)",
             }}
@@ -197,7 +209,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
           paddingBottom: "20px",
           paddingInline: "20px",
           borderRadius: "24px",
-          background: "white",
+          background: "var(--color-background-100)",
           border: `1px solid ${hovered ? "var(--color-primary-100)" : "var(--color-background-200)"}`,
           boxShadow: hovered ? "0 20px 25px rgba(0,0,0,0.1)" : "0 1px 3px rgba(0,0,0,0.06)",
           transition: "all 500ms",

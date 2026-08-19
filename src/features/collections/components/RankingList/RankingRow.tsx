@@ -283,7 +283,7 @@ export const RankingRow = React.memo(
       <Box
         className={rowStyles.rankingRow}
         style={{
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: 16,
           border: "1px solid var(--color-background-200)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.02)",

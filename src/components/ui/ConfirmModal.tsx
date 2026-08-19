@@ -46,7 +46,7 @@ export function ConfirmModal({
       centered
       overlayProps={{ backgroundOpacity: 0.5 }}
     >
-      <Box style={{ background: "white", borderRadius: 16 }}>
+      <Box style={{ background: "var(--color-background-100)", borderRadius: 16 }}>
         <Group
           justify="space-between"
           align="center"

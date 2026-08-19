@@ -128,11 +128,10 @@ export default function CollectionPage(): React.JSX.Element {
             <Group
               style={{
                 marginBottom: "24px",
-                background:
-                  "linear-gradient(to right, var(--mantine-color-primary-0), var(--mantine-color-secondary-0, #fef3c7))",
+                background: "var(--gradient-collection-stats)",
                 padding: "16px",
                 borderRadius: "16px",
-                border: "1px solid var(--mantine-color-primary-1)",
+                border: "1px solid var(--color-primary-tint-border)",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
@@ -159,7 +158,7 @@ export default function CollectionPage(): React.JSX.Element {
                   </svg>
                 </Box>
                 <Stack gap={2}>
-                  <Text fz={24} fw={900} c="var(--mantine-color-primary-6)" lh={1}>
+                  <Text fz={24} fw={900} c="var(--color-primary-tint-text)" lh={1}>
                     {totalCount}
                   </Text>
                   <Text size="xs" fw={600} c="var(--color-text-500)" tt="uppercase" style={{ letterSpacing: "0.05em" }}>

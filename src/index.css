@@ -28,6 +28,18 @@ body {
   min-height: 100vh;
 }
 
+:root[data-mantine-color-scheme="dark"] body {
+  /* The SVG's decorative icons are drawn with fixed hex colors, so it can't
+     pick up CSS variables — swap the whole asset instead of trying to theme
+     it in place. The gradient's first stop is bumped from primary-100 (a
+     light brand tint that stays light in dark mode) to primary-950, so it
+     stays coherent with background-200's dark-mode value instead of fading
+     from light lavender into near-black. */
+  background-image:
+    url("./assets/gaming-background-dark.svg"),
+    linear-gradient(to top left, var(--color-primary-950), var(--color-background-200));
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

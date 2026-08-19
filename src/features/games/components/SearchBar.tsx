@@ -197,7 +197,7 @@ export default function SearchBar({ variant = "dark" }: Readonly<SearchBarProps>
             zIndex: 50,
             marginTop: "8px",
             width: "100%",
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: "12px",
             boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
             border: "1px solid var(--color-background-200)",

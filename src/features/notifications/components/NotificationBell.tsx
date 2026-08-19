@@ -65,12 +65,14 @@ export default function NotificationBell(): React.JSX.Element {
         </UnstyledButton>
       </Popover.Target>
 
-      <Popover.Dropdown style={{ padding: 0, borderRadius: "16px", overflow: "hidden" }}>
+      <Popover.Dropdown
+        style={{ padding: 0, borderRadius: "16px", overflow: "hidden", background: "var(--color-background-100)" }}
+      >
         <Group
           justify="space-between"
           align="center"
           p={16}
-          style={{ borderBottom: "1px solid var(--color-background-100)", background: "rgba(248,250,252,0.5)" }}
+          style={{ borderBottom: "1px solid var(--color-background-100)", background: "rgba(var(--color-veil-rgb), 0.5)" }}
         >
           <Text fw={700} c="var(--color-text-900)">
             {t("bell.title")}
@@ -82,8 +84,8 @@ export default function NotificationBell(): React.JSX.Element {
                 fontSize: "10px",
                 fontWeight: 700,
                 padding: "2px 8px",
-                background: "var(--mantine-color-primary-0)",
-                color: "var(--mantine-color-primary-7)",
+                background: "var(--color-primary-tint-bg)",
+                color: "var(--color-primary-tint-text)",
                 borderRadius: "9999px",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
@@ -200,7 +202,7 @@ export default function NotificationBell(): React.JSX.Element {
         <Box
           style={{
             padding: 12,
-            background: "rgba(248,250,252,0.8)",
+            background: "rgba(var(--color-veil-rgb), 0.8)",
             borderTop: "1px solid var(--color-background-100)",
           }}
         >

@@ -163,10 +163,10 @@ export const TierListView = React.memo(function TierListViewInner({
           position: "sticky",
           top: 16,
           zIndex: 30,
-          background: "linear-gradient(to right, #fff1f2, #fff7ed, #fefce8)",
+          background: "linear-gradient(to right, var(--color-error-tint-bg), var(--color-secondary-tint-bg))",
           padding: 16,
           borderRadius: 16,
-          border: "1px solid #fed7aa",
+          border: "1px solid var(--color-secondary-tint-border)",
           boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
         }}
       >
@@ -197,7 +197,7 @@ export const TierListView = React.memo(function TierListViewInner({
             </svg>
           </Box>
           <Box>
-            <Text fw={900} fz={24} c="#ea580c" style={{ lineHeight: 1 }}>
+            <Text fw={900} fz={24} c="var(--color-secondary-tint-text)" style={{ lineHeight: 1 }}>
               {totalItems}
             </Text>
             <Text
@@ -219,7 +219,7 @@ export const TierListView = React.memo(function TierListViewInner({
                 gap={6}
                 style={{
                   padding: "6px 12px",
-                  background: "rgba(255,255,255,0.9)",
+                  background: "rgba(var(--color-veil-rgb), 0.9)",
                   borderRadius: 8,
                   border: "1px solid var(--color-background-200)",
                 }}
@@ -236,7 +236,7 @@ export const TierListView = React.memo(function TierListViewInner({
             gap={6}
             style={{
               padding: "6px 12px",
-              background: "rgba(255,255,255,0.9)",
+              background: "rgba(var(--color-veil-rgb), 0.9)",
               borderRadius: 8,
               border: "1px solid var(--color-background-200)",
             }}

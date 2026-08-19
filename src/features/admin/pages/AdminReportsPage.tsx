@@ -27,10 +27,22 @@ import { useAcceptReport, useGetReports, useRejectReport } from "@/features/mode
 import { buildReportFilters, canModerateReport, ReportFilterState } from "@/features/moderation/utils/report";
 import { formatDisplayDateTime } from "@/utils/dateUtils";
 
-const STATUS_COLORS: Record<ReportStatusEnum, string> = {
-  [ReportStatusEnum.PENDING]: "yellow",
-  [ReportStatusEnum.ACCEPTED]: "green",
-  [ReportStatusEnum.REJECTED]: "red",
+const STATUS_STYLES: Record<ReportStatusEnum, React.CSSProperties> = {
+  [ReportStatusEnum.PENDING]: {
+    background: "var(--color-secondary-tint-bg)",
+    color: "var(--color-secondary-tint-text)",
+    border: "1px solid var(--color-secondary-tint-border)",
+  },
+  [ReportStatusEnum.ACCEPTED]: {
+    background: "var(--color-success-tint-bg)",
+    color: "var(--color-success-tint-text)",
+    border: "1px solid var(--color-success-tint-border)",
+  },
+  [ReportStatusEnum.REJECTED]: {
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
+  },
 };
 
 const STATUS_OPTIONS = [ReportStatusEnum.PENDING, ReportStatusEnum.ACCEPTED, ReportStatusEnum.REJECTED];
@@ -108,11 +120,26 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
   };
 
   return (
-    <Paper withBorder p={12} radius="md">
+    <Paper
+      withBorder
+      p={12}
+      radius="md"
+      style={{ background: "var(--color-background-100)", borderColor: "var(--color-background-200)" }}
+    >
       <Stack gap={8}>
         <Group justify="space-between" align="center">
           <Group gap={8} align="center">
-            <Badge color={STATUS_COLORS[report.status]}>{t(`reports.status.${report.status}`)}</Badge>
+            <Box
+              style={{
+                padding: "4px 12px",
+                borderRadius: "12px",
+                fontSize: "12px",
+                fontWeight: 700,
+                ...STATUS_STYLES[report.status],
+              }}
+            >
+              {t(`reports.status.${report.status}`)}
+            </Box>
             <Badge variant="light">{tModeration(`targetType.${report.target_type}`)}</Badge>
           </Group>
           <Text fz="xs" c="dimmed">

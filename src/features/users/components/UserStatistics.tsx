@@ -78,16 +78,16 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
           justify="center"
           style={{
             padding: 24,
-            background: "var(--mantine-color-green-0)",
+            background: "var(--color-success-tint-bg)",
             borderRadius: 16,
-            border: "1px solid var(--mantine-color-green-2)",
+            border: "1px solid var(--color-success-tint-border)",
           }}
         >
           <Text
             style={{
               fontSize: 10,
               fontWeight: 700,
-              color: "var(--mantine-color-green-8)",
+              color: "var(--color-success-tint-text)",
               textTransform: "uppercase",
               letterSpacing: "0.12em",
               marginBottom: 8,
@@ -95,7 +95,7 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
           >
             {t("stats.totalEntries")}
           </Text>
-          <Text fz={36} fw={900} c="var(--mantine-color-green-9)">
+          <Text fz={36} fw={900} c="var(--color-success-tint-text)">
             {userDetails?.game_list_statistics.total}
           </Text>
         </Stack>
@@ -106,16 +106,16 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
           justify="center"
           style={{
             padding: 24,
-            background: "var(--mantine-color-primary-0)",
+            background: "var(--color-primary-tint-bg)",
             borderRadius: 16,
-            border: "1px solid var(--mantine-color-primary-2)",
+            border: "1px solid var(--color-primary-tint-border)",
           }}
         >
           <Text
             style={{
               fontSize: 10,
               fontWeight: 700,
-              color: "var(--mantine-color-primary-7)",
+              color: "var(--color-primary-tint-text)",
               textTransform: "uppercase",
               letterSpacing: "0.12em",
               marginBottom: 8,
@@ -123,7 +123,7 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
           >
             {t("stats.meanScore")}
           </Text>
-          <Text fz={36} fw={900} c="var(--mantine-color-primary-9)">
+          <Text fz={36} fw={900} c="var(--color-primary-tint-text)">
             {userDetails?.game_list_statistics.mean_score?.toFixed(2) || "0.00"}
           </Text>
         </Stack>

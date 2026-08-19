@@ -238,14 +238,14 @@ export default function SearchEnginePage(): React.JSX.Element {
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconSearch style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconSearch style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
@@ -322,7 +322,7 @@ export default function SearchEnginePage(): React.JSX.Element {
                   transition: "all 200ms",
                   ...(selectedCategory === cat.id
                     ? {
-                        background: "white",
+                        background: "var(--color-background-100)",
                         color: "var(--mantine-color-primary-6)",
                         boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                       }
@@ -348,7 +348,7 @@ export default function SearchEnginePage(): React.JSX.Element {
               style={{ flex: 1 }}
               styles={{
                 input: {
-                  background: "white",
+                  background: "var(--color-background-100)",
                   border: "1px solid var(--color-background-300)",
                   borderRadius: "12px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
@@ -360,7 +360,7 @@ export default function SearchEnginePage(): React.JSX.Element {
                 variant="outline"
                 size="lg"
                 onClick={() => setDrawerOpen(true)}
-                style={{ borderRadius: "12px", padding: "0 24px", background: "white" }}
+                style={{ borderRadius: "12px", padding: "0 24px", background: "var(--color-background-100)" }}
                 leftSection={<IconFilter size={20} />}
               >
                 {t("search.filtersButton")}
@@ -395,7 +395,7 @@ export default function SearchEnginePage(): React.JSX.Element {
 
         <Box
           style={{
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: "16px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",

@@ -167,7 +167,7 @@ export default function PairwiseRankingModal({
           <Box
             w={80}
             h={80}
-            bg="var(--color-primary-50)"
+            bg="var(--color-primary-tint-bg)"
             style={{ borderRadius: "9999px", display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             <Text component="span" fz={36}>
@@ -204,7 +204,7 @@ export default function PairwiseRankingModal({
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     paddingInline: 32,
-                    boxShadow: "0 10px 15px -3px var(--color-primary-200), 0 4px 6px -4px var(--color-primary-200)",
+                    boxShadow: "var(--shadow-button-glow)",
                   }}
                 >
                   {t("modal.resumeSession")}
@@ -225,7 +225,7 @@ export default function PairwiseRankingModal({
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
                   paddingInline: 32,
-                  boxShadow: "0 10px 15px -3px var(--color-primary-200), 0 4px 6px -4px var(--color-primary-200)",
+                  boxShadow: "var(--shadow-button-glow)",
                 }}
               >
                 {t("modal.startRanking")}
@@ -271,7 +271,7 @@ export default function PairwiseRankingModal({
         size="80rem"
         overlayProps={{ backgroundOpacity: 0.6 }}
         styles={{
-          content: { height: "85vh" },
+          content: { height: "85vh", background: "var(--color-background-100)" },
           body: { height: "100%", padding: 0 },
         }}
       >

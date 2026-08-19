@@ -105,14 +105,14 @@ export default function UserFriendsPage(): React.JSX.Element {
                 style={{
                   fontSize: "10px",
                   fontWeight: 900,
-                  color: "var(--mantine-color-primary-6)",
+                  color: "var(--color-primary-tint-text)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
                   marginTop: "8px",
                   padding: "4px 12px",
-                  background: "var(--mantine-color-primary-0)",
+                  background: "var(--color-primary-tint-bg)",
                   borderRadius: "9999px",
-                  border: "1px solid var(--mantine-color-primary-1)",
+                  border: "1px solid var(--color-primary-tint-border)",
                 }}
               >
                 {t("friends.friendCount", { count: totalFriends })}

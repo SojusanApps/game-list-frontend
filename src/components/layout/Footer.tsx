@@ -1,4 +1,5 @@
-import { Box, Text, SegmentedControl } from "@mantine/core";
+import { Box, Text, SegmentedControl, useMantineColorScheme, useComputedColorScheme } from "@mantine/core";
+import { IconSun, IconMoon } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -13,6 +14,8 @@ import styles from "./Footer.module.css";
 const Footer = (): React.JSX.Element => {
   const currentYear = new Date().getFullYear();
   const { language, setLanguage } = useLanguageStore();
+  const { setColorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme("light");
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
@@ -27,7 +30,7 @@ const Footer = (): React.JSX.Element => {
     <Box
       component="footer"
       style={{
-        background: "white",
+        background: "var(--color-background-100)",
         borderTop: "1px solid var(--color-background-400)",
         paddingBlock: "24px",
         marginTop: "auto",
@@ -36,7 +39,7 @@ const Footer = (): React.JSX.Element => {
       <div className={styles.footerInner}>
         <div className={styles.leftSection}>
           <Link to="/home" className={styles.logoLink}>
-            <AppLogo size="md" />
+            <AppLogo size="md" onDark={colorScheme === "dark"} />
           </Link>
           <Text size="xs" c="var(--color-text-400)">
             {t("footer.copyright", { year: currentYear })}{" "}
@@ -73,6 +76,16 @@ const Footer = (): React.JSX.Element => {
             data={[
               { label: "EN", value: "en" },
               { label: "PL", value: "pl" },
+            ]}
+          />
+          <SegmentedControl
+            value={colorScheme}
+            onChange={value => setColorScheme(value as "light" | "dark")}
+            size="xs"
+            aria-label={t("footer.colorScheme")}
+            data={[
+              { label: <IconSun size={14} stroke={1.75} aria-label={t("footer.lightMode")} />, value: "light" },
+              { label: <IconMoon size={14} stroke={1.75} aria-label={t("footer.darkMode")} />, value: "dark" },
             ]}
           />
         </div>

@@ -1,4 +1,4 @@
-import { Badge, Box, Group, Popover, Stack, Tabs, Text, Textarea } from "@mantine/core";
+import { Box, Group, Popover, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Link } from "@tanstack/react-router";
 import { diffWords, type Change } from "diff";
@@ -45,7 +45,7 @@ const CODE_BLOCK_STYLE: React.CSSProperties = {
   lineHeight: 1.6,
   whiteSpace: "pre-wrap",
   wordBreak: "break-word",
-  background: "var(--color-background-50, #f8fafc)",
+  background: "var(--color-background-200)",
   border: "1px solid var(--color-background-200)",
   borderRadius: 6,
   padding: "8px 10px",
@@ -53,12 +53,12 @@ const CODE_BLOCK_STYLE: React.CSSProperties = {
 
 function diffPartStyle(part: Change): React.CSSProperties {
   if (part.added) {
-    return { backgroundColor: "var(--color-success-100)", color: "var(--color-success-900)" };
+    return { backgroundColor: "var(--color-success-tint-bg)", color: "var(--color-success-tint-text)" };
   }
   if (part.removed) {
     return {
-      backgroundColor: "var(--color-error-100)",
-      color: "var(--color-error-900)",
+      backgroundColor: "var(--color-error-tint-bg)",
+      color: "var(--color-error-tint-text)",
       textDecoration: "line-through",
     };
   }
@@ -106,11 +106,27 @@ function ValueTabs({ current, proposed }: Readonly<{ current: string; proposed: 
   );
 }
 
-export const STATUS_COLORS: Record<TranslationSuggestionStatusEnum, string> = {
-  [TranslationSuggestionStatusEnum.PENDING]: "yellow",
-  [TranslationSuggestionStatusEnum.ACCEPTED]: "green",
-  [TranslationSuggestionStatusEnum.REJECTED]: "red",
-  [TranslationSuggestionStatusEnum.WITHDRAWN]: "gray",
+export const STATUS_STYLES: Record<TranslationSuggestionStatusEnum, React.CSSProperties> = {
+  [TranslationSuggestionStatusEnum.PENDING]: {
+    background: "var(--color-secondary-tint-bg)",
+    color: "var(--color-secondary-tint-text)",
+    border: "1px solid var(--color-secondary-tint-border)",
+  },
+  [TranslationSuggestionStatusEnum.ACCEPTED]: {
+    background: "var(--color-success-tint-bg)",
+    color: "var(--color-success-tint-text)",
+    border: "1px solid var(--color-success-tint-border)",
+  },
+  [TranslationSuggestionStatusEnum.REJECTED]: {
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
+  },
+  [TranslationSuggestionStatusEnum.WITHDRAWN]: {
+    background: "var(--color-background-200)",
+    color: "var(--color-text-700)",
+    border: "1px solid var(--color-background-300)",
+  },
 };
 
 interface SuggestionRowProps {
@@ -185,9 +201,17 @@ export function SuggestionRow({ suggestion }: Readonly<SuggestionRowProps>) {
   return (
     <Stack gap={4} p={12} style={{ border: "1px solid var(--color-background-200)", borderRadius: 8 }}>
       <Group justify="space-between" align="center">
-        <Badge color={STATUS_COLORS[suggestion.status]}>
+        <Box
+          style={{
+            padding: "4px 12px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            fontWeight: 700,
+            ...STATUS_STYLES[suggestion.status],
+          }}
+        >
           {t(`translationSuggestionModal.status.${suggestion.status}`)}
-        </Badge>
+        </Box>
         <Group gap={4} align="center">
           <Text fz="xs" c="dimmed">
             {t("translationSuggestionModal.submittedByLabel")}

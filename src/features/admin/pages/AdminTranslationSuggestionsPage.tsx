@@ -32,7 +32,12 @@ function GameSuggestionCard({ suggestion }: Readonly<{ suggestion: TranslationSu
       : t("translationSuggestions.fieldSummary");
 
   return (
-    <Paper withBorder p={16} radius="md">
+    <Paper
+      withBorder
+      p={16}
+      radius="md"
+      style={{ background: "var(--color-background-100)", borderColor: "var(--color-background-200)" }}
+    >
       <Group align="flex-start" gap={16} wrap="nowrap">
         <Link to="/game/$id/$slug" params={{ id: game.id.toString(), slug: game.slug || "" }} style={{ flexShrink: 0 }}>
           <Box style={{ width: 64, height: 91, borderRadius: 6, overflow: "hidden" }}>

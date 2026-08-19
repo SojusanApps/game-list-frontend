@@ -114,7 +114,7 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
 
               {/* Notice */}
               <div className={styles.noticeBox}>
-                <IconInfoCircle size={20} style={{ color: "var(--mantine-color-primary-6)", flexShrink: 0 }} />
+                <IconInfoCircle size={20} style={{ color: "var(--color-primary-tint-text)", flexShrink: 0 }} />
                 <Text fz="sm" c="var(--color-text-700)">
                   {t("import.steamNotice")}
                 </Text>

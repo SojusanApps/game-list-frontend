@@ -20,7 +20,14 @@ export default function GameDetailsScreenshotsTab({
 }: Readonly<GameDetailsScreenshotsTabProps>) {
   const { t } = useTranslation("games");
   return (
-    <Paper shadow="sm" radius="xl" p="xl" withBorder className={styles.panel}>
+    <Paper
+      shadow="sm"
+      radius="xl"
+      p="xl"
+      withBorder
+      className={styles.panel}
+      style={{ background: "var(--color-background-100)", borderColor: "var(--color-background-200)" }}
+    >
       {gameDetails?.screenshots && gameDetails.screenshots.length > 0 ? (
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={16}>
           {gameDetails.screenshots.map((screenshot, index) => (
@@ -43,14 +50,14 @@ export default function GameDetailsScreenshotsTab({
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPhotoOff style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconPhotoOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">

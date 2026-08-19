@@ -194,7 +194,7 @@ export default function NotificationsPage(): React.JSX.Element {
 
       <ScrollArea
         scrollbars="x"
-        style={{ background: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
+        style={{ background: "var(--color-background-100)", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
       >
         <Table highlightOnHover>
           <Table.Thead>
@@ -220,7 +220,7 @@ export default function NotificationsPage(): React.JSX.Element {
               </Table.Tr>
             ) : (
               table.getRowModel().rows.map(row => (
-                <Table.Tr key={row.id} bg={row.original.unread ? "var(--mantine-color-primary-0)" : undefined}>
+                <Table.Tr key={row.id} bg={row.original.unread ? "var(--color-primary-tint-bg)" : undefined}>
                   {row.getAllCells().map(cell => (
                     <Table.Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Table.Td>
                   ))}

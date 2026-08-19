@@ -11,14 +11,14 @@ export interface StatusConfig {
 
 const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
   [GameListStatusEnum.P]: {
-    background: "var(--color-success-200)",
-    color: "var(--color-success-900)",
-    borderColor: "var(--color-success-300)",
+    background: "var(--color-success-tint-bg)",
+    color: "var(--color-success-tint-text)",
+    borderColor: "var(--color-success-tint-border)",
   },
   [GameListStatusEnum.C]: {
-    background: "var(--color-primary-200)",
-    color: "var(--color-primary-900)",
-    borderColor: "var(--color-primary-300)",
+    background: "var(--color-primary-tint-bg)",
+    color: "var(--color-primary-tint-text)",
+    borderColor: "var(--color-primary-tint-border)",
   },
   [GameListStatusEnum.PTP]: {
     background: "var(--color-background-400)",
@@ -26,14 +26,14 @@ const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
     borderColor: "var(--color-background-500)",
   },
   [GameListStatusEnum.OH]: {
-    background: "var(--color-secondary-200)",
-    color: "var(--color-secondary-900)",
-    borderColor: "var(--color-secondary-300)",
+    background: "var(--color-secondary-tint-bg)",
+    color: "var(--color-secondary-tint-text)",
+    borderColor: "var(--color-secondary-tint-border)",
   },
   [GameListStatusEnum.D]: {
-    background: "var(--color-error-200)",
-    color: "var(--color-error-900)",
-    borderColor: "var(--color-error-300)",
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    borderColor: "var(--color-error-tint-border)",
   },
 };
 

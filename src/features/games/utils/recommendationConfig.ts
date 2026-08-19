@@ -17,19 +17,19 @@ export const RECOMMENDATION_ORDER: RecommendationEnum[] = [
 
 const BADGE_STYLES: Record<RecommendationEnum, React.CSSProperties> = {
   [RecommendationEnum.RECOMMENDED]: {
-    background: "var(--color-success-100)",
-    color: "var(--color-success-900)",
-    border: "1px solid var(--color-success-200)",
+    background: "var(--color-success-tint-bg)",
+    color: "var(--color-success-tint-text)",
+    border: "1px solid var(--color-success-tint-border)",
   },
   [RecommendationEnum.NOT_RECOMMENDED]: {
-    background: "var(--color-error-100)",
-    color: "var(--color-error-900)",
-    border: "1px solid var(--color-error-200)",
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
   },
   [RecommendationEnum.UNDECIDED]: {
-    background: "var(--color-secondary-100)",
-    color: "var(--color-secondary-900)",
-    border: "1px solid var(--color-secondary-200)",
+    background: "var(--color-secondary-tint-bg)",
+    color: "var(--color-secondary-tint-text)",
+    border: "1px solid var(--color-secondary-tint-border)",
   },
 };
 

@@ -93,7 +93,11 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.reset();
       }
     }
-  }, [gameListDetails, opened, form]);
+    // form is intentionally excluded: @mantine/form returns a new `form` object on every
+    // render, so including it here would re-run this effect (and reset in-progress edits)
+    // on every keystroke.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [gameListDetails, opened]);
 
   // Autopopulate dates when status changes
   React.useEffect(() => {

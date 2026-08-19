@@ -16,7 +16,10 @@
     "copyright": "© {{year}} Sojusan GameList • Data provided by",
     "home": "Home",
     "search": "Search",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "colorScheme": "Color scheme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
   "notFound": {
     "title": "404 - Not Found",
