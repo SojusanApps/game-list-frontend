@@ -1,4 +1,5 @@
-import { Skeleton, Stack, Group, Box, Title, Text, Select, UnstyledButton } from "@mantine/core";
+import { Skeleton, Stack, Group, Box, Title, Text, Select, TextInput, UnstyledButton } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
@@ -36,6 +37,10 @@ export default function CollectionsPage(): React.JSX.Element {
   const [modeFilter, setModeFilter] = React.useState<string | null>(null);
   const [typeFilter, setTypeFilter] = React.useState<string | null>(null);
   const [useMember, setUseMember] = React.useState(false);
+  const [nameInput, setNameInput] = React.useState("");
+  const [nameFilter, setNameFilter] = React.useState("");
+
+  const commitNameFilter = () => setNameFilter(nameInput.trim());
 
   const queryFilters = React.useMemo(() => {
     const filters: Required<CollectionCollectionsListData>["query"] = {};
@@ -51,8 +56,11 @@ export default function CollectionsPage(): React.JSX.Element {
     if (typeFilter !== null) {
       filters.type = typeFilter;
     }
+    if (nameFilter !== "") {
+      filters.name = nameFilter;
+    }
     return filters;
-  }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter]);
+  }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter, nameFilter]);
 
   const {
     data: collectionsResults,
@@ -123,6 +131,33 @@ export default function CollectionsPage(): React.JSX.Element {
 
           <Stack w="100%" gap={16}>
             <CollapsibleSection title={t("list.filters")}>
+              <Box
+                component="form"
+                w="100%"
+                maw={480}
+                mx="auto"
+                mt={16}
+                onSubmit={e => {
+                  e.preventDefault();
+                  commitNameFilter();
+                }}
+              >
+                <TextInput
+                  id="name-filter"
+                  placeholder={t("list.namePlaceholder")}
+                  value={nameInput}
+                  onChange={e => setNameInput(e.currentTarget.value)}
+                  onBlur={commitNameFilter}
+                  leftSection={<IconSearch size={18} color="var(--color-text-400)" />}
+                  styles={{
+                    input: {
+                      background: "white",
+                      border: "1px solid var(--color-background-300)",
+                      borderRadius: "12px",
+                    },
+                  }}
+                />
+              </Box>
               <Box
                 style={{
                   display: "grid",
