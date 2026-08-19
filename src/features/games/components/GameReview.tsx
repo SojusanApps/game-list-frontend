@@ -9,6 +9,8 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
+import { getRecommendationConfig } from "../utils/recommendationConfig";
+
 type GameReviewProps = {
   gameReview: GameReviewType;
 };
@@ -102,6 +104,21 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
         </Group>
 
         <Group gap={8} align="center">
+          {gameReview?.recommendation && (
+            <Box
+              style={{
+                padding: "4px 12px",
+                borderRadius: "12px",
+                fontSize: "12px",
+                fontWeight: 700,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                ...getRecommendationConfig(gameReview.recommendation)?.badgeStyle,
+              }}
+            >
+              {getRecommendationConfig(gameReview.recommendation)?.label}
+            </Box>
+          )}
+
           {gameReview?.score && (
             <Stack
               align="center"

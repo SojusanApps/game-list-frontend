@@ -11,6 +11,7 @@ import { TranslationSuggestionModal } from "@/features/translationSuggestions/co
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import GameStatistics from "../components/GameStatistics";
+import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
 
 const REVIEWS_PREVIEW_COUNT = 3;
 
@@ -108,6 +109,7 @@ export default function GameDetailsMainTab({
           )}
         </Group>
         <Stack gap={16}>
+          <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
           {isGameReviewsLoading && <Skeleton h={96} radius="xl" />}
           {previewReviews.length > 0 ? (
             <>
@@ -146,6 +148,7 @@ export default function GameDetailsMainTab({
           gameId={gameDetails.id}
           existingReviewId={userReview?.id}
           existingReviewText={userReview?.review}
+          existingRecommendation={userReview?.recommendation}
           opened={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
         />

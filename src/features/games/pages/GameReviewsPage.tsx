@@ -11,6 +11,7 @@ import { useAuth } from "@/features/auth/context/AuthProvider";
 
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
+import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
 import { useGetGameReviewsList, useGetGamesDetails } from "../hooks/gameQueries";
 
 const PAGE_SIZE = 10;
@@ -87,6 +88,8 @@ export default function GameReviewsPage(): React.JSX.Element {
           )}
         </Title>
 
+        <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
+
         <Stack gap={16}>
           {userReview && <GameReview gameReview={userReview} />}
           {isLoading && (
@@ -116,6 +119,7 @@ export default function GameReviewsPage(): React.JSX.Element {
           gameId={gameId}
           existingReviewId={userReview?.id}
           existingReviewText={userReview?.review}
+          existingRecommendation={userReview?.recommendation}
           opened={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
         />
