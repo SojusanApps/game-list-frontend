@@ -21,36 +21,41 @@ export class ApiError extends Error {
  * Utility to handle API errors consistently across the application.
  * Parses backend error responses (e.g. from Django REST Framework)
  * and returns a standard Error object with a user-friendly message.
+ *
+ * `errorData` must be the already-parsed error body from the generated API
+ * client (its `error` field) — the underlying `response`'s body stream has
+ * already been consumed by the client and cannot be read again here.
  */
-export async function handleApiError(response: Response | undefined, defaultMessage: string): Promise<never> {
+export async function handleApiError(
+  errorData: unknown,
+  response: Response | undefined,
+  defaultMessage: string,
+): Promise<never> {
   if (!response) {
     throw new Error(defaultMessage || "Network error or no response received");
   }
+
   let errorMessage = defaultMessage;
   let fieldErrors: Record<string, string[]> | undefined;
 
-  try {
-    const data = await response.json();
-
-    if (data) {
-      if (typeof data === "string") {
-        errorMessage = data;
-      } else if (data.detail) {
-        errorMessage = data.detail;
-      } else if (typeof data === "object") {
-        // Handle DRF validation errors: { "field": ["error"] }
-        fieldErrors = Object.fromEntries(
-          Object.entries(data).map(([key, value]) => [key, Array.isArray(value) ? value.map(String) : [String(value)]]),
-        );
-        const messages = Object.entries(fieldErrors).map(([key, value]) => `${key}: ${value.join(", ")}`);
-        if (messages.length > 0) {
-          errorMessage = messages.join(" | ");
-        }
+  if (typeof errorData === "string" && errorData) {
+    errorMessage = errorData;
+  } else if (errorData && typeof errorData === "object" && Object.keys(errorData).length > 0) {
+    const data = errorData as Record<string, unknown>;
+    if (typeof data.detail === "string") {
+      errorMessage = data.detail;
+    } else {
+      // Handle DRF validation errors: { "field": ["error"] }
+      fieldErrors = Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [key, Array.isArray(value) ? value.map(String) : [String(value)]]),
+      );
+      const messages = Object.entries(fieldErrors).map(([key, value]) => `${key}: ${value.join(", ")}`);
+      if (messages.length > 0) {
+        errorMessage = messages.join(" | ");
       }
     }
-  } catch {
-    // If response is not JSON or parsing fails, stick with default message or status text
-    errorMessage = response.statusText || defaultMessage;
+  } else if (response.statusText) {
+    errorMessage = response.statusText;
   }
 
   throw new ApiError(errorMessage, response.status, response, fieldErrors);

@@ -5,25 +5,25 @@ import StatusCode from "@/utils/StatusCode";
 export type UserUsersListDataQuery = UserUsersListData["query"];
 
 export const getUserLists = async (query?: UserUsersListDataQuery) => {
-  const { data, response } = await UserService.userUsersList({ query });
+  const { data, error, response } = await UserService.userUsersList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(response, "Error fetching users");
+    return await handleApiError(error, response, "Error fetching users");
   }
   return data;
 };
 
 export const getUserDetails = async (id: number) => {
-  const { data, response } = await UserService.userUsersRetrieve({ path: { id } });
+  const { data, error, response } = await UserService.userUsersRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(response, "Error fetching user details");
+    return await handleApiError(error, response, "Error fetching user details");
   }
   return data;
 };
 
 export const getCurrentUser = async () => {
-  const { data, response } = await UserService.userUsersMeRetrieve();
+  const { data, error, response } = await UserService.userUsersMeRetrieve();
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(response, "Error fetching current user");
+    return await handleApiError(error, response, "Error fetching current user");
   }
   return data;
 };

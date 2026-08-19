@@ -119,6 +119,7 @@
     "searching": "Przeszukujemy bibliotekę...",
     "noResults": "Nie znaleziono gier pasujących do \"{{search}}\"",
     "addButton": "Dodaj",
+    "addedButton": "Dodano",
     "typeToSearch": "Wpisz, aby wyszukać gry",
     "successTitle": "Sukces",
     "successMessage": "Dodano {{title}} do kolekcji",

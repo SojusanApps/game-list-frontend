@@ -13,36 +13,36 @@ export interface ReportRejectBody {
 }
 
 export const getReports = async (query?: ModerationReportsListQuery) => {
-  const { data, response } = await ModerationService.moderationReportsList({ query });
+  const { data, error, response } = await ModerationService.moderationReportsList({ query });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(response, "Error fetching reports");
+    return await handleApiError(error, response, "Error fetching reports");
   }
   return data;
 };
 
 export const createReport = async (body: ReportCreateWritable) => {
-  const { data, response } = await ModerationService.moderationReportsCreate({ body });
+  const { data, error, response } = await ModerationService.moderationReportsCreate({ body });
   if (response?.status !== StatusCode.CREATED) {
-    return await handleApiError(response, "Error creating report");
+    return await handleApiError(error, response, "Error creating report");
   }
   return data;
 };
 
 export const acceptReport = async (id: number) => {
-  const { data, response } = await ModerationService.moderationReportsAcceptCreate({ path: { id } });
+  const { data, error, response } = await ModerationService.moderationReportsAcceptCreate({ path: { id } });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(response, "Error accepting report");
+    return await handleApiError(error, response, "Error accepting report");
   }
   return data;
 };
 
 export const rejectReport = async (id: number, body?: ReportRejectBody) => {
-  const { data, response } = await ModerationService.moderationReportsRejectCreate({
+  const { data, error, response } = await ModerationService.moderationReportsRejectCreate({
     path: { id },
     body: body as ModerationReportsRejectCreateData["body"],
   });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(response, "Error rejecting report");
+    return await handleApiError(error, response, "Error rejecting report");
   }
   return data;
 };

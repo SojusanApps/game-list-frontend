@@ -119,6 +119,7 @@
     "searching": "Searching our library...",
     "noResults": "No games found matching \"{{search}}\"",
     "addButton": "Add",
+    "addedButton": "Added",
     "typeToSearch": "Type to search for games",
     "successTitle": "Success",
     "successMessage": "Added {{title}} to collection",

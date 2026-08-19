@@ -2,12 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { ApiError, handleApiError } from "@/utils/apiUtils";
 
-function jsonResponse(status: number, body: unknown): Response {
-  return Response.json(body, { status });
+function fakeResponse(status: number, statusText = ""): Response {
+  return new Response(null, { status, statusText });
 }
 
-async function captureApiError(response: Response | undefined, defaultMessage: string): Promise<ApiError> {
-  const result = await handleApiError(response, defaultMessage).then(
+async function captureApiError(
+  errorData: unknown,
+  response: Response | undefined,
+  defaultMessage: string,
+): Promise<ApiError> {
+  const result = await handleApiError(errorData, response, defaultMessage).then(
     () => {
       throw new Error("handleApiError did not throw");
     },
@@ -19,12 +23,12 @@ async function captureApiError(response: Response | undefined, defaultMessage: s
 
 describe("handleApiError", () => {
   it("parses a DRF field-error body into fieldErrors, preserving multiple messages per field", async () => {
-    const response = jsonResponse(400, {
+    const errorData = {
       new_password: ["This password is too short.", "This password is entirely numeric."],
       current_password: ["Current password is incorrect."],
-    });
+    };
 
-    const error = await captureApiError(response, "default");
+    const error = await captureApiError(errorData, fakeResponse(400), "default");
 
     expect(error.fieldErrors).toEqual({
       new_password: ["This password is too short.", "This password is entirely numeric."],
@@ -33,11 +37,11 @@ describe("handleApiError", () => {
   });
 
   it("parses non_field_errors like any other field", async () => {
-    const response = jsonResponse(400, {
+    const errorData = {
       non_field_errors: ["The new password and its confirmation do not match."],
-    });
+    };
 
-    const error = await captureApiError(response, "default");
+    const error = await captureApiError(errorData, fakeResponse(400), "default");
 
     expect(error.fieldErrors).toEqual({
       non_field_errors: ["The new password and its confirmation do not match."],
@@ -45,27 +49,27 @@ describe("handleApiError", () => {
   });
 
   it("does not populate fieldErrors for a {detail: ...} body", async () => {
-    const response = jsonResponse(404, { detail: "Not found." });
-
-    const error = await captureApiError(response, "default");
+    const error = await captureApiError({ detail: "Not found." }, fakeResponse(404), "default");
 
     expect(error.fieldErrors).toBeUndefined();
     expect(error.message).toBe("Not found.");
   });
 
-  it("falls back gracefully for a non-JSON body", async () => {
-    const response = new Response("<html>Internal Server Error</html>", {
-      status: 500,
-      statusText: "Internal Server Error",
-    });
+  it("surfaces a plain-string error body as the message", async () => {
+    const error = await captureApiError("Pola collection, game muszą tworzyć unikalny zestaw.", fakeResponse(400), "default");
 
-    const error = await captureApiError(response, "default message");
+    expect(error.fieldErrors).toBeUndefined();
+    expect(error.message).toBe("Pola collection, game muszą tworzyć unikalny zestaw.");
+  });
+
+  it("falls back to the response status text when the body could not be parsed", async () => {
+    const error = await captureApiError({}, fakeResponse(500, "Internal Server Error"), "default message");
 
     expect(error.fieldErrors).toBeUndefined();
     expect(error.message).toBe("Internal Server Error");
   });
 
   it("falls back to the default message when there is no response at all", async () => {
-    await expect(handleApiError(undefined, "network error")).rejects.toThrow("network error");
+    await expect(handleApiError(undefined, undefined, "network error")).rejects.toThrow("network error");
   });
 });
