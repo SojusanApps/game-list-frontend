@@ -19,8 +19,7 @@
     "privacy": "Privacy",
     "colorScheme": "Color scheme",
     "lightMode": "Light mode",
-    "darkMode": "Dark mode",
-    "pitchBlackMode": "Pitch Black"
+    "darkMode": "Dark mode"
   },
   "notFound": {
     "title": "404 - Not Found",

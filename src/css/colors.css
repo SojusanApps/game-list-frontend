@@ -96,9 +96,11 @@
   --shadow-glow-background: 0 0 8px rgba(148, 163, 184, 0.4);
 
   /* Button elevation shadow (e.g. the primary CTA on the pairwise ranking
-     modal's idle screen). Dropped entirely in dark mode below, by request —
-     no amount of alpha tuning reads right for a glow like this against a
-     dark surface, so it's just off there rather than dimmed. */
+     modal's idle screen). Re-sourced from the neon primary ramp in dark
+     mode below rather than dropped — the indigo/navy pairing this light
+     value implies didn't read right against a dark surface, but the neon
+     accent has enough contrast against dark mode's near-black chrome to
+     carry the same glow. */
   --shadow-button-glow: 0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
     0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
 
@@ -156,77 +158,16 @@
   --color-primary-chip-border: var(--color-primary-200);
 }
 
-/* Dark mode: background & text ramps are flipped end-to-end (100 stays "the
-   lightest step", 950 stays "the darkest step" — only which physical color
-   sits at each step changes). Brand ramps (primary/secondary/error/success)
-   are intentionally left unchanged in both schemes. */
+/* Dark mode: neutral black/grey surfaces (not the light mode's blue-tinted
+   slate) paired with a neon cyan/magenta accent. Background & text ramps
+   are flipped end-to-end (100 stays "the lightest step", 950 stays "the
+   darkest step" — only which physical color sits at each step changes).
+   The topbar/footer's pure-black chrome is handled directly in those
+   components (see TopBar.tsx/Footer.tsx), since their base background
+   tokens differ from each other already. Error/success/badge-tint hues are
+   intentionally left unchanged in both schemes — only the brand ramp
+   (primary/secondary) goes neon here. */
 :root[data-mantine-color-scheme="dark"] {
-  --color-background-100: #0f172a;
-  --color-background-200: #17213a;
-  --color-background-300: #1e293b;
-  --color-background-400: #334155;
-  --color-background-500: #475569;
-  --color-background-600: #64748b;
-  --color-background-700: #94a3b8;
-  --color-background-800: #cbd5e1;
-  --color-background-900: #e2e8f0;
-  --color-background-950: #f1f5f9;
-
-  --color-text-100: #0f172a;
-  --color-text-200: #1e293b;
-  --color-text-300: #334155;
-  --color-text-400: #64748b;
-  --color-text-500: #94a3b8;
-  --color-text-600: #cbd5e1;
-  --color-text-700: #e2e8f0;
-  --color-text-800: #f1f5f9;
-  --color-text-900: #f8fafc;
-  --color-text-950: #ffffff;
-
-  /* Matches --color-background-300 dark value: a wash that reads as "raised"
-     against the dark body, mirroring the light-mode role of this token. */
-  --color-veil-rgb: 30, 41, 59;
-
-  --color-success-tint-bg: var(--color-success-950);
-  --color-success-tint-text: var(--color-success-200);
-  --color-success-tint-border: var(--color-success-800);
-  --color-primary-tint-bg: var(--color-primary-950);
-  --color-primary-tint-text: var(--color-primary-200);
-  --color-primary-tint-border: var(--color-primary-800);
-  --color-secondary-tint-bg: var(--color-secondary-950);
-  --color-secondary-tint-text: var(--color-secondary-200);
-  --color-secondary-tint-border: var(--color-secondary-800);
-  --color-error-tint-bg: var(--color-error-950);
-  --color-error-tint-text: var(--color-error-200);
-  --color-error-tint-border: var(--color-error-800);
-
-  --color-type-ranking-bg: #451a03;
-  --color-type-ranking-text: #fde68a;
-  --color-type-ranking-border: #92400e;
-  --color-type-tierlist-bg: #3b0764;
-  --color-type-tierlist-text: #e9d5ff;
-  --color-type-tierlist-border: #6b21a8;
-  --color-type-normal-bg: #172554;
-  --color-type-normal-text: #bfdbfe;
-  --color-type-normal-border: #1e40af;
-
-  --shadow-button-glow: none;
-  --gradient-collection-stats: var(--color-primary-tint-bg);
-}
-
-/* Pitch Black: an additive dark-mode variant (see
-   docs/adr/0004-app-owned-theme-identity.md) — always layered on top of the
-   block above, which still supplies the untouched error/success/badge-tint
-   colors. Surfaces get their own neutral black/grey ramp here rather than
-   inheriting plain dark mode's slate-blue one, since a blue-tinted card
-   reads as "regular dark mode" rather than "Pitch Black" sitting next to
-   pure-black chrome. Brand accent (primary/secondary) swaps for a neon
-   palette; the topbar/footer's pure-black chrome is handled directly in
-   those components, since their base background tokens differ from each
-   other already. */
-:root[data-app-theme="pitch-black"] {
-  /* Surfaces: neutral black/grey, same lightness steps as the dark-mode
-     background/text ramps above, just with the blue undertone removed. */
   --color-background-100: #09090b;
   --color-background-200: #18181b;
   --color-background-300: #27272a;
@@ -249,8 +190,9 @@
   --color-text-900: #fafafa;
   --color-text-950: #ffffff;
 
-  /* Matches --color-background-300's value above, same role as the
-     dark-mode --color-veil-rgb note. */
+  /* Matches --color-background-300's dark value: a wash that reads as
+     "raised" against the dark body, mirroring the light-mode role of this
+     token. */
   --color-veil-rgb: 39, 39, 42;
 
   /* Primary: Neon Cyan */
@@ -306,18 +248,31 @@
   --mantine-color-secondary-8: #86198f;
   --mantine-color-secondary-9: #701a75;
 
+  --color-success-tint-bg: var(--color-success-950);
+  --color-success-tint-text: var(--color-success-200);
+  --color-success-tint-border: var(--color-success-800);
   --color-primary-tint-bg: var(--color-primary-950);
   --color-primary-tint-text: var(--color-primary-200);
   --color-primary-tint-border: var(--color-primary-800);
   --color-secondary-tint-bg: var(--color-secondary-950);
   --color-secondary-tint-text: var(--color-secondary-200);
   --color-secondary-tint-border: var(--color-secondary-800);
+  --color-error-tint-bg: var(--color-error-950);
+  --color-error-tint-text: var(--color-error-200);
+  --color-error-tint-border: var(--color-error-800);
 
-  /* Restores the glow dropped in plain dark mode above (--shadow-button-glow:
-     none) — the neon palette has enough contrast against pure black chrome
-     to carry it, unlike the original indigo did against navy. Same formula
-     as the light-mode value, just sourced from the neon ramp. */
+  --color-type-ranking-bg: #451a03;
+  --color-type-ranking-text: #fde68a;
+  --color-type-ranking-border: #92400e;
+  --color-type-tierlist-bg: #3b0764;
+  --color-type-tierlist-text: #e9d5ff;
+  --color-type-tierlist-border: #6b21a8;
+  --color-type-normal-bg: #172554;
+  --color-type-normal-text: #bfdbfe;
+  --color-type-normal-border: #1e40af;
+
   --shadow-button-glow:
     0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
     0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+  --gradient-collection-stats: var(--color-primary-tint-bg);
 }

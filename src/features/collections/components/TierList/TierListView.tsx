@@ -160,9 +160,6 @@ export const TierListView = React.memo(function TierListViewInner({
         justify="space-between"
         align="center"
         style={{
-          position: "sticky",
-          top: 16,
-          zIndex: 30,
           background: "linear-gradient(to right, var(--color-error-tint-bg), var(--color-secondary-tint-bg))",
           padding: 16,
           borderRadius: 16,

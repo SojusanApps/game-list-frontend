@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <!-- Unlike the light-mode variant, this one supplies its own opaque
+       backdrop rather than relying on a gradient layer behind it (see
+       index.css) — dark mode's chrome (topbar/footer) is pure black, so the
+       background image should read as "dark background, neon objects" on
+       its own rather than depending on what's composited underneath it. -->
+  <rect x="0" y="0" width="1920" height="1080" fill="#000000" />
   <defs>
     <!-- Game Controller -->
     <g id="gamepad" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -71,40 +77,41 @@
     </g>
   </defs>
 
-  <!-- Same layout as the light-mode background, but opacity raised from 0.15 to 0.35:
-       alpha blending toward a near-black body darkens colors far more aggressively
-       than blending toward white, so the low light-mode opacity would read as
-       nearly invisible here. -->
-  <g opacity="0.35">
+  <!-- Same layout as the light-mode background, but recolored down to the
+       theme's two neon accent hues (cyan #22d3ee / magenta #e879f9, see
+       colors.css) instead of the light-mode four-hue set. Opacity raised
+       since pure black needs a stronger signal for the strokes to read as
+       "neon" rather than faint. -->
+  <g opacity="0.65">
     <!-- Top Left -->
-    <use href="#headset" x="250" y="200" transform="rotate(-15 250 200) scale(1.5)" color="#8b5cf6" />
-    <use href="#circle" x="150" y="350" color="#3b82f6" />
-    <use href="#square" x="400" y="150" transform="rotate(20 400 150)" color="#ec4899" />
-    <use href="#cross" x="650" y="300" transform="rotate(45 650 300)" color="#14b8a6" />
+    <use href="#headset" x="250" y="200" transform="rotate(-15 250 200) scale(1.5)" color="#e879f9" />
+    <use href="#circle" x="150" y="350" color="#22d3ee" />
+    <use href="#square" x="400" y="150" transform="rotate(20 400 150)" color="#e879f9" />
+    <use href="#cross" x="650" y="300" transform="rotate(45 650 300)" color="#22d3ee" />
 
     <!-- Top Right -->
-    <use href="#keyboard" x="1600" y="250" transform="rotate(10 1600 250) scale(1.8)" color="#3b82f6" />
-    <use href="#triangle" x="1350" y="150" transform="rotate(30 1350 150)" color="#8b5cf6" />
-    <use href="#mouse" x="1450" y="400" transform="rotate(-30 1450 400) scale(1.2)" color="#14b8a6" />
-    <use href="#circle" x="1800" y="450" color="#ec4899" />
+    <use href="#keyboard" x="1600" y="250" transform="rotate(10 1600 250) scale(1.8)" color="#22d3ee" />
+    <use href="#triangle" x="1350" y="150" transform="rotate(30 1350 150)" color="#e879f9" />
+    <use href="#mouse" x="1450" y="400" transform="rotate(-30 1450 400) scale(1.2)" color="#22d3ee" />
+    <use href="#circle" x="1800" y="450" color="#e879f9" />
 
     <!-- Bottom Left -->
-    <use href="#gamepad" x="350" y="850" transform="rotate(25 350 850) scale(2)" color="#ec4899" />
-    <use href="#cross" x="150" y="700" transform="rotate(15 150 700)" color="#8b5cf6" />
-    <use href="#triangle" x="550" y="950" transform="rotate(-15 550 950)" color="#3b82f6" />
+    <use href="#gamepad" x="350" y="850" transform="rotate(25 350 850) scale(2)" color="#e879f9" />
+    <use href="#cross" x="150" y="700" transform="rotate(15 150 700)" color="#e879f9" />
+    <use href="#triangle" x="550" y="950" transform="rotate(-15 550 950)" color="#22d3ee" />
 
     <!-- Bottom Right -->
-    <use href="#headset" x="1650" y="850" transform="rotate(35 1650 850) scale(1.6)" color="#8b5cf6" />
-    <use href="#square" x="1450" y="750" transform="rotate(10 1450 750)" color="#3b82f6" />
-    <use href="#cross" x="1800" y="950" transform="rotate(40 1800 950)" color="#ec4899" />
+    <use href="#headset" x="1650" y="850" transform="rotate(35 1650 850) scale(1.6)" color="#e879f9" />
+    <use href="#square" x="1450" y="750" transform="rotate(10 1450 750)" color="#22d3ee" />
+    <use href="#cross" x="1800" y="950" transform="rotate(40 1800 950)" color="#e879f9" />
 
     <!-- Central Scattered / Parallax-ready empty areas -->
-    <use href="#mouse" x="960" y="180" transform="rotate(15 960 180) scale(1.5)" color="#8b5cf6" />
-    <use href="#gamepad" x="1000" y="920" transform="rotate(-10 1000 920) scale(1.3)" color="#14b8a6" />
+    <use href="#mouse" x="960" y="180" transform="rotate(15 960 180) scale(1.5)" color="#e879f9" />
+    <use href="#gamepad" x="1000" y="920" transform="rotate(-10 1000 920) scale(1.3)" color="#22d3ee" />
 
-    <use href="#triangle" x="800" y="450" transform="rotate(15 800 450)" color="#ec4899" />
-    <use href="#circle" x="1150" y="380" color="#14b8a6" />
-    <use href="#square" x="900" y="680" transform="rotate(25 900 680)" color="#8b5cf6" />
-    <use href="#cross" x="1200" y="720" transform="rotate(45 1200 720)" color="#3b82f6" />
+    <use href="#triangle" x="800" y="450" transform="rotate(15 800 450)" color="#e879f9" />
+    <use href="#circle" x="1150" y="380" color="#22d3ee" />
+    <use href="#square" x="900" y="680" transform="rotate(25 900 680)" color="#e879f9" />
+    <use href="#cross" x="1200" y="720" transform="rotate(45 1200 720)" color="#22d3ee" />
   </g>
 </svg>
