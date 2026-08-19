@@ -22,6 +22,7 @@ export const TIERS: { id: TierEnum | "UNRANKED"; label: string; color: string }[
   { id: TierEnum.C, label: "C", color: "#22c55e" },
   { id: TierEnum.D, label: "D", color: "#3b82f6" },
   { id: TierEnum.E, label: "E", color: "#a855f7" },
+  { id: TierEnum.F, label: "F", color: "#ec4899" },
   { id: "UNRANKED", label: "?", color: "#737373" },
 ];
 
