@@ -20,10 +20,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.scrollContainer {
-  overflow-y: auto;
-}
-
 /* Fixed layout so column widths come from the <colgroup>, not from row content —
    otherwise widths recompute as different rows scroll into view. */
 .compareTable {

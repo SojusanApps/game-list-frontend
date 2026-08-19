@@ -1,4 +1,16 @@
-import { ActionIcon, Loader, Modal, Stack, Group, Box, Title, Text, TextInput, UnstyledButton } from "@mantine/core";
+import {
+  ActionIcon,
+  Loader,
+  Modal,
+  Stack,
+  Group,
+  Box,
+  ScrollArea,
+  Title,
+  Text,
+  TextInput,
+  UnstyledButton,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconSearch, IconX } from "@tabler/icons-react";
@@ -270,7 +282,12 @@ export default function AddGameToCollectionModal({
         </Box>
 
         {/* Results List */}
-        <Box style={{ flex: 1, overflowY: "auto", padding: "0 32px 32px" }}>{renderContent()}</Box>
+        <ScrollArea
+          style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
+          viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: "0 32px 32px" } }}
+        >
+          {renderContent()}
+        </ScrollArea>
       </Stack>
     </Modal>
   );

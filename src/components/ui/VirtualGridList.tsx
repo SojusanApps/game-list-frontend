@@ -1,11 +1,9 @@
-import { Box, Group, Loader, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-import { cn } from "@/utils/cn"; // cn still used for custom-scrollbar merging
 
 interface VirtualGridListProps<T> {
   items: T[];
@@ -142,18 +140,17 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
   }, [virtualRows, hasNextPage, isFetchingNextPage, fetchNextPage, rowCount]);
 
   return (
-    <Box
-      ref={parentRef}
-      className={cn("custom-scrollbar", className)}
+    <ScrollArea
+      viewportRef={parentRef}
+      className={className}
       style={{
         height: "calc(100vh - 250px)",
         minHeight: style?.height ? undefined : "500px",
-        overflow: "auto",
         padding: "32px",
         margin: "-32px -24px",
-        contain: "strict",
         ...style,
       }}
+      viewportProps={{ style: { contain: "strict" } }}
     >
       <Box
         style={{
@@ -227,6 +224,6 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
           </Stack>
         </Stack>
       )}
-    </Box>
+    </ScrollArea>
   );
 }) as <T>(props: VirtualGridListProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }) => React.ReactElement;

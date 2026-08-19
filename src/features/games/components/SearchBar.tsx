@@ -1,4 +1,4 @@
-import { Box, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, ScrollArea, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
@@ -204,15 +204,19 @@ export default function SearchBar({ variant = "dark" }: Readonly<SearchBarProps>
             overflow: "hidden",
           }}
         >
-          <Box
+          <ScrollArea
             component="ul"
-            style={{
-              padding: "4px",
-              maxHeight: "60vh",
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
+            style={{ maxHeight: "60vh", display: "flex", flexDirection: "column" }}
+            viewportProps={{
+              style: {
+                flex: 1,
+                height: "auto",
+                minHeight: 0,
+                padding: "4px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+              },
             }}
           >
             {renderResults()}
@@ -235,7 +239,7 @@ export default function SearchBar({ variant = "dark" }: Readonly<SearchBarProps>
                 {t("searchBar.advancedSearch")}
               </Link>
             </Box>
-          </Box>
+          </ScrollArea>
         </Box>
       )}
     </Box>

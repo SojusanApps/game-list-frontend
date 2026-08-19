@@ -1,4 +1,16 @@
-import { Box, Group, ActionIcon, Title, SegmentedControl, Text, Loader, Center, Stack, Button } from "@mantine/core";
+import {
+  Box,
+  Group,
+  ActionIcon,
+  Title,
+  SegmentedControl,
+  Text,
+  Loader,
+  Center,
+  Stack,
+  Button,
+  ScrollArea,
+} from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import * as React from "react";
 import { useState, useMemo } from "react";
@@ -140,7 +152,7 @@ export default function CalendarView(): React.JSX.Element {
     const maxVisible = 2;
 
     return (
-      <Box className={styles.calendarGridWrapper}>
+      <ScrollArea className={styles.calendarGridWrapper} scrollbars="x">
         <Box className={styles.calendarGridInner}>
           <Box className={styles.calendarGridHeader}>
             {[
@@ -223,7 +235,7 @@ export default function CalendarView(): React.JSX.Element {
             })}
           </Box>
         </Box>
-      </Box>
+      </ScrollArea>
     );
   };
 

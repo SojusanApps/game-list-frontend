@@ -1,4 +1,4 @@
-import { TextInput, Select, Checkbox, ActionIcon, Modal, Stack, Group, Box, Title, Text } from "@mantine/core";
+import { TextInput, Select, Checkbox, ActionIcon, Modal, Stack, Group, Box, ScrollArea, Title, Text } from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
@@ -172,7 +172,7 @@ export default function CreateCollectionModal({
         >
           <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
             {mode === "create" ? t("createModal.createTitle") : t("createModal.editTitle")}{" "}
-            <Text span c="var(--color-primary-600)">
+            <Text fz={24} fw={900} span c="var(--color-primary-600)">
               {t("createModal.collection")}
             </Text>
           </Title>
@@ -187,7 +187,10 @@ export default function CreateCollectionModal({
         </Group>
 
         {/* Body */}
-        <Box style={{ flex: 1, overflowY: "auto", padding: 32 }}>
+        <ScrollArea
+          style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
+          viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: 32 } }}
+        >
           <form id="create-collection-form" onSubmit={form.onSubmit(onSubmit)}>
             <Stack gap="lg">
               <TextInput
@@ -353,7 +356,7 @@ export default function CreateCollectionModal({
               />
             </Stack>
           </form>
-        </Box>
+        </ScrollArea>
 
         {/* Footer */}
         <Group

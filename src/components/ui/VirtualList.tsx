@@ -1,10 +1,8 @@
-import { Box, Group, Loader, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-import { cn } from "@/utils/cn";
 
 interface VirtualListProps<T> {
   items: T[];
@@ -86,15 +84,11 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
   }, [virtualItems, hasNextPage, isFetchingNextPage, fetchNextPage, itemCount]);
 
   return (
-    <Box
-      ref={parentRef}
-      className={cn("custom-scrollbar", className)}
-      style={{
-        height: "100%",
-        overflow: "auto",
-        contain: "strict",
-        ...style,
-      }}
+    <ScrollArea
+      viewportRef={parentRef}
+      className={className}
+      style={{ height: "100%", ...style }}
+      viewportProps={{ style: { contain: "strict" } }}
     >
       <Box
         style={{
@@ -164,6 +158,6 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
           </Stack>
         </Stack>
       )}
-    </Box>
+    </ScrollArea>
   );
 }) as <T>(props: VirtualListProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }) => React.ReactElement;

@@ -1,4 +1,4 @@
-import { Box, Table, Text } from "@mantine/core";
+import { ScrollArea, Table, Text } from "@mantine/core";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import * as React from "react";
@@ -110,7 +110,7 @@ export function GameListCompareTable({
           {t("compare.emptySection")}
         </Text>
       ) : (
-        <Box className={styles.scrollContainer} ref={scrollContainerRef} style={{ height: MAX_CONTAINER_HEIGHT }}>
+        <ScrollArea viewportRef={scrollContainerRef} style={{ height: MAX_CONTAINER_HEIGHT }}>
           <Table highlightOnHover className={styles.compareTable}>
             <colgroup>
               {table.getAllLeafColumns().map(column => (
@@ -155,7 +155,7 @@ export function GameListCompareTable({
               )}
             </Table.Tbody>
           </Table>
-        </Box>
+        </ScrollArea>
       )}
     </CollapsibleSection>
   );

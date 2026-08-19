@@ -243,7 +243,6 @@ export default function GameListPage(): React.JSX.Element {
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
         itemHeight={106}
-        className="custom-scrollbar"
         style={{
           height: "calc(100vh - 300px)",
           minHeight: "500px",

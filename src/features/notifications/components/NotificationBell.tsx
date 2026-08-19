@@ -1,4 +1,4 @@
-import { Popover, Box, Group, Text, Stack, UnstyledButton } from "@mantine/core";
+import { Popover, Box, Group, ScrollArea, Text, Stack, UnstyledButton } from "@mantine/core";
 import { IconBell } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -94,16 +94,20 @@ export default function NotificationBell(): React.JSX.Element {
           )}
         </Group>
 
-        <Box
+        <ScrollArea
           component="ul"
-          style={{
-            maxHeight: "400px",
-            overflowY: "auto",
-            overflowX: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            padding: 8,
+          style={{ maxHeight: "400px", display: "flex", flexDirection: "column" }}
+          scrollbars="y"
+          viewportProps={{
+            style: {
+              flex: 1,
+              height: "auto",
+              minHeight: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              padding: 8,
+            },
           }}
         >
           {unreadNotifications.length === 0 ? (
@@ -191,7 +195,7 @@ export default function NotificationBell(): React.JSX.Element {
               );
             })
           )}
-        </Box>
+        </ScrollArea>
 
         <Box
           style={{

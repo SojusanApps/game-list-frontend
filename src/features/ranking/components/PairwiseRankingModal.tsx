@@ -1,4 +1,4 @@
-import { Box, Flex, Group, Modal, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { Box, Flex, Group, Modal, ScrollArea, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import * as React from "react";
@@ -350,7 +350,12 @@ export default function PairwiseRankingModal({
           </Flex>
 
           {/* Body */}
-          <Box style={{ flex: 1, overflowY: "auto", padding: "16px" }}>{renderBody()}</Box>
+          <ScrollArea
+            style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
+            viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: "16px" } }}
+          >
+            {renderBody()}
+          </ScrollArea>
         </Stack>
       </Modal>
 

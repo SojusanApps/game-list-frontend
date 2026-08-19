@@ -1,5 +1,7 @@
 import { createTheme, MantineColorsTuple } from "@mantine/core";
 
+import scrollAreaClasses from "./ScrollArea.module.css";
+
 // Mapped from src/css/colors.css — indigo primary, amber secondary, slate background
 const primary: MantineColorsTuple = [
   "#eef2ff", // 0 - lightest
@@ -113,6 +115,12 @@ export const theme = createTheme({
       defaultProps: {
         size: "md",
       },
+    },
+    ScrollArea: {
+      defaultProps: {
+        type: "hover",
+      },
+      classNames: scrollAreaClasses,
     },
   },
 });

@@ -1,4 +1,4 @@
-import { Loader, Group, Pagination, Box, Title, SegmentedControl, Select, Table } from "@mantine/core";
+import { Loader, Group, Pagination, Box, ScrollArea, Title, SegmentedControl, Select, Table } from "@mantine/core";
 import { IconTrash, IconCheck } from "@tabler/icons-react";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useTanStackTableDevtools } from "@tanstack/react-table-devtools";
@@ -192,8 +192,9 @@ export default function NotificationsPage(): React.JSX.Element {
         )}
       </Group>
 
-      <Box
-        style={{ overflowX: "auto", background: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
+      <ScrollArea
+        scrollbars="x"
+        style={{ background: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
       >
         <Table highlightOnHover>
           <Table.Thead>
@@ -228,7 +229,7 @@ export default function NotificationsPage(): React.JSX.Element {
             )}
           </Table.Tbody>
         </Table>
-      </Box>
+      </ScrollArea>
 
       {(hasNext || hasPrevious) && (
         <Group justify="center" mt={24}>

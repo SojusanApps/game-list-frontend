@@ -1,4 +1,4 @@
-import { Box, Stack, Title, Text, Group, Badge, Divider } from "@mantine/core";
+import { Box, Stack, Title, Text, Group, Badge, Divider, ScrollArea } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -48,7 +48,7 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
             {t("import.noMatched")}
           </Text>
         ) : (
-          <div className={styles.scrollList}>
+          <ScrollArea.Autosize mah={500} className={styles.scrollList}>
             {rows.map((row, i) => (
               <GameRowItem
                 key={row.game.id}
@@ -59,7 +59,7 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
                 onFieldChange={onFieldChange}
               />
             ))}
-          </div>
+          </ScrollArea.Autosize>
         )}
       </Stack>
     </Box>
