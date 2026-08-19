@@ -53,19 +53,23 @@ function renderTrailingContent(
  * A virtualized grid list component for high-performance rendering of large datasets.
  * Encapsulates TanStack Virtual logic and handles infinite loading.
  */
-export function VirtualGridList<T>({
-  items,
-  renderItem,
-  hasNextPage,
-  isFetchingNextPage,
-  fetchNextPage,
-  className,
-  style,
-  columnCount: propColumnCount,
-  rowHeight: propRowHeight,
-  gap = 6,
-}: Readonly<VirtualGridListProps<T>>) {
-  const parentRef = useRef<HTMLDivElement>(null);
+export const VirtualGridList = React.forwardRef(function VirtualGridListComponent<T>(
+  {
+    items,
+    renderItem,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    className,
+    style,
+    columnCount: propColumnCount,
+    rowHeight: propRowHeight,
+    gap = 6,
+  }: VirtualGridListProps<T>,
+  forwardedRef: React.ForwardedRef<HTMLDivElement>,
+) {
+  const internalRef = useRef<HTMLDivElement>(null);
+  const parentRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
   const { width: viewportWidth } = useViewportSize();
   const { t } = useTranslation("common");
 
@@ -225,4 +229,4 @@ export function VirtualGridList<T>({
       )}
     </Box>
   );
-}
+}) as <T>(props: VirtualGridListProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }) => React.ReactElement;

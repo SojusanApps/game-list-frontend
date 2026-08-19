@@ -83,7 +83,6 @@ export const TierListView = React.memo(function TierListViewInner({
       sourceIndex: number,
       targetIndex: number,
       edge: Edge | null,
-      targetPage: number = 1,
     ) => {
       if (!isOwner) {
         return;
@@ -98,12 +97,7 @@ export const TierListView = React.memo(function TierListViewInner({
       const targetTier = tierConfig.id === "UNRANKED" ? BlankEnum[""] : tierConfig.id;
 
       // Calculate insertion position (0-based for API)
-      // We need to account for the current page offset
-      // Assuming 25 items per page (standard DRF pagination)
-      const PAGE_SIZE = 25;
-      const pageOffset = (targetPage - 1) * PAGE_SIZE;
-
-      let position = pageOffset + targetIndex;
+      let position = targetIndex;
       if (edge === "right") {
         position += 1;
       }

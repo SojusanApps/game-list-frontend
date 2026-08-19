@@ -4,6 +4,8 @@ import * as React from "react";
 
 import { cn } from "@/utils/cn";
 
+import classes from "./TierDropZone.module.css";
+
 interface TierDropZoneProps {
   tierId: string;
   isEmpty: boolean;
@@ -70,10 +72,7 @@ export const TierDropZone = React.memo(function TierDropZoneInner({
   return (
     <Box
       ref={dropRef}
-      className={cn(
-        "rounded-2xl border border-background-200 overflow-hidden transition-all duration-300 min-h-[140px]",
-        isDraggedOver ? "border-primary-400 bg-primary-50 border-2 shadow-inner" : "bg-background-50/50",
-      )}
+      className={cn(classes.dropZone, isDraggedOver && classes.dropZoneActive)}
     >
       {children}
     </Box>
