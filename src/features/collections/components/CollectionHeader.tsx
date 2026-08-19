@@ -9,6 +9,8 @@ import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
+import styles from "./CollectionHeader.module.css";
+
 interface CollectionHeaderProps {
   collection: CollectionDetail;
   onEdit?: () => void;
@@ -40,7 +42,7 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
             <Link
               to={"/profile/$id/$slug/collections"}
               params={{ id: collection.user.id.toString(), slug: collection.user.slug || "" }}
-              className="hover:text-primary-600 transition-colors"
+              className={styles.ownerLink}
             >
               {collection.user.username}
               {t("header.collectionsLink")}

@@ -1,7 +1,7 @@
 import { Button as MantineButton } from "@mantine/core";
 import React from "react";
 
-type ButtonVariant = "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
+type ButtonVariant = "default" | "secondary" | "destructive" | "success" | "outline" | "ghost" | "link";
 type ButtonSize = "default" | "sm" | "lg" | "icon" | "xl";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -18,6 +18,7 @@ const variantMap: Record<ButtonVariant, { variant: string; color?: string }> = {
   default: { variant: "filled" },
   secondary: { variant: "filled", color: "secondary" },
   destructive: { variant: "filled", color: "error" },
+  success: { variant: "filled", color: "success" },
   outline: { variant: "outline" },
   ghost: { variant: "subtle" },
   link: { variant: "transparent" },

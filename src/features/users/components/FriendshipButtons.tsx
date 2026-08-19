@@ -88,7 +88,7 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isFriend) {
     return (
-      <Button type="button" onClick={handleUnfriend} variant="destructive" className="w-full">
+      <Button type="button" onClick={handleUnfriend} variant="destructive" fullWidth>
         {t("friendship.unfriend")}
       </Button>
     );
@@ -96,8 +96,8 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (incomingRequest) {
     return (
-      <Group gap={8} className="w-full">
-        <Button type="button" onClick={handleAccept} className="flex-1 bg-green-600 hover:bg-green-700">
+      <Group gap={8} w="100%" wrap="nowrap">
+        <Button type="button" onClick={handleAccept} variant="success" style={{ flex: 1 }}>
           {t("friendship.accept")}
         </Button>
         <Button
@@ -105,7 +105,7 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
           onClick={handleReject}
           disabled={isIncomingRejected}
           variant="destructive"
-          className="flex-1"
+          style={{ flex: 1 }}
         >
           {isIncomingRejected ? t("friendship.rejected") : t("friendship.reject")}
         </Button>
@@ -115,14 +115,14 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isRequestSent) {
     return (
-      <Button type="button" disabled variant="secondary" className="w-full cursor-default">
+      <Button type="button" disabled variant="secondary" fullWidth style={{ cursor: "default" }}>
         {isOutgoingRejected ? t("friendship.requestRejected") : t("friendship.requestSent")}
       </Button>
     );
   }
 
   return (
-    <Button type="button" onClick={handleAddFriend} className="w-full">
+    <Button type="button" onClick={handleAddFriend} fullWidth>
       {t("friendship.addFriend")}
     </Button>
   );
