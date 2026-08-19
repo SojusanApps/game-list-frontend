@@ -11,6 +11,7 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuth, useCurrentUser } from "@/features/auth";
 import SearchBar from "@/features/games/components/SearchBar";
 import NotificationBell from "@/features/notifications/components/NotificationBell";
+import { useAppThemeStore } from "@/lib/appThemeStore";
 
 import styles from "./TopBar.module.css";
 
@@ -92,6 +93,7 @@ function TopBar(): React.JSX.Element {
   const userSlug = currentUser?.slug || currentUserId?.toString() || "";
   const [opened, { toggle, close }] = useDisclosure();
   const { t } = useTranslation();
+  const theme = useAppThemeStore(state => state.theme);
 
   return (
     <Box
@@ -102,7 +104,7 @@ function TopBar(): React.JSX.Element {
         zIndex: 50,
         width: "100%",
         borderBottom: "1px solid rgba(255,255,255,0.1)",
-        background: "var(--color-primary-950)",
+        background: theme === "pitch-black" ? "#000000" : "var(--color-primary-950)",
         boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
       }}
     >

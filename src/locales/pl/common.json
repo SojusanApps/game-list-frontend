@@ -19,7 +19,8 @@
     "privacy": "Prywatność",
     "colorScheme": "Motyw kolorystyczny",
     "lightMode": "Tryb jasny",
-    "darkMode": "Tryb ciemny"
+    "darkMode": "Tryb ciemny",
+    "pitchBlackMode": "Tryb głębokiej czerni"
   },
   "notFound": {
     "title": "404 - Nie znaleziono",

@@ -40,6 +40,16 @@ body {
     linear-gradient(to top left, var(--color-primary-950), var(--color-background-200));
 }
 
+/* Pitch Black always pairs with Mantine's dark scheme underneath (see
+   docs/adr/0004-app-owned-theme-identity.md), so this only needs to win the
+   cascade over the block above, not restate every rule. Unlike the
+   light/dark variants, the SVG itself carries an opaque black fill instead
+   of being blended with a gradient here — no light/dark tint to wash it
+   toward, since the whole point is pure black. */
+:root[data-app-theme="pitch-black"] body {
+  background-image: url("./assets/gaming-background-pitch-black.svg");
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

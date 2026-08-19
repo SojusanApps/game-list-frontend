@@ -213,3 +213,111 @@
   --shadow-button-glow: none;
   --gradient-collection-stats: var(--color-primary-tint-bg);
 }
+
+/* Pitch Black: an additive dark-mode variant (see
+   docs/adr/0004-app-owned-theme-identity.md) — always layered on top of the
+   block above, which still supplies the untouched error/success/badge-tint
+   colors. Surfaces get their own neutral black/grey ramp here rather than
+   inheriting plain dark mode's slate-blue one, since a blue-tinted card
+   reads as "regular dark mode" rather than "Pitch Black" sitting next to
+   pure-black chrome. Brand accent (primary/secondary) swaps for a neon
+   palette; the topbar/footer's pure-black chrome is handled directly in
+   those components, since their base background tokens differ from each
+   other already. */
+:root[data-app-theme="pitch-black"] {
+  /* Surfaces: neutral black/grey, same lightness steps as the dark-mode
+     background/text ramps above, just with the blue undertone removed. */
+  --color-background-100: #09090b;
+  --color-background-200: #18181b;
+  --color-background-300: #27272a;
+  --color-background-400: #3f3f46;
+  --color-background-500: #52525b;
+  --color-background-600: #71717a;
+  --color-background-700: #a1a1aa;
+  --color-background-800: #d4d4d8;
+  --color-background-900: #e4e4e7;
+  --color-background-950: #fafafa;
+
+  --color-text-100: #09090b;
+  --color-text-200: #27272a;
+  --color-text-300: #3f3f46;
+  --color-text-400: #71717a;
+  --color-text-500: #a1a1aa;
+  --color-text-600: #d4d4d8;
+  --color-text-700: #e4e4e7;
+  --color-text-800: #f4f4f5;
+  --color-text-900: #fafafa;
+  --color-text-950: #ffffff;
+
+  /* Matches --color-background-300's value above, same role as the
+     dark-mode --color-veil-rgb note. */
+  --color-veil-rgb: 39, 39, 42;
+
+  /* Primary: Neon Cyan */
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #155e75;
+  --color-primary-900: #164e63;
+  --color-primary-950: #083344;
+  --color-primary-200-rgb: 165, 243, 252;
+
+  /* Secondary: Neon Magenta */
+  --color-secondary-50: #fdf4ff;
+  --color-secondary-100: #fae8ff;
+  --color-secondary-200: #f5d0fe;
+  --color-secondary-300: #f0abfc;
+  --color-secondary-400: #e879f9;
+  --color-secondary-500: #d946ef;
+  --color-secondary-600: #c026d3;
+  --color-secondary-700: #a21caf;
+  --color-secondary-800: #86198f;
+  --color-secondary-900: #701a75;
+  --color-secondary-950: #4a044e;
+  --color-secondary-200-rgb: 245, 208, 254;
+
+  /* Mantine's built-in components (e.g. filled buttons) read
+     --mantine-color-* directly rather than the --color-* tokens above (see
+     theme.ts), so the neon palette needs mirroring here too. */
+  --mantine-color-primary-0: #ecfeff;
+  --mantine-color-primary-1: #cffafe;
+  --mantine-color-primary-2: #a5f3fc;
+  --mantine-color-primary-3: #67e8f9;
+  --mantine-color-primary-4: #22d3ee;
+  --mantine-color-primary-5: #06b6d4;
+  --mantine-color-primary-6: #0891b2;
+  --mantine-color-primary-7: #0e7490;
+  --mantine-color-primary-8: #155e75;
+  --mantine-color-primary-9: #164e63;
+
+  --mantine-color-secondary-0: #fdf4ff;
+  --mantine-color-secondary-1: #fae8ff;
+  --mantine-color-secondary-2: #f5d0fe;
+  --mantine-color-secondary-3: #f0abfc;
+  --mantine-color-secondary-4: #e879f9;
+  --mantine-color-secondary-5: #d946ef;
+  --mantine-color-secondary-6: #c026d3;
+  --mantine-color-secondary-7: #a21caf;
+  --mantine-color-secondary-8: #86198f;
+  --mantine-color-secondary-9: #701a75;
+
+  --color-primary-tint-bg: var(--color-primary-950);
+  --color-primary-tint-text: var(--color-primary-200);
+  --color-primary-tint-border: var(--color-primary-800);
+  --color-secondary-tint-bg: var(--color-secondary-950);
+  --color-secondary-tint-text: var(--color-secondary-200);
+  --color-secondary-tint-border: var(--color-secondary-800);
+
+  /* Restores the glow dropped in plain dark mode above (--shadow-button-glow:
+     none) — the neon palette has enough contrast against pure black chrome
+     to carry it, unlike the original indigo did against navy. Same formula
+     as the light-mode value, just sourced from the neon ramp. */
+  --shadow-button-glow:
+    0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
+    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+}

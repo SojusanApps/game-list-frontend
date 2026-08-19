@@ -14,6 +14,7 @@ import "./index.css";
 import React from "react";
 
 import "./lib/i18n";
+import "./lib/appThemeStore";
 import "dayjs/locale/pl";
 import ReactDOM from "react-dom/client";
 
