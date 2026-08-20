@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Friendship, FriendshipRequest } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useRequireAuth } from "@/features/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 
 import {
   useSendFriendRequest,
@@ -23,6 +24,7 @@ interface FriendshipButtonsProps {
 export default function FriendshipButtons({ currentUserId, userId }: Readonly<FriendshipButtonsProps>) {
   const { t } = useTranslation("users");
   const requireAuth = useRequireAuth();
+  const { confirm, confirmModal } = useConfirm();
   const { mutate: sendRequest } = useSendFriendRequest();
   const { mutate: acceptRequest } = useAcceptFriendRequest();
   const { mutate: rejectRequest } = useRejectFriendRequest();
@@ -81,8 +83,11 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
     }
   };
 
-  const handleUnfriend = () => {
-    if (friendship && globalThis.confirm(t("friendship.unfriendConfirm"))) {
+  const handleUnfriend = async () => {
+    if (
+      friendship &&
+      (await confirm({ title: t("friendship.unfriend"), message: t("friendship.unfriendConfirm"), isDestructive: true }))
+    ) {
       deleteFriendship({ id: friendship.id });
     }
   };
@@ -93,9 +98,12 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isFriend) {
     return (
-      <Button type="button" onClick={handleUnfriend} variant="destructive" fullWidth>
-        {t("friendship.unfriend")}
-      </Button>
+      <>
+        <Button type="button" onClick={handleUnfriend} variant="destructive" fullWidth>
+          {t("friendship.unfriend")}
+        </Button>
+        {confirmModal}
+      </>
     );
   }
 

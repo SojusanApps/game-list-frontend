@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Notification } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { useConfirm } from "@/hooks/useConfirm";
 
 import {
   useGetNotifications,
@@ -40,6 +41,7 @@ export default function NotificationsPage(): React.JSX.Element {
     queryParams.level = levelFilter;
   }
 
+  const { confirm, confirmModal } = useConfirm();
   const { data: notificationsData, isLoading, isFetching } = useGetNotifications(queryParams);
   const { mutate: markAsRead } = useMarkNotificationAsRead();
   const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
@@ -59,23 +61,23 @@ export default function NotificationsPage(): React.JSX.Element {
     [markAsRead],
   );
 
-  const handleMarkAllRead = () => {
-    if (globalThis.confirm(t("page.confirmMarkAll"))) {
+  const handleMarkAllRead = async () => {
+    if (await confirm({ title: t("page.markAllRead"), message: t("page.confirmMarkAll") })) {
       markAllAsRead();
     }
   };
 
   const handleDeleteOne = React.useCallback(
-    (id: number) => {
-      if (globalThis.confirm(t("page.confirmDelete"))) {
+    async (id: number) => {
+      if (await confirm({ title: t("page.tooltipDelete"), message: t("page.confirmDelete"), isDestructive: true })) {
         deleteOne({ id });
       }
     },
-    [t, deleteOne],
+    [t, confirm, deleteOne],
   );
 
-  const handleDeleteAllRead = () => {
-    if (globalThis.confirm(t("page.confirmDeleteAll"))) {
+  const handleDeleteAllRead = async () => {
+    if (await confirm({ title: t("page.deleteAllRead"), message: t("page.confirmDeleteAll"), isDestructive: true })) {
       deleteAllRead();
     }
   };
@@ -108,6 +110,7 @@ export default function NotificationsPage(): React.JSX.Element {
 
   return (
     <Box maw={1024} mx="auto" p={16}>
+      {confirmModal}
       <PageMeta title={t("page.title")} />
       <Group justify="space-between" align="center" mb={24} gap={16} wrap="wrap">
         <Group gap={8}>

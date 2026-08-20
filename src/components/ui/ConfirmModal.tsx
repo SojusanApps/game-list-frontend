@@ -42,7 +42,7 @@ export function ConfirmModal({
       withCloseButton={false}
       padding={0}
       radius="lg"
-      size="sm"
+      size="md"
       centered
       overlayProps={{ backgroundOpacity: 0.5 }}
     >

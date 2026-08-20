@@ -42,6 +42,7 @@
     "pageTitle": "Collection Details",
     "removeSuccess": "Game removed from collection",
     "removeFailed": "Failed to remove game",
+    "removeTitle": "Remove Game",
     "removeConfirm": "Are you sure you want to remove {{title}} from this collection?",
     "loadError": "Error Loading Collection",
     "itemsLoadError": "Error loading games: {{message}}",

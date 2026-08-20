@@ -14,6 +14,7 @@ import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { PairwiseRankingModal } from "@/features/ranking";
+import { useConfirm } from "@/hooks/useConfirm";
 import { cn } from "@/utils/cn";
 
 import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
@@ -74,13 +75,19 @@ export default function CollectionPage(): React.JSX.Element {
   }, [isOwner, currentUserId, collection]);
 
   const { t } = useTranslation("collections");
+  const { confirm, confirmModal } = useConfirm();
 
   const handleDeleteItem = React.useCallback(
-    (itemId: number, gameTitle: string) => {
+    async (itemId: number, gameTitle: string) => {
       if (!collectionId) {
         return;
       }
-      if (confirm(t("detail.removeConfirm", { title: gameTitle }))) {
+      const confirmed = await confirm({
+        title: t("detail.removeTitle"),
+        message: t("detail.removeConfirm", { title: gameTitle }),
+        isDestructive: true,
+      });
+      if (confirmed) {
         removeCollectionItem(
           { itemId, collectionId },
           {
@@ -96,7 +103,7 @@ export default function CollectionPage(): React.JSX.Element {
         );
       }
     },
-    [collectionId, removeCollectionItem, t],
+    [collectionId, removeCollectionItem, t, confirm],
   );
 
   const allItems = React.useMemo(
@@ -318,6 +325,8 @@ export default function CollectionPage(): React.JSX.Element {
           onClose={() => setIsPairwiseModalOpen(false)}
         />
       )}
+
+      {confirmModal}
     </Box>
   );
 }
