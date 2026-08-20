@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SplatRouteImport } from "./routes/$";
 import { Route as AdminRouteImport } from "./routes/admin";
-import { Route as HomeRouteImport } from "./routes/home";
 import { Route as ImportRouteImport } from "./routes/import";
 import { Route as NotificationsRouteImport } from "./routes/notifications";
 import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
@@ -43,11 +42,6 @@ const SplatRoute = SplatRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: "/admin",
   path: "/admin",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const HomeRoute = HomeRouteImport.update({
-  id: "/home",
-  path: "/home",
   getParentRoute: () => rootRouteImport,
 } as any);
 const ImportRoute = ImportRouteImport.update({
@@ -140,7 +134,6 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
-  "/home": typeof HomeRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
@@ -162,7 +155,6 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
-  "/home": typeof HomeRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
@@ -185,7 +177,6 @@ export interface FileRoutesById {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
-  "/home": typeof HomeRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
@@ -209,7 +200,6 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
-    | "/home"
     | "/import"
     | "/notifications"
     | "/release-calendar"
@@ -231,7 +221,6 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
-    | "/home"
     | "/import"
     | "/notifications"
     | "/release-calendar"
@@ -253,7 +242,6 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
-    | "/home"
     | "/import"
     | "/notifications"
     | "/release-calendar"
@@ -276,7 +264,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   SplatRoute: typeof SplatRoute;
   AdminRoute: typeof AdminRoute;
-  HomeRoute: typeof HomeRoute;
   ImportRoute: typeof ImportRoute;
   NotificationsRoute: typeof NotificationsRoute;
   ReleaseCalendarRoute: typeof ReleaseCalendarRoute;
@@ -316,13 +303,6 @@ declare module "@tanstack/react-router" {
       path: "/admin";
       fullPath: "/admin";
       preLoaderRoute: typeof AdminRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/home": {
-      id: "/home";
-      path: "/home";
-      fullPath: "/home";
-      preLoaderRoute: typeof HomeRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/import": {
@@ -444,7 +424,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AdminRoute: AdminRoute,
-  HomeRoute: HomeRoute,
   ImportRoute: ImportRoute,
   NotificationsRoute: NotificationsRoute,
   ReleaseCalendarRoute: ReleaseCalendarRoute,

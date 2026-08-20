@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { useCurrentUserId } from "@/features/auth";
+import { useCurrentUserId, useRequireAuth } from "@/features/auth";
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import AddToCollectionModal from "@/features/collections/components/AddToCollectionModal";
 
@@ -29,12 +29,13 @@ import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
 const routeApi = getRouteApi("/game/$id/$slug");
 
-function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId: number }>) {
+function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId: number | null }>) {
   const { t } = useTranslation("games");
-  const { data: userGameFollows, isPending: isGameFollowsPending } = useGetGameFollowsList({
-    game: String(gameId),
-    user: String(userId),
-  });
+  const requireAuth = useRequireAuth();
+  const { data: userGameFollows, isPending: isGameFollowsPending } = useGetGameFollowsList(
+    { game: String(gameId), user: String(userId ?? -1) },
+    { enabled: !!userId },
+  );
 
   const isFollowing = userGameFollows?.count !== undefined && userGameFollows.count > 0;
   const gameFollowId = userGameFollows?.results?.[0]?.id;
@@ -46,7 +47,7 @@ function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId:
     if (isFollowing && gameFollowId) {
       deleteGameFollow(gameFollowId);
     } else {
-      createGameFollow({ game: gameId});
+      createGameFollow({ game: gameId });
     }
   };
 
@@ -56,8 +57,8 @@ function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId:
         size="xl"
         variant="subtle"
         color={isFollowing ? "primary" : "gray"}
-        onClick={handleToggleFollow}
-        loading={isGameFollowsPending || isCreatingGameFollow || isDeletingGameFollow}
+        onClick={() => requireAuth(handleToggleFollow)}
+        loading={!!userId && (isGameFollowsPending || isCreatingGameFollow || isDeletingGameFollow)}
         radius="xl"
       >
         {isFollowing ? <IconBellFilled size={24} /> : <IconBell size={24} />}
@@ -73,13 +74,14 @@ function UserGameActions({
   setIsCollectionModalOpen,
 }: Readonly<{
   gameId: number;
-  userId: number;
+  userId: number | null;
   setIsListModalOpen: (val: boolean) => void;
   setIsCollectionModalOpen: (val: boolean) => void;
 }>) {
   const { t } = useTranslation("games");
+  const requireAuth = useRequireAuth();
   const { data: userGameList, isPending: isUserGameListPending } = useGetGameListByFilters(
-    { game: String(gameId), user: String(userId) },
+    { game: String(gameId), user: String(userId ?? -1) },
     { enabled: !!gameId && !!userId },
   );
 
@@ -87,14 +89,14 @@ function UserGameActions({
 
   return (
     <Stack gap={8}>
-      {isUserGameListPending ? (
+      {isUserGameListPending && userId ? (
         <Skeleton h={36} w="100%" style={{ borderRadius: 8 }} />
       ) : (
-        <Button onClick={() => setIsListModalOpen(true)} fullWidth>
+        <Button onClick={() => requireAuth(() => setIsListModalOpen(true))} fullWidth>
           {listButtonText}
         </Button>
       )}
-      <Button onClick={() => setIsCollectionModalOpen(true)} variant="outline" fullWidth>
+      <Button onClick={() => requireAuth(() => setIsCollectionModalOpen(true))} variant="outline" fullWidth>
         {t("detail.addToCollection")}
       </Button>
     </Stack>
@@ -177,14 +179,12 @@ export default function GameDetailPage(): React.JSX.Element {
                   />
                 </Box>
 
-                {isAuthenticated && currentUserId && (
-                  <UserGameActions
-                    gameId={gameId}
-                    userId={currentUserId}
-                    setIsListModalOpen={setIsListModalOpen}
-                    setIsCollectionModalOpen={setIsCollectionModalOpen}
-                  />
-                )}
+                <UserGameActions
+                  gameId={gameId}
+                  userId={currentUserId}
+                  setIsListModalOpen={setIsListModalOpen}
+                  setIsCollectionModalOpen={setIsCollectionModalOpen}
+                />
 
                 <GameInformation gameDetails={gameDetails} />
               </Stack>
@@ -203,7 +203,7 @@ export default function GameDetailPage(): React.JSX.Element {
                     >
                       {gameDetails?.title}
                     </Title>
-                    {isAuthenticated && currentUserId && <GameFollowButton gameId={gameId} userId={currentUserId} />}
+                    <GameFollowButton gameId={gameId} userId={currentUserId} />
                   </Group>
                 </Group>
 

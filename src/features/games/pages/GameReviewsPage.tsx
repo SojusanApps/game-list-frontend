@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
-import { useCurrentUserId } from "@/features/auth";
-import { useAuth } from "@/features/auth/context/AuthProvider";
+import { useCurrentUserId, useRequireAuth } from "@/features/auth";
 
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
@@ -26,7 +25,7 @@ export default function GameReviewsPage(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
 
-  const { isAuthenticated } = useAuth();
+  const requireAuth = useRequireAuth();
   const currentUserId = useCurrentUserId();
 
   const { data: gameDetails } = useGetGamesDetails(gameId);
@@ -71,11 +70,9 @@ export default function GameReviewsPage(): React.JSX.Element {
               {gameDetails?.title ?? t("reviewsPage.backToGame")}
             </Link>
           </Group>
-          {isAuthenticated && (
-            <Button size="sm" onClick={() => setIsReviewModalOpen(true)}>
-              {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
-            </Button>
-          )}
+          <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true))}>
+            {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
+          </Button>
         </Group>
 
         <Title order={1} fz={{ base: 24, md: 32 }} fw={700} c="var(--color-text-900)">

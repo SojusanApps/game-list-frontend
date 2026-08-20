@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Friendship, FriendshipRequest } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { useRequireAuth } from "@/features/auth";
 
 import {
   useSendFriendRequest,
@@ -21,12 +22,16 @@ interface FriendshipButtonsProps {
 
 export default function FriendshipButtons({ currentUserId, userId }: Readonly<FriendshipButtonsProps>) {
   const { t } = useTranslation("users");
+  const requireAuth = useRequireAuth();
   const { mutate: sendRequest } = useSendFriendRequest();
   const { mutate: acceptRequest } = useAcceptFriendRequest();
   const { mutate: rejectRequest } = useRejectFriendRequest();
   const { mutate: deleteFriendship } = useDeleteFriendship();
 
-  const { data: friendshipsData } = useGetFriendships(currentUserId ? { user: String(currentUserId) } : undefined);
+  const { data: friendshipsData } = useGetFriendships(
+    currentUserId ? { user: String(currentUserId) } : undefined,
+    { enabled: !!currentUserId },
+  );
   const { data: sentRequestsData } = useGetFriendshipRequests({ receiver: String(userId) });
   // Fetch requests sent BY this user. We will check if any are sent TO us.
   const { data: incomingRequestsData } = useGetFriendshipRequests({ sender: String(userId) });
@@ -122,7 +127,7 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
   }
 
   return (
-    <Button type="button" onClick={handleAddFriend} fullWidth>
+    <Button type="button" onClick={() => requireAuth(handleAddFriend)} fullWidth>
       {t("friendship.addFriend")}
     </Button>
   );

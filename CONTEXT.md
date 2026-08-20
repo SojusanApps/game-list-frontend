@@ -23,3 +23,7 @@ _Avoid_: Nickname (Keycloak's term for the source claim; use "username" for the 
 **Credentials**:
 Password and nickname (username) are both owned and edited exclusively by Keycloak. The backend never accepts a credential change directly — `ChangePasswordForm` and `ChangeUsernameForm`'s backend-write path are dead once Keycloak is live; both actions redirect to Keycloak's account console instead.
 _Avoid_: Account settings (still a valid UI grouping, just no longer backed by local write endpoints for these two fields)
+
+**Gated action**:
+Something a visitor can attempt without a Session (the control is visible and clickable) but that requires one to complete — e.g. adding a game to a list, following a game, writing a review. Attempting one without a Session prompts for login rather than either performing the action or silently redirecting to Keycloak; distinct from a page that requires a Session just to view, which redirects the visitor away instead of prompting in place. See [ADR 0004](docs/adr/0004-defer-keycloak-redirect-to-user-intent.md).
+_Avoid_: Protected action (ambiguous with page-level protection), locked feature

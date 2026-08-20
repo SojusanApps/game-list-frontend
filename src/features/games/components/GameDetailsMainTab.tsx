@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import { Game, GameReview as GameReviewType, PaginatedGameReviewList } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { useRequireAuth } from "@/features/auth";
 import { TranslationSuggestionModal } from "@/features/translationSuggestions/components/TranslationSuggestionModal";
 
 import GameReview from "../components/GameReview";
@@ -33,6 +34,7 @@ export default function GameDetailsMainTab({
   gameSlug,
 }: Readonly<GameDetailsMainTabProps>) {
   const { t } = useTranslation("games");
+  const requireAuth = useRequireAuth();
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
   const [isSuggestionModalOpen, setIsSuggestionModalOpen] = React.useState(false);
 
@@ -102,8 +104,8 @@ export default function GameDetailsMainTab({
           <Title order={2} fz="xl" fw={700} c="var(--color-text-900)">
             {t("mainTab.reviews")}
           </Title>
-          {isLoggedIn && gameDetails?.id && (
-            <Button size="sm" onClick={() => setIsReviewModalOpen(true)}>
+          {gameDetails?.id && (
+            <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true))}>
               {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
             </Button>
           )}

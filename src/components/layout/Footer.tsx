@@ -24,7 +24,7 @@ const Footer = (): React.JSX.Element => {
     >
       <div className={styles.footerInner}>
         <div className={styles.leftSection}>
-          <Link to="/home" className={styles.logoLink}>
+          <Link to="/" className={styles.logoLink}>
             <AppLogo size="md" onDark={colorScheme === "dark"} />
           </Link>
           <Text size="xs" c="var(--color-text-400)">
@@ -39,7 +39,7 @@ const Footer = (): React.JSX.Element => {
           <nav>
             <ul className={styles.navGroup}>
               <li>
-                <Link to="/home" className={styles.footerLink}>
+                <Link to="/" className={styles.footerLink}>
                   {t("footer.home")}
                 </Link>
               </li>
@@ -49,7 +49,7 @@ const Footer = (): React.JSX.Element => {
                 </Link>
               </li>
               <li>
-                <Link to="/home" className={styles.footerLink}>
+                <Link to="/" className={styles.footerLink}>
                   {t("footer.privacy")}
                 </Link>
               </li>

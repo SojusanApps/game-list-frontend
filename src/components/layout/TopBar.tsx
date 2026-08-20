@@ -172,7 +172,7 @@ function TopBar(): React.JSX.Element {
       <Group justify="space-between" align="center" maw={1280} mx="auto" p={12}>
         <Group gap={32}>
           <Burger opened={opened} onClick={toggle} hiddenFrom="lg" size="sm" color="var(--color-primary-100)" />
-          <Link to="/home" className={styles.logoLink} aria-label={t("nav.gameListLogo")}>
+          <Link to="/" className={styles.logoLink} aria-label={t("nav.gameListLogo")}>
             <AppLogo size="md" onDark />
           </Link>
 
