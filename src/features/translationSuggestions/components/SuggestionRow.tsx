@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useCurrentUserId, useIsStaff } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 
 import {
   useAcceptTranslationSuggestion,
@@ -218,6 +219,12 @@ export function SuggestionRow({ suggestion }: Readonly<SuggestionRowProps>) {
           </Text>
           <UserChip user={suggestion.submitted_by} />
           <ReportButton
+            targetType={TargetTypeEnum.TRANSLATION_SUGGESTION}
+            targetId={suggestion.id}
+            ownerId={suggestion.submitted_by.id}
+            ownerUsername={suggestion.submitted_by.username}
+          />
+          <WarnAndRemoveButton
             targetType={TargetTypeEnum.TRANSLATION_SUGGESTION}
             targetId={suggestion.id}
             ownerId={suggestion.submitted_by.id}

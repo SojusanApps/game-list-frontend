@@ -9,6 +9,7 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { STATUS_CONFIG } from "@/features/games/utils/statusConfig";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import styles from "./GameListRow.module.css";
@@ -101,12 +102,20 @@ export const GameListRow = React.memo(({ gameListItem, isOwner, onEdit, ownerUse
               )}
 
               {!isOwner && (
-                <ReportButton
-                  targetType={TargetTypeEnum.GAME_LIST_NOTE}
-                  targetId={gameListItem.id}
-                  ownerId={gameListItem.user}
-                  ownerUsername={ownerUsername}
-                />
+                <>
+                  <ReportButton
+                    targetType={TargetTypeEnum.GAME_LIST_NOTE}
+                    targetId={gameListItem.id}
+                    ownerId={gameListItem.user}
+                    ownerUsername={ownerUsername}
+                  />
+                  <WarnAndRemoveButton
+                    targetType={TargetTypeEnum.GAME_LIST_NOTE}
+                    targetId={gameListItem.id}
+                    ownerId={gameListItem.user}
+                    ownerUsername={ownerUsername}
+                  />
+                </>
               )}
             </Group>
           </Group>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ReportStatusEnum, TargetTypeEnum, type Report, type UserSimple } from "@/client/types.gen";
+import { ReportStatusEnum, SourceEnum, TargetTypeEnum, type Report, type UserSimple } from "@/client/types.gen";
 import {
   buildReportFilters,
   canModerateReport,
@@ -26,6 +26,7 @@ function makeReport(overrides: Partial<Report> = {}): Report {
     reported_user: makeUser(9),
     reported_value: "This is the offending review text.",
     reason: "This review contains harassment.",
+    source: SourceEnum.USER_SUBMITTED,
     status: ReportStatusEnum.PENDING,
     submitted_at: "2026-07-09T12:00:00Z",
     reviewed_by: makeUser(0),

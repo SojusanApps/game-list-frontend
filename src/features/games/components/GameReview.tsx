@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
 import { getRecommendationConfig } from "../utils/recommendationConfig";
@@ -152,6 +153,12 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
           )}
 
           <ReportButton
+            targetType={TargetTypeEnum.REVIEW}
+            targetId={gameReview.id}
+            ownerId={gameReview.user.id}
+            ownerUsername={gameReview.user.username}
+          />
+          <WarnAndRemoveButton
             targetType={TargetTypeEnum.REVIEW}
             targetId={gameReview.id}
             ownerId={gameReview.user.id}

@@ -1,5 +1,13 @@
 import { Box, Text, Tooltip, Menu, ActionIcon, Group } from "@mantine/core";
-import { IconPencil, IconX, IconQuestionMark, IconInfoCircle, IconDotsVertical, IconFlag } from "@tabler/icons-react";
+import {
+  IconPencil,
+  IconX,
+  IconQuestionMark,
+  IconInfoCircle,
+  IconDotsVertical,
+  IconFlag,
+  IconShieldExclamation,
+} from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +17,7 @@ import { TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { cn } from "@/utils/cn";
 
 import { EditDescriptionModal } from "./EditDescriptionModal";
@@ -194,17 +203,30 @@ export const GameCard = (props: GameCardProps) => {
               )}
 
               {!isOwner && (
-                <ReportButton
-                  targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
-                  targetId={collectionItemId}
-                  ownerId={addedBy.id}
-                  ownerUsername={addedBy.username}
-                  renderTrigger={({ onClick }) => (
-                    <Menu.Item leftSection={<IconFlag size={14} />} onClick={onClick}>
-                      {tModeration("reportButton.ariaLabel")}
-                    </Menu.Item>
-                  )}
-                />
+                <>
+                  <ReportButton
+                    targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+                    targetId={collectionItemId}
+                    ownerId={addedBy.id}
+                    ownerUsername={addedBy.username}
+                    renderTrigger={({ onClick }) => (
+                      <Menu.Item leftSection={<IconFlag size={14} />} onClick={onClick}>
+                        {tModeration("reportButton.ariaLabel")}
+                      </Menu.Item>
+                    )}
+                  />
+                  <WarnAndRemoveButton
+                    targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+                    targetId={collectionItemId}
+                    ownerId={addedBy.id}
+                    ownerUsername={addedBy.username}
+                    renderTrigger={({ onClick }) => (
+                      <Menu.Item leftSection={<IconShieldExclamation size={14} />} onClick={onClick}>
+                        {tModeration("warnAndRemoveButton.ariaLabel")}
+                      </Menu.Item>
+                    )}
+                  />
+                </>
               )}
             </Menu.Dropdown>
           </Menu>

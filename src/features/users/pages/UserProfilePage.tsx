@@ -9,7 +9,9 @@ import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useCurrentUserId } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 
+import { AdminActionsPanel } from "../components/AdminActionsPanel";
 import FriendshipButtons from "../components/FriendshipButtons";
 import GameListUpdate from "../components/GameListUpdate";
 import UserFriendsList from "../components/UserFriendsList";
@@ -75,14 +77,20 @@ export default function UserProfilePage(): React.JSX.Element {
                     src={userDetails?.gravatar_url || undefined}
                     alt={t("profile.userAvatarAlt")}
                   />
-                  <Box style={{ position: "absolute", top: 8, right: 8 }}>
+                  <Group gap={4} style={{ position: "absolute", top: 8, right: 8 }}>
                     <ReportButton
                       targetType={TargetTypeEnum.AVATAR}
                       targetId={validUserId}
                       ownerId={validUserId}
                       ownerUsername={userDetails?.username ?? ""}
                     />
-                  </Box>
+                    <WarnAndRemoveButton
+                      targetType={TargetTypeEnum.AVATAR}
+                      targetId={validUserId}
+                      ownerId={validUserId}
+                      ownerUsername={userDetails?.username ?? ""}
+                    />
+                  </Group>
                 </Box>
 
                 {!isOwnProfile && <FriendshipButtons currentUserId={currentUserId} userId={validUserId} />}
@@ -125,6 +133,9 @@ export default function UserProfilePage(): React.JSX.Element {
                 )}
 
                 <UserProfileInformation userDetails={userDetails} />
+                {userDetails && (
+                  <AdminActionsPanel userId={validUserId} isTargetStaff={!!userDetails.is_staff} />
+                )}
                 <UserFriendsList userDetails={userDetails} />
               </Stack>
             </Grid.Col>
@@ -136,6 +147,12 @@ export default function UserProfilePage(): React.JSX.Element {
                     {userDetails?.username}
                   </Title>
                   <ReportButton
+                    targetType={TargetTypeEnum.USERNAME}
+                    targetId={validUserId}
+                    ownerId={validUserId}
+                    ownerUsername={userDetails?.username ?? ""}
+                  />
+                  <WarnAndRemoveButton
                     targetType={TargetTypeEnum.USERNAME}
                     targetId={validUserId}
                     ownerId={validUserId}

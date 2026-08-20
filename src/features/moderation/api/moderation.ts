@@ -3,6 +3,7 @@ import {
   ModerationReportsRejectCreateData,
   ModerationService,
   ReportCreateWritable,
+  ReportDirectModerateWritable,
 } from "@/client";
 import { handleApiError } from "@/utils/apiUtils";
 import StatusCode from "@/utils/StatusCode";
@@ -24,6 +25,14 @@ export const createReport = async (body: ReportCreateWritable) => {
   const { data, error, response } = await ModerationService.moderationReportsCreate({ body });
   if (response?.status !== StatusCode.CREATED) {
     return await handleApiError(error, response, "Error creating report");
+  }
+  return data;
+};
+
+export const createDirectModerateReport = async (body: ReportDirectModerateWritable) => {
+  const { data, error, response } = await ModerationService.moderationReportsDirectModerateCreate({ body });
+  if (response?.status !== StatusCode.CREATED) {
+    return await handleApiError(error, response, "Error issuing warning");
   }
   return data;
 };

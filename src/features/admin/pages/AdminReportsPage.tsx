@@ -18,7 +18,7 @@ import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Report, ReportStatusEnum, TargetTypeEnum, type UserSimple } from "@/client";
+import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum, type UserSimple } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -46,6 +46,21 @@ const STATUS_STYLES: Record<ReportStatusEnum, React.CSSProperties> = {
 };
 
 const STATUS_OPTIONS = [ReportStatusEnum.PENDING, ReportStatusEnum.ACCEPTED, ReportStatusEnum.REJECTED];
+
+const SOURCE_OPTIONS = [SourceEnum.USER_SUBMITTED, SourceEnum.ADMIN_DIRECT];
+
+const SOURCE_STYLES: Record<SourceEnum, React.CSSProperties> = {
+  [SourceEnum.USER_SUBMITTED]: {
+    background: "var(--color-background-200)",
+    color: "var(--color-text-700)",
+    border: "1px solid var(--color-background-300)",
+  },
+  [SourceEnum.ADMIN_DIRECT]: {
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
+  },
+};
 
 const TARGET_TYPE_OPTIONS = [
   TargetTypeEnum.AVATAR,
@@ -149,6 +164,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
             >
               {tModeration(`targetType.${report.target_type}`)}
             </Badge>
+            <Badge style={SOURCE_STYLES[report.source]}>{tModeration(`source.${report.source}`)}</Badge>
           </Group>
           <Text fz="xs" c="dimmed">
             {t("reports.submittedAtLabel", { date: formatDisplayDateTime(report.submitted_at) })}
@@ -266,9 +282,10 @@ export default function AdminReportsPage(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
   const [status, setStatus] = React.useState<ReportStatusEnum | "all">(ReportStatusEnum.PENDING);
   const [targetType, setTargetType] = React.useState<TargetTypeEnum | undefined>();
+  const [source, setSource] = React.useState<SourceEnum | undefined>();
   const [reportedUser, setReportedUser] = React.useState<number | undefined>();
 
-  const filterState: ReportFilterState = { status, targetType, reportedUser, page };
+  const filterState: ReportFilterState = { status, targetType, source, reportedUser, page };
   const query = buildReportFilters(filterState);
 
   const { data, isLoading, isFetching } = useGetReports(query);
@@ -278,11 +295,16 @@ export default function AdminReportsPage(): React.JSX.Element {
   const addToPage = hasNext ? 1 : 0;
   const totalPages = hasNext || hasPrevious ? Math.max(page + addToPage, page) : 1;
 
-  const isFiltered = status !== ReportStatusEnum.PENDING || targetType !== undefined || reportedUser !== undefined;
+  const isFiltered =
+    status !== ReportStatusEnum.PENDING ||
+    targetType !== undefined ||
+    source !== undefined ||
+    reportedUser !== undefined;
 
   const clearFilters = () => {
     setStatus(ReportStatusEnum.PENDING);
     setTargetType(undefined);
+    setSource(undefined);
     setReportedUser(undefined);
     setPage(1);
   };
@@ -323,6 +345,20 @@ export default function AdminReportsPage(): React.JSX.Element {
           ]}
           allowDeselect={false}
           style={{ width: 220 }}
+        />
+        <Select
+          label={t("reports.sourceFilterLabel")}
+          value={source ?? "all"}
+          onChange={value => {
+            setSource(value === "all" || !value ? undefined : (value as SourceEnum));
+            setPage(1);
+          }}
+          data={[
+            { value: "all", label: t("reports.sourceAll") },
+            ...SOURCE_OPTIONS.map(option => ({ value: option, label: tModeration(`source.${option}`) })),
+          ]}
+          allowDeselect={false}
+          style={{ width: 180 }}
         />
         <NumberInput
           label={t("reports.reportedUserFilterLabel")}
