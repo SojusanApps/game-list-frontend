@@ -10,16 +10,16 @@
     "adminPanel": "Admin Panel",
     "logout": "Logout",
     "login": "Login",
-    "menu": "Menu"
+    "menu": "Menu",
+    "colorScheme": "Color scheme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
   "footer": {
     "copyright": "© {{year}} Sojusan GameList • Data provided by",
     "home": "Home",
     "search": "Search",
-    "privacy": "Privacy",
-    "colorScheme": "Color scheme",
-    "lightMode": "Light mode",
-    "darkMode": "Dark mode"
+    "privacy": "Privacy"
   },
   "notFound": {
     "title": "404 - Not Found",

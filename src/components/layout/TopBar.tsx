@@ -1,6 +1,27 @@
-import { Box, Group, Menu, Text, UnstyledButton, Burger, Drawer, Stack, useComputedColorScheme } from "@mantine/core";
+import {
+  Box,
+  Group,
+  Menu,
+  Text,
+  UnstyledButton,
+  Burger,
+  Drawer,
+  Stack,
+  SegmentedControl,
+  useMantineColorScheme,
+  useComputedColorScheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconUserCircle,
+  IconSettings,
+  IconLogout,
+  IconShield,
+  IconSun,
+  IconMoon,
+} from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -11,8 +32,49 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuth, useCurrentUser } from "@/features/auth";
 import SearchBar from "@/features/games/components/SearchBar";
 import NotificationBell from "@/features/notifications/components/NotificationBell";
+import i18n from "@/lib/i18n";
+import { useLanguageStore, type Language } from "@/lib/languageStore";
 
 import styles from "./TopBar.module.css";
+
+function LanguageAndThemeSwitchers(): React.JSX.Element {
+  const { language, setLanguage } = useLanguageStore();
+  const { setColorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme("light");
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  const handleLanguageChange = (value: string) => {
+    const lang = value as Language;
+    setLanguage(lang);
+    void i18n.changeLanguage(lang);
+    queryClient.invalidateQueries().catch(() => {});
+  };
+
+  return (
+    <Group gap={12}>
+      <SegmentedControl
+        value={language}
+        onChange={handleLanguageChange}
+        size="xs"
+        data={[
+          { label: "EN", value: "en" },
+          { label: "PL", value: "pl" },
+        ]}
+      />
+      <SegmentedControl
+        value={colorScheme}
+        onChange={value => setColorScheme(value as "light" | "dark")}
+        size="xs"
+        aria-label={t("nav.colorScheme")}
+        data={[
+          { value: "light", label: <IconSun size={14} stroke={1.75} aria-label={t("nav.lightMode")} /> },
+          { value: "dark", label: <IconMoon size={14} stroke={1.75} aria-label={t("nav.darkMode")} /> },
+        ]}
+      />
+    </Group>
+  );
+}
 
 function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.Element {
   const { data: currentUser } = useCurrentUser();
@@ -155,7 +217,10 @@ function TopBar(): React.JSX.Element {
           <SearchBar />
         </Box>
 
-        <Group gap={16}>{isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}</Group>
+        <Group gap={16}>
+          <LanguageAndThemeSwitchers />
+          {isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}
+        </Group>
       </Group>
 
       <Drawer

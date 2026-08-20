@@ -10,16 +10,16 @@
     "adminPanel": "Panel administratora",
     "logout": "Wyloguj się",
     "login": "Zaloguj się",
-    "menu": "Menu"
+    "menu": "Menu",
+    "colorScheme": "Motyw kolorystyczny",
+    "lightMode": "Tryb jasny",
+    "darkMode": "Tryb ciemny"
   },
   "footer": {
     "copyright": "© {{year}} Sojusan GameList • Dane dostarczone przez",
     "home": "Strona główna",
     "search": "Szukaj",
-    "privacy": "Prywatność",
-    "colorScheme": "Motyw kolorystyczny",
-    "lightMode": "Tryb jasny",
-    "darkMode": "Tryb ciemny"
+    "privacy": "Prywatność"
   },
   "notFound": {
     "title": "404 - Nie znaleziono",

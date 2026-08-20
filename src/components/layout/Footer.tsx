@@ -1,30 +1,16 @@
-import { Box, Text, SegmentedControl, useMantineColorScheme, useComputedColorScheme } from "@mantine/core";
-import { IconSun, IconMoon } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { Box, Text, useComputedColorScheme } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import AppLogo from "@/components/ui/AppLogo";
-import i18n from "@/lib/i18n";
-import { useLanguageStore, type Language } from "@/lib/languageStore";
 
 import styles from "./Footer.module.css";
 
 const Footer = (): React.JSX.Element => {
   const currentYear = new Date().getFullYear();
-  const { language, setLanguage } = useLanguageStore();
-  const { setColorScheme } = useMantineColorScheme();
   const colorScheme = useComputedColorScheme("light");
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-
-  const handleLanguageChange = (value: string) => {
-    const lang = value as Language;
-    setLanguage(lang);
-    void i18n.changeLanguage(lang);
-    queryClient.invalidateQueries().catch(() => {});
-  };
 
   return (
     <Box
@@ -69,25 +55,6 @@ const Footer = (): React.JSX.Element => {
               </li>
             </ul>
           </nav>
-          <SegmentedControl
-            value={language}
-            onChange={handleLanguageChange}
-            size="xs"
-            data={[
-              { label: "EN", value: "en" },
-              { label: "PL", value: "pl" },
-            ]}
-          />
-          <SegmentedControl
-            value={colorScheme}
-            onChange={value => setColorScheme(value as "light" | "dark")}
-            size="xs"
-            aria-label={t("footer.colorScheme")}
-            data={[
-              { value: "light", label: <IconSun size={14} stroke={1.75} aria-label={t("footer.lightMode")} /> },
-              { value: "dark", label: <IconMoon size={14} stroke={1.75} aria-label={t("footer.darkMode")} /> },
-            ]}
-          />
         </div>
       </div>
     </Box>
