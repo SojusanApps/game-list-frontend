@@ -5,6 +5,29 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Game List</title>
+    <script>
+      try {
+        var _colorScheme = window.localStorage.getItem("colorScheme");
+        var colorScheme =
+          _colorScheme === "light" || _colorScheme === "dark" || _colorScheme === "auto" ? _colorScheme : "auto";
+        var computedColorScheme = colorScheme;
+        if (colorScheme === "auto") {
+          computedColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        document.documentElement.dataset.mantineColorScheme = computedColorScheme;
+      } catch (e) {
+        // localStorage/matchMedia can throw (e.g. private browsing) - fall back to the default light theme.
+        console.warn("Color scheme bootstrap failed:", e);
+      }
+    </script>
+    <style>
+      html {
+        background: #f8fafc;
+      }
+      html[data-mantine-color-scheme="dark"] {
+        background: #09090b;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
