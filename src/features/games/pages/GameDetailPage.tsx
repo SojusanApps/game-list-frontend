@@ -46,7 +46,7 @@ function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId:
     if (isFollowing && gameFollowId) {
       deleteGameFollow(gameFollowId);
     } else {
-      createGameFollow({ game: gameId, user: userId });
+      createGameFollow({ game: gameId});
     }
   };
 

@@ -72,7 +72,6 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
     }
     const body: GameListCreateWritable[] = rows.map(row => ({
       game: row.game.id,
-      user: currentUserId,
       status: row.status,
       score: row.score,
       owned_on: row.owned_on.map(Number),
@@ -157,7 +156,14 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
                 <Accordion.Control icon="⚠️">
                   <Group gap={8}>
                     <Text fw={600}>{t("import.notFoundTitle")}</Text>
-                    <Badge variant="light" color="orange" size="sm">
+                    <Badge
+                      size="sm"
+                      style={{
+                        background: "var(--color-secondary-tint-bg)",
+                        color: "var(--color-secondary-tint-text)",
+                        border: "1px solid var(--color-secondary-tint-border)",
+                      }}
+                    >
                       {notFound.length}
                     </Badge>
                   </Group>

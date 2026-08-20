@@ -11,29 +11,29 @@ export interface StatusConfig {
 
 const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
   [GameListStatusEnum.P]: {
-    background: "var(--color-success-tint-bg)",
-    color: "var(--color-success-tint-text)",
-    borderColor: "var(--color-success-tint-border)",
+    background: "var(--color-status-playing-bg)",
+    color: "var(--color-status-playing-text)",
+    borderColor: "var(--color-status-playing-border)",
   },
   [GameListStatusEnum.C]: {
-    background: "var(--color-primary-tint-bg)",
-    color: "var(--color-primary-tint-text)",
-    borderColor: "var(--color-primary-tint-border)",
+    background: "var(--color-status-completed-bg)",
+    color: "var(--color-status-completed-text)",
+    borderColor: "var(--color-status-completed-border)",
   },
   [GameListStatusEnum.PTP]: {
-    background: "var(--color-background-400)",
-    color: "var(--color-text-900)",
-    borderColor: "var(--color-background-500)",
+    background: "var(--color-status-plantoplay-bg)",
+    color: "var(--color-status-plantoplay-text)",
+    borderColor: "var(--color-status-plantoplay-border)",
   },
   [GameListStatusEnum.OH]: {
-    background: "var(--color-secondary-tint-bg)",
-    color: "var(--color-secondary-tint-text)",
-    borderColor: "var(--color-secondary-tint-border)",
+    background: "var(--color-status-onhold-bg)",
+    color: "var(--color-status-onhold-text)",
+    borderColor: "var(--color-status-onhold-border)",
   },
   [GameListStatusEnum.D]: {
-    background: "var(--color-error-tint-bg)",
-    color: "var(--color-error-tint-text)",
-    borderColor: "var(--color-error-tint-border)",
+    background: "var(--color-status-dropped-bg)",
+    color: "var(--color-status-dropped-text)",
+    borderColor: "var(--color-status-dropped-border)",
   },
 };
 

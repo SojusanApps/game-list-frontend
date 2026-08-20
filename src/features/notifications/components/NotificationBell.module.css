@@ -44,7 +44,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 0.25rem 0;
-  color: var(--color-primary-tint-text);
+  color: var(--mantine-color-primary-6);
   text-decoration: none;
   transition: opacity 150ms;
 }

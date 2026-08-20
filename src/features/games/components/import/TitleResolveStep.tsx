@@ -85,7 +85,14 @@ export const TitleResolveStep = ({
             <Text fz={20} fw={700} c="var(--color-text-900)">
               {t("import.resolveTitle")}
             </Text>
-            <Badge variant="light" color="orange" size="lg">
+            <Badge
+              size="lg"
+              style={{
+                background: "var(--color-secondary-tint-bg)",
+                color: "var(--color-secondary-tint-text)",
+                border: "1px solid var(--color-secondary-tint-border)",
+              }}
+            >
               {t("import.resolveSkippedCount", { count: skippedCount })}
             </Badge>
           </Group>
@@ -113,7 +120,7 @@ export const TitleResolveStep = ({
                           {item.title}
                         </Text>
                         {pick ? (
-                          <Text fz="xs" c="var(--color-success-tint-text)" truncate>
+                          <Text fz="xs" c="var(--mantine-color-green-6)" truncate>
                             → {pick.title}
                           </Text>
                         ) : (

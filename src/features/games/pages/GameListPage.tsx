@@ -418,10 +418,10 @@ export default function GameListPage(): React.JSX.Element {
         {isOwner && selectedGameStatus === GameListStatusEnum.PTP && (
           <Box
             style={{
-              background: "var(--color-primary-50)",
+              background: "var(--color-ptp-callout-bg)",
               borderRadius: "16px",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              border: "1px solid var(--color-primary-200)",
+              border: "1px solid var(--color-ptp-callout-border)",
               padding: "24px",
               display: "flex",
               flexDirection: "column",

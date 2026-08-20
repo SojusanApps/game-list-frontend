@@ -95,7 +95,6 @@ export function GameReviewModal({
           review: values.review,
           recommendation: values.recommendation,
           game: gameId,
-          user: currentUserId,
         });
       }
       notifications.show({

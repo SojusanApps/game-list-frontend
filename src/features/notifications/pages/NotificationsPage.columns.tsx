@@ -3,6 +3,7 @@ import { IconTrash, IconCheck } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { createColumnHelper, tableFeatures, ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
+import type React from "react";
 
 import { Notification } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -37,27 +38,35 @@ function getLevelColor(level?: string) {
   }
 }
 
-function getCategoryColor(category?: string) {
-  switch (category?.toLowerCase()) {
-    case "system": {
-      return "gray";
+function getCategoryStyle(category?: string): React.CSSProperties {
+  const hue = (() => {
+    switch (category?.toLowerCase()) {
+      case "system": {
+        return "system";
+      }
+      case "friendship":
+      case "znajomość": {
+        return "friendship";
+      }
+      case "game release":
+      case "premiera gry": {
+        return "gamerelease";
+      }
+      case "translation":
+      case "tłumaczenie": {
+        return "translation";
+      }
+      default: {
+        return "default";
+      }
     }
-    case "friendship":
-    case "znajomość": {
-      return "violet";
-    }
-    case "game release":
-    case "premiera gry": {
-      return "orange";
-    }
-    case "translation":
-    case "tłumaczenie": {
-      return "grape";
-    }
-    default: {
-      return "blue";
-    }
-  }
+  })();
+
+  return {
+    background: `var(--color-category-${hue}-bg)`,
+    color: `var(--color-category-${hue}-text)`,
+    borderColor: `var(--color-category-${hue}-border)`,
+  };
 }
 
 function formatText(t: TFunction<"notifications">, text?: string) {
@@ -144,7 +153,7 @@ export function createNotificationColumns({
       id: "category",
       header: t("page.tableCategory"),
       cell: info => (
-        <Badge size="sm" variant="light" color={getCategoryColor(info.getValue())}>
+        <Badge size="sm" style={{ ...getCategoryStyle(info.getValue()), borderWidth: "1px", borderStyle: "solid" }}>
           {formatText(t, info.getValue())}
         </Badge>
       ),

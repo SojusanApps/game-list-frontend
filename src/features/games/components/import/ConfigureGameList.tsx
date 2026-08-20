@@ -30,7 +30,14 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
           <Text fz="sm" c="dimmed">
             {t("import.matchedDescription")}
           </Text>
-          <Badge variant="light" color="teal" size="lg">
+          <Badge
+            size="lg"
+            style={{
+              background: "var(--color-success-tint-bg)",
+              color: "var(--color-success-tint-text)",
+              border: "1px solid var(--color-success-tint-border)",
+            }}
+          >
             {rows.length}
           </Badge>
         </Group>

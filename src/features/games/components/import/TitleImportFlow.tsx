@@ -263,7 +263,6 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
     }
     const body: GameListCreateWritable[] = rows.map(row => ({
       game: row.game.id,
-      user: currentUserId,
       status: row.status,
       score: row.score,
       owned_on: row.owned_on.map(Number),

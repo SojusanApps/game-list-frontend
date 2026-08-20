@@ -220,7 +220,11 @@ export default function NotificationsPage(): React.JSX.Element {
               </Table.Tr>
             ) : (
               table.getRowModel().rows.map(row => (
-                <Table.Tr key={row.id} bg={row.original.unread ? "var(--color-primary-tint-bg)" : undefined}>
+                <Table.Tr
+                  key={row.id}
+                  bg={row.original.unread ? "var(--color-row-highlight-bg)" : undefined}
+                  c={row.original.unread ? "var(--color-row-highlight-text)" : undefined}
+                >
                   {row.getAllCells().map(cell => (
                     <Table.Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Table.Td>
                   ))}

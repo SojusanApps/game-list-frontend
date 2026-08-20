@@ -1,5 +1,6 @@
 import { Stack, Group, Box, Title, Text } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -12,20 +13,12 @@ interface CollectionCardProps {
   collection: Collection;
 }
 
-const HeartIcon = ({ filled }: { filled?: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill={filled ? "currentColor" : "none"}
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ width: 20, height: 20, color: filled ? "#ef4444" : "var(--color-text-400)" }}
-  >
-    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.505 4.04 3 5.5L12 21l7-7Z" />
-  </svg>
-);
+const HeartIcon = ({ filled }: { filled?: boolean }) =>
+  filled ? (
+    <IconHeartFilled size={20} style={{ color: "#ef4444" }} />
+  ) : (
+    <IconHeart size={20} style={{ color: "var(--color-text-400)" }} />
+  );
 
 export default function CollectionCard({ collection }: Readonly<CollectionCardProps>) {
   const { t } = useTranslation("collections");
@@ -36,31 +29,35 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
   const visibilityStyle = React.useMemo((): React.CSSProperties => {
     if (collection.visibility === "PUB")
       return {
-        background: "rgba(16,185,129,0.1)",
-        color: "var(--color-success-600)",
-        border: "1px solid rgba(16,185,129,0.1)",
+        background: "var(--color-visibility-public-bg)",
+        color: "var(--color-visibility-public-text)",
+        border: "1px solid var(--color-visibility-public-border)",
       };
     if (collection.visibility === "FRI")
       return {
-        background: "rgba(99,102,241,0.1)",
-        color: "var(--color-primary-600)",
-        border: "1px solid rgba(99,102,241,0.1)",
+        background: "var(--color-visibility-friends-bg)",
+        color: "var(--color-visibility-friends-text)",
+        border: "1px solid var(--color-visibility-friends-border)",
       };
     return {
-      background: "rgba(100,116,139,0.1)",
-      color: "var(--color-text-500)",
-      border: "1px solid var(--color-background-300)",
+      background: "var(--color-visibility-private-bg)",
+      color: "var(--color-visibility-private-text)",
+      border: "1px solid var(--color-visibility-private-border)",
     };
   }, [collection.visibility]);
 
   const modeStyle = React.useMemo((): React.CSSProperties => {
     return collection.mode === "S"
       ? {
-          background: "rgba(249,115,22,0.1)",
-          color: "var(--color-secondary-600)",
-          border: "1px solid rgba(249,115,22,0.1)",
+          background: "var(--color-collection-mode-solo-bg)",
+          color: "var(--color-collection-mode-solo-text)",
+          border: "1px solid var(--color-collection-mode-solo-border)",
         }
-      : { background: "rgba(234,179,8,0.1)", color: "#a16207", border: "1px solid rgba(234,179,8,0.1)" };
+      : {
+          background: "var(--color-collection-mode-collab-bg)",
+          color: "var(--color-collection-mode-collab-text)",
+          border: "1px solid var(--color-collection-mode-collab-border)",
+        };
   }, [collection.mode]);
 
   const typeStyle = React.useMemo((): React.CSSProperties => {

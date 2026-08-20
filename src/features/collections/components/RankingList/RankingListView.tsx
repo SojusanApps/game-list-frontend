@@ -1,12 +1,14 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Box, Group, Loader, Stack, Text } from "@mantine/core";
+import { Group, Loader, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { IconDeviceGamepad2 } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { CollectionItem } from "@/client";
 import { VirtualList } from "@/components/ui/VirtualList";
 
+import { CollectionStatsBanner } from "../CollectionStatsBanner";
 import {
   useReorderCollectionItem,
   useUpdateCollectionItem,
@@ -409,24 +411,16 @@ export const RankingListView = React.memo(function RankingListViewInner({
 
   return (
     <Stack gap={24} style={{ height: "calc(100vh - 200px)" }}>
-      {/* Collection Stats - Clean minimalist header */}
-      <Group
-        justify="space-between"
-        align="center"
-        style={{
-          padding: "8px 16px",
-          borderBottom: "2px solid var(--color-background-200)",
-        }}
-      >
-        <Box>
-          <Text fw={900} fz={28} c="var(--color-text-900)" style={{ letterSpacing: "-0.02em" }}>
-            {t("rankingList.title")}
-          </Text>
-          <Text size="sm" c="var(--color-text-500)">
-            {t("rankingList.gamesInList", { count: totalCount })}
-          </Text>
-        </Box>
-      </Group>
+      <CollectionStatsBanner
+        icon={<IconDeviceGamepad2 size={20} style={{ color: "white" }} />}
+        iconBackground="linear-gradient(135deg, #f59e0b, #eab308)"
+        bannerBackground="var(--gradient-ranking-stats)"
+        borderColor="var(--color-type-ranking-border)"
+        textColor="var(--color-ranking-stats-text)"
+        count={totalCount}
+        label={t("detail.totalGames")}
+        typeLabel={t("type.ranking")}
+      />
 
       <VirtualList
         ref={virtualListRef}

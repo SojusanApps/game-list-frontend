@@ -13,7 +13,7 @@ import type { TFunction } from "i18next";
 
 import { GameListCompareRow, UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { getRatingColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { getStatusConfig } from "../utils/statusConfig";
@@ -50,7 +50,10 @@ function ScoreCell({ score }: Readonly<{ score: number | null }>) {
   }
 
   return (
-    <Box className={styles.scoreBadge} style={{ backgroundColor: getRatingColor(score) }}>
+    <Box
+      className={styles.scoreBadge}
+      style={{ backgroundColor: getRatingColor(score), color: getRatingTextColor(score) }}
+    >
       {score}
     </Box>
   );

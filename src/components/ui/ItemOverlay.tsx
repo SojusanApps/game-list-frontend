@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { cn } from "@/utils/cn";
 import { formatDisplayDate } from "@/utils/dateUtils";
-import { getRatingColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { SafeImage } from "./SafeImage";
 
@@ -69,6 +69,7 @@ function ItemOverlay({
   }, [releaseDate, showFullReleaseDate]);
 
   const ratingBg = React.useMemo(() => getRatingColor(rating), [rating]);
+  const ratingText = React.useMemo(() => getRatingTextColor(rating), [rating]);
 
   const innerStyle: React.CSSProperties = {
     display: "block",
@@ -102,6 +103,7 @@ function ItemOverlay({
           className={styles.scoreBadge}
           style={{
             background: ratingBg,
+            color: ratingText,
           }}
         >
           {rating.toFixed(1)}

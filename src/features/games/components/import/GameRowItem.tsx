@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
-import { getRatingColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
 import code_to_value_mapping from "../../utils/GameListStatuses";
@@ -64,7 +64,7 @@ export const GameRowItem = ({ row, index, onStatusChange, onScoreChange, onField
               <Box
                 style={{
                   background: getRatingColor(Number(option.value)),
-                  color: "black",
+                  color: getRatingTextColor(Number(option.value)),
                   fontSize: "12px",
                   fontWeight: 900,
                   padding: "2px 8px",

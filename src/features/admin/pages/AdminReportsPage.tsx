@@ -140,7 +140,15 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
             >
               {t(`reports.status.${report.status}`)}
             </Box>
-            <Badge variant="light">{tModeration(`targetType.${report.target_type}`)}</Badge>
+            <Badge
+              style={{
+                background: "var(--color-primary-tint-bg)",
+                color: "var(--color-primary-tint-text)",
+                border: "1px solid var(--color-primary-tint-border)",
+              }}
+            >
+              {tModeration(`targetType.${report.target_type}`)}
+            </Badge>
           </Group>
           <Text fz="xs" c="dimmed">
             {t("reports.submittedAtLabel", { date: formatDisplayDateTime(report.submitted_at) })}
