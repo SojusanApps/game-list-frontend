@@ -14,7 +14,6 @@ yarn-error.log*
 *.sln
 *.sw?
 coverage/
-openapi.json
 src/client/*
 
 .serena/*

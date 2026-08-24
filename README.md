@@ -114,17 +114,26 @@ pnpm preview
 
 To build and run the application using Docker:
 
+The image bakes `VITE_*` variables into the JS bundle at build time (Vite convention), so pass the production values as build args:
+
 1. **Build the image:**
 
    ```bash
-   docker build -t my-game-list-frontend .
+   docker build \
+     --build-arg VITE_API_URL=https://api.example.com \
+     --build-arg VITE_KEYCLOAK_URL=https://keycloak.example.com \
+     --build-arg VITE_KEYCLOAK_REALM=your-realm \
+     --build-arg VITE_KEYCLOAK_CLIENT_ID=your-client-id \
+     -t my-game-list-frontend .
    ```
 
 2. **Run the container:**
 
    ```bash
-   docker run -p 3000:80 my-game-list-frontend
+   docker run -p 3000:8080 my-game-list-frontend
    ```
+
+   The app is served by nginx and listens on port `8080` inside the container.
 
 ## 📂 Project Structure
 
