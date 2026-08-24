@@ -14,9 +14,11 @@ import { Route as SplatRouteImport } from "./routes/$";
 import { Route as AdminRouteImport } from "./routes/admin";
 import { Route as ImportRouteImport } from "./routes/import";
 import { Route as NotificationsRouteImport } from "./routes/notifications";
+import { Route as PrivacyRouteImport } from "./routes/privacy";
 import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
 import { Route as SearchRouteImport } from "./routes/search";
 import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as TermsRouteImport } from "./routes/terms";
 import { Route as AdminReportsRouteImport } from "./routes/admin_.reports";
 import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
 import { Route as CollectionIdSlugRouteImport } from "./routes/collection.$id.$slug";
@@ -54,6 +56,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: "/notifications",
   getParentRoute: () => rootRouteImport,
 } as any);
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: "/privacy",
+  path: "/privacy",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const ReleaseCalendarRoute = ReleaseCalendarRouteImport.update({
   id: "/release-calendar",
   path: "/release-calendar",
@@ -67,6 +74,11 @@ const SearchRoute = SearchRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
   path: "/settings",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const TermsRoute = TermsRouteImport.update({
+  id: "/terms",
+  path: "/terms",
   getParentRoute: () => rootRouteImport,
 } as any);
 const AdminReportsRoute = AdminReportsRouteImport.update({
@@ -136,9 +148,11 @@ export interface FileRoutesByFullPath {
   "/admin": typeof AdminRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
+  "/privacy": typeof PrivacyRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
+  "/terms": typeof TermsRoute;
   "/admin/reports": typeof AdminReportsRoute;
   "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
@@ -157,9 +171,11 @@ export interface FileRoutesByTo {
   "/admin": typeof AdminRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
+  "/privacy": typeof PrivacyRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
+  "/terms": typeof TermsRoute;
   "/admin/reports": typeof AdminReportsRoute;
   "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
@@ -179,9 +195,11 @@ export interface FileRoutesById {
   "/admin": typeof AdminRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
+  "/privacy": typeof PrivacyRoute;
   "/release-calendar": typeof ReleaseCalendarRoute;
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
+  "/terms": typeof TermsRoute;
   "/admin_/reports": typeof AdminReportsRoute;
   "/admin_/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
@@ -202,9 +220,11 @@ export interface FileRouteTypes {
     | "/admin"
     | "/import"
     | "/notifications"
+    | "/privacy"
     | "/release-calendar"
     | "/search"
     | "/settings"
+    | "/terms"
     | "/admin/reports"
     | "/admin/translation-suggestions"
     | "/collection/$id/$slug"
@@ -223,9 +243,11 @@ export interface FileRouteTypes {
     | "/admin"
     | "/import"
     | "/notifications"
+    | "/privacy"
     | "/release-calendar"
     | "/search"
     | "/settings"
+    | "/terms"
     | "/admin/reports"
     | "/admin/translation-suggestions"
     | "/collection/$id/$slug"
@@ -244,9 +266,11 @@ export interface FileRouteTypes {
     | "/admin"
     | "/import"
     | "/notifications"
+    | "/privacy"
     | "/release-calendar"
     | "/search"
     | "/settings"
+    | "/terms"
     | "/admin_/reports"
     | "/admin_/translation-suggestions"
     | "/collection/$id/$slug"
@@ -266,9 +290,11 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute;
   ImportRoute: typeof ImportRoute;
   NotificationsRoute: typeof NotificationsRoute;
+  PrivacyRoute: typeof PrivacyRoute;
   ReleaseCalendarRoute: typeof ReleaseCalendarRoute;
   SearchRoute: typeof SearchRoute;
   SettingsRoute: typeof SettingsRoute;
+  TermsRoute: typeof TermsRoute;
   AdminReportsRoute: typeof AdminReportsRoute;
   AdminTranslationSuggestionsRoute: typeof AdminTranslationSuggestionsRoute;
   CollectionIdSlugRoute: typeof CollectionIdSlugRoute;
@@ -319,6 +345,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof NotificationsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/privacy": {
+      id: "/privacy";
+      path: "/privacy";
+      fullPath: "/privacy";
+      preLoaderRoute: typeof PrivacyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/release-calendar": {
       id: "/release-calendar";
       path: "/release-calendar";
@@ -338,6 +371,13 @@ declare module "@tanstack/react-router" {
       path: "/settings";
       fullPath: "/settings";
       preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/terms": {
+      id: "/terms";
+      path: "/terms";
+      fullPath: "/terms";
+      preLoaderRoute: typeof TermsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/admin_/reports": {
@@ -426,9 +466,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ImportRoute: ImportRoute,
   NotificationsRoute: NotificationsRoute,
+  PrivacyRoute: PrivacyRoute,
   ReleaseCalendarRoute: ReleaseCalendarRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  TermsRoute: TermsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminTranslationSuggestionsRoute: AdminTranslationSuggestionsRoute,
   CollectionIdSlugRoute: CollectionIdSlugRoute,

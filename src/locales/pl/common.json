@@ -19,7 +19,12 @@
     "copyright": "© {{year}} Sojusan GameList • Dane dostarczone przez",
     "home": "Strona główna",
     "search": "Szukaj",
+    "terms": "Regulamin",
     "privacy": "Prywatność"
+  },
+  "legal": {
+    "termsTitle": "Regulamin",
+    "privacyTitle": "Polityka prywatności"
   },
   "notFound": {
     "title": "404 - Nie znaleziono",

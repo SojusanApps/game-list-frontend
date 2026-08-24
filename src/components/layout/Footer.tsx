@@ -49,7 +49,12 @@ const Footer = (): React.JSX.Element => {
                 </Link>
               </li>
               <li>
-                <Link to="/" className={styles.footerLink}>
+                <Link to="/terms" className={styles.footerLink}>
+                  {t("footer.terms")}
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className={styles.footerLink}>
                   {t("footer.privacy")}
                 </Link>
               </li>
