@@ -34,7 +34,12 @@
     "credentials": {
       "sectionTitle": "Account credentials",
       "description": "To change your personal information, gender, username, or password, go to our external identity provider, Sojusan Auth.",
-      "manageAccountButton": "Manage account on Sojusan Auth"
+      "manageAccountButton": "Manage account on Sojusan Auth",
+      "deleteAccount": {
+        "title": "Delete account",
+        "description": "Account deletion must be done on Sojusan Auth. This is a global action: it will permanently delete your account across the entire Sojusan app infrastructure, not only your Game List profile.",
+        "button": "Delete account on Sojusan Auth"
+      }
     }
   },
   "info": {
