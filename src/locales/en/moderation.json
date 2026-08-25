@@ -37,9 +37,9 @@
   "adminActionsPanel.description": "Staff-only account actions, independent of the report queue.",
   "banButton.label": "Ban user",
   "banModal.title": "Ban user",
-  "banModal.description": "This permanently deactivates the account, independent of any report or warning history. There is currently no way to un-ban a user, so make sure this is warranted.",
+  "banModal.description": "This marks the account as banned, independent of any report or warning history. All of the user's content will be automatically moderated (hidden from other users), the same as when a report against it is accepted — the account itself stays fully usable. There is currently no way to un-ban a user, so make sure this is warranted.",
   "banModal.reasonPlaceholder": "Explain why this account is being banned",
   "banModal.confirmButton": "Ban user",
   "banModal.successTitle": "User banned",
-  "banModal.successMessage": "The account has been permanently deactivated."
+  "banModal.successMessage": "The account has been banned. All of the user's content is now automatically moderated."
 }

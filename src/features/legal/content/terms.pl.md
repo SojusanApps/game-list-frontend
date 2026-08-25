@@ -43,7 +43,7 @@ Zależy nam na tym, żeby to było przyjazne, kulturalne miejsce, dlatego przekl
 
 Użytkownicy mogą **zgłaszać (Report)** treści, które ich zdaniem są nieprawidłowe lub łamią zasady (recenzje, notatki list, awatary, nazwy użytkowników i podobne). Personel (Staff) rozpatruje zgłoszenia i może podjąć działania — w tym usunąć treść i wydać Ostrzeżenie osobie, która ją opublikowała.
 
-Personel może również **zbanować (Ban)** konto bezpośrednio, z pominięciem kolejki zgłoszeń, w przypadku poważnych lub powtarzających się naruszeń. **Ban trwale dezaktywuje konto. Nie istnieje procedura cofnięcia bana.** Informujemy o tym wprost, ponieważ jest to zasada surowsza niż w wielu innych serwisach, a wolimy, żebyś wiedział o niej z góry.
+Personel może również **zbanować (Ban)** konto bezpośrednio, z pominięciem kolejki zgłoszeń, w przypadku poważnych lub powtarzających się naruszeń. **Ban nie dezaktywuje konta — nadal możesz korzystać z Serwisu — ale automatycznie moderuje (ukrywa przed innymi użytkownikami) wszystkie Twoje treści, tak samo jak w przypadku zaakceptowanego zgłoszenia dotyczącego pojedynczej treści. Nie istnieje procedura cofnięcia bana.** Informujemy o tym wprost, ponieważ jest to zasada surowsza niż w wielu innych serwisach, a wolimy, żebyś wiedział o niej z góry.
 
 ## 7. Dane o grach i treści osób trzecich
 

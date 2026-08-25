@@ -38,7 +38,7 @@ Nie używamy plików cookie analitycznych ani śledzących. Jedynym używanym pl
 
 ## 6. Jak długo przechowujemy dane
 
-Przechowujemy Twoje dane tak długo, jak Twoje konto jest aktywne. Jeśli konto zostanie **zbanowane**, jest ono trwale dezaktywowane zgodnie z naszym Regulaminem, a my zachowujemy minimalny zakres danych niezbędny do celów dokumentacji moderacyjnej. Jeśli **usuniesz konto** za pośrednictwem Sojusan Auth, zaprzestajemy dalszego przetwarzania Twoich danych osobowych; niektóre treści lub zapisy mogą zostać zachowane, jeśli mamy do tego uzasadnioną podstawę (np. już rozpatrzone zgłoszenie moderacyjne), zgodnie z zasadą minimalizacji danych.
+Przechowujemy Twoje dane tak długo, jak Twoje konto jest aktywne. Jeśli konto zostanie **zbanowane**, Twoje treści są automatycznie moderowane (ukrywane przed innymi użytkownikami) zgodnie z naszym Regulaminem, a samo konto pozostaje aktywne; zachowujemy minimalny zakres danych niezbędny do celów dokumentacji moderacyjnej. Jeśli **usuniesz konto** za pośrednictwem Sojusan Auth, zaprzestajemy dalszego przetwarzania Twoich danych osobowych; niektóre treści lub zapisy mogą zostać zachowane, jeśli mamy do tego uzasadnioną podstawę (np. już rozpatrzone zgłoszenie moderacyjne), zgodnie z zasadą minimalizacji danych.
 
 ## 7. Twoje prawa
 

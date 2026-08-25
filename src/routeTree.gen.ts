@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SplatRouteImport } from "./routes/$";
 import { Route as AdminRouteImport } from "./routes/admin";
+import { Route as FaqRouteImport } from "./routes/faq";
 import { Route as ImportRouteImport } from "./routes/import";
 import { Route as NotificationsRouteImport } from "./routes/notifications";
 import { Route as PrivacyRouteImport } from "./routes/privacy";
@@ -44,6 +45,11 @@ const SplatRoute = SplatRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: "/admin",
   path: "/admin",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const FaqRoute = FaqRouteImport.update({
+  id: "/faq",
+  path: "/faq",
   getParentRoute: () => rootRouteImport,
 } as any);
 const ImportRoute = ImportRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
+  "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/privacy": typeof PrivacyRoute;
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
+  "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/privacy": typeof PrivacyRoute;
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
   "/admin": typeof AdminRoute;
+  "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
   "/privacy": typeof PrivacyRoute;
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
+    | "/faq"
     | "/import"
     | "/notifications"
     | "/privacy"
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
+    | "/faq"
     | "/import"
     | "/notifications"
     | "/privacy"
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | "/"
     | "/$"
     | "/admin"
+    | "/faq"
     | "/import"
     | "/notifications"
     | "/privacy"
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   SplatRoute: typeof SplatRoute;
   AdminRoute: typeof AdminRoute;
+  FaqRoute: typeof FaqRoute;
   ImportRoute: typeof ImportRoute;
   NotificationsRoute: typeof NotificationsRoute;
   PrivacyRoute: typeof PrivacyRoute;
@@ -329,6 +342,13 @@ declare module "@tanstack/react-router" {
       path: "/admin";
       fullPath: "/admin";
       preLoaderRoute: typeof AdminRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq": {
+      id: "/faq";
+      path: "/faq";
+      fullPath: "/faq";
+      preLoaderRoute: typeof FaqRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/import": {
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AdminRoute: AdminRoute,
+  FaqRoute: FaqRoute,
   ImportRoute: ImportRoute,
   NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,

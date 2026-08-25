@@ -21,8 +21,8 @@ A staff-only action that skips the report queue: it creates and immediately acce
 _Avoid_: Warn, direct moderation, admin action
 
 **Ban**:
-A staff-only action that permanently deactivates a user's account directly, independent of any Report or Warning history. Requires a reason. Refuses staff accounts. There is no un-ban flow.
-_Avoid_: Suspend, deactivate
+A staff-only action that marks a user's account as banned, independent of any Report or Warning history. All of that user's content (reviews, notes, collections, translation suggestions, avatar, username) is automatically masked from other users by default — the same masking applied when a Report against it is accepted — but the account itself stays fully usable: the banned user can keep logging in and using every feature of the Service. Requires a reason. Refuses staff accounts. There is no un-ban flow.
+_Avoid_: Suspend, deactivate, deactivation
 
 **Warning**:
 The consequence recorded against a user's account when a Report targeting them is accepted — whether via the normal queue (Accept) or via Warn & Remove. A user's `warning_count` is visible only to the account owner and to staff.

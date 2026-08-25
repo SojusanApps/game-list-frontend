@@ -38,7 +38,7 @@ We don't use analytics or tracking cookies. The only cookie involved is the nece
 
 ## 6. How long we keep it
 
-We keep your data for as long as your account is active. If your account is **banned**, it's permanently deactivated as described in our Terms, and we retain the minimum data needed for moderation records. If you **delete your account** through Sojusan Auth, we stop processing your personal data going forward; some content or records may be retained where we have a legitimate reason to (for example, an already-resolved moderation report), consistent with data-minimization principles.
+We keep your data for as long as your account is active. If your account is **banned**, your content is automatically moderated (hidden from other users) as described in our Terms, though your account itself remains active; we retain the minimum data needed for moderation records. If you **delete your account** through Sojusan Auth, we stop processing your personal data going forward; some content or records may be retained where we have a legitimate reason to (for example, an already-resolved moderation report), consistent with data-minimization principles.
 
 ## 7. Your rights
 

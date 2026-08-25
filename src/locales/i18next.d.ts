@@ -2,6 +2,7 @@ import type enAdmin from "./en/admin.json";
 import type enAuth from "./en/auth.json";
 import type enCollections from "./en/collections.json";
 import type enCommon from "./en/common.json";
+import type enFaq from "./en/faq.json";
 import type enGames from "./en/games.json";
 import type enModeration from "./en/moderation.json";
 import type enNotifications from "./en/notifications.json";
@@ -14,6 +15,7 @@ declare module "i18next" {
     defaultNS: "common";
     resources: {
       common: typeof enCommon;
+      faq: typeof enFaq;
       auth: typeof enAuth;
       validation: typeof enValidation;
       admin: typeof enAdmin;

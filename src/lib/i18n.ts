@@ -8,6 +8,7 @@ import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCollections from "@/locales/en/collections.json";
 import enCommon from "@/locales/en/common.json";
+import enFaq from "@/locales/en/faq.json";
 import enGames from "@/locales/en/games.json";
 import enModeration from "@/locales/en/moderation.json";
 import enNotifications from "@/locales/en/notifications.json";
@@ -18,6 +19,7 @@ import plAdmin from "@/locales/pl/admin.json";
 import plAuth from "@/locales/pl/auth.json";
 import plCollections from "@/locales/pl/collections.json";
 import plCommon from "@/locales/pl/common.json";
+import plFaq from "@/locales/pl/faq.json";
 import plGames from "@/locales/pl/games.json";
 import plModeration from "@/locales/pl/moderation.json";
 import plNotifications from "@/locales/pl/notifications.json";
@@ -36,6 +38,7 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       common: enCommon,
+      faq: enFaq,
       auth: enAuth,
       validation: enValidation,
       admin: enAdmin,
@@ -48,6 +51,7 @@ i18n.use(initReactI18next).init({
     },
     pl: {
       common: plCommon,
+      faq: plFaq,
       auth: plAuth,
       validation: plValidation,
       admin: plAdmin,

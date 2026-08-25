@@ -43,7 +43,7 @@ We want this to be a friendly, culture-minded place, so swearing isn't allowed �
 
 Users can **Report** content they believe is wrong or against these rules (reviews, list notes, avatars, usernames, and similar). Staff review reports and can act on them — including removing content and issuing a Warning to the person who posted it.
 
-Staff can also **Ban** an account directly, without going through the report queue, for serious or repeated violations. **A ban permanently deactivates the account. There is no un-ban process.** We're telling you this plainly because it's a stricter policy than many services use, and we'd rather you know it upfront than find out the hard way.
+Staff can also **Ban** an account directly, without going through the report queue, for serious or repeated violations. **A ban doesn't deactivate your account — you can keep using the Service — but it automatically moderates (hides from other users) all of your content, the same way individual content gets masked once a report against it is accepted. There is no un-ban process.** We're telling you this plainly because it's a stricter policy than many services use, and we'd rather you know it upfront than find out the hard way.
 
 ## 7. Game data and third-party content
 
