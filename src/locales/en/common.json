@@ -16,7 +16,8 @@
     "darkMode": "Dark mode"
   },
   "footer": {
-    "copyright": "© {{year}} Sojusan GameList • Data provided by",
+    "copyright": "© {{year}} Sojusan GameList",
+    "dataProvidedBy": "Game data provided by",
     "home": "Home",
     "search": "Search",
     "faq": "FAQ",

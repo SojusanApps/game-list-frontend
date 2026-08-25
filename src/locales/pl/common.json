@@ -16,7 +16,8 @@
     "darkMode": "Tryb ciemny"
   },
   "footer": {
-    "copyright": "© {{year}} Sojusan GameList • Dane dostarczone przez",
+    "copyright": "© {{year}} Sojusan GameList",
+    "dataProvidedBy": "Dane gier dostarczone przez",
     "home": "Strona główna",
     "search": "Szukaj",
     "faq": "FAQ",

@@ -4,6 +4,8 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import AppLogo from "@/components/ui/AppLogo";
+import igdbLogoDark from "@/assets/igdb-logo-dark.svg";
+import igdbLogo from "@/assets/igdb-logo.svg";
 
 import styles from "./Footer.module.css";
 
@@ -24,14 +26,27 @@ const Footer = (): React.JSX.Element => {
     >
       <div className={styles.footerInner}>
         <div className={styles.leftSection}>
+          <div className={styles.igdbSection}>
+            <img
+              src={colorScheme === "dark" ? igdbLogoDark : igdbLogo}
+              alt="IGDB"
+              className={styles.igdbLogo}
+            />
+            <Text size="xs" c="var(--color-text-400)">
+              {t("footer.dataProvidedBy")}{" "}
+              <a href="https://www.igdb.com/" target="_blank" rel="noopener noreferrer" className={styles.footerExtLink}>
+                IGDB
+              </a>
+            </Text>
+          </div>
+        </div>
+
+        <div className={styles.centerSection}>
           <Link to="/" className={styles.logoLink}>
             <AppLogo size="md" onDark={colorScheme === "dark"} />
           </Link>
           <Text size="xs" c="var(--color-text-400)">
-            {t("footer.copyright", { year: currentYear })}{" "}
-            <a href="https://www.igdb.com/" target="_blank" rel="noopener noreferrer" className={styles.footerExtLink}>
-              IGDB
-            </a>
+            {t("footer.copyright", { year: currentYear })}
           </Text>
         </div>
 
