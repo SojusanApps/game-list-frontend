@@ -1,4 +1,4 @@
-# My Game List Frontend
+# Sojusan GameList Frontend
 
 A game-tracking and review platform. This context covers user-generated content moderation: how users report content, and how staff act on it.
 

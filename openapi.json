@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "MyGameList API",
-        "version": "5.2.2",
+        "title": "Sojusan GameList API",
+        "version": "5.3.2",
         "description": "Application to manage game lists."
     },
     "paths": {
@@ -5308,7 +5308,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
                     },
@@ -5633,7 +5632,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "Optional notes or justification for this item's position in the collection.",
                         "maxLength": 500
                     },
@@ -5683,7 +5681,6 @@
                     },
                     "title": {
                         "type": "string",
-                        "title": "Tytuł",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
@@ -5933,7 +5930,6 @@
                     },
                     "title": {
                         "type": "string",
-                        "title": "Tytuł",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
@@ -6156,14 +6152,13 @@
                     },
                     "title": {
                         "type": "string",
-                        "title": "Tytuł",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
                     "title_en": {
                         "type": "string",
                         "nullable": true,
-                        "title": "Tytuł [en]",
+                        "title": "Title [en]",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
@@ -6691,7 +6686,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "Optional personal notes about this game.",
                         "maxLength": 200
                     },
@@ -6855,7 +6849,6 @@
                     },
                     "title": {
                         "type": "string",
-                        "title": "Tytuł",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
@@ -6984,7 +6977,6 @@
                     },
                     "title": {
                         "type": "string",
-                        "title": "Tytuł",
                         "description": "The game's title.",
                         "maxLength": 255
                     },
@@ -8000,7 +7992,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
                     },
@@ -8087,7 +8078,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "Optional notes or justification for this item's position in the collection.",
                         "maxLength": 500
                     },
@@ -8143,7 +8133,6 @@
                     },
                     "description": {
                         "type": "string",
-                        "title": "Opis",
                         "description": "Optional personal notes about this game.",
                         "maxLength": 200
                     },

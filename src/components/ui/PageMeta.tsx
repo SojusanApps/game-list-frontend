@@ -9,7 +9,7 @@ interface PageMetaProps {
 }
 
 export function PageMeta({ title, description, image, url }: Readonly<PageMetaProps>) {
-  const fullTitle = title ? `${title} | MyGameList` : "MyGameList";
+  const fullTitle = title ? `${title} | Sojusan GameList` : "Sojusan GameList";
   const defaultDescription = "Keep track of your gaming progress and discover new titles.";
   const desc = description || defaultDescription;
   const currentUrl = url || (typeof globalThis.window === "object" ? globalThis.location.href : "");
