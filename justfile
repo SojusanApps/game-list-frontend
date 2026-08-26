@@ -2,9 +2,10 @@
 help:
     just --list
 
-# Install all dependencies
+# Install all dependencies and generate the API client
 install:
     pnpm install --frozen-lockfile
+    pnpm openapi-ts
 
 # Start the development server (regenerates the API client first)
 dev:

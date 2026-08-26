@@ -44,8 +44,10 @@ A modern, responsive web application for gamers to track their game collections,
 2. **Install dependencies:**
 
    ```bash
-   pnpm install
+   just install
    ```
+
+   This also generates the API client (`src/client/`) from the committed `openapi.json`.
 
 3. **Environment Setup:**
    The project uses environment variables. You can check `env/.env.development` for reference.
@@ -56,9 +58,9 @@ A modern, responsive web application for gamers to track their game collections,
    ```
 
 4. **API Definition:**
-   The `dev` script expects the backend's `openapi.json` file to generate the API client.
-   - **Option A:** Have the backend project checked out at `../game-list-backend/`. The script will attempt to copy `openapi.json` from there.
-   - **Option B:** Manually place the `openapi.json` file in the root of this project before running dev.
+   To regenerate the API client against a newer backend schema, refresh `openapi.json` first, then run `just install` (or `pnpm openapi-ts`) again. The `dev` script does this automatically:
+   - **Option A:** Have the backend project checked out at `../game-list-backend/`. The `dev` script will attempt to copy `openapi.json` from there.
+   - **Option B:** Manually place an updated `openapi.json` file in the root of this project.
 
 5. **Install the `prek` hooks:**
 
