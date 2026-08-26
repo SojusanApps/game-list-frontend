@@ -42,13 +42,10 @@ export const TierSection = React.memo(function TierSectionInner({
   const { t } = useTranslation("collections");
   const virtualListRef = React.useRef<HTMLDivElement>(null);
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = useCollectionItemsByTierInfiniteQuery(collectionId, tier.id);
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useCollectionItemsByTierInfiniteQuery(
+    collectionId,
+    tier.id,
+  );
 
   const items = React.useMemo(() => data?.pages.flatMap(page => page.results) || [], [data]);
   const totalCount = data?.pages[0]?.count ?? 0;

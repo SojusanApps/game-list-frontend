@@ -2,7 +2,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ReportCreateWritable, ReportDirectModerateWritable, TargetTypeEnum } from "@/client";
 import { useAppMutation } from "@/hooks/useAppMutation";
-import { collectionKeys, gameListKeys, gameReviewKeys, reportKeys, translationSuggestionKeys, userKeys } from "@/lib/queryKeys";
+import {
+  collectionKeys,
+  gameListKeys,
+  gameReviewKeys,
+  reportKeys,
+  translationSuggestionKeys,
+  userKeys,
+} from "@/lib/queryKeys";
 
 import {
   acceptReport,

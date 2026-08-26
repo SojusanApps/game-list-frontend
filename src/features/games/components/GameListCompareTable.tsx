@@ -8,8 +8,8 @@ import { UserDetail } from "@/client";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 
 import { CompareSection } from "../utils/gameListCompare";
-
 import { createGameListCompareColumns, gameListCompareTableFeatures } from "./GameListCompareTable.columns";
+
 import styles from "./GameListCompareTable.module.css";
 
 interface GameListCompareTableProps {
@@ -122,9 +122,7 @@ export function GameListCompareTable({
                 <Table.Tr key={headerGroup.id}>
                   {headerGroup.headers.map(header => (
                     <Table.Th key={header.id} className={styles.stickyHeaderCell}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </Table.Th>
                   ))}
                 </Table.Tr>

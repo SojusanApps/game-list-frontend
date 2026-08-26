@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
-import { useLoginPromptStore } from "../store/loginPromptStore";
 import { useAuthStore } from "../store/authStore";
+import { useLoginPromptStore } from "../store/loginPromptStore";
 
 /**
  * Gates a gated action behind the login-required modal instead of performing it or redirecting

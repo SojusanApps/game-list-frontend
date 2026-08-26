@@ -133,9 +133,7 @@ export default function UserProfilePage(): React.JSX.Element {
                 )}
 
                 <UserProfileInformation userDetails={userDetails} />
-                {userDetails && (
-                  <AdminActionsPanel userId={validUserId} isTargetStaff={!!userDetails.is_staff} />
-                )}
+                {userDetails && <AdminActionsPanel userId={validUserId} isTargetStaff={!!userDetails.is_staff} />}
                 <UserFriendsList userDetails={userDetails} />
               </Stack>
             </Grid.Col>

@@ -30,10 +30,9 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
   const { mutate: rejectRequest } = useRejectFriendRequest();
   const { mutate: deleteFriendship } = useDeleteFriendship();
 
-  const { data: friendshipsData } = useGetFriendships(
-    currentUserId ? { user: String(currentUserId) } : undefined,
-    { enabled: !!currentUserId },
-  );
+  const { data: friendshipsData } = useGetFriendships(currentUserId ? { user: String(currentUserId) } : undefined, {
+    enabled: !!currentUserId,
+  });
   const { data: sentRequestsData } = useGetFriendshipRequests({ receiver: String(userId) });
   // Fetch requests sent BY this user. We will check if any are sent TO us.
   const { data: incomingRequestsData } = useGetFriendshipRequests({ sender: String(userId) });
@@ -86,7 +85,11 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
   const handleUnfriend = async () => {
     if (
       friendship &&
-      (await confirm({ title: t("friendship.unfriend"), message: t("friendship.unfriendConfirm"), isDestructive: true }))
+      (await confirm({
+        title: t("friendship.unfriend"),
+        message: t("friendship.unfriendConfirm"),
+        isDestructive: true,
+      }))
     ) {
       deleteFriendship({ id: friendship.id });
     }

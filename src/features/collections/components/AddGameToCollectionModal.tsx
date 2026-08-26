@@ -183,9 +183,7 @@ export default function AddGameToCollectionModal({
                 >
                   <SafeImage
                     src={
-                      game.cover_image_id
-                        ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.THUMB_90_90)
-                        : undefined
+                      game.cover_image_id ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.THUMB_90_90) : undefined
                     }
                     alt={game.title}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}

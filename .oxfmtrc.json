@@ -13,5 +13,5 @@
   "endOfLine": "lf",
   "sortImports": true,
   "sortPackageJson": false,
-  "ignorePatterns": ["*.svg", "*.png"]
+  "ignorePatterns": ["*.svg", "*.png", "openapi.json", "src/client/**", "src/routeTree.gen.ts"]
 }

@@ -70,10 +70,7 @@ export const TierDropZone = React.memo(function TierDropZoneInner({
   }, [tierId, isEmpty, isOwner, onItemMove]);
 
   return (
-    <Box
-      ref={dropRef}
-      className={cn(classes.dropZone, isDraggedOver && classes.dropZoneActive)}
-    >
+    <Box ref={dropRef} className={cn(classes.dropZone, isDraggedOver && classes.dropZoneActive)}>
       {children}
     </Box>
   );

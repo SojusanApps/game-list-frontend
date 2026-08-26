@@ -101,10 +101,7 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
         {language === "pl" && gameDetails?.title_en && (
           <GameInfoRow label={t("info.titleEn")} value={gameDetails.title_en} />
         )}
-        <GameInfoRow
-          label={t("info.releaseDate")}
-          value={formatDisplayDate(gameDetails?.release_date) ?? undefined}
-        />
+        <GameInfoRow label={t("info.releaseDate")} value={formatDisplayDate(gameDetails?.release_date) ?? undefined} />
         <GameInfoRow label={t("info.gameStatus")} value={gameDetails?.game_status?.status || t("info.released")} />
         <GameInfoRow label={t("info.gameType")} value={gameDetails?.game_type?.type} />
         <GameInfoRow label={t("info.publisher")}>

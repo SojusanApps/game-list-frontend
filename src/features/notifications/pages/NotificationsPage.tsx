@@ -17,7 +17,6 @@ import {
   useDeleteNotification,
   useDeleteAllReadNotifications,
 } from "../hooks/notificationQueries";
-
 import { createNotificationColumns, notificationTableFeatures } from "./NotificationsPage.columns";
 
 export default function NotificationsPage(): React.JSX.Element {
@@ -197,7 +196,11 @@ export default function NotificationsPage(): React.JSX.Element {
 
       <ScrollArea
         scrollbars="x"
-        style={{ background: "var(--color-background-100)", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
+        style={{
+          background: "var(--color-background-100)",
+          borderRadius: "8px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        }}
       >
         <Table highlightOnHover>
           <Table.Thead>

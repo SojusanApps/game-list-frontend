@@ -3,9 +3,9 @@ import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import AppLogo from "@/components/ui/AppLogo";
 import igdbLogoDark from "@/assets/igdb-logo-dark.svg";
 import igdbLogo from "@/assets/igdb-logo.svg";
+import AppLogo from "@/components/ui/AppLogo";
 
 import styles from "./Footer.module.css";
 
@@ -27,14 +27,15 @@ const Footer = (): React.JSX.Element => {
       <div className={styles.footerInner}>
         <div className={styles.leftSection}>
           <div className={styles.igdbSection}>
-            <img
-              src={colorScheme === "dark" ? igdbLogoDark : igdbLogo}
-              alt="IGDB"
-              className={styles.igdbLogo}
-            />
+            <img src={colorScheme === "dark" ? igdbLogoDark : igdbLogo} alt="IGDB" className={styles.igdbLogo} />
             <Text size="xs" c="var(--color-text-400)">
               {t("footer.dataProvidedBy")}{" "}
-              <a href="https://www.igdb.com/" target="_blank" rel="noopener noreferrer" className={styles.footerExtLink}>
+              <a
+                href="https://www.igdb.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.footerExtLink}
+              >
                 IGDB
               </a>
             </Text>

@@ -56,7 +56,11 @@ describe("handleApiError", () => {
   });
 
   it("surfaces a plain-string error body as the message", async () => {
-    const error = await captureApiError("Pola collection, game muszą tworzyć unikalny zestaw.", fakeResponse(400), "default");
+    const error = await captureApiError(
+      "Pola collection, game muszą tworzyć unikalny zestaw.",
+      fakeResponse(400),
+      "default",
+    );
 
     expect(error.fieldErrors).toBeUndefined();
     expect(error.message).toBe("Pola collection, game muszą tworzyć unikalny zestaw.");

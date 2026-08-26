@@ -53,7 +53,10 @@ export const FAQ_ITEM_LINKS: Partial<Record<FaqItemId, FaqItemLink[]>> = {
   ],
   behavior: [{ labelKey: "items.behavior.termsLinkLabel", to: "/terms" }],
   reportIssues: [
-    { labelKey: "items.reportIssues.linkLabel", href: "https://github.com/SojusanApps/game-list-community/discussions" },
+    {
+      labelKey: "items.reportIssues.linkLabel",
+      href: "https://github.com/SojusanApps/game-list-community/discussions",
+    },
   ],
   openSource: [{ labelKey: "items.openSource.linkLabel", href: "https://github.com/SojusanApps" }],
   deleteAccount: [{ labelKey: "items.deleteAccount.linkLabel", to: "/privacy" }],

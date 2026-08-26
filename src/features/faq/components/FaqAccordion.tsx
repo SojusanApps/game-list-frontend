@@ -27,7 +27,7 @@ export function FaqAccordion(): React.JSX.Element {
         panel: { padding: "0 24px 20px" },
       }}
     >
-      {FAQ_ITEM_ORDER.map((id) => {
+      {FAQ_ITEM_ORDER.map(id => {
         const links = FAQ_ITEM_LINKS[id];
 
         return (
@@ -42,7 +42,7 @@ export function FaqAccordion(): React.JSX.Element {
                 <Text c="var(--color-text-700)">{t(`items.${id}.answer`)}</Text>
                 {links && (
                   <Stack gap={4}>
-                    {links.map((link) =>
+                    {links.map(link =>
                       link.to ? (
                         <Anchor key={link.labelKey} component={Link} to={link.to} fw={600}>
                           {t(link.labelKey)}
