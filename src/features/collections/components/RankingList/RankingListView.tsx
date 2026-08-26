@@ -8,12 +8,12 @@ import { useTranslation } from "react-i18next";
 import { CollectionItem } from "@/client";
 import { VirtualList } from "@/components/ui/VirtualList";
 
-import { CollectionStatsBanner } from "../CollectionStatsBanner";
 import {
   useReorderCollectionItem,
   useUpdateCollectionItem,
   useCollectionItemsInfiniteQuery,
 } from "../../hooks/useCollectionQueries";
+import { CollectionStatsBanner } from "../CollectionStatsBanner";
 import EditDescriptionModal from "./EditDescriptionModal";
 import { SortableRankingRow } from "./SortableRankingRow";
 

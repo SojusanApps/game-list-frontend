@@ -89,7 +89,10 @@ export const removeCollectionItem = async (id: number) => {
 export type CollectionCollectionItemsPartialUpdateDataBody = CollectionCollectionItemsPartialUpdateData["body"];
 
 export const updateCollectionItem = async (id: number, body: CollectionCollectionItemsPartialUpdateDataBody) => {
-  const { data, error, response } = await CollectionService.collectionCollectionItemsPartialUpdate({ path: { id }, body });
+  const { data, error, response } = await CollectionService.collectionCollectionItemsPartialUpdate({
+    path: { id },
+    body,
+  });
   if (response?.status !== StatusCode.OK || !data) {
     return await handleApiError(error, response, "Error updating collection item");
   }

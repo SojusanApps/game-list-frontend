@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.99.0",
+    "@j178/prek": "^0.4.14",
     "@tanstack/react-router-devtools": "^1.167.1",
     "@tanstack/router-cli": "^1.167.30",
     "@tanstack/router-plugin": "^1.168.32",

@@ -7,6 +7,7 @@ import { Game } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+
 import styles from "./GameDetailsScreenshotsTab.module.css";
 
 interface GameDetailsScreenshotsTabProps {

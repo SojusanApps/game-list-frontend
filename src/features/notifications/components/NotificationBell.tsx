@@ -72,7 +72,10 @@ export default function NotificationBell(): React.JSX.Element {
           justify="space-between"
           align="center"
           p={16}
-          style={{ borderBottom: "1px solid var(--color-background-100)", background: "rgba(var(--color-veil-rgb), 0.5)" }}
+          style={{
+            borderBottom: "1px solid var(--color-background-100)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
+          }}
         >
           <Text fw={700} c="var(--color-text-900)">
             {t("bell.title")}

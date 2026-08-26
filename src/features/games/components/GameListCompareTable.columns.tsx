@@ -94,7 +94,13 @@ function SortableColumnHeader({
   return (
     <UnstyledButton
       onClick={onToggle}
-      style={{ display: "flex", alignItems: "center", gap: 4, fontWeight: 700, fontSize: "var(--mantine-font-size-sm)" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
+        fontWeight: 700,
+        fontSize: "var(--mantine-font-size-sm)",
+      }}
     >
       {label}
       {isSorted === "asc" && <IconChevronUp size={14} />}

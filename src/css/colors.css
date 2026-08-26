@@ -101,8 +101,8 @@
      value implies didn't read right against a dark surface, but the neon
      accent has enough contrast against dark mode's near-black chrome to
      carry the same glow. */
-  --shadow-button-glow: 0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
-    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+  --shadow-button-glow:
+    0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5), 0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
 
   /* Collection page's stats banner. Light mode blends the primary and
      secondary tints; dark mode (below) instead goes dark-to-bright across a
@@ -424,8 +424,7 @@
   --color-collection-mode-collab-border: #fde047;
 
   --shadow-button-glow:
-    0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
-    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+    0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5), 0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
   --gradient-collection-stats: linear-gradient(to right, var(--color-primary-950), var(--color-primary-400));
   --color-collection-stats-text: var(--color-primary-100);
   --gradient-ranking-stats: linear-gradient(to right, #451a03, var(--color-type-ranking-bg));

@@ -85,59 +85,59 @@ export const PairwiseRankingResults = React.memo(function ({
         viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, paddingRight: 4 } }}
       >
         <Stack gap={8}>
-        {items.map((item, index) => {
-          const confidence = getConfidenceLevel(item, totalItems);
-          return (
-            <Group key={item.itemId} gap={16} align="center" className={styles.resultRow}>
-              {/* Rank */}
-              <Box className={styles.rankBadge}>#{index + 1}</Box>
+          {items.map((item, index) => {
+            const confidence = getConfidenceLevel(item, totalItems);
+            return (
+              <Group key={item.itemId} gap={16} align="center" className={styles.resultRow}>
+                {/* Rank */}
+                <Box className={styles.rankBadge}>#{index + 1}</Box>
 
-              {/* Confidence dot */}
-              <Box
-                w={10}
-                h={10}
-                bg={CONFIDENCE_COLORS[confidence]}
-                style={{ borderRadius: "9999px", flexShrink: 0 }}
-                title={t(`results.${confidence}Confidence`)}
-              />
-
-              {/* Cover */}
-              <Box className={styles.coverImage}>
-                <SafeImage
-                  src={getIGDBImageURL(item.coverImageId ?? "", IGDBImageSize.COVER_SMALL_90_128)}
-                  alt={item.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                {/* Confidence dot */}
+                <Box
+                  w={10}
+                  h={10}
+                  bg={CONFIDENCE_COLORS[confidence]}
+                  style={{ borderRadius: "9999px", flexShrink: 0 }}
+                  title={t(`results.${confidence}Confidence`)}
                 />
-              </Box>
 
-              {/* Title */}
-              <Box style={{ flex: 1, minWidth: 0 }}>
-                <Text fw={700} c="var(--color-text-900)" lineClamp={1} fz="sm">
-                  {item.title}
-                </Text>
-              </Box>
+                {/* Cover */}
+                <Box className={styles.coverImage}>
+                  <SafeImage
+                    src={getIGDBImageURL(item.coverImageId ?? "", IGDBImageSize.COVER_SMALL_90_128)}
+                    alt={item.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </Box>
 
-              {/* Stats */}
-              <Group gap={12} fz="xs" style={{ flexShrink: 0 }}>
-                <Text
-                  component="span"
-                  fw={900}
-                  c="var(--color-primary-600)"
-                  bg="var(--color-primary-50)"
-                  style={{ padding: "4px 8px", borderRadius: 8 }}
-                >
-                  {item.rating}
-                </Text>
-                <Text component="span" c="var(--color-text-400)">
-                  {item.wins}W / {item.losses}L / {item.draws}D
-                </Text>
-                <Text component="span" c="var(--color-text-300)">
-                  {t("results.match", { count: item.matchesPlayed })}
-                </Text>
+                {/* Title */}
+                <Box style={{ flex: 1, minWidth: 0 }}>
+                  <Text fw={700} c="var(--color-text-900)" lineClamp={1} fz="sm">
+                    {item.title}
+                  </Text>
+                </Box>
+
+                {/* Stats */}
+                <Group gap={12} fz="xs" style={{ flexShrink: 0 }}>
+                  <Text
+                    component="span"
+                    fw={900}
+                    c="var(--color-primary-600)"
+                    bg="var(--color-primary-50)"
+                    style={{ padding: "4px 8px", borderRadius: 8 }}
+                  >
+                    {item.rating}
+                  </Text>
+                  <Text component="span" c="var(--color-text-400)">
+                    {item.wins}W / {item.losses}L / {item.draws}D
+                  </Text>
+                  <Text component="span" c="var(--color-text-300)">
+                    {t("results.match", { count: item.matchesPlayed })}
+                  </Text>
+                </Group>
               </Group>
-            </Group>
-          );
-        })}
+            );
+          })}
         </Stack>
       </ScrollArea>
     </Stack>

@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next";
 
 import { TierEnum, BlankEnum } from "@/client";
 
-import { CollectionStatsBanner } from "../CollectionStatsBanner";
 import { useUpdateCollectionItemTier, useUpdateCollectionItem } from "../../hooks/useCollectionQueries";
+import { CollectionStatsBanner } from "../CollectionStatsBanner";
 import { TierSection } from "./TierSection";
 
 interface TierListViewProps {

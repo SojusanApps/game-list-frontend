@@ -1,4 +1,16 @@
-import { TextInput, Select, Checkbox, ActionIcon, Modal, Stack, Group, Box, ScrollArea, Title, Text } from "@mantine/core";
+import {
+  TextInput,
+  Select,
+  Checkbox,
+  ActionIcon,
+  Modal,
+  Stack,
+  Group,
+  Box,
+  ScrollArea,
+  Title,
+  Text,
+} from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
