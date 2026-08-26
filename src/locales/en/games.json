@@ -46,6 +46,11 @@
     "showLess": "Show Less",
     "noReviews": "No reviews yet."
   },
+  "recommendation": {
+    "recommended": "Recommended",
+    "notRecommended": "Not Recommended",
+    "undecided": "Undecided"
+  },
   "mainTab": {
     "statistics": "Statistics",
     "summary": "Summary",
@@ -56,6 +61,8 @@
     "addTitle": "Add Review",
     "editTitle": "Edit Review",
     "reviewPlaceholder": "Write your review here...",
+    "recommendationLabel": "Recommendation",
+    "recommendationPlaceholder": "Select your recommendation",
     "cancelButton": "Cancel",
     "submitButton": "Submit Review",
     "saveButton": "Save Changes",
@@ -67,7 +74,8 @@
     "errorTitle": "Error",
     "errorMessage": "An error occurred",
     "validationRequired": "Review text is required",
-    "validationMaxLength": "Review must be at most {{max}} characters"
+    "validationMaxLength": "Review must be at most {{max}} characters",
+    "validationRecommendationRequired": "Recommendation is required"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Suggest Translation",
@@ -357,6 +365,7 @@
     "title": "Compare <0></0> vs <1></1>",
     "loading": "Loading comparison...",
     "gameColumn": "Game",
+    "scoreColumn": "Score",
     "bothHave": "Both Have",
     "onlyFirstUser": "Only {{username}}",
     "onlySecondUser": "Only {{username}}",

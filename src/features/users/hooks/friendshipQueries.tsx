@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useInfiniteQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { PaginatedFriendshipList } from "@/client";
 import { useAppMutation } from "@/hooks/useAppMutation";
@@ -68,10 +68,14 @@ export const useRejectFriendRequest = () => {
   });
 };
 
-export const useGetFriendships = (query?: FriendshipFriendshipsListDataQuery) => {
+export const useGetFriendships = (
+  query?: FriendshipFriendshipsListDataQuery,
+  options?: Omit<UseQueryOptions<unknown, Error, PaginatedFriendshipList>, "queryKey" | "queryFn">,
+) => {
   return useQuery({
     queryKey: friendshipKeys.list(query),
     queryFn: () => getFriendships(query),
+    ...options,
   });
 };
 

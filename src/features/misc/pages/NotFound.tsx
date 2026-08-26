@@ -25,7 +25,7 @@ export default function NotFound(): React.JSX.Element {
             {t("notFound.description")}
           </Text>
           <Box mt="md">
-            <Link to="/home">
+            <Link to="/">
               <Button size="lg">{t("notFound.goHome")}</Button>
             </Link>
           </Box>

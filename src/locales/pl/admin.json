@@ -26,6 +26,8 @@
     },
     "targetTypeFilterLabel": "Typ zgłoszenia",
     "targetTypeAll": "Wszystkie",
+    "sourceFilterLabel": "Źródło",
+    "sourceAll": "Wszystkie",
     "reportedUserFilterLabel": "ID zgłoszonego użytkownika",
     "clearFilters": "Wyczyść filtry",
     "reportedByLabel": "Zgłoszone przez",

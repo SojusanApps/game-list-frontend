@@ -1,6 +1,6 @@
 # Project Guidelines for AI Agents
 
-Instructions for AI coding agents working on the **My Game List Frontend**.
+Instructions for AI coding agents working on the **GameList Frontend**.
 
 ## Build and Test
 

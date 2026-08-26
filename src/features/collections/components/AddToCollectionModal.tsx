@@ -79,7 +79,7 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
           style={{
             padding: "24px 32px",
             borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(248,250,252,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
             borderRadius: "24px 24px 0 0",
           }}
         >

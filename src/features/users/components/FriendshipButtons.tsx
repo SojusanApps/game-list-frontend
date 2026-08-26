@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { Friendship, FriendshipRequest } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { useRequireAuth } from "@/features/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 
 import {
   useSendFriendRequest,
@@ -21,12 +23,17 @@ interface FriendshipButtonsProps {
 
 export default function FriendshipButtons({ currentUserId, userId }: Readonly<FriendshipButtonsProps>) {
   const { t } = useTranslation("users");
+  const requireAuth = useRequireAuth();
+  const { confirm, confirmModal } = useConfirm();
   const { mutate: sendRequest } = useSendFriendRequest();
   const { mutate: acceptRequest } = useAcceptFriendRequest();
   const { mutate: rejectRequest } = useRejectFriendRequest();
   const { mutate: deleteFriendship } = useDeleteFriendship();
 
-  const { data: friendshipsData } = useGetFriendships(currentUserId ? { user: String(currentUserId) } : undefined);
+  const { data: friendshipsData } = useGetFriendships(
+    currentUserId ? { user: String(currentUserId) } : undefined,
+    { enabled: !!currentUserId },
+  );
   const { data: sentRequestsData } = useGetFriendshipRequests({ receiver: String(userId) });
   // Fetch requests sent BY this user. We will check if any are sent TO us.
   const { data: incomingRequestsData } = useGetFriendshipRequests({ sender: String(userId) });
@@ -76,8 +83,11 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
     }
   };
 
-  const handleUnfriend = () => {
-    if (friendship && globalThis.confirm(t("friendship.unfriendConfirm"))) {
+  const handleUnfriend = async () => {
+    if (
+      friendship &&
+      (await confirm({ title: t("friendship.unfriend"), message: t("friendship.unfriendConfirm"), isDestructive: true }))
+    ) {
       deleteFriendship({ id: friendship.id });
     }
   };
@@ -88,16 +98,19 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isFriend) {
     return (
-      <Button type="button" onClick={handleUnfriend} variant="destructive" className="w-full">
-        {t("friendship.unfriend")}
-      </Button>
+      <>
+        <Button type="button" onClick={handleUnfriend} variant="destructive" fullWidth>
+          {t("friendship.unfriend")}
+        </Button>
+        {confirmModal}
+      </>
     );
   }
 
   if (incomingRequest) {
     return (
-      <Group gap={8} className="w-full">
-        <Button type="button" onClick={handleAccept} className="flex-1 bg-green-600 hover:bg-green-700">
+      <Group gap={8} w="100%" wrap="nowrap">
+        <Button type="button" onClick={handleAccept} variant="success" style={{ flex: 1 }}>
           {t("friendship.accept")}
         </Button>
         <Button
@@ -105,7 +118,7 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
           onClick={handleReject}
           disabled={isIncomingRejected}
           variant="destructive"
-          className="flex-1"
+          style={{ flex: 1 }}
         >
           {isIncomingRejected ? t("friendship.rejected") : t("friendship.reject")}
         </Button>
@@ -115,14 +128,14 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isRequestSent) {
     return (
-      <Button type="button" disabled variant="secondary" className="w-full cursor-default">
+      <Button type="button" disabled variant="secondary" fullWidth style={{ cursor: "default" }}>
         {isOutgoingRejected ? t("friendship.requestRejected") : t("friendship.requestSent")}
       </Button>
     );
   }
 
   return (
-    <Button type="button" onClick={handleAddFriend} className="w-full">
+    <Button type="button" onClick={() => requireAuth(handleAddFriend)} fullWidth>
       {t("friendship.addFriend")}
     </Button>
   );

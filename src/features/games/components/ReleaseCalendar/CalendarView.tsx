@@ -1,4 +1,16 @@
-import { Box, Group, ActionIcon, Title, SegmentedControl, Text, Loader, Center, Stack, Button } from "@mantine/core";
+import {
+  Box,
+  Group,
+  ActionIcon,
+  Title,
+  SegmentedControl,
+  Text,
+  Loader,
+  Center,
+  Stack,
+  Button,
+  ScrollArea,
+} from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import * as React from "react";
 import { useState, useMemo } from "react";
@@ -140,7 +152,7 @@ export default function CalendarView(): React.JSX.Element {
     const maxVisible = 2;
 
     return (
-      <Box className={styles.calendarGridWrapper}>
+      <ScrollArea className={styles.calendarGridWrapper} scrollbars="x">
         <Box className={styles.calendarGridInner}>
           <Box className={styles.calendarGridHeader}>
             {[
@@ -182,7 +194,7 @@ export default function CalendarView(): React.JSX.Element {
                   )}
                 >
                   <Box className={styles.dayHeader}>
-                    <Text size="sm" className={[0, 6].includes(dayObj.getDay()) ? styles.weekend : undefined}>
+                    <Text size="sm" fw={700} className={[0, 6].includes(dayObj.getDay()) ? styles.weekend : undefined}>
                       {dayObj.getDate()}
                     </Text>
                   </Box>
@@ -223,18 +235,18 @@ export default function CalendarView(): React.JSX.Element {
             })}
           </Box>
         </Box>
-      </Box>
+      </ScrollArea>
     );
   };
 
   return (
     <Stack gap={24} className={styles.calendarContainer}>
-      <Group justify="space-between" align="center" wrap="wrap">
-        <Group>
+      <Group justify="space-between" align="center" wrap="wrap" gap={12}>
+        <Group gap={8}>
           <ActionIcon variant="default" size="lg" radius="md" onClick={handlePrev}>
             <IconChevronLeft size={20} />
           </ActionIcon>
-          <Title order={3} w={240} ta="center" fw={800}>
+          <Title order={3} w={{ base: 180, sm: 240 }} fz={{ base: "md", sm: "lg" }} ta="center" fw={800}>
             {getHeaderTitle()}
           </Title>
           <ActionIcon variant="default" size="lg" radius="md" onClick={handleNext}>
@@ -250,6 +262,7 @@ export default function CalendarView(): React.JSX.Element {
           radius="md"
           value={viewMode}
           onChange={val => setViewMode(val)}
+          w={{ base: "100%", sm: "auto" }}
           data={[
             { label: t("calendar.month"), value: "month" },
             { label: t("calendar.week"), value: "week" },

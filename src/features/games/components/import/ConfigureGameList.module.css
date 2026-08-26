@@ -1,5 +1,5 @@
 .card {
-  background: white;
+  background: var(--color-background-100);
   border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--color-background-200);
@@ -7,7 +7,5 @@
 }
 
 .scrollList {
-  max-height: 500px;
-  overflow-y: auto;
   padding-right: 4px;
 }

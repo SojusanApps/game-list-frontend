@@ -36,14 +36,21 @@
     "credentials": {
       "sectionTitle": "Dane logowania",
       "description": "Aby zmienić swoje dane osobowe, płeć, nazwę użytkownika lub hasło, przejdź do naszego zewnętrznego dostawcy tożsamości, Sojusan Auth.",
-      "manageAccountButton": "Zarządzaj kontem w Sojusan Auth"
+      "manageAccountButton": "Zarządzaj kontem w Sojusan Auth",
+      "deleteAccount": {
+        "title": "Usuń konto",
+        "description": "Usunięcie konta musi zostać wykonane w Sojusan Auth. Jest to działanie globalne: trwale usunie Twoje konto z całej infrastruktury aplikacji Sojusan, a nie tylko Twój profil w Game List.",
+        "button": "Usuń konto w Sojusan Auth"
+      }
     }
   },
   "info": {
     "title": "Informacje",
     "joined": "Dołączył:",
     "gender": "Płeć:",
-    "private": "Prywatne",
+    "genderMale": "Mężczyzna",
+    "genderFemale": "Kobieta",
+    "genderNotSpecified": "Nie podano",
     "lastActive": "Ostatnio aktywny:",
     "never": "Nigdy",
     "warnings": "Ostrzeżenia:",

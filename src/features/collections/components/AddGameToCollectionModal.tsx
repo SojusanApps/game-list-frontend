@@ -1,4 +1,16 @@
-import { ActionIcon, Modal, Stack, Group, Box, Title, Text, TextInput, UnstyledButton } from "@mantine/core";
+import {
+  ActionIcon,
+  Loader,
+  Modal,
+  Stack,
+  Group,
+  Box,
+  ScrollArea,
+  Title,
+  Text,
+  TextInput,
+  UnstyledButton,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconSearch, IconX } from "@tabler/icons-react";
@@ -10,7 +22,7 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { useGetGamesList } from "@/features/games/hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
-import { useAddCollectionItem } from "../hooks/useCollectionQueries";
+import { useAddCollectionItem, useCollectionItemsInfiniteQuery } from "../hooks/useCollectionQueries";
 
 interface AddGameToCollectionModalProps {
   onClose: () => void;
@@ -30,13 +42,55 @@ export default function AddGameToCollectionModal({
     { enabled: debouncedSearch.length > 1 },
   );
 
-  const { mutate: addItem, isPending: isAdding } = useAddCollectionItem();
+  const { mutate: addItem } = useAddCollectionItem();
+  const [pendingGameIds, setPendingGameIds] = React.useState<Set<number>>(new Set());
+
+  const {
+    data: collectionItemsData,
+    fetchNextPage: fetchNextCollectionItemsPage,
+    hasNextPage: hasNextCollectionItemsPage,
+  } = useCollectionItemsInfiniteQuery(collectionId);
+
+  React.useEffect(() => {
+    if (hasNextCollectionItemsPage) {
+      fetchNextCollectionItemsPage();
+    }
+  }, [hasNextCollectionItemsPage, fetchNextCollectionItemsPage, collectionItemsData]);
+
+  const existingGameIds = React.useMemo(
+    () => new Set(collectionItemsData?.pages.flatMap(page => page.results.map(item => item.game.id)) || []),
+    [collectionItemsData],
+  );
+
+  React.useEffect(() => {
+    setPendingGameIds(prev => {
+      if (![...prev].some(id => existingGameIds.has(id))) {
+        return prev;
+      }
+      const next = new Set([...prev].filter(id => !existingGameIds.has(id)));
+      return next;
+    });
+  }, [existingGameIds]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 
   const handleAddGame = (game: GameSimpleList) => {
+    if (existingGameIds.has(game.id) || pendingGameIds.has(game.id)) {
+      return;
+    }
+
+    setPendingGameIds(prev => new Set(prev).add(game.id));
+
+    const clearPending = () => {
+      setPendingGameIds(prev => {
+        const next = new Set(prev);
+        next.delete(game.id);
+        return next;
+      });
+    };
+
     addItem(
       {
         collection: collectionId,
@@ -44,6 +98,8 @@ export default function AddGameToCollectionModal({
       },
       {
         onSuccess: () => {
+          // Pending state is cleared once existingGameIds picks up the
+          // invalidated query refetch, so the spinner stays until "Added" is real.
           notifications.show({
             title: t("addGame.successTitle"),
             message: t("addGame.successMessage", { title: game.title }),
@@ -52,6 +108,7 @@ export default function AddGameToCollectionModal({
           // Kept open for multiple adds as per user request
         },
         onError: error => {
+          clearPending();
           notifications.show({
             title: t("addGame.errorTitle"),
             message: error.message || t("addGame.errorMessage"),
@@ -88,67 +145,81 @@ export default function AddGameToCollectionModal({
 
       return (
         <Stack gap={8}>
-          {gamesDetails.results.map(game => (
-            <UnstyledButton
-              key={game.id}
-              onClick={() => handleAddGame(game)}
-              disabled={isAdding}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                padding: "12px",
-                borderRadius: "12px",
-                border: "1px solid transparent",
-                width: "100%",
-                textAlign: "left",
-                transition: "all 200ms",
-              }}
-            >
-              <Box
+          {gamesDetails.results.map(game => {
+            const isAlreadyAdded = existingGameIds.has(game.id);
+            const isPendingAdd = pendingGameIds.has(game.id);
+            const addButtonLabel = isAlreadyAdded ? t("addGame.addedButton") : t("addGame.addButton");
+
+            return (
+              <UnstyledButton
+                key={game.id}
+                onClick={() => handleAddGame(game)}
+                disabled={isAlreadyAdded || isPendingAdd}
                 style={{
-                  position: "relative",
-                  width: 48,
-                  height: 64,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-                  flexShrink: 0,
-                  background: "var(--color-background-200)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "1px solid transparent",
+                  width: "100%",
+                  textAlign: "left",
+                  transition: "all 200ms",
+                  opacity: isAlreadyAdded ? 0.6 : 1,
+                  cursor: isAlreadyAdded || isPendingAdd ? "default" : "pointer",
                 }}
               >
-                <SafeImage
-                  src={
-                    game.cover_image_id ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.THUMB_90_90) : undefined
-                  }
-                  alt={game.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </Box>
-              <Stack gap={2} style={{ flex: 1 }}>
-                <Text span fw={700} c="var(--color-text-900)">
-                  {game.title}
-                </Text>
-                {game.release_date && (
-                  <Text span fz="xs" c="var(--color-text-500)" fw={500} style={{ letterSpacing: "0.05em" }}>
-                    {new Date(game.release_date).getFullYear()}
+                <Box
+                  style={{
+                    position: "relative",
+                    width: 48,
+                    height: 64,
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                    flexShrink: 0,
+                    background: "var(--color-background-200)",
+                  }}
+                >
+                  <SafeImage
+                    src={
+                      game.cover_image_id
+                        ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.THUMB_90_90)
+                        : undefined
+                    }
+                    alt={game.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </Box>
+                <Stack gap={2} style={{ flex: 1 }}>
+                  <Text span fw={700} c="var(--color-text-900)">
+                    {game.title}
                   </Text>
-                )}
-              </Stack>
-              <Box
-                style={{
-                  color: "var(--color-primary-600)",
-                  fontWeight: 700,
-                  fontSize: "14px",
-                  background: "var(--color-primary-100)",
-                  padding: "4px 12px",
-                  borderRadius: "9999px",
-                }}
-              >
-                {t("addGame.addButton")}
-              </Box>
-            </UnstyledButton>
-          ))}
+                  {game.release_date && (
+                    <Text span fz="xs" c="var(--color-text-500)" fw={500} style={{ letterSpacing: "0.05em" }}>
+                      {new Date(game.release_date).getFullYear()}
+                    </Text>
+                  )}
+                </Stack>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: 64,
+                    color: isAlreadyAdded ? "var(--color-text-500)" : "var(--color-primary-600)",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    background: isAlreadyAdded ? "var(--color-background-200)" : "var(--color-primary-100)",
+                    padding: "4px 12px",
+                    borderRadius: "9999px",
+                  }}
+                >
+                  {isPendingAdd ? <Loader size={14} color="var(--color-primary-600)" /> : addButtonLabel}
+                </Box>
+              </UnstyledButton>
+            );
+          })}
         </Stack>
       );
     }
@@ -178,12 +249,12 @@ export default function AddGameToCollectionModal({
           style={{
             padding: "24px 32px",
             borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(248,250,252,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
           }}
         >
           <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
             {t("addGame.titlePrefix")}{" "}
-            <Text span c="var(--color-primary-600)">
+            <Text span fz={24} fw={900} c="var(--color-primary-600)">
               {t("addGame.titleHighlight")}
             </Text>
           </Title>
@@ -211,7 +282,12 @@ export default function AddGameToCollectionModal({
         </Box>
 
         {/* Results List */}
-        <Box style={{ flex: 1, overflowY: "auto", padding: "0 32px 32px" }}>{renderContent()}</Box>
+        <ScrollArea
+          style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
+          viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: "0 32px 32px" } }}
+        >
+          {renderContent()}
+        </ScrollArea>
       </Stack>
     </Modal>
   );

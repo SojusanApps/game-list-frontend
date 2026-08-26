@@ -1,8 +1,8 @@
-# My Game List Frontend
+# Sojusan GameList Frontend
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/005e009f096170220106/maintainability)](https://codeclimate.com/github/MyGameListPlaceholder/my-game-list-frontend/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/005e009f096170220106/maintainability)](https://codeclimate.com/github/SojusanApps/game-list-frontend/maintainability)
 
-A modern, responsive web application for gamers to track their game collections, write reviews, rate titles, and connect with friends. This project serves as the frontend client for the My Game List platform.
+A modern, responsive web application for gamers to track their game collections, write reviews, rate titles, and connect with friends. This project serves as the frontend client for the GameList platform.
 
 ## 🚀 Features
 
@@ -28,15 +28,15 @@ A modern, responsive web application for gamers to track their game collections,
 
 - **Node.js:** v20 or higher recommended.
 - **pnpm:** v10 or higher. Enable via Corepack (`corepack enable`) or install from [pnpm.io](https://pnpm.io/installation).
-- **Backend:** The application relies on the [My Game List Backend](https://github.com/MyGameListPlaceholder/my-game-list-backend). Ensure you have access to the backend API and its `openapi.json` definition.
+- **Backend:** The application relies on the [GameList Backend](https://github.com/SojusanApps/game-list-backend). Ensure you have access to the backend API and its `openapi.json` definition.
 
 ## 📥 Installation & Setup
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/my-game-list-frontend.git
-   cd my-game-list-frontend
+   git clone https://github.com/your-username/game-list-frontend.git
+   cd game-list-frontend
    ```
 
 2. **Install dependencies:**
@@ -55,7 +55,7 @@ A modern, responsive web application for gamers to track their game collections,
 
 4. **API Definition:**
    The `dev` script expects the backend's `openapi.json` file to generate the API client.
-   - **Option A:** Have the backend project checked out at `../my-game-list-backend/`. The script will attempt to copy `openapi.json` from there.
+   - **Option A:** Have the backend project checked out at `../game-list-backend/`. The script will attempt to copy `openapi.json` from there.
    - **Option B:** Manually place the `openapi.json` file in the root of this project before running dev.
 
 ## 🏃‍♂️ Running the Application
@@ -114,17 +114,26 @@ pnpm preview
 
 To build and run the application using Docker:
 
+The image bakes `VITE_*` variables into the JS bundle at build time (Vite convention), so pass the production values as build args:
+
 1. **Build the image:**
 
    ```bash
-   docker build -t my-game-list-frontend .
+   docker build \
+     --build-arg VITE_API_URL=https://api.example.com \
+     --build-arg VITE_KEYCLOAK_URL=https://keycloak.example.com \
+     --build-arg VITE_KEYCLOAK_REALM=your-realm \
+     --build-arg VITE_KEYCLOAK_CLIENT_ID=your-client-id \
+     -t game-list-frontend .
    ```
 
 2. **Run the container:**
 
    ```bash
-   docker run -p 3000:80 my-game-list-frontend
+   docker run -p 3000:8080 game-list-frontend
    ```
+
+   The app is served by nginx and listens on port `8080` inside the container.
 
 ## 📂 Project Structure
 

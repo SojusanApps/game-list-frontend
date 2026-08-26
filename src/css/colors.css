@@ -1,5 +1,9 @@
 :root {
   /* Primary: Indigo - Modern, trustworthy, vibrant */
+  /* An even-paler step below -100, matching the Mantine primary tuple's own
+     shade 0 (theme.ts). Doesn't flip in dark mode, same as the rest of this
+     ramp — see the dark-mode note on the background ramp below. */
+  --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
   --color-primary-300: #a5b4fc;
@@ -10,8 +14,13 @@
   --color-primary-800: #3730a3;
   --color-primary-900: #312e81;
   --color-primary-950: #1e1b4b;
+  /* Raw R,G,B channels of primary-200, for spots that need their own alpha
+     via rgba(var(--color-primary-200-rgb), X) — e.g. a hover glow shadow.
+     Same value in both schemes since the primary ramp itself doesn't flip. */
+  --color-primary-200-rgb: 199, 210, 254;
 
   /* Secondary: Amber/Orange - A nice complementary accent, modern & friendly */
+  --color-secondary-50: #fff7ed;
   --color-secondary-100: #ffedd5;
   --color-secondary-200: #fed7aa;
   --color-secondary-300: #fdba74;
@@ -22,8 +31,15 @@
   --color-secondary-800: #9a3412;
   --color-secondary-900: #7c2d12;
   --color-secondary-950: #431407;
+  /* Raw R,G,B channels of secondary-200, same reasoning as primary-200-rgb. */
+  --color-secondary-200-rgb: 254, 215, 170;
 
   /* Background: Slate - Clean, cool greys */
+  /* Aliases -200 rather than defining its own value: -100 is already pure
+     white, so there's no room for a paler step, and the many call sites
+     using this name clearly want -200's "just off the card surface" role.
+     No dark-mode override needed — it tracks -200's dark value live. */
+  --color-background-50: var(--color-background-200);
   --color-background-100: #ffffff;
   --color-background-200: #f8fafc;
   --color-background-300: #f1f5f9;
@@ -36,6 +52,7 @@
   --color-background-950: #0f172a;
 
   /* Error: Red - Standard but refined */
+  --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
   --color-error-300: #fca5a5;
@@ -77,4 +94,351 @@
   --shadow-glow-secondary: 0 0 8px rgba(251, 146, 60, 0.4);
   --shadow-glow-error: 0 0 8px rgba(239, 68, 68, 0.4);
   --shadow-glow-background: 0 0 8px rgba(148, 163, 184, 0.4);
+
+  /* Button elevation shadow (e.g. the primary CTA on the pairwise ranking
+     modal's idle screen). Re-sourced from the neon primary ramp in dark
+     mode below rather than dropped — the indigo/navy pairing this light
+     value implies didn't read right against a dark surface, but the neon
+     accent has enough contrast against dark mode's near-black chrome to
+     carry the same glow. */
+  --shadow-button-glow: 0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
+    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+
+  /* Collection page's stats banner. Light mode blends the primary and
+     secondary tints; dark mode (below) instead goes dark-to-bright across a
+     single hue (same idea as the tier list's own banner gradient), reading
+     as "darker on the left, brighter on the right" rather than a two-hue
+     blend. */
+  --gradient-collection-stats: linear-gradient(to right, var(--color-primary-tint-bg), var(--color-secondary-tint-bg));
+  /* Text sitting on that banner (only over its left portion — the content is
+     left-aligned, so the brighter right end never has text over it). Light
+     mode just reuses the primary tint's own dark text; dark mode (below)
+     needs a light color instead, since the banner's dark-navy left end is
+     the opposite of the tint's usual bright-chip background. */
+  --color-collection-stats-text: var(--color-primary-tint-text);
+
+  /* Ranking list's own stats banner — same shape as the collection-stats
+     banner above, but kept its own token set with an amber hue (matching
+     the ranking type badge's own color) so the three collection views
+     (normal/tier-list/ranking) each read as a visually distinct area
+     rather than three copies of the same banner. */
+  --gradient-ranking-stats: linear-gradient(to right, var(--color-type-ranking-bg), var(--color-type-ranking-border));
+  --color-ranking-stats-text: var(--color-type-ranking-text);
+
+  /* Raw R,G,B channels (no alpha) of a neutral surface wash, for spots that
+     need their own bespoke alpha via rgba(var(--color-veil-rgb), X) — e.g.
+     a translucent panel highlight over a card. Matches --color-background-200. */
+  --color-veil-rgb: 248, 250, 252;
+
+  /* "Tinted callout" role: a brand-tinted card background paired with
+     high-contrast text of the same hue (e.g. a stat card, a status badge, a
+     highlighted row). Light mode is a pale bg + saturated text; dark mode
+     (below) goes bright neon bg + near-black text instead of just staying
+     pale — see the note there. */
+  --color-success-tint-bg: var(--color-success-100);
+  --color-success-tint-text: var(--color-success-800);
+  --color-success-tint-border: var(--color-success-200);
+  --color-primary-tint-bg: var(--color-primary-100);
+  --color-primary-tint-text: var(--color-primary-800);
+  --color-primary-tint-border: var(--color-primary-200);
+  --color-secondary-tint-bg: var(--color-secondary-100);
+  --color-secondary-tint-text: var(--color-secondary-800);
+  --color-secondary-tint-border: var(--color-secondary-200);
+  --color-error-tint-bg: var(--color-error-100);
+  --color-error-tint-text: var(--color-error-800);
+  --color-error-tint-border: var(--color-error-200);
+
+  /* Game-list status badge (playing/completed/plan-to-play/on-hold/dropped)
+     bg+text+border triples. Forwards to the tints above, so it automatically
+     goes neon in dark mode along with everything else that reads the tint —
+     except plan-to-play, which has no hue to tint with and keeps its own
+     neutral bg/text pair (overridden separately in dark mode below). */
+  --color-status-playing-bg: var(--color-success-tint-bg);
+  --color-status-playing-text: var(--color-success-tint-text);
+  --color-status-playing-border: var(--color-success-tint-border);
+  --color-status-completed-bg: var(--color-primary-tint-bg);
+  --color-status-completed-text: var(--color-primary-tint-text);
+  --color-status-completed-border: var(--color-primary-tint-border);
+  --color-status-plantoplay-bg: var(--color-background-400);
+  --color-status-plantoplay-text: var(--color-text-900);
+  --color-status-plantoplay-border: var(--color-background-500);
+  --color-status-onhold-bg: var(--color-secondary-tint-bg);
+  --color-status-onhold-text: var(--color-secondary-tint-text);
+  --color-status-onhold-border: var(--color-secondary-tint-border);
+  --color-status-dropped-bg: var(--color-error-tint-bg);
+  --color-status-dropped-text: var(--color-error-tint-text);
+  --color-status-dropped-border: var(--color-error-tint-border);
+
+  /* Random plan-to-play callout box (GameListPage). Light mode uses the
+     primary tint like other callouts; dark mode (below) drops the hue and
+     goes plain neutral-dark instead — a cyan-tinted card there read as an
+     odd "blueish" outlier next to the page's otherwise-neutral dark cards. */
+  --color-ptp-callout-bg: var(--color-primary-tint-bg);
+  --color-ptp-callout-border: var(--color-primary-tint-border);
+
+  /* Unread-row highlight (NotificationsPage). Forwards to the primary tint
+     like other callouts in light mode; dark mode (below) tones it down a
+     step from the tint's full neon — a whole table row filled with the
+     badges' full-brightness cyan was too much at that scale. */
+  --color-row-highlight-bg: var(--color-primary-tint-bg);
+  --color-row-highlight-text: var(--color-primary-tint-text);
+
+  /* Collection-type badge hues (ranking/tier-list/normal) — none of these
+     hues (amber, purple, blue) exist as a full ramp elsewhere in the app,
+     so rather than build three new 10-step ramps for one badge cluster,
+     these are scoped, self-contained tint pairs. Light mode is pale-bg/
+     saturated-text like the tokens above; dark mode (below) goes neon
+     bright-bg/near-black-text, same treatment as everything else. */
+  --color-type-ranking-bg: #fef3c7;
+  --color-type-ranking-text: #b45309;
+  --color-type-ranking-border: #fde68a;
+  --color-type-tierlist-bg: #f3e8ff;
+  --color-type-tierlist-text: #7e22ce;
+  --color-type-tierlist-border: #e9d5ff;
+  --color-type-normal-bg: #dbeafe;
+  --color-type-normal-text: #1d4ed8;
+  --color-type-normal-border: #bfdbfe;
+
+  /* NotificationsPage category badge hues (friendship/game-release/
+     translation/default) — own scoped tint pairs, same idea as the
+     collection-type hues above but neon in dark mode (below) rather than
+     staying muted, per the category badges' own ask. System has no hue of
+     its own and just forwards to the plan-to-play neutral pair instead. */
+  --color-category-system-bg: var(--color-status-plantoplay-bg);
+  --color-category-system-text: var(--color-status-plantoplay-text);
+  --color-category-system-border: var(--color-status-plantoplay-border);
+  --color-category-friendship-bg: #f3e8ff;
+  --color-category-friendship-text: #7e22ce;
+  --color-category-friendship-border: #e9d5ff;
+  --color-category-gamerelease-bg: #fef3c7;
+  --color-category-gamerelease-text: #b45309;
+  --color-category-gamerelease-border: #fde68a;
+  --color-category-translation-bg: #fce7f3;
+  --color-category-translation-text: #9d174d;
+  --color-category-translation-border: #fbcfe8;
+  --color-category-default-bg: #dbeafe;
+  --color-category-default-text: #1d4ed8;
+  --color-category-default-border: #bfdbfe;
+
+  /* CollectionCard's visibility badge (public/friends/private) — forwards to
+     existing tints rather than new tokens, since the hues already carry the
+     right meaning app-wide (green=public-facing, primary=friends, neutral=
+     private). Mode badge (solo/collaborative) gets its own orange/yellow
+     pair, kept distinct from both the visibility and type badges' hues so
+     the three clusters read apart when they sit side by side on a card. */
+  --color-visibility-public-bg: var(--color-success-tint-bg);
+  --color-visibility-public-text: var(--color-success-tint-text);
+  --color-visibility-public-border: var(--color-success-tint-border);
+  --color-visibility-friends-bg: var(--color-primary-tint-bg);
+  --color-visibility-friends-text: var(--color-primary-tint-text);
+  --color-visibility-friends-border: var(--color-primary-tint-border);
+  --color-visibility-private-bg: var(--color-status-plantoplay-bg);
+  --color-visibility-private-text: var(--color-status-plantoplay-text);
+  --color-visibility-private-border: var(--color-status-plantoplay-border);
+  --color-collection-mode-solo-bg: #ffedd5;
+  --color-collection-mode-solo-text: #c2410c;
+  --color-collection-mode-solo-border: #fed7aa;
+  --color-collection-mode-collab-bg: #fef9c3;
+  --color-collection-mode-collab-text: #854d0e;
+  --color-collection-mode-collab-border: #fef08a;
+
+  /* "Colored chip" role: a badge background that has to stay legible under
+     arbitrary, uncontrolled text colors (third-party brand colors we don't
+     pick — several, like Steam's near-black or Epic's dark grey, are only
+     readable against a pale surface). Deliberately NOT overridden in dark
+     mode below: any single dark shade would still fail for the darkest
+     brand colors, so this chip stays pale in both schemes on purpose. */
+  --color-primary-chip-bg: var(--color-primary-100);
+  --color-primary-chip-border: var(--color-primary-200);
+
+  /* Score/rating badge bg+text pairs (low/mid/high). Light mode follows the
+     usual pale-bg/saturated-text tint pattern; dark mode (below) swaps to a
+     bright neon bg/near-black text instead — see the note there. Mid (amber)
+     forwards to the ranking badge's own tint rather than --color-secondary,
+     since secondary's hue itself changes between schemes (amber -> neon
+     magenta) and would break the red/yellow/green rating semantics. */
+  --color-rating-low-bg: var(--color-error-100);
+  --color-rating-low-text: var(--color-error-800);
+  --color-rating-mid-bg: var(--color-type-ranking-bg);
+  --color-rating-mid-text: var(--color-type-ranking-text);
+  --color-rating-high-bg: var(--color-success-100);
+  --color-rating-high-text: var(--color-success-800);
+}
+
+/* Dark mode: neutral black/grey surfaces (not the light mode's blue-tinted
+   slate) paired with a neon cyan/magenta accent. Background & text ramps
+   are flipped end-to-end (100 stays "the lightest step", 950 stays "the
+   darkest step" — only which physical color sits at each step changes).
+   The topbar/footer's pure-black chrome is handled directly in those
+   components (see TopBar.tsx/Footer.tsx), since their base background
+   tokens differ from each other already. Error/success/badge-tint hues are
+   intentionally left unchanged in both schemes — only the brand ramp
+   (primary/secondary) goes neon here. */
+:root[data-mantine-color-scheme="dark"] {
+  --color-background-100: #09090b;
+  --color-background-200: #18181b;
+  --color-background-300: #27272a;
+  --color-background-400: #3f3f46;
+  --color-background-500: #52525b;
+  --color-background-600: #71717a;
+  --color-background-700: #a1a1aa;
+  --color-background-800: #d4d4d8;
+  --color-background-900: #e4e4e7;
+  --color-background-950: #fafafa;
+
+  --color-text-100: #09090b;
+  --color-text-200: #27272a;
+  --color-text-300: #3f3f46;
+  --color-text-400: #71717a;
+  --color-text-500: #a1a1aa;
+  --color-text-600: #d4d4d8;
+  --color-text-700: #e4e4e7;
+  --color-text-800: #f4f4f5;
+  --color-text-900: #fafafa;
+  --color-text-950: #ffffff;
+
+  /* Matches --color-background-300's dark value: a wash that reads as
+     "raised" against the dark body, mirroring the light-mode role of this
+     token. */
+  --color-veil-rgb: 39, 39, 42;
+
+  /* Primary: Neon Cyan */
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #155e75;
+  --color-primary-900: #164e63;
+  --color-primary-950: #083344;
+  --color-primary-200-rgb: 165, 243, 252;
+
+  /* Secondary: Neon Magenta */
+  --color-secondary-50: #fdf4ff;
+  --color-secondary-100: #fae8ff;
+  --color-secondary-200: #f5d0fe;
+  --color-secondary-300: #f0abfc;
+  --color-secondary-400: #e879f9;
+  --color-secondary-500: #d946ef;
+  --color-secondary-600: #c026d3;
+  --color-secondary-700: #a21caf;
+  --color-secondary-800: #86198f;
+  --color-secondary-900: #701a75;
+  --color-secondary-950: #4a044e;
+  --color-secondary-200-rgb: 245, 208, 254;
+
+  /* Mantine's built-in components (e.g. filled buttons) read
+     --mantine-color-* directly rather than the --color-* tokens above (see
+     theme.ts), so the neon palette needs mirroring here too. */
+  --mantine-color-primary-0: #ecfeff;
+  --mantine-color-primary-1: #cffafe;
+  --mantine-color-primary-2: #a5f3fc;
+  --mantine-color-primary-3: #67e8f9;
+  --mantine-color-primary-4: #22d3ee;
+  --mantine-color-primary-5: #06b6d4;
+  --mantine-color-primary-6: #0891b2;
+  --mantine-color-primary-7: #0e7490;
+  --mantine-color-primary-8: #155e75;
+  --mantine-color-primary-9: #164e63;
+
+  --mantine-color-secondary-0: #fdf4ff;
+  --mantine-color-secondary-1: #fae8ff;
+  --mantine-color-secondary-2: #f5d0fe;
+  --mantine-color-secondary-3: #f0abfc;
+  --mantine-color-secondary-4: #e879f9;
+  --mantine-color-secondary-5: #d946ef;
+  --mantine-color-secondary-6: #c026d3;
+  --mantine-color-secondary-7: #a21caf;
+  --mantine-color-secondary-8: #86198f;
+  --mantine-color-secondary-9: #701a75;
+
+  /* Neon dark-mode tint: bright-bg/near-black text, not the pale-in-both-
+     schemes look these used to keep. A near-black bg here read as murky
+     against the already near-black page, same issue the rating badges had —
+     every consumer of the tint role (stat cards, status badges, banners,
+     etc.) picks this up automatically since they all read the var. */
+  --color-success-tint-bg: var(--color-success-400);
+  --color-success-tint-text: var(--color-success-950);
+  --color-success-tint-border: var(--color-success-300);
+  --color-primary-tint-bg: var(--color-primary-400);
+  --color-primary-tint-text: var(--color-primary-950);
+  --color-primary-tint-border: var(--color-primary-300);
+  --color-secondary-tint-bg: var(--color-secondary-400);
+  --color-secondary-tint-text: var(--color-secondary-950);
+  --color-secondary-tint-border: var(--color-secondary-300);
+  --color-error-tint-bg: var(--color-error-500);
+  --color-error-tint-text: var(--color-error-950);
+  --color-error-tint-border: var(--color-error-400);
+
+  /* Game-list status badges (playing/completed/on-hold/dropped) just forward
+     to the tints above already (see :root) — now that the tint itself goes
+     neon here, no override is needed for them. Plan-to-play has no hue to
+     go neon with, so it keeps its own bright silver/chrome override instead
+     of a saturated one — the same "light chip on dark page" pop, just
+     achromatic. */
+  --color-status-plantoplay-bg: var(--color-background-800);
+  --color-status-plantoplay-text: var(--color-text-100);
+  --color-status-plantoplay-border: var(--color-background-600);
+
+  --color-ptp-callout-bg: var(--color-background-200);
+  --color-ptp-callout-border: var(--color-background-400);
+
+  --color-row-highlight-bg: var(--color-primary-500);
+  --color-row-highlight-text: var(--color-primary-950);
+
+  --color-type-ranking-bg: #fbbf24;
+  --color-type-ranking-text: #451a03;
+  --color-type-ranking-border: #fcd34d;
+  --color-type-tierlist-bg: #c084fc;
+  --color-type-tierlist-text: #3b0764;
+  --color-type-tierlist-border: #d8b4fe;
+  --color-type-normal-bg: #60a5fa;
+  --color-type-normal-text: #172554;
+  --color-type-normal-border: #93c5fd;
+
+  /* Category badges go neon here (system auto-follows plan-to-play's
+     override above via the :root forward, no line needed for it). */
+  --color-category-friendship-bg: #c084fc;
+  --color-category-friendship-text: #3b0764;
+  --color-category-friendship-border: #d8b4fe;
+  --color-category-gamerelease-bg: #fbbf24;
+  --color-category-gamerelease-text: #451a03;
+  --color-category-gamerelease-border: #fcd34d;
+  --color-category-translation-bg: #f472b6;
+  --color-category-translation-text: #500724;
+  --color-category-translation-border: #f9a8d4;
+  --color-category-default-bg: #60a5fa;
+  --color-category-default-text: #172554;
+  --color-category-default-border: #93c5fd;
+
+  /* Collection card's visibility badge auto-follows the tints it forwards to
+     above (no override needed); mode goes neon here same as everywhere. */
+  --color-collection-mode-solo-bg: #fb923c;
+  --color-collection-mode-solo-text: #431407;
+  --color-collection-mode-solo-border: #fdba74;
+  --color-collection-mode-collab-bg: #facc15;
+  --color-collection-mode-collab-text: #422006;
+  --color-collection-mode-collab-border: #fde047;
+
+  --shadow-button-glow:
+    0 10px 15px -3px rgba(var(--color-primary-200-rgb), 0.5),
+    0 4px 6px -4px rgba(var(--color-primary-200-rgb), 0.5);
+  --gradient-collection-stats: linear-gradient(to right, var(--color-primary-950), var(--color-primary-400));
+  --color-collection-stats-text: var(--color-primary-100);
+  --gradient-ranking-stats: linear-gradient(to right, #451a03, var(--color-type-ranking-bg));
+  --color-ranking-stats-text: #fde68a;
+
+  /* Rating low/high match the tint's neon steps above exactly (kept as their
+     own literals since :root doesn't forward them from the tint role at
+     all — see the low/high definitions there). Mid keeps its own literal
+     too, slightly brighter than --color-type-ranking-bg's own neon value. */
+  --color-rating-low-bg: var(--color-error-500);
+  --color-rating-low-text: var(--color-error-950);
+  --color-rating-mid-bg: #facc15;
+  --color-rating-mid-text: #451a03;
+  --color-rating-high-bg: var(--color-success-400);
+  --color-rating-high-text: var(--color-success-950);
 }

@@ -1,0 +1,11 @@
+.scrollbar {
+  z-index: 3;
+}
+
+.thumb {
+  background-color: var(--color-primary-200);
+}
+
+.scrollbar:hover .thumb {
+  background-color: var(--color-primary-500);
+}

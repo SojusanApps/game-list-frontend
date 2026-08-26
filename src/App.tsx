@@ -6,7 +6,7 @@ import React from "react";
 
 import "./index.css";
 import { PageMeta } from "./components/ui/PageMeta";
-import { useAuth, SessionGate } from "./features/auth";
+import { useAuth, SessionGate, LoginRequiredModal } from "./features/auth";
 import { useLanguageStore } from "./lib/languageStore";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -32,7 +32,12 @@ function InnerApp() {
   const auth = useAuth();
   const queryClient = useQueryClient();
 
-  return <RouterProvider router={router} context={{ auth, queryClient }} />;
+  return (
+    <>
+      <RouterProvider router={router} context={{ auth, queryClient }} />
+      <LoginRequiredModal />
+    </>
+  );
 }
 
 function App(): React.JSX.Element {

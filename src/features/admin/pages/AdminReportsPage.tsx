@@ -18,21 +18,49 @@ import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Report, ReportStatusEnum, TargetTypeEnum, type UserSimple } from "@/client";
+import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum, type UserSimple } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsStaff } from "@/features/auth";
 import { useAcceptReport, useGetReports, useRejectReport } from "@/features/moderation/hooks/moderationQueries";
 import { buildReportFilters, canModerateReport, ReportFilterState } from "@/features/moderation/utils/report";
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
-const STATUS_COLORS: Record<ReportStatusEnum, string> = {
-  [ReportStatusEnum.PENDING]: "yellow",
-  [ReportStatusEnum.ACCEPTED]: "green",
-  [ReportStatusEnum.REJECTED]: "red",
+const STATUS_STYLES: Record<ReportStatusEnum, React.CSSProperties> = {
+  [ReportStatusEnum.PENDING]: {
+    background: "var(--color-secondary-tint-bg)",
+    color: "var(--color-secondary-tint-text)",
+    border: "1px solid var(--color-secondary-tint-border)",
+  },
+  [ReportStatusEnum.ACCEPTED]: {
+    background: "var(--color-success-tint-bg)",
+    color: "var(--color-success-tint-text)",
+    border: "1px solid var(--color-success-tint-border)",
+  },
+  [ReportStatusEnum.REJECTED]: {
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
+  },
 };
 
 const STATUS_OPTIONS = [ReportStatusEnum.PENDING, ReportStatusEnum.ACCEPTED, ReportStatusEnum.REJECTED];
+
+const SOURCE_OPTIONS = [SourceEnum.USER_SUBMITTED, SourceEnum.ADMIN_DIRECT];
+
+const SOURCE_STYLES: Record<SourceEnum, React.CSSProperties> = {
+  [SourceEnum.USER_SUBMITTED]: {
+    background: "var(--color-background-200)",
+    color: "var(--color-text-700)",
+    border: "1px solid var(--color-background-300)",
+  },
+  [SourceEnum.ADMIN_DIRECT]: {
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
+  },
+};
 
 const TARGET_TYPE_OPTIONS = [
   TargetTypeEnum.AVATAR,
@@ -107,15 +135,39 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
   };
 
   return (
-    <Paper withBorder p={12} radius="md">
+    <Paper
+      withBorder
+      p={12}
+      radius="md"
+      style={{ background: "var(--color-background-100)", borderColor: "var(--color-background-200)" }}
+    >
       <Stack gap={8}>
         <Group justify="space-between" align="center">
           <Group gap={8} align="center">
-            <Badge color={STATUS_COLORS[report.status]}>{t(`reports.status.${report.status}`)}</Badge>
-            <Badge variant="light">{tModeration(`targetType.${report.target_type}`)}</Badge>
+            <Box
+              style={{
+                padding: "4px 12px",
+                borderRadius: "12px",
+                fontSize: "12px",
+                fontWeight: 700,
+                ...STATUS_STYLES[report.status],
+              }}
+            >
+              {t(`reports.status.${report.status}`)}
+            </Box>
+            <Badge
+              style={{
+                background: "var(--color-primary-tint-bg)",
+                color: "var(--color-primary-tint-text)",
+                border: "1px solid var(--color-primary-tint-border)",
+              }}
+            >
+              {tModeration(`targetType.${report.target_type}`)}
+            </Badge>
+            <Badge style={SOURCE_STYLES[report.source]}>{tModeration(`source.${report.source}`)}</Badge>
           </Group>
           <Text fz="xs" c="dimmed">
-            {t("reports.submittedAtLabel", { date: new Date(report.submitted_at).toLocaleString() })}
+            {t("reports.submittedAtLabel", { date: formatDisplayDateTime(report.submitted_at) })}
           </Text>
         </Group>
 
@@ -162,7 +214,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
             <UserChip user={report.reviewed_by} size={18} />
             {report.reviewed_at && (
               <Text fz="xs" c="dimmed">
-                {t("reports.reviewedAtLabel", { date: new Date(report.reviewed_at).toLocaleString() })}
+                {t("reports.reviewedAtLabel", { date: formatDisplayDateTime(report.reviewed_at) })}
               </Text>
             )}
           </Group>
@@ -230,9 +282,10 @@ export default function AdminReportsPage(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
   const [status, setStatus] = React.useState<ReportStatusEnum | "all">(ReportStatusEnum.PENDING);
   const [targetType, setTargetType] = React.useState<TargetTypeEnum | undefined>();
+  const [source, setSource] = React.useState<SourceEnum | undefined>();
   const [reportedUser, setReportedUser] = React.useState<number | undefined>();
 
-  const filterState: ReportFilterState = { status, targetType, reportedUser, page };
+  const filterState: ReportFilterState = { status, targetType, source, reportedUser, page };
   const query = buildReportFilters(filterState);
 
   const { data, isLoading, isFetching } = useGetReports(query);
@@ -242,11 +295,16 @@ export default function AdminReportsPage(): React.JSX.Element {
   const addToPage = hasNext ? 1 : 0;
   const totalPages = hasNext || hasPrevious ? Math.max(page + addToPage, page) : 1;
 
-  const isFiltered = status !== ReportStatusEnum.PENDING || targetType !== undefined || reportedUser !== undefined;
+  const isFiltered =
+    status !== ReportStatusEnum.PENDING ||
+    targetType !== undefined ||
+    source !== undefined ||
+    reportedUser !== undefined;
 
   const clearFilters = () => {
     setStatus(ReportStatusEnum.PENDING);
     setTargetType(undefined);
+    setSource(undefined);
     setReportedUser(undefined);
     setPage(1);
   };
@@ -287,6 +345,20 @@ export default function AdminReportsPage(): React.JSX.Element {
           ]}
           allowDeselect={false}
           style={{ width: 220 }}
+        />
+        <Select
+          label={t("reports.sourceFilterLabel")}
+          value={source ?? "all"}
+          onChange={value => {
+            setSource(value === "all" || !value ? undefined : (value as SourceEnum));
+            setPage(1);
+          }}
+          data={[
+            { value: "all", label: t("reports.sourceAll") },
+            ...SOURCE_OPTIONS.map(option => ({ value: option, label: tModeration(`source.${option}`) })),
+          ]}
+          allowDeselect={false}
+          style={{ width: 180 }}
         />
         <NumberInput
           label={t("reports.reportedUserFilterLabel")}

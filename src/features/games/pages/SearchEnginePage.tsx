@@ -25,6 +25,8 @@ import { useSearchInfiniteQuery, SearchCategory } from "@/features/games/hooks/u
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { Route } from "@/routes/search";
 
+import styles from "./SearchEnginePage.module.css";
+
 type searchResultsType = PaginatedCompanyList | PaginatedGameSimpleListList | PaginatedUserList | undefined;
 
 type SearchFilterValidatorsType = GameSearchFilterValidationSchema;
@@ -92,6 +94,7 @@ function DisplaySearchResults({
             name={user.username}
             itemPageUrl={`/profile/${user.id}/${user.slug}`}
             itemCoverUrl={user.gravatar_url}
+            isInactive={user.is_active === false}
           />
         );
       }
@@ -237,14 +240,14 @@ export default function SearchEnginePage(): React.JSX.Element {
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconSearch style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconSearch style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
@@ -308,20 +311,25 @@ export default function SearchEnginePage(): React.JSX.Element {
             {t("search.title")}
           </Title>
 
-          <Group gap={4} p={4} style={{ background: "var(--color-background-300)", borderRadius: "12px" }}>
+          <Group
+            gap={4}
+            p={4}
+            wrap="nowrap"
+            className={styles.categoryTabs}
+            style={{ background: "var(--color-background-300)", borderRadius: "12px" }}
+          >
             {categories.map(cat => (
               <UnstyledButton
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
+                className={styles.categoryTabButton}
                 style={{
-                  padding: "10px 32px",
-                  fontSize: "14px",
                   fontWeight: 600,
                   borderRadius: "8px",
                   transition: "all 200ms",
                   ...(selectedCategory === cat.id
                     ? {
-                        background: "white",
+                        background: "var(--color-background-100)",
                         color: "var(--mantine-color-primary-6)",
                         boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                       }
@@ -333,11 +341,7 @@ export default function SearchEnginePage(): React.JSX.Element {
             ))}
           </Group>
 
-          <Box
-            component="form"
-            onSubmit={handleHeroSearch}
-            style={{ width: "100%", maxWidth: "768px", display: "flex", gap: "12px" }}
-          >
+          <Box component="form" onSubmit={handleHeroSearch} className={styles.heroSearchForm}>
             <TextInput
               size="lg"
               placeholder={t(placeholderKeys[selectedCategory])}
@@ -347,7 +351,7 @@ export default function SearchEnginePage(): React.JSX.Element {
               style={{ flex: 1 }}
               styles={{
                 input: {
-                  background: "white",
+                  background: "var(--color-background-100)",
                   border: "1px solid var(--color-background-300)",
                   borderRadius: "12px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
@@ -359,13 +363,13 @@ export default function SearchEnginePage(): React.JSX.Element {
                 variant="outline"
                 size="lg"
                 onClick={() => setDrawerOpen(true)}
-                style={{ borderRadius: "12px", padding: "0 24px", background: "white" }}
+                style={{ borderRadius: "12px", padding: "0 16px", background: "var(--color-background-100)" }}
                 leftSection={<IconFilter size={20} />}
               >
                 {t("search.filtersButton")}
               </Button>
             )}
-            <Button type="submit" size="lg" style={{ borderRadius: "12px", padding: "0 32px" }}>
+            <Button type="submit" size="lg" style={{ borderRadius: "12px", padding: "0 20px" }}>
               {t("search.searchButton")}
             </Button>
           </Box>
@@ -394,7 +398,7 @@ export default function SearchEnginePage(): React.JSX.Element {
 
         <Box
           style={{
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: "16px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",

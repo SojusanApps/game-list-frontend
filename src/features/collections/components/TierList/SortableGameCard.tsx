@@ -23,7 +23,6 @@ interface SortableGameCardProps {
   gameSlug: string;
   tierId: string;
   index: number;
-  page?: number;
   title: string;
   coverImageId?: string | null;
   description?: string;
@@ -50,7 +49,6 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
     gameSlug,
     tierId,
     index,
-    page = 1,
     title,
     coverImageId,
     description,
@@ -73,7 +71,7 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
     return combine(
       draggable({
         element,
-        getInitialData: () => ({ type: "tier-item", itemId: id, tierId, index, page }),
+        getInitialData: () => ({ type: "tier-item", itemId: id, tierId, index }),
         onGenerateDragPreview: ({ nativeSetDragImage }) => {
           setCustomNativeDragPreview({
             render: ({ container }) => {
@@ -107,7 +105,7 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
           return source.data.type === "tier-item" && source.data.itemId !== id;
         },
         getData: ({ input }) => {
-          const data = { itemId: id, tierId, index, page };
+          const data = { itemId: id, tierId, index };
           return attachClosestEdge(data, {
             element,
             input,
@@ -118,12 +116,10 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
           const edge = extractClosestEdge(self.data);
           const sourceIndex = source.data.index as number;
           const sourceTierId = source.data.tierId as string;
-          const sourcePage = source.data.page as number;
 
           // Hide indicator for no-op drops
           if (
             sourceTierId === tierId &&
-            sourcePage === page &&
             (index === sourceIndex ||
               (edge === "right" && index === sourceIndex - 1) ||
               (edge === "left" && index === sourceIndex + 1))
@@ -147,20 +143,14 @@ export const SortableGameCard = React.memo(function SortableGameCardInner(props:
           const sourceItemId = source.data.itemId as string;
           const sourceTierId = source.data.tierId as string;
           const sourceIndex = source.data.index as number;
-          const sourcePage = source.data.page as number;
 
           if (sourceItemId && onReorder) {
-            // We need to pass the source page to the reorder handler
-            // But since the signature doesn't support it, we'll calculate the absolute index here
-            const PAGE_SIZE = 25;
-            const absoluteSourceIndex = (sourcePage - 1) * PAGE_SIZE + sourceIndex;
-
-            onReorder(sourceItemId, sourceTierId, tierId, absoluteSourceIndex, index, edge);
+            onReorder(sourceItemId, sourceTierId, tierId, sourceIndex, index, edge);
           }
         },
       }),
     );
-  }, [id, tierId, index, page, isOwner, onReorder, title]);
+  }, [id, tierId, index, isOwner, onReorder, title]);
 
   const draggingCursor = isDragging ? "grabbing" : "grab";
 

@@ -1,4 +1,4 @@
-import { Popover, Box, Group, Text, Stack, UnstyledButton } from "@mantine/core";
+import { Popover, Box, Group, ScrollArea, Text, Stack, UnstyledButton } from "@mantine/core";
 import { IconBell } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Notification } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import {
   useGetNotifications,
@@ -64,12 +65,14 @@ export default function NotificationBell(): React.JSX.Element {
         </UnstyledButton>
       </Popover.Target>
 
-      <Popover.Dropdown style={{ padding: 0, borderRadius: "16px", overflow: "hidden" }}>
+      <Popover.Dropdown
+        style={{ padding: 0, borderRadius: "16px", overflow: "hidden", background: "var(--color-background-100)" }}
+      >
         <Group
           justify="space-between"
           align="center"
           p={16}
-          style={{ borderBottom: "1px solid var(--color-background-100)", background: "rgba(248,250,252,0.5)" }}
+          style={{ borderBottom: "1px solid var(--color-background-100)", background: "rgba(var(--color-veil-rgb), 0.5)" }}
         >
           <Text fw={700} c="var(--color-text-900)">
             {t("bell.title")}
@@ -81,8 +84,8 @@ export default function NotificationBell(): React.JSX.Element {
                 fontSize: "10px",
                 fontWeight: 700,
                 padding: "2px 8px",
-                background: "var(--mantine-color-primary-0)",
-                color: "var(--mantine-color-primary-7)",
+                background: "var(--color-primary-tint-bg)",
+                color: "var(--color-primary-tint-text)",
                 borderRadius: "9999px",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
@@ -93,16 +96,20 @@ export default function NotificationBell(): React.JSX.Element {
           )}
         </Group>
 
-        <Box
+        <ScrollArea
           component="ul"
-          style={{
-            maxHeight: "400px",
-            overflowY: "auto",
-            overflowX: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            padding: 8,
+          style={{ maxHeight: "400px", display: "flex", flexDirection: "column" }}
+          scrollbars="y"
+          viewportProps={{
+            style: {
+              flex: 1,
+              height: "auto",
+              minHeight: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              padding: 8,
+            },
           }}
         >
           {unreadNotifications.length === 0 ? (
@@ -166,7 +173,7 @@ export default function NotificationBell(): React.JSX.Element {
                             paddingTop: "2px",
                           }}
                         >
-                          {new Date(notification.timestamp).toLocaleDateString()}
+                          {formatDisplayDate(notification.timestamp)}
                         </Text>
                       </Group>
                       <Text
@@ -190,12 +197,12 @@ export default function NotificationBell(): React.JSX.Element {
               );
             })
           )}
-        </Box>
+        </ScrollArea>
 
         <Box
           style={{
             padding: 12,
-            background: "rgba(248,250,252,0.8)",
+            background: "rgba(var(--color-veil-rgb), 0.8)",
             borderTop: "1px solid var(--color-background-100)",
           }}
         >

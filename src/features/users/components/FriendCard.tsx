@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Friendship } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import styles from "./FriendCard.module.css";
 
@@ -41,7 +42,7 @@ export default function FriendCard({ friendship }: Readonly<FriendCardProps>) {
             {friend.username}
           </Link>
           <Text size="xs" c="var(--color-text-500)">
-            {t("friends.since", { date: new Date(created_at).toLocaleDateString() })}
+            {t("friends.since", { date: formatDisplayDate(created_at) })}
           </Text>
         </Box>
       </Stack>

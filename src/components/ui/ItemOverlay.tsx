@@ -1,12 +1,14 @@
-import { Group, Stack, Title, Box, UnstyledButton } from "@mantine/core";
+import { Group, Stack, Title, Box, UnstyledButton, Tooltip } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
+import { IconUserOff } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { cn } from "@/utils/cn";
-import { getRatingColor } from "@/utils/ratingUtils";
+import { formatDisplayDate } from "@/utils/dateUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { SafeImage } from "./SafeImage";
 
@@ -28,6 +30,7 @@ type ItemOverlayProps = {
   status?: string | null;
   showFullReleaseDate?: boolean;
   actionSlot?: React.ReactNode | ((hovered: boolean) => React.ReactNode);
+  isInactive?: boolean;
 };
 
 function ItemOverlay({
@@ -44,8 +47,9 @@ function ItemOverlay({
   status,
   showFullReleaseDate = false,
   actionSlot,
+  isInactive = false,
 }: Readonly<ItemOverlayProps>): React.JSX.Element {
-  useTranslation(); // subscribe to language changes so status ribbon label re-renders
+  const { t } = useTranslation("common"); // also subscribes to language changes so status ribbon label re-renders
   const isLogo = variant === "logo";
   const { hovered, ref } = useHover<HTMLDivElement>();
 
@@ -58,15 +62,14 @@ function ItemOverlay({
       if (Number.isNaN(date.getTime())) {
         return null;
       }
-      return showFullReleaseDate
-        ? date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-        : date.getFullYear().toString();
+      return showFullReleaseDate ? formatDisplayDate(date) : date.getFullYear().toString();
     } catch {
       return null;
     }
   }, [releaseDate, showFullReleaseDate]);
 
   const ratingBg = React.useMemo(() => getRatingColor(rating), [rating]);
+  const ratingText = React.useMemo(() => getRatingTextColor(rating), [rating]);
 
   const innerStyle: React.CSSProperties = {
     display: "block",
@@ -100,6 +103,7 @@ function ItemOverlay({
           className={styles.scoreBadge}
           style={{
             background: ratingBg,
+            color: ratingText,
           }}
         >
           {rating.toFixed(1)}
@@ -117,6 +121,14 @@ function ItemOverlay({
         >
           {getStatusConfig(status)?.label}
         </Box>
+      )}
+
+      {isInactive && (
+        <Tooltip label={t("inactiveUser")} withArrow>
+          <Box className={styles.inactiveBadge}>
+            <IconUserOff size={14} />
+          </Box>
+        </Tooltip>
       )}
 
       {/* Dynamic Info Anchor (Bottom) */}

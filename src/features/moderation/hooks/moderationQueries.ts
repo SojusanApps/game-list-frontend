@@ -1,11 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { ReportCreateWritable } from "@/client";
+import { ReportCreateWritable, ReportDirectModerateWritable, TargetTypeEnum } from "@/client";
 import { useAppMutation } from "@/hooks/useAppMutation";
-import { reportKeys } from "@/lib/queryKeys";
+import { collectionKeys, gameListKeys, gameReviewKeys, reportKeys, translationSuggestionKeys, userKeys } from "@/lib/queryKeys";
 
 import {
   acceptReport,
+  createDirectModerateReport,
   createReport,
   getReports,
   ModerationReportsListQuery,
@@ -16,6 +17,28 @@ import {
 export const useCreateReport = () => {
   return useAppMutation({
     mutationFn: (body: ReportCreateWritable) => createReport(body),
+  });
+};
+
+const AFFECTED_QUERY_KEYS_BY_TARGET_TYPE: Record<TargetTypeEnum, readonly unknown[]> = {
+  [TargetTypeEnum.REVIEW]: gameReviewKeys.all,
+  [TargetTypeEnum.TRANSLATION_SUGGESTION]: translationSuggestionKeys.all,
+  [TargetTypeEnum.GAME_LIST_NOTE]: gameListKeys.all,
+  [TargetTypeEnum.COLLECTION]: collectionKeys.all,
+  [TargetTypeEnum.COLLECTION_ITEM_NOTE]: collectionKeys.all,
+  [TargetTypeEnum.AVATAR]: userKeys.all,
+  [TargetTypeEnum.USERNAME]: userKeys.all,
+};
+
+export const useCreateDirectModerateReport = () => {
+  const queryClient = useQueryClient();
+
+  return useAppMutation({
+    mutationFn: (body: ReportDirectModerateWritable) => createDirectModerateReport(body),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+      queryClient.invalidateQueries({ queryKey: AFFECTED_QUERY_KEYS_BY_TARGET_TYPE[variables.target_type] });
+    },
   });
 };
 

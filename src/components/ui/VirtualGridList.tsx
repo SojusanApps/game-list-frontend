@@ -1,11 +1,9 @@
-import { Box, Group, Loader, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-import { cn } from "@/utils/cn"; // cn still used for custom-scrollbar merging
 
 interface VirtualGridListProps<T> {
   items: T[];
@@ -53,19 +51,23 @@ function renderTrailingContent(
  * A virtualized grid list component for high-performance rendering of large datasets.
  * Encapsulates TanStack Virtual logic and handles infinite loading.
  */
-export function VirtualGridList<T>({
-  items,
-  renderItem,
-  hasNextPage,
-  isFetchingNextPage,
-  fetchNextPage,
-  className,
-  style,
-  columnCount: propColumnCount,
-  rowHeight: propRowHeight,
-  gap = 6,
-}: Readonly<VirtualGridListProps<T>>) {
-  const parentRef = useRef<HTMLDivElement>(null);
+export const VirtualGridList = React.forwardRef(function VirtualGridListComponent<T>(
+  {
+    items,
+    renderItem,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    className,
+    style,
+    columnCount: propColumnCount,
+    rowHeight: propRowHeight,
+    gap = 6,
+  }: VirtualGridListProps<T>,
+  forwardedRef: React.ForwardedRef<HTMLDivElement>,
+) {
+  const internalRef = useRef<HTMLDivElement>(null);
+  const parentRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
   const { width: viewportWidth } = useViewportSize();
   const { t } = useTranslation("common");
 
@@ -138,18 +140,17 @@ export function VirtualGridList<T>({
   }, [virtualRows, hasNextPage, isFetchingNextPage, fetchNextPage, rowCount]);
 
   return (
-    <Box
-      ref={parentRef}
-      className={cn("custom-scrollbar", className)}
+    <ScrollArea
+      viewportRef={parentRef}
+      className={className}
       style={{
         height: "calc(100vh - 250px)",
         minHeight: style?.height ? undefined : "500px",
-        overflow: "auto",
         padding: "32px",
         margin: "-32px -24px",
-        contain: "strict",
         ...style,
       }}
+      viewportProps={{ style: { contain: "strict" } }}
     >
       <Box
         style={{
@@ -204,14 +205,14 @@ export function VirtualGridList<T>({
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconSearchOff style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconSearchOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
@@ -223,6 +224,6 @@ export function VirtualGridList<T>({
           </Stack>
         </Stack>
       )}
-    </Box>
+    </ScrollArea>
   );
-}
+}) as <T>(props: VirtualGridListProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }) => React.ReactElement;

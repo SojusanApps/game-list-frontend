@@ -6,11 +6,13 @@ import ReactMarkdown from "react-markdown";
 
 import { Game, GameReview as GameReviewType, PaginatedGameReviewList } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { useRequireAuth } from "@/features/auth";
 import { TranslationSuggestionModal } from "@/features/translationSuggestions/components/TranslationSuggestionModal";
 
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import GameStatistics from "../components/GameStatistics";
+import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
 
 const REVIEWS_PREVIEW_COUNT = 3;
 
@@ -32,6 +34,7 @@ export default function GameDetailsMainTab({
   gameSlug,
 }: Readonly<GameDetailsMainTabProps>) {
   const { t } = useTranslation("games");
+  const requireAuth = useRequireAuth();
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
   const [isSuggestionModalOpen, setIsSuggestionModalOpen] = React.useState(false);
 
@@ -49,7 +52,7 @@ export default function GameDetailsMainTab({
       <Box
         component="section"
         style={{
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: "12px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           border: "1px solid var(--color-background-200)",
@@ -65,7 +68,7 @@ export default function GameDetailsMainTab({
       <Box
         component="section"
         style={{
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: "12px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           border: "1px solid var(--color-background-200)",
@@ -90,7 +93,7 @@ export default function GameDetailsMainTab({
       <Box
         component="section"
         style={{
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: "12px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           border: "1px solid var(--color-background-200)",
@@ -101,13 +104,14 @@ export default function GameDetailsMainTab({
           <Title order={2} fz="xl" fw={700} c="var(--color-text-900)">
             {t("mainTab.reviews")}
           </Title>
-          {isLoggedIn && gameDetails?.id && (
-            <Button size="sm" onClick={() => setIsReviewModalOpen(true)}>
+          {gameDetails?.id && (
+            <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true))}>
               {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
             </Button>
           )}
         </Group>
         <Stack gap={16}>
+          <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
           {isGameReviewsLoading && <Skeleton h={96} radius="xl" />}
           {previewReviews.length > 0 ? (
             <>
@@ -146,6 +150,7 @@ export default function GameDetailsMainTab({
           gameId={gameDetails.id}
           existingReviewId={userReview?.id}
           existingReviewText={userReview?.review}
+          existingRecommendation={userReview?.recommendation}
           opened={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
         />

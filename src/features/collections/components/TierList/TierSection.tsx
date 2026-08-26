@@ -1,13 +1,13 @@
+import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { Box, Group, Stack, Text, ActionIcon } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { CollectionItem, TierEnum } from "@/client";
-import { GridList } from "@/components/ui/GridList";
+import { VirtualGridList } from "@/components/ui/VirtualGridList";
 
-import { useCollectionItemsByTierQuery } from "../../hooks/useCollectionQueries";
+import { useCollectionItemsByTierInfiniteQuery } from "../../hooks/useCollectionQueries";
 import { SortableGameCard } from "./SortableGameCard";
 import { TierDropZone } from "./TierDropZone";
 
@@ -24,7 +24,6 @@ interface TierSectionProps {
     sourceIndex: number,
     targetIndex: number,
     edge: Edge | null,
-    targetPage: number,
   ) => void;
   onDescriptionChange: (itemId: number, newDescription: string) => void;
   onCountLoad: (tierId: TierEnum | "UNRANKED", count: number) => void;
@@ -41,20 +40,37 @@ export const TierSection = React.memo(function TierSectionInner({
   onCountLoad,
 }: Readonly<TierSectionProps>) {
   const { t } = useTranslation("collections");
-  const [page, setPage] = React.useState(1);
-  const { data, isLoading, isFetching } = useCollectionItemsByTierQuery(collectionId, tier.id, page);
+  const virtualListRef = React.useRef<HTMLDivElement>(null);
 
-  const items = data?.results || [];
-  const totalCount = data?.count ?? 0;
-  const hasNext = !!data?.next;
-  const hasPrevious = !!data?.previous;
-  const totalPages = Math.ceil(totalCount / 25);
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useCollectionItemsByTierInfiniteQuery(collectionId, tier.id);
+
+  const items = React.useMemo(() => data?.pages.flatMap(page => page.results) || [], [data]);
+  const totalCount = data?.pages[0]?.count ?? 0;
 
   React.useEffect(() => {
-    if (data?.count !== undefined) {
-      onCountLoad(tier.id, data.count);
+    if (data?.pages[0]?.count !== undefined) {
+      onCountLoad(tier.id, data.pages[0].count);
     }
-  }, [data?.count, tier.id, onCountLoad]);
+  }, [data?.pages, tier.id, onCountLoad]);
+
+  // Enable auto-scroll for drag and drop within the virtualized panel
+  React.useEffect(() => {
+    const element = virtualListRef.current;
+    if (!element || !isOwner) {
+      return;
+    }
+
+    return autoScrollForElements({
+      element,
+      canScroll: ({ source }) => source.data.type === "tier-item",
+    });
+  }, [isOwner]);
 
   // Render function for individual game cards
   const renderGameCard = React.useCallback(
@@ -69,21 +85,18 @@ export const TierSection = React.memo(function TierSectionInner({
           gameSlug={item.game.slug || ""}
           tierId={tier.id}
           index={index}
-          page={page}
           title={item.game.title}
           coverImageId={item.game.cover_image_id}
           description={item.description}
           isOwner={isOwner}
           onRemove={onRemove ? () => onRemove(item.id, item.game.title) : undefined}
-          onReorder={(itemId, sourceTierId, targetTierId, sourceIndex, targetIndex, edge) =>
-            onReorder(itemId, sourceTierId, targetTierId, sourceIndex, targetIndex, edge, page)
-          }
+          onReorder={onReorder}
           onDescriptionChange={newDesc => onDescriptionChange(item.id, newDesc)}
           onMoveToTier={targetTierId => onItemMove(String(item.id), tier.id, targetTierId)}
         />
       );
     },
-    [tier.id, page, isOwner, onRemove, onReorder, onDescriptionChange, onItemMove],
+    [tier.id, isOwner, onRemove, onReorder, onDescriptionChange, onItemMove],
   );
 
   return (
@@ -131,106 +144,46 @@ export const TierSection = React.memo(function TierSectionInner({
         </Group>
       </Group>
 
-      <Box style={{ position: "relative" }}>
-        <TierDropZone tierId={tier.id} isEmpty={items.length === 0} isOwner={isOwner} onItemMove={onItemMove}>
-          {(() => {
-            if (isLoading) {
-              return (
-                <Group justify="center" align="center" style={{ height: 256 }}>
-                  <Box
-                    style={{
-                      animation: "spin 1s linear infinite",
-                      borderRadius: "9999px",
-                      width: 32,
-                      height: 32,
-                      borderBottom: "2px solid var(--color-primary-600)",
-                    }}
-                  />
-                </Group>
-              );
-            }
-
-            if (items.length === 0) {
-              return (
-                <Group justify="center" align="center" style={{ height: 128 }} c="var(--color-text-400)" fz="sm">
-                  {t("tierList.dragHint")}
-                </Group>
-              );
-            }
-
+      <TierDropZone tierId={tier.id} isEmpty={items.length === 0} isOwner={isOwner} onItemMove={onItemMove}>
+        {(() => {
+          if (isLoading) {
             return (
-              <Box p="md" style={{ position: "relative" }}>
-                <GridList columnCount={7}>{items.map((item, index) => renderGameCard(item, index))}</GridList>
-              </Box>
+              <Group justify="center" align="center" style={{ height: 256 }}>
+                <Box
+                  style={{
+                    animation: "spin 1s linear infinite",
+                    borderRadius: "9999px",
+                    width: 32,
+                    height: 32,
+                    borderBottom: "2px solid var(--color-primary-600)",
+                  }}
+                />
+              </Group>
             );
-          })()}
-        </TierDropZone>
+          }
 
-        {/* Overlay Navigation Chevrons inside the Drop Zone Area */}
-        {hasPrevious && !isLoading && (
-          <Box style={{ position: "absolute", left: -8, top: "50%", transform: "translateY(-50%)", zIndex: 10 }}>
-            <ActionIcon
-              variant="filled"
-              radius="xl"
-              size="lg"
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={isFetching}
-              style={{
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                background: "var(--color-background-100)",
-                color: "var(--color-text-800)",
-                border: "1px solid var(--color-background-200)",
-              }}
-            >
-              <IconChevronLeft size={24} />
-            </ActionIcon>
-          </Box>
-        )}
-
-        {hasNext && !isLoading && (
-          <Box style={{ position: "absolute", right: -8, top: "50%", transform: "translateY(-50%)", zIndex: 10 }}>
-            <ActionIcon
-              variant="filled"
-              radius="xl"
-              size="lg"
-              onClick={() => setPage(p => p + 1)}
-              disabled={isFetching}
-              style={{
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                background: "var(--color-background-100)",
-                color: "var(--color-text-800)",
-                border: "1px solid var(--color-background-200)",
-              }}
-            >
-              <IconChevronRight size={24} />
-            </ActionIcon>
-          </Box>
-        )}
-      </Box>
-
-      {/* Subtle Dot Pagination */}
-      {totalPages > 1 && !isLoading && (
-        <Group justify="center" gap={8} style={{ marginTop: -8 }}>
-          {Array.from({ length: totalPages }).map((_, i) => {
-            const pageNum = i + 1;
+          if (items.length === 0) {
             return (
-              <Box
-                key={`page-dot-${pageNum}`}
-                onClick={() => !isFetching && setPage(pageNum)}
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: page === pageNum ? "var(--color-primary-500)" : "var(--color-background-300)",
-                  transition: "all 200ms ease",
-                  cursor: isFetching ? "default" : "pointer",
-                  transform: page === pageNum ? "scale(1.2)" : "scale(1)",
-                }}
-              />
+              <Group justify="center" align="center" style={{ height: 128 }} c="var(--color-text-400)" fz="sm">
+                {t("tierList.dragHint")}
+              </Group>
             );
-          })}
-        </Group>
-      )}
+          }
+
+          return (
+            <VirtualGridList
+              ref={virtualListRef}
+              items={items}
+              renderItem={renderGameCard}
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              fetchNextPage={fetchNextPage}
+              columnCount={7}
+              style={{ height: 480, padding: "16px", margin: 0 }}
+            />
+          );
+        })()}
+      </TierDropZone>
     </Stack>
   );
 });

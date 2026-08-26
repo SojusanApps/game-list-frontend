@@ -55,7 +55,7 @@ export default function UserSettingsPage(): React.JSX.Element {
 
         <Box
           style={{
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: 12,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",
@@ -106,7 +106,7 @@ export default function UserSettingsPage(): React.JSX.Element {
         {userDetails && currentUserId && (
           <Box
             style={{
-              background: "white",
+              background: "var(--color-background-100)",
               borderRadius: 12,
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               border: "1px solid var(--color-background-200)",
@@ -130,6 +130,21 @@ export default function UserSettingsPage(): React.JSX.Element {
               <Text fz="sm" c="var(--color-text-500)">
                 {t("settings.credentials.description")}
               </Text>
+              <Box
+                style={{
+                  background: "var(--color-error-tint-bg)",
+                  border: "1px solid var(--color-error-tint-border)",
+                  borderRadius: 8,
+                  padding: 16,
+                }}
+              >
+                <Text fw={600} c="var(--color-error-tint-text)" mb={4}>
+                  {t("settings.credentials.deleteAccount.title")}
+                </Text>
+                <Text fz="sm" c="var(--color-error-tint-text)" mb={16}>
+                  {t("settings.credentials.deleteAccount.description")}
+                </Text>
+              </Box>
               <a
                 href={KEYCLOAK_ACCOUNT_CONSOLE_URL}
                 target="_blank"

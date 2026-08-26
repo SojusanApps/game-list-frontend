@@ -1,4 +1,4 @@
-import { Box, Stack, Title, Text, Group, Badge, Divider } from "@mantine/core";
+import { Box, Stack, Title, Text, Group, Badge, Divider, ScrollArea } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -30,7 +30,14 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
           <Text fz="sm" c="dimmed">
             {t("import.matchedDescription")}
           </Text>
-          <Badge variant="light" color="teal" size="lg">
+          <Badge
+            size="lg"
+            style={{
+              background: "var(--color-success-tint-bg)",
+              color: "var(--color-success-tint-text)",
+              border: "1px solid var(--color-success-tint-border)",
+            }}
+          >
             {rows.length}
           </Badge>
         </Group>
@@ -48,7 +55,7 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
             {t("import.noMatched")}
           </Text>
         ) : (
-          <div className={styles.scrollList}>
+          <ScrollArea.Autosize mah={500} className={styles.scrollList}>
             {rows.map((row, i) => (
               <GameRowItem
                 key={row.game.id}
@@ -59,7 +66,7 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
                 onFieldChange={onFieldChange}
               />
             ))}
-          </div>
+          </ScrollArea.Autosize>
         )}
       </Stack>
     </Box>

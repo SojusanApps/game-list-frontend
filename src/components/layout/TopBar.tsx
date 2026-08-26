@@ -1,6 +1,27 @@
-import { Box, Group, Menu, Text, UnstyledButton, Burger, Drawer, Stack } from "@mantine/core";
+import {
+  Box,
+  Group,
+  Menu,
+  Text,
+  UnstyledButton,
+  Burger,
+  Drawer,
+  Stack,
+  SegmentedControl,
+  useMantineColorScheme,
+  useComputedColorScheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconUserCircle,
+  IconSettings,
+  IconLogout,
+  IconShield,
+  IconSun,
+  IconMoon,
+} from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -11,8 +32,49 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuth, useCurrentUser } from "@/features/auth";
 import SearchBar from "@/features/games/components/SearchBar";
 import NotificationBell from "@/features/notifications/components/NotificationBell";
+import i18n from "@/lib/i18n";
+import { useLanguageStore, type Language } from "@/lib/languageStore";
 
 import styles from "./TopBar.module.css";
+
+function LanguageAndThemeSwitchers(): React.JSX.Element {
+  const { language, setLanguage } = useLanguageStore();
+  const { setColorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme("light");
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  const handleLanguageChange = (value: string) => {
+    const lang = value as Language;
+    setLanguage(lang);
+    void i18n.changeLanguage(lang);
+    queryClient.invalidateQueries().catch(() => {});
+  };
+
+  return (
+    <Group gap={12}>
+      <SegmentedControl
+        value={language}
+        onChange={handleLanguageChange}
+        size="xs"
+        data={[
+          { label: "EN", value: "en" },
+          { label: "PL", value: "pl" },
+        ]}
+      />
+      <SegmentedControl
+        value={colorScheme}
+        onChange={value => setColorScheme(value as "light" | "dark")}
+        size="xs"
+        aria-label={t("nav.colorScheme")}
+        data={[
+          { value: "light", label: <IconSun size={14} stroke={1.75} aria-label={t("nav.lightMode")} /> },
+          { value: "dark", label: <IconMoon size={14} stroke={1.75} aria-label={t("nav.darkMode")} /> },
+        ]}
+      />
+    </Group>
+  );
+}
 
 function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.Element {
   const { data: currentUser } = useCurrentUser();
@@ -92,6 +154,7 @@ function TopBar(): React.JSX.Element {
   const userSlug = currentUser?.slug || currentUserId?.toString() || "";
   const [opened, { toggle, close }] = useDisclosure();
   const { t } = useTranslation();
+  const colorScheme = useComputedColorScheme("light");
 
   return (
     <Box
@@ -102,14 +165,14 @@ function TopBar(): React.JSX.Element {
         zIndex: 50,
         width: "100%",
         borderBottom: "1px solid rgba(255,255,255,0.1)",
-        background: "var(--color-primary-950)",
+        background: colorScheme === "dark" ? "#000000" : "var(--color-primary-950)",
         boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
       }}
     >
       <Group justify="space-between" align="center" maw={1280} mx="auto" p={12}>
         <Group gap={32}>
           <Burger opened={opened} onClick={toggle} hiddenFrom="lg" size="sm" color="var(--color-primary-100)" />
-          <Link to="/home" className={styles.logoLink} aria-label={t("nav.gameListLogo")}>
+          <Link to="/" className={styles.logoLink} aria-label={t("nav.gameListLogo")}>
             <AppLogo size="md" onDark />
           </Link>
 
@@ -154,7 +217,12 @@ function TopBar(): React.JSX.Element {
           <SearchBar />
         </Box>
 
-        <Group gap={16}>{isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}</Group>
+        <Group gap={16}>
+          <Box visibleFrom="lg">
+            <LanguageAndThemeSwitchers />
+          </Box>
+          {isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}
+        </Group>
       </Group>
 
       <Drawer
@@ -170,7 +238,10 @@ function TopBar(): React.JSX.Element {
         hiddenFrom="lg"
         zIndex={1_000_000}
       >
-        <Stack gap="sm" mt="md" component="ul" style={{ listStyle: "none", padding: 0 }}>
+        <Box mb="md" style={{ display: "flex", justifyContent: "center" }}>
+          <LanguageAndThemeSwitchers />
+        </Box>
+        <Stack gap="sm" component="ul" style={{ listStyle: "none", padding: 0 }}>
           <Box component="li" mb="md">
             <SearchBar variant="light" />
           </Box>

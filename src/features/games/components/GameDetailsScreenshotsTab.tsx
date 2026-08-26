@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { Box, Paper, SimpleGrid, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { IconPhotoOff } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { Game } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import styles from "./GameDetailsScreenshotsTab.module.css";
 
 interface GameDetailsScreenshotsTabProps {
   gameDetails?: Game;
@@ -19,17 +20,24 @@ export default function GameDetailsScreenshotsTab({
 }: Readonly<GameDetailsScreenshotsTabProps>) {
   const { t } = useTranslation("games");
   return (
-    <Box className="bg-white rounded-xl shadow-sm border border-background-200 p-6 animate-in fade-in duration-300">
+    <Paper
+      shadow="sm"
+      radius="xl"
+      p="xl"
+      withBorder
+      className={styles.panel}
+      style={{ background: "var(--color-background-100)", borderColor: "var(--color-background-200)" }}
+    >
       {gameDetails?.screenshots && gameDetails.screenshots.length > 0 ? (
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={16}>
           {gameDetails.screenshots.map((screenshot, index) => (
             <UnstyledButton
               key={screenshot || index}
               onClick={() => onScreenshotClick(screenshot)}
-              className="rounded-lg overflow-hidden shadow-md group cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-primary-500"
+              className={styles.thumbnail}
             >
               <SafeImage
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className={styles.image}
                 src={getIGDBImageURL(screenshot, IGDBImageSize.SCREENSHOT_MED_569_320)}
                 alt={`${gameDetails.title} screenshot ${index + 1}`}
               />
@@ -42,14 +50,14 @@ export default function GameDetailsScreenshotsTab({
             style={{
               width: "80px",
               height: "80px",
-              background: "var(--mantine-color-primary-0)",
+              background: "var(--color-primary-tint-bg)",
               borderRadius: "9999px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPhotoOff style={{ width: 40, height: 40, color: "var(--mantine-color-primary-5)" }} />
+            <IconPhotoOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Stack gap={8}>
             <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
@@ -61,6 +69,6 @@ export default function GameDetailsScreenshotsTab({
           </Stack>
         </Stack>
       )}
-    </Box>
+    </Paper>
   );
 }

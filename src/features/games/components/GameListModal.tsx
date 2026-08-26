@@ -13,7 +13,7 @@ import { useCurrentUserId } from "@/features/auth";
 import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
 import { parseDate, formatDate } from "@/utils/dateUtils";
-import { getRatingColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import {
   useCreateGameList,
@@ -93,7 +93,11 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         form.reset();
       }
     }
-  }, [gameListDetails, opened, form]);
+    // form is intentionally excluded: @mantine/form returns a new `form` object on every
+    // render, so including it here would re-run this effect (and reset in-progress edits)
+    // on every keystroke.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [gameListDetails, opened]);
 
   // Autopopulate dates when status changes
   React.useEffect(() => {
@@ -137,7 +141,6 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         await createGameListItem({
           ...payload,
           game: parsedGameId,
-          user: currentUserId,
         });
         notifications.show({ title: t("modal.successTitle"), message: t("modal.addSuccess"), color: "green" });
       }
@@ -204,7 +207,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
                 <Box
                   style={{
                     background: getRatingColor(Number(option.value)),
-                    color: "black",
+                    color: getRatingTextColor(Number(option.value)),
                     fontSize: "12px",
                     fontWeight: 900,
                     padding: "2px 8px",

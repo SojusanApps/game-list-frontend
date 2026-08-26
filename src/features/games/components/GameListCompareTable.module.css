@@ -8,7 +8,6 @@
 }
 
 .scoreBadge {
-  color: white;
   font-weight: 700;
   font-size: 13px;
   width: 28px;
@@ -20,9 +19,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.scrollContainer {
-  max-height: 480px;
-  overflow-y: auto;
+/* Fixed layout so column widths come from the <colgroup>, not from row content —
+   otherwise widths recompute as different rows scroll into view.
+   min-width keeps status/score columns usable instead of shrinking to nothing on
+   narrow screens — the ScrollArea scrolls horizontally once the table hits that floor. */
+.compareTable {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 560px;
 }
 
 /* Sticky on each th, not thead/tr — thead/tr sticky support is inconsistent across browsers. */
@@ -30,5 +34,5 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  background: white;
+  background: var(--color-background-100);
 }

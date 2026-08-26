@@ -28,32 +28,18 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar */
+:root[data-mantine-color-scheme="dark"] body {
+  /* Unlike the light-mode variant, this SVG carries its own opaque black
+     fill instead of being blended with a gradient here — dark mode's
+     chrome (topbar/footer) is pure black, so the background image reads as
+     "dark background, neon objects" on its own. */
+  background-image: url("./assets/gaming-background-dark.svg");
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-primary-300) var(--color-background-100);
-}
-::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 0.5rem;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-background-100);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-primary-200);
-  border-radius: 9999px;
-  border: 2px solid var(--color-background-100);
-  transition: background 150ms;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-500);
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 0.375rem;
 }
 
 /* Animations */

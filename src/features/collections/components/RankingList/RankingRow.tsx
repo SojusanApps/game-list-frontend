@@ -9,6 +9,7 @@ import {
   IconExternalLink,
   IconDotsVertical,
   IconFlag,
+  IconShieldExclamation,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -19,6 +20,7 @@ import { TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 
 import rowStyles from "./RankingRow.module.css";
 
@@ -166,12 +168,20 @@ function ActionButtons({
         )}
 
         {!isOwner && (
-          <ReportButton
-            targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
-            targetId={itemId}
-            ownerId={addedBy.id}
-            ownerUsername={addedBy.username}
-          />
+          <>
+            <ReportButton
+              targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+              targetId={itemId}
+              ownerId={addedBy.id}
+              ownerUsername={addedBy.username}
+            />
+            <WarnAndRemoveButton
+              targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+              targetId={itemId}
+              ownerId={addedBy.id}
+              ownerUsername={addedBy.username}
+            />
+          </>
         )}
       </Group>
 
@@ -212,17 +222,30 @@ function ActionButtons({
             )}
 
             {!isOwner && (
-              <ReportButton
-                targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
-                targetId={itemId}
-                ownerId={addedBy.id}
-                ownerUsername={addedBy.username}
-                renderTrigger={({ onClick }) => (
-                  <Menu.Item leftSection={<IconFlag size={16} />} onClick={onClick}>
-                    {tModeration("reportButton.ariaLabel")}
-                  </Menu.Item>
-                )}
-              />
+              <>
+                <ReportButton
+                  targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+                  targetId={itemId}
+                  ownerId={addedBy.id}
+                  ownerUsername={addedBy.username}
+                  renderTrigger={({ onClick }) => (
+                    <Menu.Item leftSection={<IconFlag size={16} />} onClick={onClick}>
+                      {tModeration("reportButton.ariaLabel")}
+                    </Menu.Item>
+                  )}
+                />
+                <WarnAndRemoveButton
+                  targetType={TargetTypeEnum.COLLECTION_ITEM_NOTE}
+                  targetId={itemId}
+                  ownerId={addedBy.id}
+                  ownerUsername={addedBy.username}
+                  renderTrigger={({ onClick }) => (
+                    <Menu.Item leftSection={<IconShieldExclamation size={16} />} onClick={onClick}>
+                      {tModeration("warnAndRemoveButton.ariaLabel")}
+                    </Menu.Item>
+                  )}
+                />
+              </>
             )}
           </Menu.Dropdown>
         </Menu>
@@ -283,7 +306,7 @@ export const RankingRow = React.memo(
       <Box
         className={rowStyles.rankingRow}
         style={{
-          background: "white",
+          background: "var(--color-background-100)",
           borderRadius: 16,
           border: "1px solid var(--color-background-200)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.02)",

@@ -10,13 +10,23 @@
     "adminPanel": "Panel administratora",
     "logout": "Wyloguj się",
     "login": "Zaloguj się",
-    "menu": "Menu"
+    "menu": "Menu",
+    "colorScheme": "Motyw kolorystyczny",
+    "lightMode": "Tryb jasny",
+    "darkMode": "Tryb ciemny"
   },
   "footer": {
-    "copyright": "© {{year}} Sojusan GameList • Dane dostarczone przez",
+    "copyright": "© {{year}} Sojusan GameList",
+    "dataProvidedBy": "Dane gier dostarczone przez",
     "home": "Strona główna",
     "search": "Szukaj",
+    "faq": "FAQ",
+    "terms": "Regulamin",
     "privacy": "Prywatność"
+  },
+  "legal": {
+    "termsTitle": "Regulamin",
+    "privacyTitle": "Polityka prywatności"
   },
   "notFound": {
     "title": "404 - Nie znaleziono",
@@ -52,6 +62,7 @@
   "cancel": "Anuluj",
   "closeModal": "Zamknij okno",
   "userAvatarAlt": "Awatar użytkownika",
+  "inactiveUser": "Nieaktywny użytkownik",
   "endOfResults": "Dotarłeś do końca",
   "allResultsLoaded": "Załadowano wszystkie wyniki",
   "noResults": "Brak wyników",

@@ -7,6 +7,10 @@ import { CollectionDetail, ModeEnum, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
+import { formatDisplayDate } from "@/utils/dateUtils";
+
+import styles from "./CollectionHeader.module.css";
 
 interface CollectionHeaderProps {
   collection: CollectionDetail;
@@ -39,13 +43,13 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
             <Link
               to={"/profile/$id/$slug/collections"}
               params={{ id: collection.user.id.toString(), slug: collection.user.slug || "" }}
-              className="hover:text-primary-600 transition-colors"
+              className={styles.ownerLink}
             >
               {collection.user.username}
               {t("header.collectionsLink")}
             </Link>
             <Text span>•</Text>
-            <Text span>{new Date(collection.created_at).toLocaleDateString()}</Text>
+            <Text span>{formatDisplayDate(collection.created_at)}</Text>
             <Text span>•</Text>
             <Text span c="var(--color-primary-500)">
               {collection.visibility_display}
@@ -62,6 +66,12 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
               {collection.name}
             </Title>
             <ReportButton
+              targetType={TargetTypeEnum.COLLECTION}
+              targetId={collection.id}
+              ownerId={collection.user.id}
+              ownerUsername={collection.user.username}
+            />
+            <WarnAndRemoveButton
               targetType={TargetTypeEnum.COLLECTION}
               targetId={collection.id}
               ownerId={collection.user.id}

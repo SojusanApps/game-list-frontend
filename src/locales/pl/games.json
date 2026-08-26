@@ -46,6 +46,11 @@
     "showLess": "Zwiń",
     "noReviews": "Brak recenzji."
   },
+  "recommendation": {
+    "recommended": "Polecam",
+    "notRecommended": "Nie polecam",
+    "undecided": "Nie mam zdania"
+  },
   "mainTab": {
     "statistics": "Statystyki",
     "summary": "Opis",
@@ -56,6 +61,8 @@
     "addTitle": "Dodaj recenzję",
     "editTitle": "Edytuj recenzję",
     "reviewPlaceholder": "Napisz swoją recenzję tutaj...",
+    "recommendationLabel": "Rekomendacja",
+    "recommendationPlaceholder": "Wybierz swoją rekomendację",
     "cancelButton": "Anuluj",
     "submitButton": "Wyślij recenzję",
     "saveButton": "Zapisz zmiany",
@@ -67,7 +74,8 @@
     "errorTitle": "Błąd",
     "errorMessage": "Wystąpił błąd",
     "validationRequired": "Treść recenzji jest wymagana",
-    "validationMaxLength": "Recenzja może mieć maksymalnie {{max}} znaków"
+    "validationMaxLength": "Recenzja może mieć maksymalnie {{max}} znaków",
+    "validationRecommendationRequired": "Rekomendacja jest wymagana"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Zaproponuj tłumaczenie",
@@ -357,6 +365,7 @@
     "title": "Porównanie <0></0> vs <1></1>",
     "loading": "Wczytywanie porównania...",
     "gameColumn": "Gra",
+    "scoreColumn": "Ocena",
     "bothHave": "Oboje mają",
     "onlyFirstUser": "Tylko {{username}}",
     "onlySecondUser": "Tylko {{username}}",

@@ -26,6 +26,8 @@
     },
     "targetTypeFilterLabel": "Target type",
     "targetTypeAll": "All",
+    "sourceFilterLabel": "Source",
+    "sourceAll": "All",
     "reportedUserFilterLabel": "Reported user ID",
     "clearFilters": "Clear filters",
     "reportedByLabel": "Reported by",

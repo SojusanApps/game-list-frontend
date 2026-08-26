@@ -49,7 +49,7 @@ export default function CompanyDetailPage(): React.JSX.Element {
           <>
             <Box
               style={{
-                background: "white",
+                background: "var(--color-background-100)",
                 borderRadius: 16,
                 boxShadow: "0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04)",
                 border: "1px solid var(--color-background-200)",
@@ -73,7 +73,7 @@ export default function CompanyDetailPage(): React.JSX.Element {
                       borderRadius: 16,
                       overflow: "hidden",
                       boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)",
-                      border: "4px solid white",
+                      border: "4px solid var(--color-background-100)",
                       background: "white",
                       padding: 16,
                       display: "flex",

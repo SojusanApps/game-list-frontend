@@ -1,33 +1,24 @@
-import { Box, Text, SegmentedControl } from "@mantine/core";
-import { useQueryClient } from "@tanstack/react-query";
+import { Box, Text, useComputedColorScheme } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import AppLogo from "@/components/ui/AppLogo";
-import i18n from "@/lib/i18n";
-import { useLanguageStore, type Language } from "@/lib/languageStore";
+import igdbLogoDark from "@/assets/igdb-logo-dark.svg";
+import igdbLogo from "@/assets/igdb-logo.svg";
 
 import styles from "./Footer.module.css";
 
 const Footer = (): React.JSX.Element => {
   const currentYear = new Date().getFullYear();
-  const { language, setLanguage } = useLanguageStore();
+  const colorScheme = useComputedColorScheme("light");
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-
-  const handleLanguageChange = (value: string) => {
-    const lang = value as Language;
-    setLanguage(lang);
-    void i18n.changeLanguage(lang);
-    queryClient.invalidateQueries().catch(() => {});
-  };
 
   return (
     <Box
       component="footer"
       style={{
-        background: "white",
+        background: colorScheme === "dark" ? "#000000" : "var(--color-background-100)",
         borderTop: "1px solid var(--color-background-400)",
         paddingBlock: "24px",
         marginTop: "auto",
@@ -35,14 +26,27 @@ const Footer = (): React.JSX.Element => {
     >
       <div className={styles.footerInner}>
         <div className={styles.leftSection}>
-          <Link to="/home" className={styles.logoLink}>
-            <AppLogo size="md" />
+          <div className={styles.igdbSection}>
+            <img
+              src={colorScheme === "dark" ? igdbLogoDark : igdbLogo}
+              alt="IGDB"
+              className={styles.igdbLogo}
+            />
+            <Text size="xs" c="var(--color-text-400)">
+              {t("footer.dataProvidedBy")}{" "}
+              <a href="https://www.igdb.com/" target="_blank" rel="noopener noreferrer" className={styles.footerExtLink}>
+                IGDB
+              </a>
+            </Text>
+          </div>
+        </div>
+
+        <div className={styles.centerSection}>
+          <Link to="/" className={styles.logoLink}>
+            <AppLogo size="md" onDark={colorScheme === "dark"} />
           </Link>
           <Text size="xs" c="var(--color-text-400)">
-            {t("footer.copyright", { year: currentYear })}{" "}
-            <a href="https://www.igdb.com/" target="_blank" rel="noopener noreferrer" className={styles.footerExtLink}>
-              IGDB
-            </a>
+            {t("footer.copyright", { year: currentYear })}
           </Text>
         </div>
 
@@ -50,7 +54,7 @@ const Footer = (): React.JSX.Element => {
           <nav>
             <ul className={styles.navGroup}>
               <li>
-                <Link to="/home" className={styles.footerLink}>
+                <Link to="/" className={styles.footerLink}>
                   {t("footer.home")}
                 </Link>
               </li>
@@ -60,21 +64,22 @@ const Footer = (): React.JSX.Element => {
                 </Link>
               </li>
               <li>
-                <Link to="/home" className={styles.footerLink}>
+                <Link to="/faq" className={styles.footerLink}>
+                  {t("footer.faq")}
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className={styles.footerLink}>
+                  {t("footer.terms")}
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className={styles.footerLink}>
                   {t("footer.privacy")}
                 </Link>
               </li>
             </ul>
           </nav>
-          <SegmentedControl
-            value={language}
-            onChange={handleLanguageChange}
-            size="xs"
-            data={[
-              { label: "EN", value: "en" },
-              { label: "PL", value: "pl" },
-            ]}
-          />
         </div>
       </div>
     </Box>

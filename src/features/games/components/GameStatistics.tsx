@@ -19,9 +19,9 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           justify="center"
           p="lg"
           style={{
-            background: "rgba(255,237,213,0.5)",
+            background: "var(--color-secondary-tint-bg)",
             borderRadius: "16px",
-            border: "1px solid rgba(253,186,116,0.5)",
+            border: "1px solid var(--color-secondary-tint-border)",
             boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
             transition: "transform 200ms",
           }}
@@ -29,16 +29,16 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           <Text
             fz={11}
             fw={700}
-            c="var(--color-secondary-700)"
+            c="var(--color-secondary-tint-text)"
             tt="uppercase"
             style={{ letterSpacing: "0.1em", marginBottom: "8px" }}
           >
             {t("stats.score")}
           </Text>
-          <Text fz={36} fw={900} c="var(--color-secondary-900)">
+          <Text fz={36} fw={900} c="var(--color-secondary-tint-text)">
             {gameDetails?.average_score || "N/A"}
           </Text>
-          <Text fz={10} c="var(--color-secondary-600)" fw={600} mt={4}>
+          <Text fz={10} c="var(--color-secondary-tint-text)" fw={600} mt={4}>
             {gameDetails?.scores_count} {t("stats.ratings")}
           </Text>
         </Stack>
@@ -49,9 +49,9 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           justify="center"
           p="lg"
           style={{
-            background: "rgba(209,250,229,0.5)",
+            background: "var(--color-success-tint-bg)",
             borderRadius: "16px",
-            border: "1px solid rgba(167,243,208,0.5)",
+            border: "1px solid var(--color-success-tint-border)",
             boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
             transition: "transform 200ms",
           }}
@@ -59,13 +59,13 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           <Text
             fz={11}
             fw={700}
-            c="var(--color-success-700)"
+            c="var(--color-success-tint-text)"
             tt="uppercase"
             style={{ letterSpacing: "0.1em", marginBottom: "8px" }}
           >
             {t("stats.ranked")}
           </Text>
-          <Text fz={36} fw={900} c="var(--color-success-900)">
+          <Text fz={36} fw={900} c="var(--color-success-tint-text)">
             #{gameDetails?.rank_position || "-"}
           </Text>
         </Stack>
@@ -76,9 +76,9 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           justify="center"
           p="lg"
           style={{
-            background: "rgba(224,231,255,0.5)",
+            background: "var(--color-primary-tint-bg)",
             borderRadius: "16px",
-            border: "1px solid rgba(199,210,254,0.5)",
+            border: "1px solid var(--color-primary-tint-border)",
             boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
             transition: "transform 200ms",
           }}
@@ -86,13 +86,13 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           <Text
             fz={11}
             fw={700}
-            c="var(--color-primary-700)"
+            c="var(--color-primary-tint-text)"
             tt="uppercase"
             style={{ letterSpacing: "0.1em", marginBottom: "8px" }}
           >
             {t("stats.popularity")}
           </Text>
-          <Text fz={36} fw={900} c="var(--color-primary-900)">
+          <Text fz={36} fw={900} c="var(--color-primary-tint-text)">
             #{gameDetails?.popularity || "-"}
           </Text>
         </Stack>
@@ -103,7 +103,7 @@ export default function GameStatistics({ gameDetails }: Readonly<GameStatisticsP
           justify="center"
           p="lg"
           style={{
-            background: "rgba(226,232,240,0.5)",
+            background: "rgba(var(--color-veil-rgb), 0.5)",
             borderRadius: "16px",
             border: "1px solid rgba(203,213,225,0.5)",
             boxShadow: "0 1px 2px rgba(0,0,0,0.05)",

@@ -1,0 +1,8 @@
+.ownerLink {
+  color: inherit;
+  transition: color 150ms ease;
+}
+
+.ownerLink:hover {
+  color: var(--mantine-color-primary-6);
+}

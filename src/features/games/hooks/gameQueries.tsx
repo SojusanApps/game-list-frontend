@@ -7,7 +7,13 @@ import {
   InfiniteData,
 } from "@tanstack/react-query";
 
-import { GameList, PaginatedGameSimpleListList, PaginatedGameListList, GameListCreateWritable } from "@/client";
+import {
+  GameList,
+  PaginatedGameSimpleListList,
+  PaginatedGameListList,
+  PaginatedGameFollowList,
+  GameListCreateWritable,
+} from "@/client";
 import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
 
 import {
@@ -347,10 +353,14 @@ export const useGetCompanyDetail = (id?: number) => {
   });
 };
 
-export const useGetGameFollowsList = (query?: GameGameFollowsListDataQuery) => {
+export const useGetGameFollowsList = (
+  query?: GameGameFollowsListDataQuery,
+  options?: Omit<UseQueryOptions<unknown, Error, PaginatedGameFollowList>, "queryKey" | "queryFn">,
+) => {
   return useQuery({
     queryKey: gameFollowKeys.list(query),
     queryFn: () => getGameFollowsList(query),
+    ...options,
   });
 };
 

@@ -112,7 +112,11 @@ export const DuelView = React.memo(function ({ duel, onChoice, onSkip }: Readonl
               <Kbd
                 size="xs"
                 ml={6}
-                style={{ opacity: 0.6, background: "rgba(255,255,255,0.2)", verticalAlign: "middle" }}
+                style={{
+                  background: "var(--color-background-100)",
+                  color: "var(--color-text-900)",
+                  verticalAlign: "middle",
+                }}
               >
                 ←
               </Kbd>
@@ -144,7 +148,11 @@ export const DuelView = React.memo(function ({ duel, onChoice, onSkip }: Readonl
               <Kbd
                 size="xs"
                 ml={6}
-                style={{ opacity: 0.6, background: "rgba(255,255,255,0.2)", verticalAlign: "middle" }}
+                style={{
+                  background: "var(--color-background-100)",
+                  color: "var(--color-text-900)",
+                  verticalAlign: "middle",
+                }}
               >
                 →
               </Kbd>

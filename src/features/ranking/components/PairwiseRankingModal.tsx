@@ -1,4 +1,4 @@
-import { Box, Flex, Group, Modal, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { Box, Flex, Group, Modal, ScrollArea, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import * as React from "react";
@@ -167,7 +167,7 @@ export default function PairwiseRankingModal({
           <Box
             w={80}
             h={80}
-            bg="var(--color-primary-50)"
+            bg="var(--color-primary-tint-bg)"
             style={{ borderRadius: "9999px", display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             <Text component="span" fz={36}>
@@ -204,7 +204,7 @@ export default function PairwiseRankingModal({
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     paddingInline: 32,
-                    boxShadow: "0 10px 15px -3px var(--color-primary-200), 0 4px 6px -4px var(--color-primary-200)",
+                    boxShadow: "var(--shadow-button-glow)",
                   }}
                 >
                   {t("modal.resumeSession")}
@@ -225,7 +225,7 @@ export default function PairwiseRankingModal({
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
                   paddingInline: 32,
-                  boxShadow: "0 10px 15px -3px var(--color-primary-200), 0 4px 6px -4px var(--color-primary-200)",
+                  boxShadow: "var(--shadow-button-glow)",
                 }}
               >
                 {t("modal.startRanking")}
@@ -271,7 +271,7 @@ export default function PairwiseRankingModal({
         size="80rem"
         overlayProps={{ backgroundOpacity: 0.6 }}
         styles={{
-          content: { height: "85vh" },
+          content: { height: "85vh", background: "var(--color-background-100)" },
           body: { height: "100%", padding: 0 },
         }}
       >
@@ -350,7 +350,12 @@ export default function PairwiseRankingModal({
           </Flex>
 
           {/* Body */}
-          <Box style={{ flex: 1, overflowY: "auto", padding: "16px" }}>{renderBody()}</Box>
+          <ScrollArea
+            style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
+            viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: "16px" } }}
+          >
+            {renderBody()}
+          </ScrollArea>
         </Stack>
       </Modal>
 

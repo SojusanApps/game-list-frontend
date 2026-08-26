@@ -91,9 +91,9 @@ export function ExternalLinksSection({ externalGames }: Readonly<{ externalGames
                   size="xs"
                   fw={500}
                   style={{
-                    background: "var(--mantine-color-primary-0)",
+                    background: "var(--color-primary-chip-bg)",
                     color: color,
-                    border: "1px solid var(--mantine-color-primary-2)",
+                    border: "1px solid var(--color-primary-chip-border)",
                     borderRadius: 6,
                     padding: "2px 8px",
                     textDecoration: "none",

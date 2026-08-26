@@ -1,4 +1,4 @@
-import { Group, Stack, Text } from "@mantine/core";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,8 @@ import { GameList, GameListStatusEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { formatDisplayDate } from "@/utils/dateUtils";
+import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 interface GameListUpdateProps {
   latestGameListUpdate: GameList;
@@ -60,7 +62,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
             c="var(--color-text-400)"
             style={{ whiteSpace: "nowrap", flexShrink: 0, opacity: 0.7 }}
           >
-            {new Date(latestGameListUpdate?.last_modified_at || "").toLocaleDateString()}
+            {formatDisplayDate(latestGameListUpdate?.last_modified_at)}
           </Text>
         </Group>
 
@@ -87,7 +89,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
           </Group>
 
           {latestGameListUpdate.score && (
-            <Group gap={4} style={{ borderLeft: "1px solid rgba(0,0,0,0.1)", paddingLeft: 16 }}>
+            <Group gap={6} style={{ borderLeft: "1px solid rgba(0,0,0,0.1)", paddingLeft: 16 }}>
               <Text
                 component="span"
                 style={{
@@ -100,9 +102,23 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
               >
                 {t("profile.score")}
               </Text>
-              <Text component="span" size="xs" fw={900}>
+              <Box
+                style={{
+                  minWidth: 20,
+                  height: 20,
+                  padding: "0 6px",
+                  borderRadius: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  fontWeight: 900,
+                  background: getRatingColor(latestGameListUpdate.score),
+                  color: getRatingTextColor(latestGameListUpdate.score),
+                }}
+              >
                 {latestGameListUpdate.score}
-              </Text>
+              </Box>
             </Group>
           )}
         </Group>

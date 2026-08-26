@@ -1,4 +1,5 @@
-import { Skeleton, Stack, Group, Box, Title, Text, Select, UnstyledButton } from "@mantine/core";
+import { Skeleton, Stack, Group, Box, Title, Text, Select, TextInput, UnstyledButton } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
@@ -36,6 +37,10 @@ export default function CollectionsPage(): React.JSX.Element {
   const [modeFilter, setModeFilter] = React.useState<string | null>(null);
   const [typeFilter, setTypeFilter] = React.useState<string | null>(null);
   const [useMember, setUseMember] = React.useState(false);
+  const [nameInput, setNameInput] = React.useState("");
+  const [nameFilter, setNameFilter] = React.useState("");
+
+  const commitNameFilter = () => setNameFilter(nameInput.trim());
 
   const queryFilters = React.useMemo(() => {
     const filters: Required<CollectionCollectionsListData>["query"] = {};
@@ -51,8 +56,11 @@ export default function CollectionsPage(): React.JSX.Element {
     if (typeFilter !== null) {
       filters.type = typeFilter;
     }
+    if (nameFilter !== "") {
+      filters.name = nameFilter;
+    }
     return filters;
-  }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter]);
+  }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter, nameFilter]);
 
   const {
     data: collectionsResults,
@@ -106,14 +114,14 @@ export default function CollectionsPage(): React.JSX.Element {
                 style={{
                   fontSize: "10px",
                   fontWeight: 900,
-                  color: "var(--mantine-color-primary-5)",
+                  color: "var(--color-primary-tint-text)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
                   marginTop: "8px",
                   padding: "4px 12px",
-                  background: "var(--mantine-color-primary-0)",
+                  background: "var(--color-primary-tint-bg)",
                   borderRadius: "9999px",
-                  border: "1px solid var(--mantine-color-primary-1)",
+                  border: "1px solid var(--color-primary-tint-border)",
                 }}
               >
                 {t("list.ownerView")}
@@ -123,6 +131,33 @@ export default function CollectionsPage(): React.JSX.Element {
 
           <Stack w="100%" gap={16}>
             <CollapsibleSection title={t("list.filters")}>
+              <Box
+                component="form"
+                w="100%"
+                maw={480}
+                mx="auto"
+                mt={16}
+                onSubmit={e => {
+                  e.preventDefault();
+                  commitNameFilter();
+                }}
+              >
+                <TextInput
+                  id="name-filter"
+                  placeholder={t("list.namePlaceholder")}
+                  value={nameInput}
+                  onChange={e => setNameInput(e.currentTarget.value)}
+                  onBlur={commitNameFilter}
+                  leftSection={<IconSearch size={18} color="var(--color-text-400)" />}
+                  styles={{
+                    input: {
+                      background: "var(--color-background-100)",
+                      border: "1px solid var(--color-background-300)",
+                      borderRadius: "12px",
+                    },
+                  }}
+                />
+              </Box>
               <Box
                 style={{
                   display: "grid",
@@ -168,7 +203,7 @@ export default function CollectionsPage(): React.JSX.Element {
                                 boxShadow: "0 4px 6px -1px rgba(99,102,241,0.3)",
                               }
                             : {
-                                background: "white",
+                                background: "var(--color-background-100)",
                                 color: "var(--color-text-500)",
                                 borderColor: "var(--color-background-200)",
                               }),
@@ -220,7 +255,7 @@ export default function CollectionsPage(): React.JSX.Element {
                                 boxShadow: "0 4px 6px -1px rgba(99,102,241,0.3)",
                               }
                             : {
-                                background: "white",
+                                background: "var(--color-background-100)",
                                 color: "var(--color-text-500)",
                                 borderColor: "var(--color-background-200)",
                               }),
@@ -298,7 +333,7 @@ export default function CollectionsPage(): React.JSX.Element {
 
         <Box
           style={{
-            background: "white",
+            background: "var(--color-background-100)",
             borderRadius: "16px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",

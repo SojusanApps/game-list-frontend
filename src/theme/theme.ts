@@ -1,5 +1,7 @@
 import { createTheme, MantineColorsTuple } from "@mantine/core";
 
+import scrollAreaClasses from "./ScrollArea.module.css";
+
 // Mapped from src/css/colors.css — indigo primary, amber secondary, slate background
 const primary: MantineColorsTuple = [
   "#eef2ff", // 0 - lightest
@@ -89,6 +91,13 @@ export const theme = createTheme({
         variant: "filled",
       },
     },
+    Tooltip: {
+      defaultProps: {
+        // Touch devices have no hover — open on tap too, so icon-only tooltips
+        // (gender, warning counts, etc.) aren't unreachable on mobile.
+        events: { hover: true, focus: true, touch: true },
+      },
+    },
     TextInput: {
       defaultProps: {
         size: "md",
@@ -113,6 +122,12 @@ export const theme = createTheme({
       defaultProps: {
         size: "md",
       },
+    },
+    ScrollArea: {
+      defaultProps: {
+        type: "hover",
+      },
+      classNames: scrollAreaClasses,
     },
   },
 });

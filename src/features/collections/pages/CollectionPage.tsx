@@ -1,6 +1,6 @@
 import { Skeleton, Stack, Group, Box, Title, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconTrash } from "@tabler/icons-react";
+import { IconTrash, IconDeviceGamepad2 } from "@tabler/icons-react";
 import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,10 +14,12 @@ import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { PairwiseRankingModal } from "@/features/ranking";
+import { useConfirm } from "@/hooks/useConfirm";
 import { cn } from "@/utils/cn";
 
 import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
 import { CollectionHeader } from "../components/CollectionHeader";
+import { CollectionStatsBanner } from "../components/CollectionStatsBanner";
 import CreateCollectionModal from "../components/CreateCollectionModal";
 import { RankingListView } from "../components/RankingList/RankingListView";
 import { TierListView } from "../components/TierList/TierListView";
@@ -73,13 +75,19 @@ export default function CollectionPage(): React.JSX.Element {
   }, [isOwner, currentUserId, collection]);
 
   const { t } = useTranslation("collections");
+  const { confirm, confirmModal } = useConfirm();
 
   const handleDeleteItem = React.useCallback(
-    (itemId: number, gameTitle: string) => {
+    async (itemId: number, gameTitle: string) => {
       if (!collectionId) {
         return;
       }
-      if (confirm(t("detail.removeConfirm", { title: gameTitle }))) {
+      const confirmed = await confirm({
+        title: t("detail.removeTitle"),
+        message: t("detail.removeConfirm", { title: gameTitle }),
+        isDestructive: true,
+      });
+      if (confirmed) {
         removeCollectionItem(
           { itemId, collectionId },
           {
@@ -95,7 +103,7 @@ export default function CollectionPage(): React.JSX.Element {
         );
       }
     },
-    [collectionId, removeCollectionItem, t],
+    [collectionId, removeCollectionItem, t, confirm],
   );
 
   const allItems = React.useMemo(
@@ -125,49 +133,18 @@ export default function CollectionPage(): React.JSX.Element {
           </GridList>
         ) : (
           <>
-            <Group
-              style={{
-                marginBottom: "24px",
-                background:
-                  "linear-gradient(to right, var(--mantine-color-primary-0), var(--mantine-color-secondary-0, #fef3c7))",
-                padding: "16px",
-                borderRadius: "16px",
-                border: "1px solid var(--mantine-color-primary-1)",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              }}
-            >
-              <Group gap={12}>
-                <Box
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "12px",
-                    background: "var(--mantine-color-primary-5)",
-                    boxShadow: "0 4px 6px -1px rgba(0,0,0,0.2)",
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    style={{ width: "20px", height: "20px", color: "white" }}
-                  >
-                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.357-.442 3 3 0 00-4.308-3.517 6.484 6.484 0 011.907 3.96 2.32 2.32 0 01-.026.654zM18 8a2 2 0 11-4 0 2 2 0 014 0zM5.304 16.19a.844.844 0 01-.277-.71 5 5 0 019.947 0 .843.843 0 01-.277.71A6.975 6.975 0 0110 18a6.974 6.974 0 01-4.696-1.81z" />
-                  </svg>
-                </Box>
-                <Stack gap={2}>
-                  <Text fz={24} fw={900} c="var(--mantine-color-primary-6)" lh={1}>
-                    {totalCount}
-                  </Text>
-                  <Text size="xs" fw={600} c="var(--color-text-500)" tt="uppercase" style={{ letterSpacing: "0.05em" }}>
-                    {t("detail.totalGames")}
-                  </Text>
-                </Stack>
-              </Group>
-            </Group>
+            <Box mb={24}>
+              <CollectionStatsBanner
+                icon={<IconDeviceGamepad2 size={20} style={{ color: "white" }} />}
+                iconBackground="var(--mantine-color-primary-5)"
+                bannerBackground="var(--gradient-collection-stats)"
+                borderColor="var(--color-primary-tint-border)"
+                textColor="var(--color-collection-stats-text)"
+                count={totalCount}
+                label={t("detail.totalGames")}
+                typeLabel={t("type.normal")}
+              />
+            </Box>
 
             <VirtualGridList
               items={allItems}
@@ -348,6 +325,8 @@ export default function CollectionPage(): React.JSX.Element {
           onClose={() => setIsPairwiseModalOpen(false)}
         />
       )}
+
+      {confirmModal}
     </Box>
   );
 }

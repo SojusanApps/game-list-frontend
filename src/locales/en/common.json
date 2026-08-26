@@ -10,13 +10,23 @@
     "adminPanel": "Admin Panel",
     "logout": "Logout",
     "login": "Login",
-    "menu": "Menu"
+    "menu": "Menu",
+    "colorScheme": "Color scheme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
   "footer": {
-    "copyright": "© {{year}} Sojusan GameList • Data provided by",
+    "copyright": "© {{year}} Sojusan GameList",
+    "dataProvidedBy": "Game data provided by",
     "home": "Home",
     "search": "Search",
+    "faq": "FAQ",
+    "terms": "Terms & Conditions",
     "privacy": "Privacy"
+  },
+  "legal": {
+    "termsTitle": "Terms & Conditions",
+    "privacyTitle": "Privacy Policy"
   },
   "notFound": {
     "title": "404 - Not Found",
@@ -42,6 +52,7 @@
   "cancel": "Cancel",
   "closeModal": "Close modal",
   "userAvatarAlt": "User avatar",
+  "inactiveUser": "Inactive user",
   "endOfResults": "You've reached the end",
   "allResultsLoaded": "All results loaded",
   "noResults": "No results found",

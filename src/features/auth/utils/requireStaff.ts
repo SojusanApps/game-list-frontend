@@ -7,22 +7,18 @@ import type { MyRouterContext } from "@/routes/__root";
 
 interface RequireStaffArgs {
   context: MyRouterContext;
-  location: { pathname: string };
 }
 
 /**
- * Route guard for `beforeLoad`: sends to Keycloak login (preserving the return path) when
- * signed out, or redirects home when signed in but not staff.
+ * Route guard for `beforeLoad`: redirects home, in-app, whether signed out or signed in but not staff.
+ * Never triggers a Keycloak redirect on its own - that only happens when the user clicks an
+ * actual login control.
  */
-export async function requireStaff({ context, location }: Readonly<RequireStaffArgs>): Promise<void> {
+export async function requireStaff({ context }: Readonly<RequireStaffArgs>): Promise<void> {
   const isAuthenticated = context.auth.isAuthenticated;
 
   if (resolveAuthGuardOutcome({ isAuthenticated }, "authenticated") === "require-login") {
-    context.auth.login(location.pathname);
-    // Keycloak's login redirect is a real browser navigation, not a router transition - never
-    // resolve so the route's component doesn't flash while that navigation is in flight.
-    await new Promise<never>(() => {});
-    return;
+    throw redirect({ to: "/" });
   }
 
   const currentUser = await context.queryClient

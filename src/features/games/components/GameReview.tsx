@@ -7,6 +7,10 @@ import ReactMarkdown from "react-markdown";
 import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
+import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
+import { formatDisplayDate } from "@/utils/dateUtils";
+
+import { getRecommendationConfig } from "../utils/recommendationConfig";
 
 type GameReviewProps = {
   gameReview: GameReviewType;
@@ -15,27 +19,27 @@ type GameReviewProps = {
 function getScoreStyles(score: number): React.CSSProperties {
   if (score >= 8)
     return {
-      background: "var(--color-success-100)",
-      color: "var(--color-success-900)",
-      border: "1px solid var(--color-success-200)",
+      background: "var(--color-success-tint-bg)",
+      color: "var(--color-success-tint-text)",
+      border: "1px solid var(--color-success-tint-border)",
     };
   if (score >= 5)
     return {
-      background: "var(--color-secondary-100)",
-      color: "var(--color-secondary-900)",
-      border: "1px solid var(--color-secondary-200)",
+      background: "var(--color-secondary-tint-bg)",
+      color: "var(--color-secondary-tint-text)",
+      border: "1px solid var(--color-secondary-tint-border)",
     };
   return {
-    background: "var(--color-error-100)",
-    color: "var(--color-error-900)",
-    border: "1px solid var(--color-error-200)",
+    background: "var(--color-error-tint-bg)",
+    color: "var(--color-error-tint-text)",
+    border: "1px solid var(--color-error-tint-border)",
   };
 }
 
 function getScoreLabelColor(score: number): string {
-  if (score >= 8) return "var(--color-success-700)";
-  if (score >= 5) return "var(--color-secondary-700)";
-  return "var(--color-error-700)";
+  if (score >= 8) return "var(--color-success-tint-text)";
+  if (score >= 5) return "var(--color-secondary-tint-text)";
+  return "var(--color-error-tint-text)";
 }
 
 function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Element {
@@ -44,7 +48,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
   const [shouldTruncate, setShouldTruncate] = React.useState(false);
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const CreatedAt = new Date(gameReview.created_at);
+  const createdAt = formatDisplayDate(gameReview.created_at);
 
   React.useLayoutEffect(() => {
     // 160px is approx 6-7 lines
@@ -63,7 +67,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
         padding: "24px",
         borderRadius: "16px",
         border: "1px solid rgba(203,213,225,0.5)",
-        background: "rgba(226,232,240,0.5)",
+        background: "rgba(var(--color-veil-rgb), 0.5)",
         transition: "background 200ms",
         boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
       }}
@@ -95,12 +99,27 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
               {gameReview?.user.username}
             </Text>
             <Text fz="xs" c="var(--color-text-500)" fw={500} fs="italic">
-              {CreatedAt.toLocaleDateString()}
+              {createdAt}
             </Text>
           </Stack>
         </Group>
 
         <Group gap={8} align="center">
+          {gameReview?.recommendation && (
+            <Box
+              style={{
+                padding: "4px 12px",
+                borderRadius: "12px",
+                fontSize: "12px",
+                fontWeight: 700,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                ...getRecommendationConfig(gameReview.recommendation)?.badgeStyle,
+              }}
+            >
+              {getRecommendationConfig(gameReview.recommendation)?.label}
+            </Box>
+          )}
+
           {gameReview?.score && (
             <Stack
               align="center"
@@ -139,6 +158,12 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
             ownerId={gameReview.user.id}
             ownerUsername={gameReview.user.username}
           />
+          <WarnAndRemoveButton
+            targetType={TargetTypeEnum.REVIEW}
+            targetId={gameReview.id}
+            ownerId={gameReview.user.id}
+            ownerUsername={gameReview.user.username}
+          />
         </Group>
       </Group>
 
@@ -148,7 +173,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
           style={{
             color: "var(--color-text-700)",
             lineHeight: 1.6,
-            background: "rgba(255,255,255,0.6)",
+            background: "rgba(var(--color-veil-rgb), 0.6)",
             padding: "24px",
             borderRadius: "16px",
             border: "1px solid var(--color-background-100)",
@@ -168,7 +193,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
                 left: 0,
                 right: 0,
                 height: "96px",
-                background: "linear-gradient(to top, rgba(255,255,255,0.9), transparent)",
+                background: "linear-gradient(to top, rgba(var(--color-veil-rgb), 0.9), transparent)",
                 pointerEvents: "none",
               }}
             />
@@ -187,7 +212,7 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
                 alignItems: "center",
                 gap: "8px",
                 padding: "8px 24px",
-                background: "white",
+                background: "var(--color-background-100)",
                 border: "1px solid var(--color-background-200)",
                 borderRadius: "9999px",
                 fontSize: "12px",

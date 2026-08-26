@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Game, GameEngine, GameMode, Genre, Platform, PlayerPerspective } from "@/client";
 import { useLanguageStore } from "@/lib/languageStore";
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 import { ExternalLinksSection } from "./ExternalLinksSection";
 
@@ -75,7 +76,7 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
   return (
     <Box
       style={{
-        background: "white",
+        background: "var(--color-background-100)",
         borderRadius: 12,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         border: "1px solid var(--color-background-200)",
@@ -102,7 +103,7 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
         )}
         <GameInfoRow
           label={t("info.releaseDate")}
-          value={gameDetails?.release_date ? gameDetails.release_date.toString() : undefined}
+          value={formatDisplayDate(gameDetails?.release_date) ?? undefined}
         />
         <GameInfoRow label={t("info.gameStatus")} value={gameDetails?.game_status?.status || t("info.released")} />
         <GameInfoRow label={t("info.gameType")} value={gameDetails?.game_type?.type} />
@@ -139,9 +140,9 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
               size="xs"
               fw={500}
               style={{
-                background: "var(--mantine-color-primary-0)",
-                color: "var(--mantine-color-primary-7)",
-                border: "1px solid var(--mantine-color-primary-2)",
+                background: "var(--color-primary-tint-bg)",
+                color: "var(--color-primary-tint-text)",
+                border: "1px solid var(--color-primary-tint-border)",
                 borderRadius: 6,
                 padding: "2px 8px",
               }}
@@ -160,9 +161,9 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
                 size="xs"
                 fw={500}
                 style={{
-                  background: "var(--mantine-color-secondary-0, #fffbeb)",
-                  color: "var(--mantine-color-secondary-7, #92400e)",
-                  border: "1px solid var(--mantine-color-secondary-2, #fde68a)",
+                  background: "var(--color-secondary-tint-bg)",
+                  color: "var(--color-secondary-tint-text)",
+                  border: "1px solid var(--color-secondary-tint-border)",
                   borderRadius: 6,
                   padding: "2px 8px",
                 }}

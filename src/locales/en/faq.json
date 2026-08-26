@@ -1,0 +1,62 @@
+{
+  "pageTitle": "Frequently Asked Questions",
+  "items": {
+    "about": {
+      "question": "What is this page about?",
+      "answer": "Sojusan GameList helps you track games you've played or want to play, rate and review them, build collections and ranked tier lists, and connect with friends. This FAQ covers how the site works day-to-day — for the legal details, see:",
+      "termsLinkLabel": "Terms & Conditions",
+      "privacyLinkLabel": "Privacy Policy"
+    },
+    "creator": {
+      "question": "Who created this?",
+      "answer": "Sojusan GameList is built and maintained by Sojusan — a Polish software developer, a passionate gamer, and a YouTuber. You can find more here:",
+      "githubLinkLabel": "GitHub — Sojusan",
+      "youtubeLinkLabel": "YouTube — Sojusan (Let's Play series, Polish commentary only)"
+    },
+    "behavior": {
+      "question": "How should I behave on the site?",
+      "answer": "Be respectful, don't harass or impersonate other users, and keep your language clean — in short, treat this like a friendly, culture-minded community. For the full rules, see:",
+      "termsLinkLabel": "Terms & Conditions"
+    },
+    "warning": {
+      "question": "What happens if I get a Warning?",
+      "answer": "A Warning is recorded on your account when a report against your content is accepted. It's visible only to you and to staff, and on its own it doesn't restrict anything — but repeated warnings can lead to a ban."
+    },
+    "ban": {
+      "question": "What happens if I get banned?",
+      "answer": "A ban doesn't deactivate your account — you can keep using the service as normal. What changes is that all of your content becomes automatically moderated, meaning it's hidden from other users, the same way an individual piece of content is hidden once a report against it is accepted. Bans are permanent: there is no way to appeal or get un-banned, so staff only use it for serious or repeated violations."
+    },
+    "reportIssues": {
+      "question": "Where can I report issues or suggest new features?",
+      "answer": "This project is open source, and bug reports or feature suggestions are welcome in our community discussions repository:",
+      "linkLabel": "GitHub Discussions"
+    },
+    "openSource": {
+      "question": "Is this project open source? Can I contribute?",
+      "answer": "Yes — the whole project is open source. You can find the code, and everything else we maintain, on our GitHub organization page:",
+      "linkLabel": "GitHub — SojusanApps"
+    },
+    "auth": {
+      "question": "How does Sojusan Auth relate to this site?",
+      "answer": "Account creation, login, and password management aren't handled by this site directly — they're handled by Sojusan Auth, a separate identity service shared across all Sojusan apps. That means your login credentials work the same way across those apps; this site only handles your game lists, reviews, and social features."
+    },
+    "deleteAccount": {
+      "question": "How do I delete my account or my data?",
+      "answer": "You can delete your account at any time through the Sojusan Auth account console. For the full breakdown of what data we keep, for how long, and your rights under GDPR, see:",
+      "linkLabel": "Privacy Policy"
+    },
+    "listsVsCollections": {
+      "question": "What's the difference between a game list, a collection, and a ranking?",
+      "answer": "A game list tracks your play status and rating for individual games. A collection is a curated group of games with its own notes, for organizing titles however you like. A ranking is a tier list or head-to-head comparison tool for ordering games relative to each other."
+    },
+    "friends": {
+      "question": "How do friend requests work? Is my activity visible to others?",
+      "answer": "You can send another user a friend request from their profile; once accepted, you'll see each other listed as friends and can view each other's public activity. Some profile data (like your email) is never shown to other users, while other activity is visible only where you've made it public — see the Privacy Policy for the full breakdown of what's shared and with whom."
+    },
+    "gameData": {
+      "question": "Where does the game data come from?",
+      "answer": "Game, company, and cover-art information shown on this site comes from IGDB. We don't own this data — it belongs to IGDB and its licensors.",
+      "linkLabel": "IGDB"
+    }
+  }
+}

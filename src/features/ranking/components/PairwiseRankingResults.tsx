@@ -1,4 +1,4 @@
-import { Box, Group, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -80,7 +80,11 @@ export const PairwiseRankingResults = React.memo(function ({
       </Group>
 
       {/* Ranked list */}
-      <Stack gap={8} style={{ maxHeight: "55vh", overflowY: "auto", paddingRight: 4 }}>
+      <ScrollArea
+        style={{ maxHeight: "55vh", display: "flex", flexDirection: "column" }}
+        viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, paddingRight: 4 } }}
+      >
+        <Stack gap={8}>
         {items.map((item, index) => {
           const confidence = getConfidenceLevel(item, totalItems);
           return (
@@ -134,7 +138,8 @@ export const PairwiseRankingResults = React.memo(function ({
             </Group>
           );
         })}
-      </Stack>
+        </Stack>
+      </ScrollArea>
     </Stack>
   );
 });
