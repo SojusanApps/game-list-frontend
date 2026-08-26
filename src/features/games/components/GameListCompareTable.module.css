@@ -20,10 +20,13 @@
 }
 
 /* Fixed layout so column widths come from the <colgroup>, not from row content —
-   otherwise widths recompute as different rows scroll into view. */
+   otherwise widths recompute as different rows scroll into view.
+   min-width keeps status/score columns usable instead of shrinking to nothing on
+   narrow screens — the ScrollArea scrolls horizontally once the table hits that floor. */
 .compareTable {
   table-layout: fixed;
   width: 100%;
+  min-width: 560px;
 }
 
 /* Sticky on each th, not thead/tr — thead/tr sticky support is inconsistent across browsers. */

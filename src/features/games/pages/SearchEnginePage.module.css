@@ -1,0 +1,39 @@
+.heroSearchForm {
+  width: 100%;
+  max-width: 768px;
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .heroSearchForm {
+    flex-wrap: wrap;
+  }
+
+  .heroSearchForm > :first-child {
+    flex-basis: 100%;
+  }
+
+  .heroSearchForm > :not(:first-child) {
+    flex: 1;
+  }
+}
+
+.categoryTabs {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.categoryTabButton {
+  padding: 10px 32px;
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .categoryTabButton {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}

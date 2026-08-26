@@ -218,7 +218,9 @@ function TopBar(): React.JSX.Element {
         </Box>
 
         <Group gap={16}>
-          <LanguageAndThemeSwitchers />
+          <Box visibleFrom="lg">
+            <LanguageAndThemeSwitchers />
+          </Box>
           {isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}
         </Group>
       </Group>
@@ -236,7 +238,10 @@ function TopBar(): React.JSX.Element {
         hiddenFrom="lg"
         zIndex={1_000_000}
       >
-        <Stack gap="sm" mt="md" component="ul" style={{ listStyle: "none", padding: 0 }}>
+        <Box mb="md" style={{ display: "flex", justifyContent: "center" }}>
+          <LanguageAndThemeSwitchers />
+        </Box>
+        <Stack gap="sm" component="ul" style={{ listStyle: "none", padding: 0 }}>
           <Box component="li" mb="md">
             <SearchBar variant="light" />
           </Box>

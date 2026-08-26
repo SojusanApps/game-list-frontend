@@ -241,12 +241,12 @@ export default function CalendarView(): React.JSX.Element {
 
   return (
     <Stack gap={24} className={styles.calendarContainer}>
-      <Group justify="space-between" align="center" wrap="wrap">
-        <Group>
+      <Group justify="space-between" align="center" wrap="wrap" gap={12}>
+        <Group gap={8}>
           <ActionIcon variant="default" size="lg" radius="md" onClick={handlePrev}>
             <IconChevronLeft size={20} />
           </ActionIcon>
-          <Title order={3} w={240} ta="center" fw={800}>
+          <Title order={3} w={{ base: 180, sm: 240 }} fz={{ base: "md", sm: "lg" }} ta="center" fw={800}>
             {getHeaderTitle()}
           </Title>
           <ActionIcon variant="default" size="lg" radius="md" onClick={handleNext}>
@@ -262,6 +262,7 @@ export default function CalendarView(): React.JSX.Element {
           radius="md"
           value={viewMode}
           onChange={val => setViewMode(val)}
+          w={{ base: "100%", sm: "auto" }}
           data={[
             { label: t("calendar.month"), value: "month" },
             { label: t("calendar.week"), value: "week" },

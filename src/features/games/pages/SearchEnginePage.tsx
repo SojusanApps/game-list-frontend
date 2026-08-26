@@ -25,6 +25,8 @@ import { useSearchInfiniteQuery, SearchCategory } from "@/features/games/hooks/u
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { Route } from "@/routes/search";
 
+import styles from "./SearchEnginePage.module.css";
+
 type searchResultsType = PaginatedCompanyList | PaginatedGameSimpleListList | PaginatedUserList | undefined;
 
 type SearchFilterValidatorsType = GameSearchFilterValidationSchema;
@@ -309,14 +311,19 @@ export default function SearchEnginePage(): React.JSX.Element {
             {t("search.title")}
           </Title>
 
-          <Group gap={4} p={4} style={{ background: "var(--color-background-300)", borderRadius: "12px" }}>
+          <Group
+            gap={4}
+            p={4}
+            wrap="nowrap"
+            className={styles.categoryTabs}
+            style={{ background: "var(--color-background-300)", borderRadius: "12px" }}
+          >
             {categories.map(cat => (
               <UnstyledButton
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
+                className={styles.categoryTabButton}
                 style={{
-                  padding: "10px 32px",
-                  fontSize: "14px",
                   fontWeight: 600,
                   borderRadius: "8px",
                   transition: "all 200ms",
@@ -334,11 +341,7 @@ export default function SearchEnginePage(): React.JSX.Element {
             ))}
           </Group>
 
-          <Box
-            component="form"
-            onSubmit={handleHeroSearch}
-            style={{ width: "100%", maxWidth: "768px", display: "flex", gap: "12px" }}
-          >
+          <Box component="form" onSubmit={handleHeroSearch} className={styles.heroSearchForm}>
             <TextInput
               size="lg"
               placeholder={t(placeholderKeys[selectedCategory])}
@@ -360,13 +363,13 @@ export default function SearchEnginePage(): React.JSX.Element {
                 variant="outline"
                 size="lg"
                 onClick={() => setDrawerOpen(true)}
-                style={{ borderRadius: "12px", padding: "0 24px", background: "var(--color-background-100)" }}
+                style={{ borderRadius: "12px", padding: "0 16px", background: "var(--color-background-100)" }}
                 leftSection={<IconFilter size={20} />}
               >
                 {t("search.filtersButton")}
               </Button>
             )}
-            <Button type="submit" size="lg" style={{ borderRadius: "12px", padding: "0 32px" }}>
+            <Button type="submit" size="lg" style={{ borderRadius: "12px", padding: "0 20px" }}>
               {t("search.searchButton")}
             </Button>
           </Box>
