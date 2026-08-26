@@ -91,6 +91,13 @@ export const theme = createTheme({
         variant: "filled",
       },
     },
+    Tooltip: {
+      defaultProps: {
+        // Touch devices have no hover — open on tap too, so icon-only tooltips
+        // (gender, warning counts, etc.) aren't unreachable on mobile.
+        events: { hover: true, focus: true, touch: true },
+      },
+    },
     TextInput: {
       defaultProps: {
         size: "md",
