@@ -93,7 +93,11 @@ export function TranslationSuggestionModal({
     if (opened) {
       form.setValues({ field: FieldEnum.SUMMARY, proposedValue: currentSummary, isOfficialTitleConfirmed: false });
     }
-  }, [opened, currentSummary, form]);
+    // `form` is a new object on every render (Mantine's useForm does not memoize it), so depending
+    // on it here would re-run this effect — and reset the fields — after every keystroke/selection.
+    // `form.setValues` is the actual stable reference we need.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [opened, currentSummary, form.setValues]);
 
   const handleFieldChange = (value: string | null) => {
     if (!value) {
