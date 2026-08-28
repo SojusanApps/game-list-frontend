@@ -20,3 +20,4 @@ src/client/*
 env/.env
 .scratch
 .claude
+.env
