@@ -1,0 +1,43 @@
+# Runs the production frontend build served by nginx.
+#
+# VITE_* values are baked into the JS bundle at build time (Vite convention),
+# so they are passed as build args here, not runtime env vars. Compose reads
+# them from your shell or from a `.env` file next to this compose file.
+# Defaults below match env/.env.development.
+#
+# Usage:
+#   export VITE_API_URL=https://api.example.com
+#   export VITE_KEYCLOAK_URL=https://keycloak.example.com
+#   export VITE_KEYCLOAK_REALM=your-realm
+#   export VITE_KEYCLOAK_CLIENT_ID=your-client-id
+#   docker compose up --build
+#
+# After changing any VITE_* value, rebuild with `docker compose up --build`.
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+        VITE_KEYCLOAK_URL: ${VITE_KEYCLOAK_URL:-http://127.0.0.1:8080}
+        VITE_KEYCLOAK_REALM: ${VITE_KEYCLOAK_REALM:-sojusan-apps-dev}
+        VITE_KEYCLOAK_CLIENT_ID: ${VITE_KEYCLOAK_CLIENT_ID:-sojusan-gamelist-frontend-dev}
+    image: ghcr.io/sojusanapps/game-list-frontend:latest
+    env_file:
+      - ./.env
+    networks:
+      - gateway
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8080/index.html"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  gateway:
+    external: true
+    name: game-list-gateway
