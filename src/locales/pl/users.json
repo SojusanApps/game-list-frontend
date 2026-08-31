@@ -46,16 +46,16 @@
   },
   "info": {
     "title": "Informacje",
-    "joined": "Dołączył:",
+    "joined": "Data dołączenia:",
     "gender": "Płeć:",
     "genderMale": "Mężczyzna",
     "genderFemale": "Kobieta",
     "genderNotSpecified": "Nie podano",
-    "lastActive": "Ostatnio aktywny:",
+    "lastActive": "Ostatnia aktywność:",
     "never": "Nigdy",
     "warnings": "Ostrzeżenia:",
     "warningsCount": "{{count}}/{{max}}",
-    "warningsExplanation": "Ostrzeżenie jest wystawiane, gdy moderatorzy zaakceptują zgłoszenie dotyczące treści lub profilu tego użytkownika. Osiągnięcie {{max}} ostrzeżeń powoduje zbanowanie konta: od tej pory treści tego użytkownika są wyświetlane jako zastępcze dla wszystkich oprócz niego samego i moderatorów, jednak zachowuje on pełny dostęp do zapisu i korzystania ze wszystkich funkcji."
+    "warningsExplanation": "Ostrzeżenie jest wystawiane, gdy moderatorzy zaakceptują zgłoszenie dotyczące treści lub profilu tego użytkownika. Osiągnięcie {{max}} ostrzeżeń powoduje zbanowanie konta: od tej pory treści tego użytkownika są wyświetlane jako zastępcze dla wszystkich oprócz samego użytkownika i moderatorów, przy czym użytkownik zachowuje pełny dostęp do zapisu i korzystania ze wszystkich funkcji."
   },
   "stats": {
     "currentlyPlaying": "Gram",

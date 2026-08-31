@@ -48,9 +48,29 @@ import { Trans } from "react-i18next";
 />;
 ```
 
+## Gender-neutral Polish
+
+Polish copy that speaks **to** or **about** a person must not assume a gender. We do
+**not** branch on the user's `gender` field for copy — see
+[ADR 0005](adr/0005-gender-neutral-polish-copy.md). Masculine is **not** the default.
+
+Rules for `pl/` strings:
+
+- Address the reader with **present/future 2nd person** (`grasz`, `udostępnisz`,
+  `zaloguj się`) — these carry no gender. Avoid past tense (`grałeś`/`grałaś`),
+  `powinienem`, `sam`.
+- Prefer **impersonal/nominal** forms for prose and labels: `należy się zachowywać`
+  (not `powinieneś`), `Data dołączenia:` (not `Dołączył:`), `Ta czynność wymaga
+zalogowania` (not `musisz być zalogowany`).
+- Drop gendered adjectives/participles (`gotowy`, `zalogowany`, `zbanowany`). Reword
+  around a neuter noun (`Konto zbanowane`) or rephrase (`Czas na odkrywanie?`).
+- This applies to strings about a **target/viewed user** too — their gender is
+  equally unknown.
+
 ## Checklist for new components / pages
 
 1. No raw string literals in JSX or returned UI values.
 2. Add the key to **both** `en` and `pl` JSON files before using it.
 3. For PL plural keys, include `_one`, `_few`, `_many`, `_other`.
-4. Run `pnpm build` to confirm no TS key errors.
+4. PL strings addressing/describing a person: gender-neutral (see above).
+5. Run `pnpm build` to confirm no TS key errors.

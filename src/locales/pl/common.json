@@ -31,7 +31,7 @@
   "notFound": {
     "title": "404 - Nie znaleziono",
     "heading": "Ups! Strona nie istnieje",
-    "description": "Zgubiłeś się podczas przygody? Nie martw się! Wróćmy razem do domu i kontynuujmy wyprawę.",
+    "description": "Przygoda zaprowadziła na manowce? Nie martw się! Wróćmy razem do domu i kontynuujmy wyprawę.",
     "goHome": "Wróć do strony głównej"
   },
   "timeAgo": {
@@ -63,7 +63,7 @@
   "closeModal": "Zamknij okno",
   "userAvatarAlt": "Awatar użytkownika",
   "inactiveUser": "Nieaktywny użytkownik",
-  "endOfResults": "Dotarłeś do końca",
+  "endOfResults": "To już koniec",
   "allResultsLoaded": "Załadowano wszystkie wyniki",
   "noResults": "Brak wyników",
   "noResultsDescription": "Spróbuj zmienić wyszukiwanie lub filtry",

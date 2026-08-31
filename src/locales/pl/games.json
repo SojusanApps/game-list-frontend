@@ -208,7 +208,7 @@
     "title": "Wyszukiwarka",
     "noResults": "Brak wyników",
     "noResultsFound": "Nie znaleziono wyników dla twojego wyszukiwania.",
-    "readyToExplore": "Gotowy na odkrywanie?",
+    "readyToExplore": "Czas na odkrywanie?",
     "readyToExploreDesc": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione {{category}}.",
     "readyToExploreDescGames": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione gry.",
     "readyToExploreDescCompanies": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione firmy.",
