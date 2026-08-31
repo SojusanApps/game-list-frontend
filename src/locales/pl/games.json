@@ -140,7 +140,7 @@
     "completedAt": "Data ukończenia",
     "pickDate": "Wybierz datę",
     "playtime": "Czas gry (godziny)",
-    "playtimePlaceholder": "0",
+    "playtimePlaceholder": "np. 112,8",
     "noteLabel": "Notatka",
     "notePlaceholder": "Co sądzisz o tej grze?",
     "removeButton": "Usuń",

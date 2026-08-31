@@ -12,7 +12,8 @@ import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectA
 import { useCurrentUserId } from "@/features/auth";
 import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
-import { parseDate, formatDate } from "@/utils/dateUtils";
+import { formatDate } from "@/utils/dateUtils";
+import { playtimeHoursToMinutes, playtimeMinutesToHours } from "@/utils/playtimeUtils";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import {
@@ -33,8 +34,9 @@ const validationSchema = z.object({
     .nullish(),
   owned_on: z.array(z.string()).optional(),
   description: z.string().max(200, i18n.t("validation:noteMax")).nullish(),
-  started_at: z.date().nullish(),
-  completed_at: z.date().nullish(),
+  started_at: z.string().nullish(),
+  completed_at: z.string().nullish(),
+  // Entered in hours (users think in hours); converted to minutes for the backend on submit.
   playtime: z.coerce.number().min(0, i18n.t("validation:playtimeMin")).nullish(),
 });
 
@@ -85,9 +87,9 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
           score: gameListDetails.score ?? null,
           owned_on: gameListDetails.owned_on.map(media => media.id.toString()),
           description: gameListDetails.description ?? "",
-          started_at: parseDate(gameListDetails.started_at, "YYYY-MM-DD"),
-          completed_at: parseDate(gameListDetails.completed_at, "YYYY-MM-DD"),
-          playtime: gameListDetails.playtime ?? null,
+          started_at: gameListDetails.started_at?.slice(0, 10) ?? null,
+          completed_at: gameListDetails.completed_at?.slice(0, 10) ?? null,
+          playtime: playtimeMinutesToHours(gameListDetails.playtime),
         });
       } else {
         form.reset();
@@ -102,10 +104,11 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
   // Autopopulate dates when status changes
   React.useEffect(() => {
     if (form.isDirty("status")) {
+      const today = formatDate(new Date(), "YYYY-MM-DD");
       if (form.values.status === GameListStatusEnum.P && !form.values.started_at) {
-        form.setFieldValue("started_at", new Date());
+        form.setFieldValue("started_at", today);
       } else if (form.values.status === GameListStatusEnum.C && !form.values.completed_at) {
-        form.setFieldValue("completed_at", new Date());
+        form.setFieldValue("completed_at", today);
       }
     }
     // Deliberately triggered only by status changes, not by started_at/completed_at themselves —
@@ -125,9 +128,9 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
       score: data.score,
       owned_on: data.owned_on?.map(Number) ?? [],
       description: data.description || undefined,
-      started_at: formatDate(data.started_at, "YYYY-MM-DD"),
-      completed_at: formatDate(data.completed_at, "YYYY-MM-DD"),
-      playtime: data.playtime,
+      started_at: data.started_at || null,
+      completed_at: data.completed_at || null,
+      playtime: playtimeHoursToMinutes(data.playtime),
     };
 
     try {
@@ -265,10 +268,15 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
             />
             <NumberInput
               label={t("modal.playtime")}
-              placeholder="0"
+              placeholder={t("modal.playtimePlaceholder")}
               min={0}
+              step={0.1}
+              decimalScale={1}
               allowNegative={false}
-              {...form.getInputProps("playtime")}
+              decimalSeparator={i18n.language.startsWith("pl") ? "," : "."}
+              value={form.values.playtime ?? ""}
+              onChange={val => form.setFieldValue("playtime", val === "" ? null : Number(val))}
+              error={form.errors.playtime}
             />
           </Group>
 

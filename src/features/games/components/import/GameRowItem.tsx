@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import i18n from "@/lib/i18n";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
@@ -126,9 +127,12 @@ export const GameRowItem = ({ row, index, onStatusChange, onScoreChange, onField
           <NumberInput
             size="xs"
             label={t("modal.playtime")}
-            placeholder="0"
+            placeholder={t("modal.playtimePlaceholder")}
             min={0}
+            step={0.1}
+            decimalScale={1}
             allowNegative={false}
+            decimalSeparator={i18n.language.startsWith("pl") ? "," : "."}
             value={row.playtime ?? ""}
             onChange={val => onFieldChange(index, "playtime", val === "" ? null : Number(val))}
           />

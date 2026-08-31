@@ -10,7 +10,7 @@ import { GameListCreateWritable, SteamImportNotFound } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
 import i18n from "@/lib/i18n";
-import { formatDate } from "@/utils/dateUtils";
+import { playtimeHoursToMinutes } from "@/utils/playtimeUtils";
 
 import { useSteamImport, useBulkCreateGameList, useGetGameMediasByName } from "../../hooks/gameQueries";
 import { ConfigureGameList } from "./ConfigureGameList";
@@ -75,9 +75,9 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
       status: row.status,
       score: row.score,
       owned_on: row.owned_on.map(Number),
-      started_at: formatDate(row.started_at, "YYYY-MM-DD"),
-      completed_at: formatDate(row.completed_at, "YYYY-MM-DD"),
-      playtime: row.playtime,
+      started_at: row.started_at || null,
+      completed_at: row.completed_at || null,
+      playtime: playtimeHoursToMinutes(row.playtime),
       description: row.description || undefined,
     }));
     try {
