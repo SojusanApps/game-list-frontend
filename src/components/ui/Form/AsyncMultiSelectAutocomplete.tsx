@@ -1,5 +1,6 @@
-import { MultiSelect, Loader, ComboboxProps } from "@mantine/core";
+import { MultiSelect, Loader, ComboboxProps, Group, Box } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
+import { IconCheck } from "@tabler/icons-react";
 import { InfiniteData } from "@tanstack/react-query";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +32,11 @@ type AsyncMultiSelectAutocompleteProps<T> = {
   hideTags?: boolean;
   onAdd?: (item: T) => void;
   onRemove?: (item: T) => void;
+  /**
+   * Items already selected (e.g. when editing). Seeds the internal lookup so
+   * `renderOption` / `onRemove` can resolve values that were never in a search result.
+   */
+  selectedItems?: T[];
   value?: string[];
   onChange?: (value: string[]) => void;
   error?: React.ReactNode;
@@ -48,6 +54,11 @@ export default function AsyncMultiSelectAutocomplete<T>({
   style,
   getOptionLabel,
   getOptionValue,
+  renderOption,
+  hideTags = false,
+  onAdd,
+  onRemove,
+  selectedItems,
   value,
   onChange,
   error,
@@ -60,6 +71,41 @@ export default function AsyncMultiSelectAutocomplete<T>({
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQueryHook(debouncedSearch);
 
   const allOptions = React.useMemo(() => data?.pages.flatMap(page => page.results) || [], [data]);
+
+  // Remember every item we've seen across searches, so `renderOption` and the
+  // add/remove callbacks can resolve an option value back to its full item even
+  // after the search term (and `allOptions`) has moved on.
+  const seenItemsRef = React.useRef(new Map<string, T>());
+  React.useEffect(() => {
+    for (const item of [...(selectedItems ?? []), ...allOptions]) {
+      seenItemsRef.current.set(getOptionValue(item).toString(), item);
+    }
+  }, [allOptions, selectedItems, getOptionValue]);
+
+  const handleChange = (next: string[]) => {
+    const prev = value ?? [];
+    if (onAdd) {
+      for (const v of next) {
+        if (!prev.includes(v)) {
+          const item = seenItemsRef.current.get(v);
+          if (item !== undefined) {
+            onAdd(item);
+          }
+        }
+      }
+    }
+    if (onRemove) {
+      for (const v of prev) {
+        if (!next.includes(v)) {
+          const item = seenItemsRef.current.get(v);
+          if (item !== undefined) {
+            onRemove(item);
+          }
+        }
+      }
+    }
+    onChange?.(next);
+  };
 
   const selectData = React.useMemo(() => {
     const seen = new Set<string>();
@@ -107,16 +153,32 @@ export default function AsyncMultiSelectAutocomplete<T>({
       style={style}
       data={selectData}
       value={value}
-      onChange={onChange}
+      onChange={handleChange}
       error={error}
       searchable
       clearable
+      // Filtering is done server-side by the backing endpoint; keep every fetched option.
       filter={({ options }) => options}
       searchValue={searchTerm}
       onSearchChange={setSearchTerm}
       scrollAreaProps={{ viewportRef: dropdownRef, onScrollPositionChange: handleDropdownScroll }}
       rightSection={isLoading || isFetchingNextPage ? <Loader size="xs" /> : undefined}
       nothingFoundMessage={isLoading ? t("searching") : t("noResults")}
+      styles={hideTags ? { pill: { display: "none" } } : undefined}
+      renderOption={
+        renderOption
+          ? ({ option, checked }) => {
+              const item = seenItemsRef.current.get(option.value);
+              const content = item === undefined ? option.label : renderOption(item);
+              return (
+                <Group wrap="nowrap" gap="sm" style={{ flex: 1, minWidth: 0 }}>
+                  <Box style={{ flex: 1, minWidth: 0 }}>{content}</Box>
+                  {checked && <IconCheck size={16} style={{ flexShrink: 0, color: "var(--color-primary-600)" }} />}
+                </Group>
+              );
+            }
+          : undefined
+      }
       comboboxProps={{
         withinPortal: false,
         position: "bottom",

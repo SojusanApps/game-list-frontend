@@ -47,6 +47,10 @@
     "minute_one": "{{count}} minute ago",
     "minute_other": "{{count}} minutes ago"
   },
+  "draft": {
+    "restored": "Unsaved draft restored",
+    "discard": "Discard"
+  },
   "viewMore": "View More",
   "confirm": "Confirm",
   "cancel": "Cancel",

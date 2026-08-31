@@ -252,12 +252,10 @@ export const useUpdateCollectionItemTier = () => {
 export const useFriendSearch = (searchTerm: string) => {
   const currentUserId = useCurrentUserId();
 
-  // Use a query object that always includes user to trigger initial load
   const query = React.useMemo(
     () => ({
       user: currentUserId ? String(currentUserId) : undefined,
-      friend_username: searchTerm || undefined, // Keep as friend_username if that's what the user expected, or try friend__username
-      search: searchTerm || undefined, // Also try standard search parameter
+      friend__username: searchTerm || undefined,
     }),
     [currentUserId, searchTerm],
   );

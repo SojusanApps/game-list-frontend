@@ -1,6 +1,6 @@
 import { Modal, Select, Group, Stack, Textarea, NumberInput, Box } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useForm, schemaResolver } from "@mantine/form";
+import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,8 +8,10 @@ import { z } from "zod";
 
 import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import { useCurrentUserId } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
 import { formatDate } from "@/utils/dateUtils";
@@ -65,41 +67,32 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
 
   const isSubmitting = isCreating || isUpdating;
 
-  const form = useForm<ValidationSchema>({
-    initialValues: {
-      status: GameListStatusEnum.PTP,
-      score: null,
-      owned_on: [],
-      description: "",
-      started_at: null,
-      completed_at: null,
-      playtime: null,
-    },
-    validate: schemaResolver(validationSchema),
-  });
-
-  // Populate form when data arrives or modal opens
-  React.useEffect(() => {
-    if (opened) {
-      if (gameListDetails?.id) {
-        form.setValues({
-          status: gameListDetails.status_code as GameListStatusEnum,
-          score: gameListDetails.score ?? null,
-          owned_on: gameListDetails.owned_on.map(media => media.id.toString()),
-          description: gameListDetails.description ?? "",
-          started_at: gameListDetails.started_at?.slice(0, 10) ?? null,
-          completed_at: gameListDetails.completed_at?.slice(0, 10) ?? null,
-          playtime: playtimeMinutesToHours(gameListDetails.playtime),
-        });
-      } else {
-        form.reset();
+  const baseline: ValidationSchema = gameListDetails?.id
+    ? {
+        status: gameListDetails.status_code as GameListStatusEnum,
+        score: gameListDetails.score ?? null,
+        owned_on: gameListDetails.owned_on.map(media => media.id.toString()),
+        description: gameListDetails.description ?? "",
+        started_at: gameListDetails.started_at?.slice(0, 10) ?? null,
+        completed_at: gameListDetails.completed_at?.slice(0, 10) ?? null,
+        playtime: playtimeMinutesToHours(gameListDetails.playtime),
       }
-    }
-    // form is intentionally excluded: @mantine/form returns a new `form` object on every
-    // render, so including it here would re-run this effect (and reset in-progress edits)
-    // on every keystroke.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [gameListDetails, opened]);
+    : {
+        status: GameListStatusEnum.PTP,
+        score: null,
+        owned_on: [],
+        description: "",
+        started_at: null,
+        completed_at: null,
+        playtime: null,
+      };
+
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ValidationSchema>({
+    draftKey: `game-list:${gameId}`,
+    opened,
+    baseline,
+    formOptions: { validate: schemaResolver(validationSchema) },
+  });
 
   // Autopopulate dates when status changes
   React.useEffect(() => {
@@ -147,6 +140,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
         });
         notifications.show({ title: t("modal.successTitle"), message: t("modal.addSuccess"), color: "green" });
       }
+      clearDraft();
       onClose();
     } catch (error: unknown) {
       notifications.show({
@@ -162,6 +156,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
       try {
         await deleteGameListItem(gameListDetails.id);
         notifications.show({ title: t("modal.successTitle"), message: t("modal.removeSuccess"), color: "green" });
+        clearDraft();
         onClose();
       } catch (error: unknown) {
         notifications.show({
@@ -183,6 +178,7 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
     >
       <form onSubmit={form.onSubmit(onSubmitHandler)} noValidate>
         <Stack gap={16}>
+          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Group align="flex-start" grow>
             <Select
               required

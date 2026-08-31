@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { useCurrentUserId, useIsStaff } from "@/features/auth";
 import { AdminActionModal } from "@/features/moderation/components/AdminActionModal";
 import { validateReportReason, type ReportReasonError } from "@/features/moderation/utils/report";
+import { useModalDraft } from "@/hooks/useModalDraft";
 
 import { useBanUser } from "../hooks/userQueries";
 
@@ -40,8 +41,11 @@ export function AdminActionsPanel({ userId, isTargetStaff }: Readonly<AdminActio
   const currentUserId = useCurrentUserId();
   const isStaff = useIsStaff();
   const [opened, setOpened] = React.useState(false);
-  const [reason, setReason] = React.useState("");
-  const [reasonError, setReasonError] = React.useState<ReportReasonError | null>(null);
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<{ reason: string }>({
+    draftKey: `ban-user:${userId}`,
+    opened,
+    baseline: { reason: "" },
+  });
 
   const { mutate: banUser, isPending } = useBanUser();
 
@@ -51,19 +55,17 @@ export function AdminActionsPanel({ userId, isTargetStaff }: Readonly<AdminActio
 
   const close = () => {
     setOpened(false);
-    setReason("");
-    setReasonError(null);
   };
 
   const handleSubmit = () => {
-    const error = validateReportReason(reason);
-    setReasonError(error);
+    const error = validateReportReason(form.values.reason);
     if (error) {
+      form.setFieldError("reason", getReasonErrorMessage(error, t));
       return;
     }
 
     banUser(
-      { id: userId, reason },
+      { id: userId, reason: form.values.reason },
       {
         onSuccess: () => {
           notifications.show({
@@ -71,6 +73,7 @@ export function AdminActionsPanel({ userId, isTargetStaff }: Readonly<AdminActio
             message: t("banModal.successMessage"),
             color: "green",
           });
+          clearDraft();
           close();
         },
         onError: () => {
@@ -104,18 +107,17 @@ export function AdminActionsPanel({ userId, isTargetStaff }: Readonly<AdminActio
         opened={opened}
         title={t("banModal.title")}
         description={t("banModal.description")}
-        reason={reason}
-        onReasonChange={value => {
-          setReason(value);
-          setReasonError(null);
-        }}
-        reasonError={getReasonErrorMessage(reasonError, t)}
+        reason={form.values.reason}
+        onReasonChange={value => form.setFieldValue("reason", value)}
+        reasonError={typeof form.errors.reason === "string" ? form.errors.reason : undefined}
         reasonLabel={t("adminActionModal.reasonLabel")}
         reasonPlaceholder={t("banModal.reasonPlaceholder")}
         confirmLabel={t("banModal.confirmButton")}
         cancelLabel={t("adminActionModal.cancelButton")}
         isDestructive
         isLoading={isPending}
+        hasDraft={hasDraft}
+        onDiscardDraft={discardDraft}
         onConfirm={handleSubmit}
         onClose={close}
       />

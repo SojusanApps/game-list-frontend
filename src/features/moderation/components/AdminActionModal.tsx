@@ -3,6 +3,7 @@ import { IconX } from "@tabler/icons-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 
 export interface AdminActionModalProps {
   opened: boolean;
@@ -17,6 +18,9 @@ export interface AdminActionModalProps {
   cancelLabel: string;
   isDestructive?: boolean;
   isLoading?: boolean;
+  /** Shows the "unsaved draft restored" bar above the reason field when true. */
+  hasDraft?: boolean;
+  onDiscardDraft?: () => void;
   onConfirm: () => void;
   onClose: () => void;
 }
@@ -39,6 +43,8 @@ export function AdminActionModal({
   cancelLabel,
   isDestructive = false,
   isLoading = false,
+  hasDraft = false,
+  onDiscardDraft,
   onConfirm,
   onClose,
 }: Readonly<AdminActionModalProps>) {
@@ -68,6 +74,12 @@ export function AdminActionModal({
         </Group>
 
         <Box p={24}>
+          {hasDraft && onDiscardDraft && (
+            <Box mb={12}>
+              <DraftNotice onDiscard={onDiscardDraft} />
+            </Box>
+          )}
+
           <Text c="var(--color-text-500)" size="sm" style={{ lineHeight: 1.5, marginBottom: 16 }}>
             {description}
           </Text>

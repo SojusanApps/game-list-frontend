@@ -57,6 +57,10 @@
     "minute_many": "{{count}} minut temu",
     "minute_other": "{{count}} minut temu"
   },
+  "draft": {
+    "restored": "Przywrócono niezapisane zmiany",
+    "discard": "Odrzuć"
+  },
   "viewMore": "Zobacz więcej",
   "confirm": "Potwierdź",
   "cancel": "Anuluj",

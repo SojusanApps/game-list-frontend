@@ -1126,6 +1126,13 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "friend__username",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
                         "name": "id",
                         "schema": {
                             "type": "string"

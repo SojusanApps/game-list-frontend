@@ -1,11 +1,12 @@
 import { Box, Group, Modal, Stack, Text, Title, Textarea, UnstyledButton } from "@mantine/core";
-import { useForm, schemaResolver } from "@mantine/form";
+import { schemaResolver } from "@mantine/form";
 import { IconX } from "@tabler/icons-react";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
+import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 
 const validationSchema = z.object({
@@ -15,6 +16,7 @@ const validationSchema = z.object({
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 interface EditDescriptionModalProps {
+  itemId: number;
   isOpen: boolean;
   onClose: () => void;
   initialDescription?: string;
@@ -23,6 +25,7 @@ interface EditDescriptionModalProps {
 }
 
 export const EditDescriptionModal = ({
+  itemId,
   isOpen,
   onClose,
   initialDescription = "",
@@ -30,15 +33,16 @@ export const EditDescriptionModal = ({
   onSave,
 }: Readonly<EditDescriptionModalProps>) => {
   const { t } = useTranslation("collections");
-  const form = useForm<ValidationSchema>({
-    initialValues: {
-      description: initialDescription,
-    },
-    validate: schemaResolver(validationSchema),
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ValidationSchema>({
+    draftKey: `tier-item-description:${itemId}`,
+    opened: isOpen,
+    baseline: { description: initialDescription },
+    formOptions: { validate: schemaResolver(validationSchema) },
   });
 
   const onSubmit = (data: ValidationSchema) => {
     onSave(data.description);
+    clearDraft();
     onClose();
   };
 
@@ -73,6 +77,7 @@ export const EditDescriptionModal = ({
 
         {/* Body */}
         <Stack gap={16} p={24}>
+          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Box>
             <Text fz="sm" fw={600} c="var(--color-text-700)" mb={8}>
               {t("descriptionModal.gameLabel", { name: gameName })}

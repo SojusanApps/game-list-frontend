@@ -1,15 +1,16 @@
 import { ActionIcon, Modal, Stack, Group, Box, Title } from "@mantine/core";
-import { useForm, schemaResolver } from "@mantine/form";
+import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Collection } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import { useCurrentUserId } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 
 import { useCollectionsInfiniteQuery, useAddCollectionItem } from "../hooks/useCollectionQueries";
@@ -31,11 +32,11 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
 
   const { mutateAsync: addCollectionItem, isPending } = useAddCollectionItem();
 
-  const form = useForm<ValidationSchema>({
-    initialValues: {
-      collections: [],
-    },
-    validate: schemaResolver(validationSchema),
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ValidationSchema>({
+    draftKey: `add-to-collection:${gameId}`,
+    opened: true,
+    baseline: { collections: [] },
+    formOptions: { validate: schemaResolver(validationSchema) },
   });
 
   // Wrapper hook for AsyncMultiSelectAutocomplete
@@ -54,6 +55,7 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
         ),
       );
       notifications.show({ title: t("addModal.successTitle"), message: t("addModal.addSuccess"), color: "green" });
+      clearDraft();
       onClose();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("addModal.addFailed");
@@ -99,6 +101,7 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
         <Box style={{ padding: "32px", borderRadius: "0 0 24px 24px" }}>
           <form onSubmit={form.onSubmit(onSubmit)}>
             <Stack gap="lg">
+              {hasDraft && <DraftNotice onDiscard={discardDraft} />}
               <AsyncMultiSelectAutocomplete
                 id="collections"
                 name="collections"

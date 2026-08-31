@@ -11,7 +11,7 @@ import {
   Title,
   Text,
 } from "@mantine/core";
-import { useForm, schemaResolver } from "@mantine/form";
+import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import * as React from "react";
@@ -20,8 +20,10 @@ import { z } from "zod";
 
 import { VisibilityEnum, ModeEnum, TypeEnum, Friendship, CollectionDetail } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 
 import { useCreateCollection, useFriendSearch, useUpdateCollection } from "../hooks/useCollectionQueries";
@@ -37,6 +39,14 @@ const validationSchema = z.object({
 });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
+
+// `collaboratorObjects` carries the friend records behind the collaborator id list so
+// the chips can be re-rendered when a draft is restored (the ids alone have no labels
+// until re-searched). It is not sent to the backend — see `onSubmit`.
+type CollectionFormValues = ValidationSchema & { collaboratorObjects: Friendship[] };
+
+const collaboratorsToObjects = (collaborators: CollectionDetail["collaborators"] | undefined): Friendship[] =>
+  (collaborators ?? []).map(user => ({ friend: user, user, id: -1, created_at: "" }) as unknown as Friendship);
 
 interface CreateCollectionModalProps {
   onClose: () => void;
@@ -55,26 +65,10 @@ export default function CreateCollectionModal({
 
   const isPending = isCreatePending || isUpdatePending;
 
-  const [selectedCollaboratorObjects, setSelectedCollaboratorObjects] = React.useState<Friendship[]>([]);
-  const [prevMode, setPrevMode] = React.useState(mode);
-  const [prevInitialData, setPrevInitialData] = React.useState(initialData);
-
-  if (mode !== prevMode || initialData !== prevInitialData) {
-    setPrevMode(mode);
-    setPrevInitialData(initialData);
-    if (mode === "edit" && initialData?.collaborators) {
-      const initialCollaborators = initialData.collaborators.map(user => ({
-        friend: user,
-        user: user,
-        id: -1,
-        created_at: "",
-      }));
-      setSelectedCollaboratorObjects(initialCollaborators as Friendship[]);
-    }
-  }
-
-  const form = useForm<ValidationSchema>({
-    initialValues: {
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<CollectionFormValues>({
+    draftKey: mode === "edit" && initialData ? `collection:${initialData.id}` : "collection:new",
+    opened: true,
+    baseline: {
       name: initialData?.name ?? "",
       description: initialData?.description ?? "",
       is_favorite: initialData?.is_favorite ?? false,
@@ -82,41 +76,53 @@ export default function CreateCollectionModal({
       mode: initialData?.mode ?? ModeEnum.S,
       type: initialData?.type ?? TypeEnum.NOR,
       collaborators: initialData?.collaborators?.map(u => u.id.toString()) ?? [],
+      collaboratorObjects: collaboratorsToObjects(initialData?.collaborators),
     },
-    validate: schemaResolver(validationSchema),
+    formOptions: { validate: schemaResolver(validationSchema) },
   });
 
   const selectedMode = form.values.mode;
-  const [prevSelectedMode, setPrevSelectedMode] = React.useState(form.values.mode);
+  const selectedCollaboratorObjects = form.values.collaboratorObjects;
+  const [prevSelectedMode, setPrevSelectedMode] = React.useState(selectedMode);
 
   if (selectedMode !== prevSelectedMode) {
     setPrevSelectedMode(selectedMode);
     if (selectedMode === ModeEnum.S) {
       form.setFieldValue("collaborators", []);
-      setSelectedCollaboratorObjects([]);
+      form.setFieldValue("collaboratorObjects", []);
     }
   }
 
   const handleAddCollaborator = (friendship: Friendship) => {
-    setSelectedCollaboratorObjects(prev => [...prev, friendship]);
+    form.setFieldValue("collaboratorObjects", [...form.values.collaboratorObjects, friendship]);
   };
 
   const handleRemoveCollaborator = (friendship: Friendship) => {
-    setSelectedCollaboratorObjects(prev => prev.filter(f => f.friend.id !== friendship.friend.id));
+    form.setFieldValue(
+      "collaboratorObjects",
+      form.values.collaboratorObjects.filter(f => f.friend.id !== friendship.friend.id),
+    );
   };
 
   const removeCollaborator = (friendId: number) => {
-    const currentCollaborators = form.values.collaborators;
     form.setFieldValue(
       "collaborators",
-      currentCollaborators.filter(id => id !== friendId.toString()),
+      form.values.collaborators.filter(id => id !== friendId.toString()),
     );
-    setSelectedCollaboratorObjects(prev => prev.filter(f => f.friend.id !== friendId));
+    form.setFieldValue(
+      "collaboratorObjects",
+      form.values.collaboratorObjects.filter(f => f.friend.id !== friendId),
+    );
   };
 
-  const onSubmit = (data: ValidationSchema) => {
+  const onSubmit = (data: CollectionFormValues) => {
     const payload = {
-      ...data,
+      name: data.name,
+      description: data.description,
+      is_favorite: data.is_favorite,
+      visibility: data.visibility,
+      mode: data.mode,
+      type: data.type,
       collaborators: data.collaborators.map(Number),
     };
 
@@ -130,6 +136,7 @@ export default function CreateCollectionModal({
               message: t("createModal.updateSuccess"),
               color: "green",
             });
+            clearDraft();
             onClose();
           },
           onError: error => {
@@ -149,6 +156,7 @@ export default function CreateCollectionModal({
             message: t("createModal.createSuccess"),
             color: "green",
           });
+          clearDraft();
           onClose();
         },
         onError: error => {
@@ -205,6 +213,7 @@ export default function CreateCollectionModal({
         >
           <form id="create-collection-form" onSubmit={form.onSubmit(onSubmit)}>
             <Stack gap="lg">
+              {hasDraft && <DraftNotice onDiscard={discardDraft} />}
               <TextInput
                 id="name-input"
                 label={t("createModal.nameLabel")}
@@ -280,6 +289,10 @@ export default function CreateCollectionModal({
                     hideTags
                     onAdd={handleAddCollaborator}
                     onRemove={handleRemoveCollaborator}
+                    selectedItems={selectedCollaboratorObjects}
+                    // The modal body scrolls and has a sticky footer, so the dropdown
+                    // must portal out (and be allowed to flip) or it hides behind the buttons.
+                    comboboxProps={{ withinPortal: true, middlewares: { flip: true, shift: true } }}
                     renderOption={item => (
                       <Group gap={12}>
                         <Box
