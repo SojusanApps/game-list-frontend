@@ -42,6 +42,7 @@ const CandidateCard = ({ candidate, decision, onToggle }: CandidateCardProps) =>
         itemCoverUrl={
           candidate.cover_image_id ? getIGDBImageURL(candidate.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
         }
+        releaseDate={candidate.release_date}
         onClick={candidate.already_in_list ? undefined : onToggle}
       />
     </div>
