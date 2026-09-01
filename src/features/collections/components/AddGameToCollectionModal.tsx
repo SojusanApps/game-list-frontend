@@ -1,23 +1,12 @@
-import {
-  ActionIcon,
-  Loader,
-  Modal,
-  Stack,
-  Group,
-  Box,
-  ScrollArea,
-  Title,
-  Text,
-  TextInput,
-  UnstyledButton,
-} from "@mantine/core";
+import { Loader, Stack, Box, ScrollArea, Text, TextInput, UnstyledButton } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { IconSearch, IconX } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { GameSimpleList } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useGetGamesList } from "@/features/games/hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
@@ -231,41 +220,20 @@ export default function AddGameToCollectionModal({
   };
 
   return (
-    <Modal
+    <AppModal
       opened={true}
       onClose={onClose}
-      withCloseButton={false}
-      padding={0}
-      radius="xl"
-      size="lg"
-      overlayProps={{ backgroundOpacity: 0.6 }}
+      bodyPadding={0}
+      title={
+        <>
+          {t("addGame.titlePrefix")}{" "}
+          <Text span inherit c="var(--color-primary-600)">
+            {t("addGame.titleHighlight")}
+          </Text>
+        </>
+      }
     >
-      <Stack gap={0} style={{ height: "100%", maxHeight: "90vh" }}>
-        {/* Header */}
-        <Group
-          justify="space-between"
-          style={{
-            padding: "24px 32px",
-            borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(var(--color-veil-rgb), 0.5)",
-          }}
-        >
-          <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
-            {t("addGame.titlePrefix")}{" "}
-            <Text span fz={24} fw={900} c="var(--color-primary-600)">
-              {t("addGame.titleHighlight")}
-            </Text>
-          </Title>
-          <ActionIcon
-            onClick={onClose}
-            variant="subtle"
-            size="lg"
-            style={{ borderRadius: "9999px", color: "var(--color-text-400)" }}
-          >
-            <IconX style={{ width: 24, height: 24 }} />
-          </ActionIcon>
-        </Group>
-
+      <Stack gap={0}>
         {/* Search Input Area */}
         <Box p={32} pb={16}>
           <TextInput
@@ -280,13 +248,10 @@ export default function AddGameToCollectionModal({
         </Box>
 
         {/* Results List */}
-        <ScrollArea
-          style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
-          viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: "0 32px 32px" } }}
-        >
+        <ScrollArea.Autosize mah="55vh" viewportProps={{ style: { padding: "0 32px 32px" } }}>
           {renderContent()}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Stack>
-    </Modal>
+    </AppModal>
   );
 }

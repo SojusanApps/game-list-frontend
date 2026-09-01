@@ -1,4 +1,4 @@
-import { Modal, Select, Group, Stack, Textarea, NumberInput, Box } from "@mantine/core";
+import { Select, Group, Stack, Textarea, NumberInput, Box } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { GameListStatusEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
@@ -46,11 +47,12 @@ type ValidationSchema = z.infer<typeof validationSchema>;
 
 interface GameListModalProps {
   gameId: string | number;
+  gameTitle?: string;
   opened: boolean;
   onClose: () => void;
 }
 
-export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModalProps>) {
+export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<GameListModalProps>) {
   const { t } = useTranslation("games");
   const currentUserId = useCurrentUserId();
   const parsedGameIdResult = idSchema.safeParse(gameId);
@@ -66,6 +68,9 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
   const { mutateAsync: partialUpdateGameListItem, isPending: isUpdating } = usePartialUpdateGameList();
 
   const isSubmitting = isCreating || isUpdating;
+
+  const isEditing = !!gameListDetails?.id;
+  const resolvedGameTitle = gameTitle ?? gameListDetails?.title;
 
   const baseline: ValidationSchema = gameListDetails?.id
     ? {
@@ -169,14 +174,31 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
   };
 
   return (
-    <Modal
+    <AppModal
       opened={opened}
       onClose={onClose}
-      title={gameListDetails?.id ? t("modal.editTitle") : t("modal.addTitle")}
-      size="lg"
-      overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+      title={isEditing ? t("modal.editTitle") : t("modal.addTitle")}
+      subtitle={resolvedGameTitle}
+      overflowVisible
+      footer={
+        <Group justify={isEditing ? "space-between" : "flex-end"}>
+          {isEditing && (
+            <Button type="button" onClick={handleRemove} variant="destructive" isLoading={isDeleting}>
+              {t("modal.removeButton")}
+            </Button>
+          )}
+          <Group>
+            <Button type="button" onClick={onClose} variant="outline" disabled={isSubmitting}>
+              {t("modal.cancelButton")}
+            </Button>
+            <Button type="submit" form="game-list-form" isLoading={isSubmitting}>
+              {isEditing ? t("modal.saveButton") : t("modal.addButton")}
+            </Button>
+          </Group>
+        </Group>
+      }
     >
-      <form onSubmit={form.onSubmit(onSubmitHandler)} noValidate>
+      <form id="game-list-form" onSubmit={form.onSubmit(onSubmitHandler)} noValidate>
         <Stack gap={16}>
           {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Group align="flex-start" grow>
@@ -283,24 +305,8 @@ export function GameListModal({ gameId, opened, onClose }: Readonly<GameListModa
             rows={3}
             {...form.getInputProps("description")}
           />
-
-          <Group justify={gameListDetails?.id ? "space-between" : "flex-end"} mt="md">
-            {gameListDetails?.id && (
-              <Button type="button" onClick={handleRemove} variant="destructive" isLoading={isDeleting}>
-                {t("modal.removeButton")}
-              </Button>
-            )}
-            <Group>
-              <Button type="button" onClick={onClose} variant="outline" disabled={isSubmitting}>
-                {t("modal.cancelButton")}
-              </Button>
-              <Button type="submit" isLoading={isSubmitting}>
-                {gameListDetails?.id ? t("modal.saveButton") : t("modal.addButton")}
-              </Button>
-            </Group>
-          </Group>
         </Stack>
       </form>
-    </Modal>
+    </AppModal>
   );
 }

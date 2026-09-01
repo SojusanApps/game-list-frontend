@@ -254,7 +254,12 @@ export default function GameDetailPage(): React.JSX.Element {
         )}
 
         {!!gameId && (
-          <GameListModal gameId={gameId} opened={isListModalOpen} onClose={() => setIsListModalOpen(false)} />
+          <GameListModal
+            gameId={gameId}
+            gameTitle={gameDetails?.title}
+            opened={isListModalOpen}
+            onClose={() => setIsListModalOpen(false)}
+          />
         )}
       </Grid>
     </Box>

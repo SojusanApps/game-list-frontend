@@ -1,11 +1,11 @@
-import { Box, Group, Loader, Modal, Stack, Text, Title, Textarea, UnstyledButton } from "@mantine/core";
+import { Group, Loader, Stack, Textarea } from "@mantine/core";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useModalDraft } from "@/hooks/useModalDraft";
@@ -66,76 +66,48 @@ export default function EditDescriptionModal({
   };
 
   return (
-    <Modal
+    <AppModal
       opened={true}
       onClose={onClose}
-      withCloseButton={false}
-      padding={0}
-      radius="lg"
+      title={t("descriptionModal.rankingTitle")}
+      subtitle={gameTitle}
       size="xl"
-      overlayProps={{ backgroundOpacity: 0.5 }}
-    >
-      <Box style={{ background: "var(--color-background-100)", borderRadius: 16 }}>
-        <Group
-          justify="space-between"
-          align="center"
-          style={{ padding: 24, borderBottom: "1px solid var(--color-background-200)" }}
-        >
-          <Box>
-            <Title order={2} fz="xl" fw={900} c="var(--color-text-900)">
-              {t("descriptionModal.rankingTitle")}
-            </Title>
-            <Text size="sm" c="var(--color-text-500)" mt={4}>
-              {gameTitle}
-            </Text>
-          </Box>
-          <UnstyledButton
-            onClick={onClose}
-            style={{ padding: 8, borderRadius: 12 }}
-            aria-label={t("descriptionModal.closeAria")}
+      closeButtonLabel={t("descriptionModal.closeAria")}
+      footer={
+        <Group justify="flex-end" gap={12}>
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving} style={{ paddingInline: 24 }}>
+            {t("descriptionModal.cancelButton")}
+          </Button>
+          <Button
+            type="submit"
+            form="ranking-description-form"
+            variant="default"
+            disabled={isSaving}
+            style={{ paddingInline: 24 }}
           >
-            <IconX style={{ width: 20, height: 20 }} />
-          </UnstyledButton>
+            {isSaving ? (
+              <>
+                <Loader size="xs" style={{ marginRight: 8 }} /> {t("descriptionModal.savingButton")}
+              </>
+            ) : (
+              t("descriptionModal.saveButton")
+            )}
+          </Button>
         </Group>
-
-        <Box component="form" onSubmit={form.onSubmit(onSubmit)} p={24}>
-          <Stack gap={16}>
-            {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-            <Textarea
-              label={t("descriptionModal.rankingTextarea")}
-              placeholder={t("descriptionModal.rankingPlaceholder")}
-              rows={8}
-              style={{ width: "100%" }}
-              {...form.getInputProps("description")}
-            />
-          </Stack>
-
-          <Group
-            justify="flex-end"
-            gap={12}
-            style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid var(--color-background-200)" }}
-          >
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-              disabled={isSaving}
-              style={{ paddingInline: 24 }}
-            >
-              {t("descriptionModal.cancelButton")}
-            </Button>
-            <Button type="submit" variant="default" disabled={isSaving} style={{ paddingInline: 24 }}>
-              {isSaving ? (
-                <>
-                  <Loader size="xs" style={{ marginRight: 8 }} /> {t("descriptionModal.savingButton")}
-                </>
-              ) : (
-                t("descriptionModal.saveButton")
-              )}
-            </Button>
-          </Group>
-        </Box>
-      </Box>
-    </Modal>
+      }
+    >
+      <form id="ranking-description-form" onSubmit={form.onSubmit(onSubmit)}>
+        <Stack gap={16}>
+          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
+          <Textarea
+            label={t("descriptionModal.rankingTextarea")}
+            placeholder={t("descriptionModal.rankingPlaceholder")}
+            rows={8}
+            style={{ width: "100%" }}
+            {...form.getInputProps("description")}
+          />
+        </Stack>
+      </form>
+    </AppModal>
   );
 }

@@ -1,8 +1,9 @@
-import { Modal, Textarea, Stack, Group, Text, Select, Box } from "@mantine/core";
+import { Textarea, Stack, Group, Text, Select, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useTranslation } from "react-i18next";
 
 import { RecommendationEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
@@ -132,14 +133,34 @@ export function GameReviewModal({
   const isOverLimit = charCount > MAX_REVIEW_LENGTH;
 
   return (
-    <Modal
+    <AppModal
       opened={opened}
       onClose={onClose}
       title={isEditing ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
-      size="lg"
-      overlayProps={{ opacity: 0.4, blur: 2 }}
+      footer={
+        <Group justify="space-between" gap={8}>
+          {isEditing && (
+            <Button variant="outline" color="red" onClick={handleDelete} isLoading={isDeleting} disabled={isPending}>
+              {t("reviewModal.removeButton")}
+            </Button>
+          )}
+          <Group gap={8} ml="auto">
+            <Button variant="outline" onClick={onClose} disabled={isPending}>
+              {t("reviewModal.cancelButton")}
+            </Button>
+            <Button
+              type="submit"
+              form="game-review-form"
+              isLoading={isCreating || isUpdating}
+              disabled={isOverLimit || isPending}
+            >
+              {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
+            </Button>
+          </Group>
+        </Group>
+      }
     >
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form id="game-review-form" onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={16}>
           {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Select
@@ -185,23 +206,8 @@ export function GameReviewModal({
               </Text>
             </Group>
           </Stack>
-          <Group justify="space-between" gap={8}>
-            {isEditing && (
-              <Button variant="outline" color="red" onClick={handleDelete} isLoading={isDeleting} disabled={isPending}>
-                {t("reviewModal.removeButton")}
-              </Button>
-            )}
-            <Group gap={8} ml="auto">
-              <Button variant="outline" onClick={onClose} disabled={isPending}>
-                {t("reviewModal.cancelButton")}
-              </Button>
-              <Button type="submit" isLoading={isCreating || isUpdating} disabled={isOverLimit || isPending}>
-                {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
-              </Button>
-            </Group>
-          </Group>
         </Stack>
       </form>
-    </Modal>
+    </AppModal>
   );
 }

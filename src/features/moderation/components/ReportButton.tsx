@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Modal, Stack, Text, Textarea, Tooltip } from "@mantine/core";
+import { ActionIcon, Group, Stack, Text, Textarea, Tooltip } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconFlag } from "@tabler/icons-react";
 import type { TFunction } from "i18next";
@@ -6,6 +6,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { ReportCreateWritable, TargetTypeEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
@@ -143,7 +144,23 @@ export function ReportButton({
     <>
       {renderTrigger ? renderTrigger({ onClick: openModal }) : <DefaultTrigger label={label} onClick={openModal} />}
 
-      <Modal opened={opened} onClose={close} title={t("reportModal.title", { targetType: targetTypeLabel })} centered>
+      <AppModal
+        opened={opened}
+        onClose={close}
+        title={t("reportModal.title", { targetType: targetTypeLabel })}
+        size="md"
+        centered
+        footer={
+          <Group justify="flex-end" gap={8}>
+            <Button variant="outline" onClick={close} disabled={isPending}>
+              {t("reportModal.cancelButton")}
+            </Button>
+            <Button onClick={handleSubmit} isLoading={isPending}>
+              {t("reportModal.submitButton")}
+            </Button>
+          </Group>
+        }
+      >
         <Stack gap={16}>
           {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Text fz="sm" c="dimmed">
@@ -159,16 +176,8 @@ export function ReportButton({
             minRows={3}
             autosize
           />
-          <Group justify="flex-end" gap={8}>
-            <Button variant="outline" onClick={close} disabled={isPending}>
-              {t("reportModal.cancelButton")}
-            </Button>
-            <Button onClick={handleSubmit} isLoading={isPending}>
-              {t("reportModal.submitButton")}
-            </Button>
-          </Group>
         </Stack>
-      </Modal>
+      </AppModal>
     </>
   );
 }

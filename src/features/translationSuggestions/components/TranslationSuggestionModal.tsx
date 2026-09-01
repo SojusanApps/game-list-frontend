@@ -4,7 +4,6 @@ import {
   Collapse,
   Divider,
   Group,
-  Modal,
   ScrollArea,
   Select,
   Stack,
@@ -18,6 +17,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FieldEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
@@ -141,13 +141,7 @@ export function TranslationSuggestionModal({
   const isOverLimit = charCount > maxLength;
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={t("translationSuggestionModal.title")}
-      size="lg"
-      overlayProps={{ opacity: 0.4, blur: 2 }}
-    >
+    <AppModal opened={opened} onClose={onClose} title={t("translationSuggestionModal.title")} scrollable>
       <Stack gap={16}>
         {hasDraft && <DraftNotice onDiscard={discardDraft} />}
         <Select
@@ -261,6 +255,6 @@ export function TranslationSuggestionModal({
           </form>
         )}
       </Stack>
-    </Modal>
+    </AppModal>
   );
 }

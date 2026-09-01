@@ -1,9 +1,9 @@
-import { Box, Group, Modal, Stack, Text, Title, Textarea, UnstyledButton } from "@mantine/core";
+import { Box, Group, Stack, Text, Textarea } from "@mantine/core";
 import { schemaResolver } from "@mantine/form";
-import { IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useModalDraft } from "@/hooks/useModalDraft";
@@ -47,45 +47,30 @@ export const EditDescriptionModal = ({
   };
 
   return (
-    <Modal
+    <AppModal
       opened={isOpen}
       onClose={onClose}
-      withCloseButton={false}
-      padding={0}
-      radius="xl"
+      title={t("descriptionModal.tierTitle")}
+      subtitle={gameName}
       size="xl"
-      overlayProps={{ backgroundOpacity: 0.6 }}
-    >
-      <Box component="form" onSubmit={form.onSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column" }}>
-        {/* Header */}
-        <Group
-          justify="space-between"
-          align="center"
-          style={{ padding: 24, borderBottom: "1px solid var(--color-background-200)" }}
-        >
-          <Title order={2} fz="xl" fw={700} c="var(--color-text-900)">
-            {t("descriptionModal.tierTitle")}
-          </Title>
-          <UnstyledButton
-            onClick={onClose}
-            style={{ padding: 8, borderRadius: "9999px" }}
-            aria-label={t("descriptionModal.closeAria")}
-          >
-            <IconX style={{ width: 20, height: 20 }} />
-          </UnstyledButton>
+      closeButtonLabel={t("descriptionModal.closeAria")}
+      footer={
+        <Group justify="flex-end" gap={12}>
+          <Button type="button" variant="outline" onClick={onClose}>
+            {t("descriptionModal.cancelButton")}
+          </Button>
+          <Button type="submit" form="tier-description-form">
+            {t("descriptionModal.saveTierButton")}
+          </Button>
         </Group>
-
-        {/* Body */}
-        <Stack gap={16} p={24}>
+      }
+    >
+      <Box component="form" id="tier-description-form" onSubmit={form.onSubmit(onSubmit)}>
+        <Stack gap={16}>
           {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-          <Box>
-            <Text fz="sm" fw={600} c="var(--color-text-700)" mb={8}>
-              {t("descriptionModal.gameLabel", { name: gameName })}
-            </Text>
-            <Text size="xs" c="var(--color-text-500)" mb={16}>
-              {t("descriptionModal.tierWhyPrompt")}
-            </Text>
-          </Box>
+          <Text size="xs" c="var(--color-text-500)">
+            {t("descriptionModal.tierWhyPrompt")}
+          </Text>
 
           <Textarea
             placeholder={t("descriptionModal.tierPlaceholder")}
@@ -98,23 +83,7 @@ export const EditDescriptionModal = ({
             {form.values.description.length} / 500 {t("descriptionModal.characters")}
           </Text>
         </Stack>
-
-        {/* Footer */}
-        <Group
-          justify="flex-end"
-          gap={12}
-          style={{
-            padding: 24,
-            borderTop: "1px solid var(--color-background-200)",
-            background: "var(--color-background-50)",
-          }}
-        >
-          <Button type="button" variant="outline" onClick={onClose}>
-            {t("descriptionModal.cancelButton")}
-          </Button>
-          <Button type="submit">{t("descriptionModal.saveTierButton")}</Button>
-        </Group>
       </Box>
-    </Modal>
+    </AppModal>
   );
 };

@@ -1,8 +1,9 @@
-import { Modal, Loader, Center, Text } from "@mantine/core";
+import { Loader, Center, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { GameSimpleList } from "@/client/types.gen";
+import { AppModal } from "@/components/ui/AppModal";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { formatDisplayDate } from "@/utils/dateUtils";
@@ -83,21 +84,22 @@ export default function DayDetailModal({ opened, onClose, dateStr }: Readonly<Da
   };
 
   return (
-    <Modal
+    <AppModal
       opened={opened}
       onClose={onClose}
       title={
-        <Text size="xl" fw={600}>
+        <>
           {t("calendar.releasesFor")}{" "}
-          <Text span c="var(--color-primary-500)" fw={800}>
+          <Text span inherit c="var(--color-primary-500)">
             {formatDisplayDate(dateStr)}
           </Text>
-        </Text>
+        </>
       }
       size="1200px"
       centered
+      bodyPadding={0}
     >
       {renderContent()}
-    </Modal>
+    </AppModal>
   );
 }
