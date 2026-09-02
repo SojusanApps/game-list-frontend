@@ -1,18 +1,18 @@
 import { Badge, Box, Group, Text, Tooltip, ActionIcon } from "@mantine/core";
 import { IconTrash, IconCheck } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { createColumnHelper, tableFeatures, ColumnDef } from "@tanstack/react-table";
+import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 import type React from "react";
 
 import { Notification } from "@/client";
+import { type PaginatedTableFeatures } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 import pageStyles from "./NotificationsPage.module.css";
 
-export const notificationTableFeatures = tableFeatures({});
-export type NotificationTableFeatures = typeof notificationTableFeatures;
+type NotificationTableFeatures = PaginatedTableFeatures;
 
 function getLevelColor(level?: string) {
   switch (level?.toLowerCase()) {

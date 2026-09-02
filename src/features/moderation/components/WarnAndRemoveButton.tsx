@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { ReportDirectModerateWritable, TargetTypeEnum } from "@/client";
 import { useCurrentUserId, useIsStaff } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 
 import { useCreateDirectModerateReport } from "../hooks/moderationQueries";
 import { canWarnAndRemove, validateReportReason, type ReportReasonError } from "../utils/report";
@@ -101,8 +102,11 @@ export function WarnAndRemoveButton({
   const currentUserId = useCurrentUserId();
   const isStaff = useIsStaff();
   const [opened, setOpened] = React.useState(false);
-  const [reason, setReason] = React.useState("");
-  const [reasonError, setReasonError] = React.useState<ReportReasonError | null>(null);
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<{ reason: string }>({
+    draftKey: `warn-and-remove:${targetType}:${targetId}`,
+    opened,
+    baseline: { reason: "" },
+  });
 
   const { mutate: createDirectModerateReport, isPending } = useCreateDirectModerateReport();
 
@@ -114,24 +118,23 @@ export function WarnAndRemoveButton({
 
   const close = () => {
     setOpened(false);
-    setReason("");
-    setReasonError(null);
   };
 
   const handleSubmit = () => {
-    const error = validateReportReason(reason);
-    setReasonError(error);
+    const error = validateReportReason(form.values.reason);
     if (error) {
+      form.setFieldError("reason", getReasonErrorMessage(error, t));
       return;
     }
 
-    createDirectModerateReport(buildDirectModerateBody(targetType, targetId, reason), {
+    createDirectModerateReport(buildDirectModerateBody(targetType, targetId, form.values.reason), {
       onSuccess: () => {
         notifications.show({
           title: t("warnAndRemoveModal.successTitle"),
           message: t("warnAndRemoveModal.successMessage"),
           color: "green",
         });
+        clearDraft();
         close();
       },
       onError: () => {
@@ -152,17 +155,16 @@ export function WarnAndRemoveButton({
         opened={opened}
         title={t("warnAndRemoveModal.title", { targetType: targetTypeLabel })}
         description={t("warnAndRemoveModal.description", { username: ownerUsername, targetType: targetTypeLabel })}
-        reason={reason}
-        onReasonChange={value => {
-          setReason(value);
-          setReasonError(null);
-        }}
-        reasonError={getReasonErrorMessage(reasonError, t)}
+        reason={form.values.reason}
+        onReasonChange={value => form.setFieldValue("reason", value)}
+        reasonError={typeof form.errors.reason === "string" ? form.errors.reason : undefined}
         reasonLabel={t("adminActionModal.reasonLabel")}
         reasonPlaceholder={t("warnAndRemoveModal.reasonPlaceholder")}
         confirmLabel={t("warnAndRemoveModal.confirmButton")}
         cancelLabel={t("adminActionModal.cancelButton")}
         isLoading={isPending}
+        hasDraft={hasDraft}
+        onDiscardDraft={discardDraft}
         onConfirm={handleSubmit}
         onClose={close}
       />

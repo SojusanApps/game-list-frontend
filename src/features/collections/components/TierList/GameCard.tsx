@@ -235,6 +235,7 @@ export const GameCard = (props: GameCardProps) => {
 
       {isModalOpen && onDescriptionChange && (
         <EditDescriptionModal
+          itemId={collectionItemId}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           initialDescription={description}

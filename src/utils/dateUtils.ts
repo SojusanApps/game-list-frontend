@@ -1,21 +1,3 @@
-/**
- * Parses a date string based on simple format tokens.
- * Currently supports extracting parts from common formats like "YYYY-MM-DD".
- */
-export function parseDate(dateStr?: string | null, format = "YYYY-MM-DD"): Date | null {
-  if (!dateStr) return null;
-
-  if (format === "YYYY-MM-DD" && /^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
-    const [year, month, day] = dateStr.split("T")[0].split("-");
-    const d = new Date(Number(year), Number(month) - 1, Number(day));
-    return Number.isNaN(d.getTime()) ? null : d;
-  }
-
-  // Fallback for general strings
-  const d = new Date(dateStr);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
 import dayjs from "dayjs";
 
 import i18n from "@/lib/i18n";

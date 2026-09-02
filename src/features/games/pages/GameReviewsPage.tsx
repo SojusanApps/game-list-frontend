@@ -1,4 +1,4 @@
-import { Box, Group, Pagination, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -6,14 +6,13 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { useCurrentUserId, useRequireAuth } from "@/features/auth";
 
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
 import { useGetGameReviewsList, useGetGamesDetails } from "../hooks/gameQueries";
-
-const PAGE_SIZE = 10;
 
 const routeApi = getRouteApi("/game_/$id/$slug/reviews");
 
@@ -44,7 +43,7 @@ export default function GameReviewsPage(): React.JSX.Element {
     [gameReviewItems?.results, userReview?.id],
   );
 
-  const totalPages = Math.ceil((gameReviewItems?.count ?? 0) / PAGE_SIZE);
+  const totalPages = derivePageCount({ count: gameReviewItems?.count, pageSize: LIST_PAGE_SIZE, page });
 
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
@@ -104,11 +103,7 @@ export default function GameReviewsPage(): React.JSX.Element {
           {!isLoading && otherReviews.map(gameReview => <GameReview key={gameReview.id} gameReview={gameReview} />)}
         </Stack>
 
-        {totalPages > 1 && (
-          <Group justify="center">
-            <Pagination total={totalPages} value={page} onChange={setPage} />
-          </Group>
-        )}
+        <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
       </Stack>
 
       {!!gameId && (

@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Modal, Stack, Text, Textarea, Tooltip } from "@mantine/core";
+import { ActionIcon, Group, Stack, Text, Textarea, Tooltip } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconFlag } from "@tabler/icons-react";
 import type { TFunction } from "i18next";
@@ -6,8 +6,11 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { ReportCreateWritable, TargetTypeEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 
 import { useCreateReport } from "../hooks/moderationQueries";
 import { canReport, validateReportReason, type ReportReasonError } from "../utils/report";
@@ -91,8 +94,11 @@ export function ReportButton({
   const { t } = useTranslation("moderation");
   const currentUserId = useCurrentUserId();
   const [opened, setOpened] = React.useState(false);
-  const [reason, setReason] = React.useState("");
-  const [reasonError, setReasonError] = React.useState<ReportReasonError | null>(null);
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<{ reason: string }>({
+    draftKey: `report:${targetType}:${targetId}`,
+    opened,
+    baseline: { reason: "" },
+  });
 
   const { mutate: createReport, isPending } = useCreateReport();
 
@@ -104,24 +110,23 @@ export function ReportButton({
 
   const close = () => {
     setOpened(false);
-    setReason("");
-    setReasonError(null);
   };
 
   const handleSubmit = () => {
-    const error = validateReportReason(reason);
-    setReasonError(error);
+    const error = validateReportReason(form.values.reason);
     if (error) {
+      form.setFieldError("reason", getReasonErrorMessage(error, t));
       return;
     }
 
-    createReport(buildReportBody(targetType, targetId, reason), {
+    createReport(buildReportBody(targetType, targetId, form.values.reason), {
       onSuccess: () => {
         notifications.show({
           title: t("reportModal.successTitle"),
           message: t("reportModal.successMessage"),
           color: "green",
         });
+        clearDraft();
         close();
       },
       onError: () => {
@@ -132,8 +137,6 @@ export function ReportButton({
     });
   };
 
-  const reasonErrorMessage = getReasonErrorMessage(reasonError, t);
-
   const label = t("reportButton.ariaLabel");
   const openModal = () => setOpened(true);
 
@@ -141,8 +144,25 @@ export function ReportButton({
     <>
       {renderTrigger ? renderTrigger({ onClick: openModal }) : <DefaultTrigger label={label} onClick={openModal} />}
 
-      <Modal opened={opened} onClose={close} title={t("reportModal.title", { targetType: targetTypeLabel })} centered>
+      <AppModal
+        opened={opened}
+        onClose={close}
+        title={t("reportModal.title", { targetType: targetTypeLabel })}
+        size="md"
+        centered
+        footer={
+          <Group justify="flex-end" gap={8}>
+            <Button variant="outline" onClick={close} disabled={isPending}>
+              {t("reportModal.cancelButton")}
+            </Button>
+            <Button onClick={handleSubmit} isLoading={isPending}>
+              {t("reportModal.submitButton")}
+            </Button>
+          </Group>
+        }
+      >
         <Stack gap={16}>
+          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Text fz="sm" c="dimmed">
             {t("reportModal.disclaimer")}
           </Text>
@@ -152,25 +172,12 @@ export function ReportButton({
           <Textarea
             label={t("reportModal.reasonLabel")}
             placeholder={t("reportModal.reasonPlaceholder")}
-            value={reason}
-            onChange={event => {
-              setReason(event.currentTarget.value);
-              setReasonError(null);
-            }}
-            error={reasonErrorMessage}
+            {...form.getInputProps("reason")}
             minRows={3}
             autosize
           />
-          <Group justify="flex-end" gap={8}>
-            <Button variant="outline" onClick={close} disabled={isPending}>
-              {t("reportModal.cancelButton")}
-            </Button>
-            <Button onClick={handleSubmit} isLoading={isPending}>
-              {t("reportModal.submitButton")}
-            </Button>
-          </Group>
         </Stack>
-      </Modal>
+      </AppModal>
     </>
   );
 }

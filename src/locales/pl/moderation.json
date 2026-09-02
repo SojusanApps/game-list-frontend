@@ -40,6 +40,6 @@
   "banModal.description": "Spowoduje to oznaczenie konta jako zbanowane, niezależnie od historii zgłoszeń czy ostrzeżeń. Cała zawartość tego użytkownika zostanie automatycznie moderowana (ukryta przed innymi użytkownikami), tak jak w przypadku zaakceptowanego zgłoszenia — samo konto pozostaje w pełni użyteczne. Obecnie nie ma możliwości cofnięcia bana, upewnij się więc, że jest to uzasadnione.",
   "banModal.reasonPlaceholder": "Wyjaśnij, dlaczego to konto zostaje zbanowane",
   "banModal.confirmButton": "Zbanuj użytkownika",
-  "banModal.successTitle": "Użytkownik zbanowany",
+  "banModal.successTitle": "Konto zbanowane",
   "banModal.successMessage": "Konto zostało zbanowane. Cała zawartość tego użytkownika jest teraz automatycznie moderowana."
 }

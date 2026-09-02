@@ -1,4 +1,5 @@
-import { Box, Group, Text, Title } from "@mantine/core";
+import { Box, Group, Title } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
 import { Link, LinkComponentProps } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -44,10 +45,8 @@ export function SectionHeader({ title, viewMoreHref, className }: Readonly<Secti
           search={"search" in linkProps ? linkProps.search : undefined}
           className={styles.viewMoreLink}
         >
-          {t("viewMore")}{" "}
-          <Text component="span" fz="lg">
-            →
-          </Text>
+          {t("viewMore")}
+          <IconArrowRight size={16} stroke={1.5} />
         </Link>
       )}
     </Group>

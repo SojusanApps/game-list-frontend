@@ -7,6 +7,7 @@ import { GameList, GameListStatusEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { StatusIcon } from "@/features/games/utils/StatusIcon";
 import { formatDisplayDate } from "@/utils/dateUtils";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
@@ -80,9 +81,7 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
               }),
             }}
           >
-            <Text component="span" size="sm">
-              {config?.emoji}
-            </Text>
+            <StatusIcon status={statusKey} size={14} />
             <Text style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               {latestGameListUpdate.status}
             </Text>

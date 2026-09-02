@@ -20,7 +20,15 @@
     "anyMode": "Dowolny tryb",
     "anyType": "Dowolny typ",
     "collectionsTitle": "Kolekcje <0>{{username}}</0>",
-    "collectionsPageTitle": "Kolekcje {{username}}"
+    "collectionsPageTitle": "Kolekcje {{username}}",
+    "table": {
+      "name": "Nazwa",
+      "games": "Gry",
+      "type": "Typ",
+      "visibility": "Widoczność",
+      "mode": "Tryb",
+      "updated": "Aktualizacja"
+    }
   },
   "visibility": {
     "public": "Publiczna",
@@ -50,10 +58,17 @@
     "noGames": "Brak gier w kolekcji",
     "noGamesDesc": "Ta kolekcja jest pusta.",
     "successTitle": "Sukces",
-    "errorTitle": "Błąd"
+    "errorTitle": "Błąd",
+    "table": {
+      "title": "Tytuł",
+      "addedBy": "Dodane przez",
+      "actions": "Akcje",
+      "remove": "Usuń grę",
+      "empty": "Brak gier w kolekcji"
+    }
   },
   "header": {
-    "pairwiseRank": "\u2694\uFE0F Rankinguj parami",
+    "pairwiseRank": "Rankinguj parami",
     "addGame": "Dodaj grę",
     "editCollection": "Edytuj kolekcję",
     "collectionsLink": " – Kolekcje"

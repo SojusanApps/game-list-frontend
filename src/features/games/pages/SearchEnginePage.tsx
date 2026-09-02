@@ -16,14 +16,19 @@ import {
 import { Button } from "@/components/ui/Button";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import GameSearchFilter, {
   ValidationSchema as GameSearchFilterValidationSchema,
 } from "@/features/games/components/GameSearchFilter";
-import { useSearchInfiniteQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
+import { useSearchInfiniteQuery, useSearchQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { useListViewStore } from "@/lib/listViewStore";
 import { Route } from "@/routes/search";
+
+import { createCompanyColumns, createGameColumns, createUserColumns } from "../components/gameSearchColumns";
 
 import styles from "./SearchEnginePage.module.css";
 
@@ -132,6 +137,8 @@ export default function SearchEnginePage(): React.JSX.Element {
   const navigate = useNavigate({ from: Route.id });
 
   const selectedCategory = searchParams.category ?? "games";
+  const viewMode = useListViewStore(state => state.mode);
+  const page = searchParams.page ?? 1;
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [searchInput, setSearchInput] = React.useState(searchParams.q ?? "");
@@ -142,7 +149,7 @@ export default function SearchEnginePage(): React.JSX.Element {
     setSearchInput(searchParams.q ?? "");
   }
 
-  const { q, ...otherFilters } = searchParams;
+  const { q, page: _page, ...otherFilters } = searchParams;
 
   const queryKey = getQueryKey(selectedCategory);
 
@@ -162,7 +169,29 @@ export default function SearchEnginePage(): React.JSX.Element {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useSearchInfiniteQuery(selectedCategory, filters, { enabled: hasSearched });
+  } = useSearchInfiniteQuery(selectedCategory, filters, { enabled: hasSearched && viewMode === "infinite" });
+
+  const {
+    data: pagedData,
+    error: pagedError,
+    isLoading: isPagedLoading,
+    isFetching: isPagedFetching,
+  } = useSearchQuery(selectedCategory, filters, page, { enabled: hasSearched && viewMode === "table" });
+
+  const gameColumns = React.useMemo(() => createGameColumns(t), [t]);
+  const companyColumns = React.useMemo(() => createCompanyColumns(t), [t]);
+  const userColumns = React.useMemo(() => createUserColumns(t), [t]);
+
+  // `page` is a table-mode-only concern; drop it from the URL when infinite scroll is active.
+  React.useEffect(() => {
+    if (viewMode === "infinite" && searchParams.page !== undefined) {
+      navigate({ search: prev => ({ ...prev, page: undefined }), replace: true });
+    }
+  }, [viewMode, searchParams.page, navigate]);
+
+  const setPage = (next: number) => {
+    navigate({ search: prev => ({ ...prev, page: next <= 1 ? undefined : next }) });
+  };
 
   const handleHeroSearch = (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
@@ -172,6 +201,7 @@ export default function SearchEnginePage(): React.JSX.Element {
         ...prev,
         q: searchInput.trim() || undefined,
         category: selectedCategory,
+        page: undefined,
       }),
       replace: true,
     });
@@ -224,6 +254,58 @@ export default function SearchEnginePage(): React.JSX.Element {
     users: "search.readyToExploreDescUsers",
   } as const;
 
+  const displayError = viewMode === "table" ? pagedError : errorFetchingData;
+
+  const renderResultsTable = () => {
+    const shared = {
+      count: pagedData?.count ?? 0,
+      page,
+      onPageChange: setPage,
+      isLoading: isPagedLoading,
+      isFetching: isPagedFetching,
+      emptyLabel: t("search.noResultsFound"),
+    };
+
+    if (selectedCategory === "companies") {
+      const rows = (pagedData?.results ?? []) as Company[];
+      return (
+        <PaginatedTable
+          {...shared}
+          columns={companyColumns}
+          data={rows}
+          getRowId={row => String(row.id)}
+          onRowClick={row =>
+            navigate({ to: "/company/$id/$slug", params: { id: String(row.id), slug: row.slug ?? "" } })
+          }
+        />
+      );
+    }
+
+    if (selectedCategory === "users") {
+      const rows = (pagedData?.results ?? []) as User[];
+      return (
+        <PaginatedTable
+          {...shared}
+          columns={userColumns}
+          data={rows}
+          getRowId={row => String(row.id)}
+          onRowClick={row => navigate({ to: "/profile/$id/$slug", params: { id: String(row.id), slug: row.slug } })}
+        />
+      );
+    }
+
+    const rows = (pagedData?.results ?? []) as GameSimpleList[];
+    return (
+      <PaginatedTable
+        {...shared}
+        columns={gameColumns}
+        data={rows}
+        getRowId={row => String(row.id)}
+        onRowClick={row => navigate({ to: "/game/$id/$slug", params: { id: String(row.id), slug: row.slug ?? "" } })}
+      />
+    );
+  };
+
   const renderSearchContent = () => {
     if (!hasSearched) {
       return (
@@ -259,6 +341,10 @@ export default function SearchEnginePage(): React.JSX.Element {
           </Stack>
         </Stack>
       );
+    }
+
+    if (viewMode === "table") {
+      return renderResultsTable();
     }
 
     if (isLoading && !isFetchingNextPage) {
@@ -396,34 +482,40 @@ export default function SearchEnginePage(): React.JSX.Element {
           )}
         </Drawer>
 
-        <Box
-          style={{
-            background: "var(--color-background-100)",
-            borderRadius: "16px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            border: "1px solid var(--color-background-200)",
-            padding: "32px",
-            minHeight: "850px",
-            position: "relative",
-          }}
-        >
-          {renderSearchContent()}
-          {errorFetchingData && (
-            <Box
-              style={{
-                background: "var(--color-error-50)",
-                border: "1px solid var(--color-error-200)",
-                borderRadius: "12px",
-                padding: "16px",
-                marginTop: "16px",
-              }}
-            >
-              <Text ta="center" fw={500} c="var(--color-error-600)">
-                {t("search.fetchError", { message: errorFetchingData.message })}
-              </Text>
-            </Box>
-          )}
-        </Box>
+        <Stack gap={16}>
+          <Group justify="flex-end">
+            <ListViewModeToggle />
+          </Group>
+
+          <Box
+            style={{
+              background: "var(--color-background-100)",
+              borderRadius: "16px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              border: "1px solid var(--color-background-200)",
+              padding: "32px",
+              minHeight: "850px",
+              position: "relative",
+            }}
+          >
+            {renderSearchContent()}
+            {displayError && (
+              <Box
+                style={{
+                  background: "var(--color-error-50)",
+                  border: "1px solid var(--color-error-200)",
+                  borderRadius: "12px",
+                  padding: "16px",
+                  marginTop: "16px",
+                }}
+              >
+                <Text ta="center" fw={500} c="var(--color-error-600)">
+                  {t("search.fetchError", { message: displayError.message })}
+                </Text>
+              </Box>
+            )}
+          </Box>
+        </Stack>
       </Stack>
     </Box>
   );

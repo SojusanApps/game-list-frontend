@@ -1,7 +1,7 @@
 import { Box, Stack, Text, Stepper, Group, Textarea } from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { GameListCreateWritable, GameSimpleList, TitleImportResult } from "@/cli
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
 import i18n from "@/lib/i18n";
-import { formatDate } from "@/utils/dateUtils";
+import { playtimeHoursToMinutes } from "@/utils/playtimeUtils";
 
 import { useTitleImport, useBulkCreateGameList } from "../../hooks/gameQueries";
 import {
@@ -266,9 +266,9 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
       status: row.status,
       score: row.score,
       owned_on: row.owned_on.map(Number),
-      started_at: formatDate(row.started_at, "YYYY-MM-DD"),
-      completed_at: formatDate(row.completed_at, "YYYY-MM-DD"),
-      playtime: row.playtime,
+      started_at: row.started_at || null,
+      completed_at: row.completed_at || null,
+      playtime: playtimeHoursToMinutes(row.playtime),
       description: row.description || undefined,
     }));
     try {
@@ -375,8 +375,12 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
             onFieldChange={onFieldChange}
           />
           <Group justify="space-between">
-            <Button variant="outline" onClick={handleConfigureBack}>
-              ← {t("import.backStepButton")}
+            <Button
+              variant="outline"
+              onClick={handleConfigureBack}
+              leftSection={<IconArrowLeft size={16} stroke={1.5} />}
+            >
+              {t("import.backStepButton")}
             </Button>
             <Button
               onClick={handleImport}

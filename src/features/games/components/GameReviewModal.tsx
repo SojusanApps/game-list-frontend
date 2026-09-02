@@ -1,17 +1,20 @@
-import { Modal, Textarea, Stack, Group, Text, Select, Box } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { Textarea, Stack, Group, Text, Select, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { RecommendationEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 
 import { useCreateGameReview, useUpdateGameReview, useDeleteGameReview } from "../hooks/gameQueries";
 import { getRecommendationConfig, RECOMMENDATION_ORDER } from "../utils/recommendationConfig";
 
 const MAX_REVIEW_LENGTH = 1000;
+
+type ReviewFormValues = { review: string; recommendation: RecommendationEnum | null };
 
 interface GameReviewModalProps {
   gameId: number;
@@ -51,33 +54,24 @@ export function GameReviewModal({
     return null;
   };
 
-  const form = useForm({
-    initialValues: {
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ReviewFormValues>({
+    draftKey: `game-review:${gameId}`,
+    opened,
+    baseline: {
       review: existingReviewText ?? "",
       recommendation: existingRecommendation ?? null,
     },
-    validate: { review: validateReview, recommendation: validateRecommendation },
+    formOptions: {
+      validate: { review: validateReview, recommendation: validateRecommendation },
+    },
   });
-
-  React.useEffect(() => {
-    if (opened) {
-      form.setValues({
-        review: existingReviewText ?? "",
-        recommendation: existingRecommendation ?? null,
-      });
-    }
-    // `form` is a new object on every render (Mantine's useForm does not memoize it), so depending
-    // on it here would re-run this effect — and reset the fields — after every keystroke/selection.
-    // `form.setValues` is the actual stable reference we need.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [opened, existingReviewText, existingRecommendation, form.setValues]);
 
   const { mutateAsync: createReview, isPending: isCreating } = useCreateGameReview();
   const { mutateAsync: updateReview, isPending: isUpdating } = useUpdateGameReview();
   const { mutateAsync: deleteReview, isPending: isDeleting } = useDeleteGameReview();
   const isPending = isCreating || isUpdating || isDeleting;
 
-  const handleSubmit = async (values: { review: string; recommendation: RecommendationEnum | null }) => {
+  const handleSubmit = async (values: ReviewFormValues) => {
     if (!currentUserId || !values.recommendation) {
       return;
     }
@@ -102,6 +96,7 @@ export function GameReviewModal({
         message: isEditing ? t("reviewModal.updateSuccess") : t("reviewModal.createSuccess"),
         color: "green",
       });
+      clearDraft();
       onClose();
     } catch {
       notifications.show({
@@ -123,6 +118,7 @@ export function GameReviewModal({
         message: t("reviewModal.deleteSuccess"),
         color: "green",
       });
+      clearDraft();
       onClose();
     } catch {
       notifications.show({
@@ -137,15 +133,36 @@ export function GameReviewModal({
   const isOverLimit = charCount > MAX_REVIEW_LENGTH;
 
   return (
-    <Modal
+    <AppModal
       opened={opened}
       onClose={onClose}
       title={isEditing ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
-      size="lg"
-      overlayProps={{ opacity: 0.4, blur: 2 }}
+      footer={
+        <Group justify="space-between" gap={8}>
+          {isEditing && (
+            <Button variant="outline" color="red" onClick={handleDelete} isLoading={isDeleting} disabled={isPending}>
+              {t("reviewModal.removeButton")}
+            </Button>
+          )}
+          <Group gap={8} ml="auto">
+            <Button variant="outline" onClick={onClose} disabled={isPending}>
+              {t("reviewModal.cancelButton")}
+            </Button>
+            <Button
+              type="submit"
+              form="game-review-form"
+              isLoading={isCreating || isUpdating}
+              disabled={isOverLimit || isPending}
+            >
+              {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
+            </Button>
+          </Group>
+        </Group>
+      }
     >
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form id="game-review-form" onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={16}>
+          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
           <Select
             label={t("reviewModal.recommendationLabel")}
             placeholder={t("reviewModal.recommendationPlaceholder")}
@@ -189,23 +206,8 @@ export function GameReviewModal({
               </Text>
             </Group>
           </Stack>
-          <Group justify="space-between" gap={8}>
-            {isEditing && (
-              <Button variant="outline" color="red" onClick={handleDelete} isLoading={isDeleting} disabled={isPending}>
-                {t("reviewModal.removeButton")}
-              </Button>
-            )}
-            <Group gap={8} ml="auto">
-              <Button variant="outline" onClick={onClose} disabled={isPending}>
-                {t("reviewModal.cancelButton")}
-              </Button>
-              <Button type="submit" isLoading={isCreating || isUpdating} disabled={isOverLimit || isPending}>
-                {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
-              </Button>
-            </Group>
-          </Group>
         </Stack>
       </form>
-    </Modal>
+    </AppModal>
   );
 }

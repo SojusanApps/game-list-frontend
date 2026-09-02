@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 
 import { BlankEnum, TierEnum } from "@/client";
@@ -29,7 +29,12 @@ const fetchCollections = async ({ pageParam = 1, queryKey }: { pageParam?: numbe
   return await getCollectionsList(query);
 };
 
-export const useCollectionsInfiniteQuery = (userId?: number, filters: object = {}, useMember = false) => {
+export const useCollectionsInfiniteQuery = (
+  userId?: number,
+  filters: object = {},
+  useMember = false,
+  options: { enabled?: boolean } = {},
+) => {
   return useInfiniteQuery({
     queryKey: collectionKeys.infinite(userId ?? -1, filters, useMember),
     queryFn: fetchCollections,
@@ -40,7 +45,22 @@ export const useCollectionsInfiniteQuery = (userId?: number, filters: object = {
       }
       return null;
     },
-    enabled: !!userId,
+    enabled: !!userId && (options.enabled ?? true),
+  });
+};
+
+export const useCollectionsQuery = (
+  userId?: number,
+  page: number = 1,
+  filters: object = {},
+  useMember = false,
+  options: { enabled?: boolean } = {},
+) => {
+  return useQuery({
+    queryKey: [...collectionKeys.infinite(userId ?? -1, filters, useMember), "page", page],
+    queryFn: () => fetchCollections({ pageParam: page, queryKey: ["", "", userId ?? -1, filters, useMember] }),
+    placeholderData: keepPreviousData,
+    enabled: !!userId && (options.enabled ?? true),
   });
 };
 
@@ -101,7 +121,11 @@ const fetchCollectionItems = async ({
   return await getCollectionItems(query);
 };
 
-export const useCollectionItemsInfiniteQuery = (collectionId?: number, filters: object = {}) => {
+export const useCollectionItemsInfiniteQuery = (
+  collectionId?: number,
+  filters: object = {},
+  options: { enabled?: boolean } = {},
+) => {
   return useInfiniteQuery({
     queryKey: collectionKeys.items(collectionId ?? -1, filters),
     queryFn: fetchCollectionItems,
@@ -112,15 +136,21 @@ export const useCollectionItemsInfiniteQuery = (collectionId?: number, filters: 
       }
       return null;
     },
-    enabled: !!collectionId,
+    enabled: !!collectionId && (options.enabled ?? true),
   });
 };
 
-export const useCollectionItemsQuery = (collectionId?: number, page: number = 1, filters: object = {}) => {
+export const useCollectionItemsQuery = (
+  collectionId?: number,
+  page: number = 1,
+  filters: object = {},
+  options: { enabled?: boolean } = {},
+) => {
   return useQuery({
     queryKey: [...collectionKeys.items(collectionId ?? -1, filters), page],
     queryFn: () => fetchCollectionItems({ pageParam: page, queryKey: ["", "", collectionId ?? -1, filters] }),
-    enabled: !!collectionId,
+    placeholderData: keepPreviousData,
+    enabled: !!collectionId && (options.enabled ?? true),
   });
 };
 
@@ -252,12 +282,10 @@ export const useUpdateCollectionItemTier = () => {
 export const useFriendSearch = (searchTerm: string) => {
   const currentUserId = useCurrentUserId();
 
-  // Use a query object that always includes user to trigger initial load
   const query = React.useMemo(
     () => ({
       user: currentUserId ? String(currentUserId) : undefined,
-      friend_username: searchTerm || undefined, // Keep as friend_username if that's what the user expected, or try friend__username
-      search: searchTerm || undefined, // Also try standard search parameter
+      friend__username: searchTerm || undefined,
     }),
     [currentUserId, searchTerm],
   );

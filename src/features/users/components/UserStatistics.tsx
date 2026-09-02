@@ -3,7 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { UserDetail, GameListStatusEnum } from "@/client";
-import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { StatusIcon } from "@/features/games/utils/StatusIcon";
 
 interface UserStatisticsProps {
   userDetails?: UserDetail;
@@ -52,13 +52,10 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
                 count: userDetails?.game_list_statistics.plan_to_play,
               },
             ].map(({ key, label, count }) => {
-              const config = getStatusConfig(key);
               return (
                 <Group key={key} justify="space-between" align="center">
                   <Group gap={10}>
-                    <Text component="span" fz="lg" lh={1}>
-                      {config?.emoji}
-                    </Text>
+                    <StatusIcon status={key} size={18} neon />
                     <Text component="span" size="sm" fw={600} c="var(--color-text-500)">
                       {label}
                     </Text>
