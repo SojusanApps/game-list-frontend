@@ -1,7 +1,7 @@
 import { Skeleton, Stack, Group, Box, Title, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconDeviceGamepad2 } from "@tabler/icons-react";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,16 +9,20 @@ import { CollectionItem, ModeEnum, TypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { PairwiseRankingModal } from "@/features/ranking";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useListViewStore } from "@/lib/listViewStore";
 import { cn } from "@/utils/cn";
 
 import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
 import { CollectionHeader } from "../components/CollectionHeader";
+import { createCollectionItemColumns } from "../components/collectionItemColumns";
 import { CollectionStatsBanner } from "../components/CollectionStatsBanner";
 import CreateCollectionModal from "../components/CreateCollectionModal";
 import { RankingListView } from "../components/RankingList/RankingListView";
@@ -26,6 +30,7 @@ import { TierListView } from "../components/TierList/TierListView";
 import {
   useCollectionDetail,
   useCollectionItemsInfiniteQuery,
+  useCollectionItemsQuery,
   useRemoveCollectionItem,
 } from "../hooks/useCollectionQueries";
 
@@ -41,11 +46,17 @@ export default function CollectionPage(): React.JSX.Element {
   const [isAddGameModalOpen, setIsAddGameModalOpen] = React.useState(false);
   const [isPairwiseModalOpen, setIsPairwiseModalOpen] = React.useState(false);
 
+  const renderMode = useListViewStore(state => state.mode);
+  const navigate = useNavigate();
+  const [page, setPage] = React.useState(1);
+
   const {
     data: collection,
     isLoading: isCollectionLoading,
     error: collectionError,
   } = useCollectionDetail(collectionId);
+
+  const isNormalCollection = collection?.type === TypeEnum.NOR;
 
   const {
     data: itemsResults,
@@ -54,7 +65,14 @@ export default function CollectionPage(): React.JSX.Element {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useCollectionItemsInfiniteQuery(collectionId);
+  } = useCollectionItemsInfiniteQuery(collectionId, {}, { enabled: renderMode === "infinite" });
+
+  const tableQuery = useCollectionItemsQuery(
+    collectionId,
+    page,
+    {},
+    { enabled: renderMode === "table" && isNormalCollection },
+  );
 
   const { mutate: removeCollectionItem } = useRemoveCollectionItem();
 
@@ -107,10 +125,23 @@ export default function CollectionPage(): React.JSX.Element {
   );
 
   const allItems = React.useMemo(
-    () => (collection?.type === TypeEnum.NOR ? itemsResults?.pages.flatMap(page => page.results) || [] : []),
-    [itemsResults, collection?.type],
+    () => (isNormalCollection ? itemsResults?.pages.flatMap(resultPage => resultPage.results) || [] : []),
+    [itemsResults, isNormalCollection],
   );
-  const totalCount = itemsResults?.pages[0]?.count ?? 0;
+  const totalCount = renderMode === "table" ? (tableQuery.data?.count ?? 0) : (itemsResults?.pages[0]?.count ?? 0);
+
+  const itemColumns = React.useMemo(
+    () =>
+      createCollectionItemColumns({
+        t,
+        canEdit,
+        showAddedBy: collection?.mode === ModeEnum.C,
+        onRemove: handleDeleteItem,
+      }),
+    [t, canEdit, collection?.mode, handleDeleteItem],
+  );
+
+  const displayItemsError = renderMode === "table" ? tableQuery.error : itemsError;
 
   const renderView = () => {
     if (!collection) {
@@ -125,6 +156,46 @@ export default function CollectionPage(): React.JSX.Element {
         return <RankingListView collectionId={collectionId} isOwner={canEdit} onRemove={handleDeleteItem} />;
       }
       default: {
+        const statsBanner = (
+          <Box mb={24}>
+            <CollectionStatsBanner
+              icon={<IconDeviceGamepad2 size={20} style={{ color: "white" }} />}
+              iconBackground="var(--mantine-color-primary-5)"
+              bannerBackground="var(--gradient-collection-stats)"
+              borderColor="var(--color-primary-tint-border)"
+              textColor="var(--color-collection-stats-text)"
+              count={totalCount}
+              label={t("detail.totalGames")}
+              typeLabel={t("type.normal")}
+            />
+          </Box>
+        );
+
+        if (renderMode === "table") {
+          return (
+            <>
+              {statsBanner}
+              <PaginatedTable
+                columns={itemColumns}
+                data={tableQuery.data?.results ?? []}
+                count={tableQuery.data?.count ?? 0}
+                page={page}
+                onPageChange={setPage}
+                getRowId={row => String(row.id)}
+                isLoading={tableQuery.isLoading}
+                isFetching={tableQuery.isFetching}
+                emptyLabel={t("detail.table.empty")}
+                onRowClick={row =>
+                  navigate({
+                    to: "/game/$id/$slug",
+                    params: { id: String(row.game.id), slug: row.game.slug ?? "" },
+                  })
+                }
+              />
+            </>
+          );
+        }
+
         return isItemsLoading && !isFetchingNextPage ? (
           <GridList columnCount={8}>
             {skeletonIds.map(skeletonId => (
@@ -133,18 +204,7 @@ export default function CollectionPage(): React.JSX.Element {
           </GridList>
         ) : (
           <>
-            <Box mb={24}>
-              <CollectionStatsBanner
-                icon={<IconDeviceGamepad2 size={20} style={{ color: "white" }} />}
-                iconBackground="var(--mantine-color-primary-5)"
-                bannerBackground="var(--gradient-collection-stats)"
-                borderColor="var(--color-primary-tint-border)"
-                textColor="var(--color-collection-stats-text)"
-                count={totalCount}
-                label={t("detail.totalGames")}
-                typeLabel={t("type.normal")}
-              />
-            </Box>
+            {statsBanner}
 
             <VirtualGridList
               items={allItems}
@@ -256,6 +316,12 @@ export default function CollectionPage(): React.JSX.Element {
           )
         )}
 
+        {isNormalCollection && (
+          <Group justify="flex-end">
+            <ListViewModeToggle />
+          </Group>
+        )}
+
         <Box
           className={cn(
             "rounded-2xl min-h-212.5 transition-all outline-hidden",
@@ -266,7 +332,7 @@ export default function CollectionPage(): React.JSX.Element {
         >
           {renderView()}
 
-          {!isItemsLoading && collection?.type === TypeEnum.NOR && allItems.length === 0 && (
+          {renderMode === "infinite" && !isItemsLoading && isNormalCollection && allItems.length === 0 && (
             <Stack align="center" justify="center" gap={16} style={{ paddingBlock: "80px", textAlign: "center" }}>
               <Box
                 style={{
@@ -292,7 +358,7 @@ export default function CollectionPage(): React.JSX.Element {
             </Stack>
           )}
 
-          {itemsError && (
+          {displayItemsError && (
             <Box
               style={{
                 background: "var(--color-error-50)",
@@ -303,7 +369,7 @@ export default function CollectionPage(): React.JSX.Element {
               }}
             >
               <Text c="var(--color-error-600)" ta="center" fw={500}>
-                {t("detail.itemsLoadError", { message: itemsError.message })}
+                {t("detail.itemsLoadError", { message: displayItemsError.message })}
               </Text>
             </Box>
           )}

@@ -12,32 +12,28 @@ import {
   Title,
   ActionIcon,
 } from "@mantine/core";
-import {
-  IconEdit,
-  IconFilter,
-  IconGridDots,
-  IconList,
-  IconDownload,
-  IconSearch,
-  IconUpload,
-} from "@tabler/icons-react";
-import { getRouteApi, Link } from "@tanstack/react-router";
+import { IconEdit, IconFilter, IconDownload, IconSearch, IconUpload } from "@tabler/icons-react";
+import { keepPreviousData } from "@tanstack/react-query";
+import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
 
 import { GameList, GameListStatusEnum } from "@/client";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import { VirtualList } from "@/components/ui/VirtualList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+import { useListViewStore } from "@/lib/listViewStore";
 
 import { exportGameList } from "../api/game";
+import { createGameListColumns } from "../components/gameListColumns";
 import { GameListModal } from "../components/GameListModal";
-import { GameListRow } from "../components/GameListRow";
 import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
+import { useGetGameListsList } from "../hooks/gameQueries";
 import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { STATUS_CONFIG } from "../utils/statusConfig";
@@ -106,10 +102,17 @@ export default function GameListPage(): React.JSX.Element {
   const { data: userDetails, isLoading: isUserLoading } = useGetUserDetails(userId);
   const [selectedGameStatus, setSelectedGameStatus] = React.useState<GameListStatusEnum | null>(null);
   const { t } = useTranslation("games");
-  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const navigate = useNavigate();
+  const renderMode = useListViewStore(state => state.mode);
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
   const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({});
   const [titleInput, setTitleInput] = React.useState("");
+  const [page, setPage] = React.useState(1);
+
+  // Any status or filter change restarts pagination.
+  React.useEffect(() => {
+    setPage(1);
+  }, [selectedGameStatus, gameFilters]);
 
   const {
     data: gameListResults,
@@ -118,7 +121,12 @@ export default function GameListPage(): React.JSX.Element {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useGameListInfiniteQuery(userId, selectedGameStatus, gameFilters);
+  } = useGameListInfiniteQuery(userId, selectedGameStatus, gameFilters, { enabled: renderMode === "infinite" });
+
+  const tableQuery = useGetGameListsList(
+    { user: String(userId), status: selectedGameStatus ?? undefined, ...gameFilters, page },
+    { enabled: renderMode === "table" && !!userId, placeholderData: keepPreviousData },
+  );
 
   const activeFilterCount = Object.values(gameFilters).filter(v =>
     Array.isArray(v) ? v.length > 0 : v !== undefined && v !== "",
@@ -160,7 +168,14 @@ export default function GameListPage(): React.JSX.Element {
     ? t("gameList.loading")
     : t("gameList.pageTitle", { username: userDetails?.username });
 
-  const allItems = gameListResults?.pages.flatMap(page => page.results) || [];
+  const allItems = gameListResults?.pages.flatMap(resultPage => resultPage.results) || [];
+
+  const listColumns = React.useMemo(
+    () => createGameListColumns({ t, isOwner, onEdit: setEditingGameId }),
+    [t, isOwner],
+  );
+
+  const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
 
   const statuses: { id: GameListStatusEnum | null; label: string; emoji: string; color: string }[] = [
     { id: null, label: t("gameList.all"), emoji: "♾️", color: "gray" },
@@ -197,8 +212,27 @@ export default function GameListPage(): React.JSX.Element {
   ];
 
   const renderContent = () => {
+    if (renderMode === "table") {
+      return (
+        <PaginatedTable
+          columns={listColumns}
+          data={tableQuery.data?.results ?? []}
+          count={tableQuery.data?.count ?? 0}
+          page={page}
+          onPageChange={setPage}
+          getRowId={row => String(row.id)}
+          isLoading={tableQuery.isLoading}
+          isFetching={tableQuery.isFetching}
+          emptyLabel={t("gameList.table.empty")}
+          onRowClick={row =>
+            navigate({ to: "/game/$id/$slug", params: { id: String(row.game_id), slug: row.game_slug } })
+          }
+        />
+      );
+    }
+
     if (isLoading && !isFetchingNextPage) {
-      return viewMode === "grid" ? (
+      return (
         <GridList>
           {Array.from({ length: 21 }).map((_, i) => {
             const skeletonKey = `game-skeleton-${i}`;
@@ -207,54 +241,21 @@ export default function GameListPage(): React.JSX.Element {
             );
           })}
         </GridList>
-      ) : (
-        <Stack gap={12}>
-          {Array.from({ length: 10 }).map((_, i) => {
-            const skeletonKey = `list-skeleton-${i}`;
-            return <Skeleton key={skeletonKey} height={90} width="100%" radius="12px" />;
-          })}
-        </Stack>
-      );
-    }
-
-    if (viewMode === "grid") {
-      return (
-        <VirtualGridList
-          items={allItems}
-          hasNextPage={!!hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          fetchNextPage={fetchNextPage}
-          renderItem={(gameListItem: GameList) => (
-            <GameListGridItem
-              key={gameListItem.id}
-              gameListItem={gameListItem}
-              isOwner={isOwner}
-              onEdit={setEditingGameId}
-            />
-          )}
-        />
       );
     }
 
     return (
-      <VirtualList
+      <VirtualGridList
         items={allItems}
         hasNextPage={!!hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
-        itemHeight={106}
-        style={{
-          height: "calc(100vh - 300px)",
-          minHeight: "500px",
-          paddingRight: "8px",
-        }}
         renderItem={(gameListItem: GameList) => (
-          <GameListRow
+          <GameListGridItem
             key={gameListItem.id}
             gameListItem={gameListItem}
             isOwner={isOwner}
             onEdit={setEditingGameId}
-            ownerUsername={userDetails?.username ?? ""}
           />
         )}
       />
@@ -393,24 +394,7 @@ export default function GameListPage(): React.JSX.Element {
                 </ActionIcon>
               </Indicator>
               <Divider orientation="vertical" />
-              <ActionIcon
-                variant={viewMode === "grid" ? "filled" : "light"}
-                color={viewMode === "grid" ? "indigo" : "gray"}
-                size="lg"
-                radius="md"
-                onClick={() => setViewMode("grid")}
-              >
-                <IconGridDots size={20} />
-              </ActionIcon>
-              <ActionIcon
-                variant={viewMode === "list" ? "filled" : "light"}
-                color={viewMode === "list" ? "indigo" : "gray"}
-                size="lg"
-                radius="md"
-                onClick={() => setViewMode("list")}
-              >
-                <IconList size={20} />
-              </ActionIcon>
+              <ListViewModeToggle />
             </Group>
           </Box>
         </Stack>
@@ -471,7 +455,7 @@ export default function GameListPage(): React.JSX.Element {
           }}
         >
           {renderContent()}
-          {errorFetchingData && (
+          {displayError && (
             <Box
               style={{
                 background: "var(--color-error-50)",
@@ -482,7 +466,7 @@ export default function GameListPage(): React.JSX.Element {
               }}
             >
               <Text ta="center" fw={500} c="var(--color-error-600)">
-                {t("gameList.fetchError", { message: errorFetchingData.message })}
+                {t("gameList.fetchError", { message: displayError.message })}
               </Text>
             </Box>
           )}

@@ -61,6 +61,15 @@
     "restored": "Przywrócono niezapisane zmiany",
     "discard": "Odrzuć"
   },
+  "listView": {
+    "label": "Widok wyników",
+    "infinite": "Przewijanie ciągłe",
+    "table": "Tabela"
+  },
+  "pagination": {
+    "goToPage": "Przejdź do strony",
+    "go": "Przejdź"
+  },
   "viewMore": "Zobacz więcej",
   "confirm": "Potwierdź",
   "cancel": "Anuluj",

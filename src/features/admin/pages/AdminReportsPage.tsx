@@ -3,7 +3,6 @@ import {
   Box,
   Group,
   NumberInput,
-  Pagination,
   Paper,
   Popover,
   Select,
@@ -21,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum, type UserSimple } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsStaff } from "@/features/auth";
 import { useAcceptReport, useGetReports, useRejectReport } from "@/features/moderation/hooks/moderationQueries";
@@ -290,10 +290,7 @@ export default function AdminReportsPage(): React.JSX.Element {
 
   const { data, isLoading, isFetching } = useGetReports(query);
   const reports = data?.results ?? [];
-  const hasNext = !!data?.next;
-  const hasPrevious = !!data?.previous;
-  const addToPage = hasNext ? 1 : 0;
-  const totalPages = hasNext || hasPrevious ? Math.max(page + addToPage, page) : 1;
+  const totalPages = derivePageCount({ count: data?.count, pageSize: LIST_PAGE_SIZE, page });
 
   const isFiltered =
     status !== ReportStatusEnum.PENDING ||
@@ -396,11 +393,7 @@ export default function AdminReportsPage(): React.JSX.Element {
         </Stack>
       )}
 
-      {(hasNext || hasPrevious) && (
-        <Group justify="center">
-          <Pagination total={totalPages} value={page} onChange={setPage} />
-        </Group>
-      )}
+      <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
     </Stack>
   );
 }

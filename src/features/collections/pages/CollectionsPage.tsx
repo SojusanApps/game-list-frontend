@@ -1,6 +1,6 @@
 import { Skeleton, Stack, Group, Box, Title, Text, Select, TextInput, UnstyledButton } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
 
@@ -8,14 +8,18 @@ import { Collection, CollectionCollectionsListData } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import { GridList } from "@/components/ui/GridList";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+import { useListViewStore } from "@/lib/listViewStore";
 
 import CollectionCard from "../components/CollectionCard";
+import { createCollectionColumns } from "../components/collectionColumns";
 import CreateCollectionModal from "../components/CreateCollectionModal";
-import { useCollectionsInfiniteQuery } from "../hooks/useCollectionQueries";
+import { useCollectionsInfiniteQuery, useCollectionsQuery } from "../hooks/useCollectionQueries";
 
 const routeApi = getRouteApi("/profile_/$id/$slug/collections");
 
@@ -29,6 +33,9 @@ export default function CollectionsPage(): React.JSX.Element {
 
   const isOwner = useIsOwner(userId);
   const { t } = useTranslation("collections");
+  const navigate = useNavigate();
+  const renderMode = useListViewStore(state => state.mode);
+  const [page, setPage] = React.useState(1);
 
   const skeletonIds = React.useMemo(() => Array.from({ length: 8 }).map((_, i) => `skeleton-${i}`), []);
 
@@ -62,6 +69,11 @@ export default function CollectionsPage(): React.JSX.Element {
     return filters;
   }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter, nameFilter]);
 
+  // Any filter or scope change restarts pagination.
+  React.useEffect(() => {
+    setPage(1);
+  }, [queryFilters, useMember]);
+
   const {
     data: collectionsResults,
     error: errorFetchingData,
@@ -69,13 +81,64 @@ export default function CollectionsPage(): React.JSX.Element {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useCollectionsInfiniteQuery(userId, queryFilters, useMember);
+  } = useCollectionsInfiniteQuery(userId, queryFilters, useMember, { enabled: renderMode === "infinite" });
+
+  const tableQuery = useCollectionsQuery(userId, page, queryFilters, useMember, {
+    enabled: renderMode === "table",
+  });
+
+  const collectionColumns = React.useMemo(() => createCollectionColumns(t), [t]);
+
+  const allItems = collectionsResults?.pages.flatMap(resultPage => resultPage.results) || [];
+
+  const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
+
+  const renderResults = () => {
+    if (renderMode === "table") {
+      return (
+        <PaginatedTable
+          columns={collectionColumns}
+          data={tableQuery.data?.results ?? []}
+          count={tableQuery.data?.count ?? 0}
+          page={page}
+          onPageChange={setPage}
+          getRowId={row => String(row.id)}
+          isLoading={tableQuery.isLoading}
+          isFetching={tableQuery.isFetching}
+          emptyLabel={t("list.noCollections")}
+          onRowClick={row =>
+            navigate({ to: "/collection/$id/$slug", params: { id: String(row.id), slug: row.slug ?? "" } })
+          }
+        />
+      );
+    }
+
+    if (isLoading && !isFetchingNextPage) {
+      return (
+        <GridList columnCount={5}>
+          {skeletonIds.map(skeletonId => (
+            <Skeleton key={skeletonId} style={{ aspectRatio: "3/4", width: "100%", borderRadius: "24px" }} />
+          ))}
+        </GridList>
+      );
+    }
+
+    return (
+      <VirtualGridList
+        items={allItems}
+        hasNextPage={!!hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+        columnCount={5}
+        rowHeight={450}
+        renderItem={(collection: Collection) => <CollectionCard key={collection.id} collection={collection} />}
+      />
+    );
+  };
 
   const pageTitle = isUserLoading
     ? t("list.loading")
     : t("list.collectionsPageTitle", { username: userDetails?.username });
-
-  const allItems = collectionsResults?.pages.flatMap(page => page.results) || [];
 
   const favoriteFilters = [
     { id: null, label: t("list.filterAll"), emoji: "📂" },
@@ -331,6 +394,10 @@ export default function CollectionsPage(): React.JSX.Element {
           </Stack>
         </Stack>
 
+        <Group justify="flex-end">
+          <ListViewModeToggle />
+        </Group>
+
         <Box
           style={{
             background: "var(--color-background-100)",
@@ -341,24 +408,8 @@ export default function CollectionsPage(): React.JSX.Element {
             minHeight: "850px",
           }}
         >
-          {isLoading && !isFetchingNextPage ? (
-            <GridList columnCount={5}>
-              {skeletonIds.map(skeletonId => (
-                <Skeleton key={skeletonId} style={{ aspectRatio: "3/4", width: "100%", borderRadius: "24px" }} />
-              ))}
-            </GridList>
-          ) : (
-            <VirtualGridList
-              items={allItems}
-              hasNextPage={!!hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              fetchNextPage={fetchNextPage}
-              columnCount={5}
-              rowHeight={450}
-              renderItem={(collection: Collection) => <CollectionCard key={collection.id} collection={collection} />}
-            />
-          )}
-          {errorFetchingData && (
+          {renderResults()}
+          {displayError && (
             <Box
               style={{
                 background: "var(--color-error-50)",
@@ -369,11 +420,11 @@ export default function CollectionsPage(): React.JSX.Element {
               }}
             >
               <Text c="var(--color-error-600)" ta="center" fw={500}>
-                Error: {errorFetchingData.message}
+                Error: {displayError.message}
               </Text>
             </Box>
           )}
-          {!isLoading && allItems.length === 0 && (
+          {renderMode === "infinite" && !isLoading && allItems.length === 0 && (
             <Stack align="center" justify="center" gap={16} style={{ paddingBlock: "80px", textAlign: "center" }}>
               <Box
                 style={{

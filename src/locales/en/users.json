@@ -22,7 +22,12 @@
     "friendCount_other": "{{count}} Friends",
     "noFriendsYet": "No friends yet.",
     "viewAll": "View All",
-    "title": "Friends"
+    "title": "Friends",
+    "table": {
+      "username": "Username",
+      "lastActive": "Last active",
+      "since": "Friends since"
+    }
   },
   "settings": {
     "title": "Settings",

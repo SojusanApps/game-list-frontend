@@ -24,7 +24,12 @@
     "friendCount_other": "{{count}} Znajomych",
     "noFriendsYet": "Brak znajomych.",
     "viewAll": "Zobacz wszystkich",
-    "title": "Znajomi"
+    "title": "Znajomi",
+    "table": {
+      "username": "Nazwa użytkownika",
+      "lastActive": "Ostatnia aktywność",
+      "since": "Znajomi od"
+    }
   },
   "settings": {
     "title": "Ustawienia",

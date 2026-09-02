@@ -51,6 +51,15 @@
     "restored": "Unsaved draft restored",
     "discard": "Discard"
   },
+  "listView": {
+    "label": "Result view",
+    "infinite": "Infinite scroll",
+    "table": "Table"
+  },
+  "pagination": {
+    "goToPage": "Go to page",
+    "go": "Go"
+  },
   "viewMore": "View More",
   "confirm": "Confirm",
   "cancel": "Cancel",

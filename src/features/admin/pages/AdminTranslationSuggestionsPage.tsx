@@ -1,4 +1,4 @@
-import { Badge, Box, Group, NumberInput, Paper, Pagination, Select, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Badge, Box, Group, NumberInput, Paper, Select, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { FieldEnum, TranslationSuggestion, TranslationSuggestionStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { SuggestionRow } from "@/features/translationSuggestions/components/SuggestionRow";
@@ -80,10 +81,7 @@ export default function AdminTranslationSuggestionsPage(): React.JSX.Element {
 
   const { data, isLoading, isFetching } = useGetTranslationSuggestions(query);
   const suggestions = data?.results ?? [];
-  const hasNext = !!data?.next;
-  const hasPrevious = !!data?.previous;
-  const addToPage = hasNext ? 1 : 0;
-  const totalPages = hasNext || hasPrevious ? Math.max(page + addToPage, page) : 1;
+  const totalPages = derivePageCount({ count: data?.count, pageSize: LIST_PAGE_SIZE, page });
 
   const isFiltered =
     status !== TranslationSuggestionStatusEnum.PENDING || game !== undefined || submittedBy !== undefined;
@@ -167,11 +165,7 @@ export default function AdminTranslationSuggestionsPage(): React.JSX.Element {
         </Stack>
       )}
 
-      {(hasNext || hasPrevious) && (
-        <Group justify="center">
-          <Pagination total={totalPages} value={page} onChange={setPage} />
-        </Group>
-      )}
+      <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
     </Stack>
   );
 }

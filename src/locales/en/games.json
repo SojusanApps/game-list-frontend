@@ -222,7 +222,21 @@
     "categoryGames": "Games",
     "categoryCompanies": "Companies",
     "categoryUsers": "Users",
-    "fetchError": "Error: {{message}}"
+    "fetchError": "Error: {{message}}",
+    "table": {
+      "title": "Title",
+      "name": "Name",
+      "username": "Username",
+      "releaseDate": "Release date",
+      "type": "Type",
+      "status": "Status",
+      "score": "Score",
+      "joined": "Joined",
+      "lastActive": "Last active",
+      "accountStatus": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    }
   },
   "calendar": {
     "title": "Release Calendar",
@@ -267,7 +281,15 @@
     "randomPtp": "Don't know what to play next? Pick a random game from your Plan to play list!",
     "pickRandom": "Pick Random Game",
     "noRandomPtp": "You must add games to your Plan to play list first.",
-    "fetchError": "Error: {{message}}"
+    "fetchError": "Error: {{message}}",
+    "table": {
+      "title": "Title",
+      "status": "Status",
+      "score": "Score",
+      "actions": "Actions",
+      "edit": "Edit entry",
+      "empty": "No games in this list"
+    }
   },
   "externalLinks": {
     "header": "External Links:",

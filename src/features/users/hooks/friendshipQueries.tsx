@@ -79,18 +79,16 @@ export const useGetFriendships = (
   });
 };
 
-export const useGetFriendshipsInfiniteQuery = (query?: FriendshipFriendshipsListDataQuery) => {
+export const useGetFriendshipsInfiniteQuery = (
+  query?: FriendshipFriendshipsListDataQuery,
+  options: { enabled?: boolean } = {},
+) => {
   return useInfiniteQuery<PaginatedFriendshipList, Error>({
     queryKey: friendshipKeys.listInfinite(query),
     queryFn: ({ pageParam = 1 }) => getFriendships({ ...query, page: pageParam as number }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.next) {
-        return allPages.length + 1;
-      }
-      return;
-    },
-    enabled: !!query?.user,
+    getNextPageParam: (lastPage, allPages) => (lastPage.next ? allPages.length + 1 : undefined),
+    enabled: !!query?.user && (options.enabled ?? true),
   });
 };
 
