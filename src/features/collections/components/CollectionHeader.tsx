@@ -1,4 +1,5 @@
 import { Stack, Group, Title, Text, Flex } from "@mantine/core";
+import { IconSwords } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -90,6 +91,7 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
             <Button
               onClick={onPairwiseRank}
               variant="outline"
+              leftSection={<IconSwords size={16} stroke={1.5} />}
               style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", paddingInline: "24px" }}
             >
               {t("header.pairwiseRank")}

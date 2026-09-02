@@ -1,14 +1,19 @@
 import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { CompanyGame } from "@/client";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { ClientPaginatedTable } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useListViewStore } from "@/lib/listViewStore";
 
+import { createCompanyGameColumns } from "../components/companyGameColumns";
 import { useGetCompanyDetail } from "../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 
@@ -19,6 +24,9 @@ export default function CompanyDetailPage(): React.JSX.Element {
   const { id } = routeApi.useParams();
   const companyId = Number(id);
   const { data: companyDetails, isLoading: isCompanyLoading } = useGetCompanyDetail(companyId);
+  const navigate = useNavigate();
+  const renderMode = useListViewStore(state => state.mode);
+  const columns = React.useMemo(() => createCompanyGameColumns(), []);
 
   const developedGamesList = companyDetails?.games_developed || [];
   const publishedGamesList = companyDetails?.games_published || [];
@@ -27,6 +35,33 @@ export default function CompanyDetailPage(): React.JSX.Element {
   const publishedCount = publishedGamesList.length;
 
   const pageTitle = isCompanyLoading ? t("company.loading") : companyDetails?.name;
+
+  const renderGamesList = (games: CompanyGame[]) =>
+    renderMode === "table" ? (
+      <ClientPaginatedTable
+        rows={games}
+        columns={columns}
+        getRowId={row => String(row.id)}
+        onRowClick={row => navigate({ to: "/game/$id/$slug", params: { id: String(row.id), slug: row.slug ?? "" } })}
+      />
+    ) : (
+      <VirtualGridList
+        items={games}
+        hasNextPage={false}
+        isFetchingNextPage={false}
+        fetchNextPage={() => {}}
+        style={{ height: 600 }}
+        renderItem={game => (
+          <ItemOverlay
+            itemPageUrl={`/game/${game.id}/${game.slug}`}
+            itemCoverUrl={
+              game.cover_image_id ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
+            }
+            name={game.title}
+          />
+        )}
+      />
+    );
 
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
@@ -125,26 +160,15 @@ export default function CompanyDetailPage(): React.JSX.Element {
               </Box>
             </Box>
 
+            {(developedCount > 0 || publishedCount > 0) && (
+              <Group justify="flex-end">
+                <ListViewModeToggle />
+              </Group>
+            )}
+
             <CollapsibleSection title={t("company.gamesDeveloped")} count={developedCount} defaultOpen={false}>
               {developedGamesList.length > 0 ? (
-                <VirtualGridList
-                  items={developedGamesList}
-                  hasNextPage={false}
-                  isFetchingNextPage={false}
-                  fetchNextPage={() => {}}
-                  style={{ height: 600 }}
-                  renderItem={game => (
-                    <ItemOverlay
-                      itemPageUrl={`/game/${game.id}/${game.slug}`}
-                      itemCoverUrl={
-                        game.cover_image_id
-                          ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.COVER_BIG_264_374)
-                          : null
-                      }
-                      name={game.title}
-                    />
-                  )}
-                />
+                renderGamesList(developedGamesList)
               ) : (
                 <Text fs="italic" c="var(--color-text-500)">
                   {t("company.noGamesDeveloped")}
@@ -154,24 +178,7 @@ export default function CompanyDetailPage(): React.JSX.Element {
 
             <CollapsibleSection title={t("company.gamesPublished")} count={publishedCount} defaultOpen={false}>
               {publishedGamesList.length > 0 ? (
-                <VirtualGridList
-                  items={publishedGamesList}
-                  hasNextPage={false}
-                  isFetchingNextPage={false}
-                  fetchNextPage={() => {}}
-                  style={{ height: 600 }}
-                  renderItem={game => (
-                    <ItemOverlay
-                      itemPageUrl={`/game/${game.id}/${game.slug}`}
-                      itemCoverUrl={
-                        game.cover_image_id
-                          ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.COVER_BIG_264_374)
-                          : null
-                      }
-                      name={game.title}
-                    />
-                  )}
-                />
+                renderGamesList(publishedGamesList)
               ) : (
                 <Text fs="italic" c="var(--color-text-500)">
                   {t("company.noGamesPublished")}

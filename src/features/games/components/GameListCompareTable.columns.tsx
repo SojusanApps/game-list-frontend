@@ -17,6 +17,7 @@ import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { getStatusConfig } from "../utils/statusConfig";
+import { StatusIcon } from "../utils/StatusIcon";
 import { CompareUserChip } from "./CompareUserChip";
 
 import styles from "./GameListCompareTable.module.css";
@@ -38,8 +39,13 @@ function CompareStatusCell({ statusCode }: Readonly<{ statusCode: string | null 
   }
 
   return (
-    <Badge variant="light" size="sm" style={{ ...statusConfig.badgeStyle, borderWidth: "1px", borderStyle: "solid" }}>
-      {statusConfig.emoji} {statusConfig.label}
+    <Badge
+      variant="light"
+      size="sm"
+      leftSection={<StatusIcon status={statusCode} size={12} />}
+      style={{ ...statusConfig.badgeStyle, borderWidth: "1px", borderStyle: "solid" }}
+    >
+      {statusConfig.label}
     </Badge>
   );
 }

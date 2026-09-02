@@ -9,6 +9,13 @@ import { Collection, TypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
+import {
+  COLLECTION_BADGE_STYLE,
+  getModeBadgeStyle,
+  getTypeBadgeStyle,
+  getVisibilityBadgeStyle,
+} from "../utils/collectionBadgeStyles";
+
 interface CollectionCardProps {
   collection: Collection;
 }
@@ -26,65 +33,11 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
   const images = collection.items_cover_image_ids || [];
   const deckLimit = 5;
 
-  const visibilityStyle = React.useMemo((): React.CSSProperties => {
-    if (collection.visibility === "PUB")
-      return {
-        background: "var(--color-visibility-public-bg)",
-        color: "var(--color-visibility-public-text)",
-        border: "1px solid var(--color-visibility-public-border)",
-      };
-    if (collection.visibility === "FRI")
-      return {
-        background: "var(--color-visibility-friends-bg)",
-        color: "var(--color-visibility-friends-text)",
-        border: "1px solid var(--color-visibility-friends-border)",
-      };
-    return {
-      background: "var(--color-visibility-private-bg)",
-      color: "var(--color-visibility-private-text)",
-      border: "1px solid var(--color-visibility-private-border)",
-    };
-  }, [collection.visibility]);
+  const visibilityStyle = React.useMemo(() => getVisibilityBadgeStyle(collection.visibility), [collection.visibility]);
 
-  const modeStyle = React.useMemo((): React.CSSProperties => {
-    return collection.mode === "S"
-      ? {
-          background: "var(--color-collection-mode-solo-bg)",
-          color: "var(--color-collection-mode-solo-text)",
-          border: "1px solid var(--color-collection-mode-solo-border)",
-        }
-      : {
-          background: "var(--color-collection-mode-collab-bg)",
-          color: "var(--color-collection-mode-collab-text)",
-          border: "1px solid var(--color-collection-mode-collab-border)",
-        };
-  }, [collection.mode]);
+  const modeStyle = React.useMemo(() => getModeBadgeStyle(collection.mode), [collection.mode]);
 
-  const typeStyle = React.useMemo((): React.CSSProperties => {
-    switch (collection.type) {
-      case TypeEnum.RNK: {
-        return {
-          background: "var(--color-type-ranking-bg)",
-          color: "var(--color-type-ranking-text)",
-          border: "1px solid var(--color-type-ranking-border)",
-        };
-      }
-      case TypeEnum.TIE: {
-        return {
-          background: "var(--color-type-tierlist-bg)",
-          color: "var(--color-type-tierlist-text)",
-          border: "1px solid var(--color-type-tierlist-border)",
-        };
-      }
-      default: {
-        return {
-          background: "var(--color-type-normal-bg)",
-          color: "var(--color-type-normal-text)",
-          border: "1px solid var(--color-type-normal-border)",
-        };
-      }
-    }
-  }, [collection.type]);
+  const typeStyle = React.useMemo(() => getTypeBadgeStyle(collection.type), [collection.type]);
 
   const typeDisplay = React.useMemo(() => {
     switch (collection.type) {
@@ -100,14 +53,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
     }
   }, [collection.type, t]);
 
-  const badgeStyle: React.CSSProperties = {
-    padding: "2px 10px",
-    borderRadius: "9999px",
-    fontSize: "10px",
-    fontWeight: 900,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  };
+  const badgeStyle = COLLECTION_BADGE_STYLE;
 
   return (
     <Stack ref={ref} align="center" pt={32} style={{ position: "relative" }}>

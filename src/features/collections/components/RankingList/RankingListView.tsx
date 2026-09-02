@@ -437,6 +437,7 @@ export const RankingListView = React.memo(function RankingListViewInner({
 
       {editingItem && (
         <EditDescriptionModal
+          itemId={editingItem.id}
           gameTitle={editingItem.title}
           currentDescription={editingItem.description}
           onClose={() => setEditingItem(null)}

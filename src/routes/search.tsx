@@ -29,6 +29,9 @@ const searchSchema = z.object({
   game_type: z.string().array().optional(),
   player_perspectives: z.string().array().optional(),
   ordering: z.enum(ORDERING_OPTIONS).optional().or(z.literal("")),
+  // Present only while the results are shown as a paginated table; dropped in infinite-scroll mode.
+  // oxlint-disable-next-line unicorn/prefer-top-level-await -- Zod's `.catch()` fallback, not a Promise.
+  page: z.number().int().positive().optional().catch(1), // NOSONAR
 });
 
 export const Route = createFileRoute("/search")({

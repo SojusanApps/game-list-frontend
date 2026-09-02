@@ -20,7 +20,15 @@
     "anyMode": "Any Mode",
     "anyType": "Any Type",
     "collectionsTitle": "<0>{{username}}</0>'s Collections",
-    "collectionsPageTitle": "{{username}}'s Collections"
+    "collectionsPageTitle": "{{username}}'s Collections",
+    "table": {
+      "name": "Name",
+      "games": "Games",
+      "type": "Type",
+      "visibility": "Visibility",
+      "mode": "Mode",
+      "updated": "Updated"
+    }
   },
   "visibility": {
     "public": "Public",
@@ -50,10 +58,17 @@
     "noGames": "No games in this collection",
     "noGamesDesc": "This collection is empty.",
     "successTitle": "Success",
-    "errorTitle": "Error"
+    "errorTitle": "Error",
+    "table": {
+      "title": "Title",
+      "addedBy": "Added by",
+      "actions": "Actions",
+      "remove": "Remove game",
+      "empty": "No games in this collection"
+    }
   },
   "header": {
-    "pairwiseRank": "\u2694\uFE0F Pairwise Rank",
+    "pairwiseRank": "Pairwise Rank",
     "addGame": "Add Game",
     "editCollection": "Edit Collection",
     "collectionsLink": "'s Collections"

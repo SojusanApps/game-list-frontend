@@ -77,7 +77,7 @@
     <use href="#headset" x="250" y="200" transform="rotate(-15 250 200) scale(1.5)" color="#8b5cf6" />
     <use href="#circle" x="150" y="350" color="#3b82f6" />
     <use href="#square" x="400" y="150" transform="rotate(20 400 150)" color="#ec4899" />
-    <use href="#cross" x="650" y="300" transform="rotate(45 650 300)" color="#14b8a6" />
+    <use href="#cross" x="650" y="300" transform="rotate(15 650 300)" color="#14b8a6" />
 
     <!-- Top Right -->
     <use href="#keyboard" x="1600" y="250" transform="rotate(10 1600 250) scale(1.8)" color="#3b82f6" />
@@ -93,7 +93,7 @@
     <!-- Bottom Right -->
     <use href="#headset" x="1650" y="850" transform="rotate(35 1650 850) scale(1.6)" color="#8b5cf6" />
     <use href="#square" x="1450" y="750" transform="rotate(10 1450 750)" color="#3b82f6" />
-    <use href="#cross" x="1800" y="950" transform="rotate(40 1800 950)" color="#ec4899" />
+    <use href="#cross" x="1800" y="950" transform="rotate(15 1800 950)" color="#ec4899" />
 
     <!-- Central Scattered / Parallax-ready empty areas -->
     <use href="#mouse" x="960" y="180" transform="rotate(15 960 180) scale(1.5)" color="#8b5cf6" />
@@ -102,6 +102,6 @@
     <use href="#triangle" x="800" y="450" transform="rotate(15 800 450)" color="#ec4899" />
     <use href="#circle" x="1150" y="380" color="#14b8a6" />
     <use href="#square" x="900" y="680" transform="rotate(25 900 680)" color="#8b5cf6" />
-    <use href="#cross" x="1200" y="720" transform="rotate(45 1200 720)" color="#3b82f6" />
+    <use href="#cross" x="1200" y="720" transform="rotate(15 1200 720)" color="#3b82f6" />
   </g>
 </svg>

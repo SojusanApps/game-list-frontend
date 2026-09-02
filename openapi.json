@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Sojusan GameList API",
-        "version": "5.3.2",
+        "version": "5.3.3",
         "description": "Application to manage game lists."
     },
     "paths": {
@@ -1124,6 +1124,13 @@
                 "operationId": "friendship_friendships_list",
                 "description": "List confirmed friendships for the authenticated user. A Friendship is a bidirectional, established relationship. Each record represents one direction of the relationship.",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "friend__username",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "in": "query",
                         "name": "id",
@@ -8722,12 +8729,19 @@
                     "already_in_list": {
                         "type": "boolean",
                         "description": "Whether the matched game is already on the requesting user's game list."
+                    },
+                    "release_date": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true,
+                        "description": "The worldwide release date of the game."
                     }
                 },
                 "required": [
                     "already_in_list",
                     "cover_image_id",
                     "id",
+                    "release_date",
                     "title"
                 ]
             },

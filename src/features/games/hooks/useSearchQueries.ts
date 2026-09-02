@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { getUserLists } from "@/features/users/api/user";
 import { searchKeys } from "@/lib/queryKeys";
@@ -7,15 +7,8 @@ import { getGamesList, getCompaniesList } from "../api/game";
 
 export type SearchCategory = "games" | "companies" | "users";
 
-const fetchSearchResults = async ({
-  pageParam = 1,
-  queryKey,
-}: {
-  pageParam?: number;
-  queryKey: readonly unknown[];
-}) => {
-  const [, category, filters] = queryKey as [string, SearchCategory, object];
-  const query = { page: pageParam, ...filters };
+const fetchSearchResultsPage = async (category: SearchCategory, filters: object, page: number) => {
+  const query = { page, ...filters };
 
   switch (category) {
     case "games": {
@@ -40,7 +33,7 @@ export const useSearchInfiniteQuery = (
 ) => {
   return useInfiniteQuery({
     queryKey: searchKeys.results(category, filters),
-    queryFn: fetchSearchResults,
+    queryFn: ({ pageParam }) => fetchSearchResultsPage(category as SearchCategory, filters, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (lastPage.next !== null && lastPage.next !== undefined) {
@@ -48,6 +41,23 @@ export const useSearchInfiniteQuery = (
       }
       return null;
     },
+    enabled: (options.enabled ?? true) && !!category,
+  });
+};
+
+export const useSearchQuery = (
+  category: SearchCategory | null,
+  filters: object,
+  page: number,
+  options: { enabled?: boolean } = {},
+) => {
+  return useQuery({
+    queryKey: searchKeys.paginated(category, filters, page),
+    queryFn: () => fetchSearchResultsPage(category as SearchCategory, filters, page),
+    // Keep the previous page visible while the next one loads, but only within the
+    // same category — a category switch renders different columns, so stale rows
+    // from the old category must not leak through.
+    placeholderData: (previous, previousQuery) => (previousQuery?.queryKey[2] === category ? previous : undefined),
     enabled: (options.enabled ?? true) && !!category,
   });
 };

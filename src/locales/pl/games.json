@@ -140,7 +140,7 @@
     "completedAt": "Data ukończenia",
     "pickDate": "Wybierz datę",
     "playtime": "Czas gry (godziny)",
-    "playtimePlaceholder": "0",
+    "playtimePlaceholder": "np. 112,8",
     "noteLabel": "Notatka",
     "notePlaceholder": "Co sądzisz o tej grze?",
     "removeButton": "Usuń",
@@ -208,7 +208,7 @@
     "title": "Wyszukiwarka",
     "noResults": "Brak wyników",
     "noResultsFound": "Nie znaleziono wyników dla twojego wyszukiwania.",
-    "readyToExplore": "Gotowy na odkrywanie?",
+    "readyToExplore": "Czas na odkrywanie?",
     "readyToExploreDesc": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione {{category}}.",
     "readyToExploreDescGames": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione gry.",
     "readyToExploreDescCompanies": "Dostosuj filtry powyżej i kliknij przycisk, aby wyszukać swoje ulubione firmy.",
@@ -222,7 +222,21 @@
     "categoryGames": "Gry",
     "categoryCompanies": "Firmy",
     "categoryUsers": "Użytkownicy",
-    "fetchError": "Błąd: {{message}}"
+    "fetchError": "Błąd: {{message}}",
+    "table": {
+      "title": "Tytuł",
+      "name": "Nazwa",
+      "username": "Nazwa użytkownika",
+      "releaseDate": "Data premiery",
+      "type": "Typ",
+      "status": "Status",
+      "score": "Ocena",
+      "joined": "Dołączenie",
+      "lastActive": "Ostatnia aktywność",
+      "accountStatus": "Status",
+      "active": "Aktywne",
+      "inactive": "Nieaktywne"
+    }
   },
   "calendar": {
     "title": "Kalendarz premier",
@@ -283,7 +297,15 @@
     "randomPtp": "Nie wiesz w co zagrać? Wylosuj grę ze swojej listy \"Planuję zagrać\"!",
     "pickRandom": "Losuj grę",
     "noRandomPtp": "Musisz najpierw dodać gry do listy \"Planuję zagrać\".",
-    "fetchError": "Błąd: {{message}}"
+    "fetchError": "Błąd: {{message}}",
+    "table": {
+      "title": "Tytuł",
+      "status": "Status",
+      "score": "Ocena",
+      "actions": "Akcje",
+      "edit": "Edytuj pozycję",
+      "empty": "Brak gier na tej liście"
+    }
   },
   "screenshot": {
     "closeAria": "Zamknij zrzut ekranu",

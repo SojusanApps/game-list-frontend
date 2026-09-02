@@ -46,6 +46,7 @@ export const useGameListInfiniteQuery = (
   userId?: number,
   status?: GameListStatusEnum | null,
   filters?: GameListGameFilters,
+  options: { enabled?: boolean } = {},
 ) => {
   return useInfiniteQuery({
     queryKey: gameListKeys.infinite(userId ?? -1, status ?? null, filters),
@@ -57,7 +58,7 @@ export const useGameListInfiniteQuery = (
       }
       return null;
     },
-    enabled: !!userId,
+    enabled: !!userId && (options.enabled ?? true),
   });
 };
 

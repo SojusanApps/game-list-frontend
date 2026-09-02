@@ -1,5 +1,5 @@
 import { Box, Stack, Title, Text } from "@mantine/core";
-import { IconCheck } from "@tabler/icons-react";
+import { IconCheck, IconTrophy } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,9 @@ export const SuccessStep = ({ importedCount }: SuccessStepProps) => {
   return (
     <Box className={styles.card}>
       <Stack align="center" gap={24} className={styles.successCard}>
-        <div className={styles.successIcon}>🏆</div>
+        <div className={styles.successIcon}>
+          <IconTrophy size={64} stroke={1.5} />
+        </div>
         <Title order={2} fw={800} c="var(--color-text-900)">
           {t("import.successTitle")}
         </Title>

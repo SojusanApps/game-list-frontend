@@ -16,8 +16,9 @@ export interface GameRow {
   status: GameListStatusEnum;
   score: number | null;
   owned_on: string[];
-  started_at: Date | null;
-  completed_at: Date | null;
+  started_at: string | null;
+  completed_at: string | null;
+  /** Entered in hours; converted to minutes for the backend on submit. */
   playtime: number | null;
   description: string;
 }

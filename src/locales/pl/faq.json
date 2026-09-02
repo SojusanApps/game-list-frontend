@@ -3,7 +3,7 @@
   "items": {
     "about": {
       "question": "Czym jest ta strona?",
-      "answer": "Sojusan GameList pomaga śledzić gry, w które grałeś lub które chcesz zagrać, oceniać je i pisać recenzje, tworzyć kolekcje i rankingi (tier listy), a także łączyć się ze znajomymi. To FAQ opisuje, jak serwis działa na co dzień — szczegóły prawne znajdziesz tutaj:",
+      "answer": "Sojusan GameList pomaga śledzić gry, w które grasz lub chcesz zagrać, oceniać je i pisać recenzje, tworzyć kolekcje i rankingi (tier listy), a także łączyć się ze znajomymi. To FAQ opisuje, jak serwis działa na co dzień — szczegóły prawne znajdziesz tutaj:",
       "termsLinkLabel": "Regulamin",
       "privacyLinkLabel": "Polityka prywatności"
     },
@@ -14,7 +14,7 @@
       "youtubeLinkLabel": "YouTube — Sojusan (serie Let's Play, komentarz wyłącznie po polsku)"
     },
     "behavior": {
-      "question": "Jak powinienem się zachowywać na tej stronie?",
+      "question": "Jak należy się zachowywać na tej stronie?",
       "answer": "Bądź uprzejmy, nie nękaj ani nie podszywaj się pod innych użytkowników i zachowaj kulturalny język — w skrócie: traktuj to miejsce jak przyjazną, kulturalną społeczność. Pełne zasady znajdziesz tutaj:",
       "termsLinkLabel": "Regulamin"
     },
@@ -23,7 +23,7 @@
       "answer": "Ostrzeżenie jest zapisywane na Twoim koncie, gdy zgłoszenie dotyczące Twojej treści zostanie zaakceptowane. Jest widoczne wyłącznie dla Ciebie i personelu i samo w sobie niczego nie ogranicza — ale powtarzające się ostrzeżenia mogą skutkować banem."
     },
     "ban": {
-      "question": "Co się stanie, jeśli zostanę zbanowany?",
+      "question": "Co się dzieje w przypadku bana?",
       "answer": "Ban nie dezaktywuje Twojego konta — nadal możesz normalnie korzystać z serwisu. Zmienia się to, że cała Twoja zawartość zaczyna być automatycznie moderowana, czyli ukrywana przed innymi użytkownikami — tak samo, jak pojedyncza treść jest ukrywana po zaakceptowaniu zgłoszenia. Bany są trwałe: nie ma możliwości odwołania się ani cofnięcia bana, dlatego personel korzysta z niego wyłącznie w przypadku poważnych lub powtarzających się naruszeń."
     },
     "reportIssues": {
@@ -51,7 +51,7 @@
     },
     "friends": {
       "question": "Jak działają zaproszenia do znajomych? Czy moja aktywność jest widoczna dla innych?",
-      "answer": "Możesz wysłać innemu użytkownikowi zaproszenie do znajomych z jego profilu; po jego zaakceptowaniu będziecie widoczni na swoich listach znajomych i będziecie mogli zobaczyć nawzajem swoją publiczną aktywność. Niektóre dane profilu (np. e-mail) nigdy nie są pokazywane innym użytkownikom, a pozostała aktywność jest widoczna tylko tam, gdzie sam ją upubliczniłeś — pełny opis tego, co i komu jest udostępniane, znajdziesz w Polityce prywatności."
+      "answer": "Możesz wysłać innemu użytkownikowi zaproszenie do znajomych z jego profilu; po jego zaakceptowaniu będziecie widoczni na swoich listach znajomych i będziecie mogli zobaczyć nawzajem swoją publiczną aktywność. Niektóre dane profilu (np. e-mail) nigdy nie są pokazywane innym użytkownikom, a pozostała aktywność jest widoczna tylko tam, gdzie udostępnisz ją publicznie — pełny opis tego, co i komu jest udostępniane, znajdziesz w Polityce prywatności."
     },
     "gameData": {
       "question": "Skąd pochodzą dane o grach?",

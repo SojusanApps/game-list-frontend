@@ -1,5 +1,5 @@
 import { Box, Stack, Text, Group } from "@mantine/core";
-import { IconCheck, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconCheck, IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -63,11 +63,15 @@ export const TitleMergeStep = ({ groups, onBack, onConfirm }: TitleMergeStepProp
       </Box>
 
       <Group justify="space-between">
-        <Button variant="outline" onClick={onBack}>
-          ← {t("import.backStepButton")}
+        <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
+          {t("import.backStepButton")}
         </Button>
-        <Button onClick={onConfirm} leftSection={<IconCheck size={16} />}>
-          {t("import.continueButton")} →
+        <Button
+          onClick={onConfirm}
+          leftSection={<IconCheck size={16} />}
+          rightSection={<IconArrowRight size={16} stroke={1.5} />}
+        >
+          {t("import.continueButton")}
         </Button>
       </Group>
     </Stack>

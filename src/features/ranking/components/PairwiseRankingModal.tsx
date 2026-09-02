@@ -1,6 +1,6 @@
 import { Box, Flex, Group, Modal, ScrollArea, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
+import { IconScale, IconSwords, IconX } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -147,9 +147,7 @@ export default function PairwiseRankingModal({
               marginBottom: 16,
             }}
           >
-            <Text component="span" fz={36}>
-              ⚖️
-            </Text>
+            <IconScale size={36} stroke={1.5} style={{ color: "var(--color-text-400)" }} />
           </Box>
           <Title order={3} fz="lg" fw={700} c="var(--color-text-900)">
             {t("modal.notEnoughTitle")}
@@ -170,9 +168,7 @@ export default function PairwiseRankingModal({
             bg="var(--color-primary-tint-bg)"
             style={{ borderRadius: "9999px", display: "flex", alignItems: "center", justifyContent: "center" }}
           >
-            <Text component="span" fz={36}>
-              ⚔️
-            </Text>
+            <IconSwords size={36} stroke={1.5} style={{ color: "var(--color-primary-tint-text)" }} />
           </Box>
           <Box>
             <Title

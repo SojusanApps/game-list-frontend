@@ -4,7 +4,6 @@ import {
   Collapse,
   Divider,
   Group,
-  Modal,
   ScrollArea,
   Select,
   Stack,
@@ -12,15 +11,17 @@ import {
   Textarea,
   UnstyledButton,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconChevronDown } from "@tabler/icons-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FieldEnum } from "@/client";
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
+import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
+import { useModalDraft } from "@/hooks/useModalDraft";
 
 import { useCreateTranslationSuggestion, useGetTranslationSuggestions } from "../hooks/translationSuggestionQueries";
 import {
@@ -38,6 +39,12 @@ const REFERENCE_VALUE_STYLE: React.CSSProperties = {
   border: "1px solid var(--color-background-200)",
   borderRadius: 6,
   padding: "8px 10px",
+};
+
+type SuggestionFormValues = {
+  field: FieldEnum;
+  proposedValue: string;
+  isOfficialTitleConfirmed: boolean;
 };
 
 interface TranslationSuggestionModalProps {
@@ -62,22 +69,28 @@ export function TranslationSuggestionModal({
   const currentValueForField = (targetField: FieldEnum) =>
     targetField === FieldEnum.TITLE ? currentTitle : currentSummary;
 
-  const form = useForm({
-    initialValues: {
-      field: FieldEnum.SUMMARY as FieldEnum,
+  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<SuggestionFormValues>({
+    draftKey: `translation-suggestion:${gameId}`,
+    opened,
+    baseline: {
+      field: FieldEnum.SUMMARY,
       proposedValue: currentSummary,
       isOfficialTitleConfirmed: false,
     },
-    validate: {
-      proposedValue: (value, values) => {
-        const error = validateProposedValue(values.field, value);
-        if (error === "required") {
-          return t("translationSuggestionModal.validationRequired");
-        }
-        if (error === "tooLong") {
-          return t("translationSuggestionModal.validationTooLong", { max: PROPOSED_VALUE_MAX_LENGTH[values.field] });
-        }
-        return null;
+    formOptions: {
+      validate: {
+        proposedValue: (value, values) => {
+          const error = validateProposedValue(values.field, value);
+          if (error === "required") {
+            return t("translationSuggestionModal.validationRequired");
+          }
+          if (error === "tooLong") {
+            return t("translationSuggestionModal.validationTooLong", {
+              max: PROPOSED_VALUE_MAX_LENGTH[values.field],
+            });
+          }
+          return null;
+        },
       },
     },
   });
@@ -88,16 +101,6 @@ export function TranslationSuggestionModal({
   const suggestions = React.useMemo(() => data?.results ?? [], [data?.results]);
 
   const ownPendingSuggestion = currentUserId ? findOwnPendingSuggestion(suggestions, currentUserId, field) : undefined;
-
-  React.useEffect(() => {
-    if (opened) {
-      form.setValues({ field: FieldEnum.SUMMARY, proposedValue: currentSummary, isOfficialTitleConfirmed: false });
-    }
-    // `form` is a new object on every render (Mantine's useForm does not memoize it), so depending
-    // on it here would re-run this effect — and reset the fields — after every keystroke/selection.
-    // `form.setValues` is the actual stable reference we need.
-    // oxlint-disable-next-line react/exhaustive-deps
-  }, [opened, currentSummary, form.setValues]);
 
   const handleFieldChange = (value: string | null) => {
     if (!value) {
@@ -115,7 +118,7 @@ export function TranslationSuggestionModal({
 
   const { mutateAsync: createSuggestion, isPending: isCreating } = useCreateTranslationSuggestion();
 
-  const handleSubmit = async (values: { field: FieldEnum; proposedValue: string }) => {
+  const handleSubmit = async (values: SuggestionFormValues) => {
     try {
       await createSuggestion({ game: gameId, field: values.field, proposed_value: values.proposedValue });
       notifications.show({
@@ -123,6 +126,7 @@ export function TranslationSuggestionModal({
         message: t("translationSuggestionModal.createSuccess"),
         color: "green",
       });
+      clearDraft();
     } catch {
       notifications.show({
         title: t("translationSuggestionModal.errorTitle"),
@@ -137,14 +141,9 @@ export function TranslationSuggestionModal({
   const isOverLimit = charCount > maxLength;
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={t("translationSuggestionModal.title")}
-      size="lg"
-      overlayProps={{ opacity: 0.4, blur: 2 }}
-    >
+    <AppModal opened={opened} onClose={onClose} title={t("translationSuggestionModal.title")} scrollable>
       <Stack gap={16}>
+        {hasDraft && <DraftNotice onDiscard={discardDraft} />}
         <Select
           label={t("translationSuggestionModal.fieldLabel")}
           data={[
@@ -256,6 +255,6 @@ export function TranslationSuggestionModal({
           </form>
         )}
       </Stack>
-    </Modal>
+    </AppModal>
   );
 }

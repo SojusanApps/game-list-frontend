@@ -1,6 +1,6 @@
 import { Box, Stack, Text, Group, Badge, Grid, TextInput, Loader, ActionIcon, UnstyledButton } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconSearch, IconX } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconSearch, IconX } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -121,7 +121,8 @@ export const TitleResolveStep = ({
                         </Text>
                         {pick ? (
                           <Text fz="xs" c="var(--mantine-color-green-6)" truncate>
-                            → {pick.title}
+                            <IconArrowRight size={12} stroke={1.5} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+                            {pick.title}
                           </Text>
                         ) : (
                           <Text fz="xs" c="dimmed">
@@ -218,10 +219,12 @@ export const TitleResolveStep = ({
       </Box>
 
       <Group justify="space-between">
-        <Button variant="outline" onClick={onBack}>
-          ← {t("import.backStepButton")}
+        <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
+          {t("import.backStepButton")}
         </Button>
-        <Button onClick={onContinue}>{t("import.continueButton")} →</Button>
+        <Button onClick={onContinue} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
+          {t("import.continueButton")}
+        </Button>
       </Group>
     </Stack>
   );

@@ -84,6 +84,8 @@ export const collectionKeys = {
 export const searchKeys = {
   all: ["search-results"] as const,
   results: (category: string | null, filters: object) => [...searchKeys.all, category, filters] as const,
+  paginated: (category: string | null, filters: object, page: number) =>
+    [...searchKeys.all, "paginated", category, filters, page] as const,
 };
 
 export const versionKeys = {

@@ -1,7 +1,8 @@
-import { Group, Modal, Text } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 
 import { useAuth } from "../context/AuthProvider";
@@ -14,23 +15,29 @@ export function LoginRequiredModal(): React.JSX.Element {
   const close = useLoginPromptStore(state => state.close);
 
   return (
-    <Modal opened={isOpen} onClose={close} title={t("loginRequired.title")} size="sm" centered>
-      <Text c="var(--color-text-700)" mb={24}>
-        {t("loginRequired.message")}
-      </Text>
-      <Group justify="flex-end">
-        <Button variant="outline" onClick={close}>
-          {t("loginRequired.cancel")}
-        </Button>
-        <Button
-          onClick={() => {
-            close();
-            login();
-          }}
-        >
-          {t("loginRequired.login")}
-        </Button>
-      </Group>
-    </Modal>
+    <AppModal
+      opened={isOpen}
+      onClose={close}
+      title={t("loginRequired.title")}
+      size="lg"
+      centered
+      footer={
+        <Group justify="flex-end">
+          <Button variant="outline" onClick={close}>
+            {t("loginRequired.cancel")}
+          </Button>
+          <Button
+            onClick={() => {
+              close();
+              login();
+            }}
+          >
+            {t("loginRequired.login")}
+          </Button>
+        </Group>
+      }
+    >
+      <Text c="var(--color-text-700)">{t("loginRequired.message")}</Text>
+    </AppModal>
   );
 }

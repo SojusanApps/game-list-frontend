@@ -1,13 +1,18 @@
-import { Box, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
-import { getRouteApi } from "@tanstack/react-router";
+import { Box, Group, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { keepPreviousData } from "@tanstack/react-query";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
 
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useListViewStore } from "@/lib/listViewStore";
 
 import FriendCard from "../components/FriendCard";
-import { useGetFriendshipsInfiniteQuery } from "../hooks/friendshipQueries";
+import { createFriendshipColumns } from "../components/friendshipColumns";
+import { useGetFriendships, useGetFriendshipsInfiniteQuery } from "../hooks/friendshipQueries";
 import { useGetUserDetails } from "../hooks/userQueries";
 
 const routeApi = getRouteApi("/profile_/$id/$slug/friends");
@@ -17,6 +22,9 @@ export default function UserFriendsPage(): React.JSX.Element {
   const userId = Number(id);
 
   const { data: userDetails, isLoading: isUserLoading } = useGetUserDetails(userId);
+  const navigate = useNavigate();
+  const renderMode = useListViewStore(state => state.mode);
+  const [page, setPage] = React.useState(1);
 
   const {
     data,
@@ -24,18 +32,47 @@ export default function UserFriendsPage(): React.JSX.Element {
     hasNextPage,
     isFetchingNextPage,
     isLoading: isFriendsQueryLoading,
-  } = useGetFriendshipsInfiniteQuery({ user: userId.toString() });
+  } = useGetFriendshipsInfiniteQuery({ user: userId.toString() }, { enabled: renderMode === "infinite" });
+
+  const tableQuery = useGetFriendships(
+    { user: userId.toString(), page },
+    { enabled: renderMode === "table" && !!userId, placeholderData: keepPreviousData },
+  );
 
   const isFriendsLoading = isFriendsQueryLoading || isUserLoading;
 
   const { t } = useTranslation("users");
 
-  const allFriendships = data?.pages.flatMap(page => page.results) || [];
-  const totalFriends = data?.pages[0]?.count ?? 0;
+  const friendshipColumns = React.useMemo(() => createFriendshipColumns(t), [t]);
+
+  const allFriendships = data?.pages.flatMap(resultPage => resultPage.results) || [];
+  const totalFriends = renderMode === "table" ? (tableQuery.data?.count ?? 0) : (data?.pages[0]?.count ?? 0);
 
   const pageTitle = isUserLoading ? t("friends.loading") : t("friends.pageTitle", { username: userDetails?.username });
 
   const renderFriendsContent = () => {
+    if (renderMode === "table") {
+      return (
+        <PaginatedTable
+          columns={friendshipColumns}
+          data={tableQuery.data?.results ?? []}
+          count={tableQuery.data?.count ?? 0}
+          page={page}
+          onPageChange={setPage}
+          getRowId={row => String(row.id)}
+          isLoading={tableQuery.isLoading || isUserLoading}
+          isFetching={tableQuery.isFetching}
+          emptyLabel={t("friends.noFriendsFound")}
+          onRowClick={row =>
+            navigate({
+              to: "/profile/$id/$slug",
+              params: { id: String(row.friend.id), slug: row.friend.slug },
+            })
+          }
+        />
+      );
+    }
+
     if (isFriendsLoading) {
       return (
         <SimpleGrid cols={{ base: 2, sm: 3, md: 4, lg: 5, xl: 7 }} spacing="md">
@@ -120,6 +157,10 @@ export default function UserFriendsPage(): React.JSX.Element {
             )}
           </Stack>
         </Stack>
+
+        <Group justify="flex-end">
+          <ListViewModeToggle />
+        </Group>
 
         <Box style={{ flexGrow: 1, minHeight: 600 }}>{renderFriendsContent()}</Box>
       </Stack>

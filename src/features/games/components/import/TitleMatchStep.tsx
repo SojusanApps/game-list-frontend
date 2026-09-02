@@ -1,5 +1,5 @@
 import { Box, Stack, Text, Title, Group, Badge, Divider, Progress, Loader } from "@mantine/core";
-import { IconAlertTriangle, IconRefresh } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconRefresh } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -42,6 +42,7 @@ const CandidateCard = ({ candidate, decision, onToggle }: CandidateCardProps) =>
         itemCoverUrl={
           candidate.cover_image_id ? getIGDBImageURL(candidate.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
         }
+        releaseDate={candidate.release_date}
         onClick={candidate.already_in_list ? undefined : onToggle}
       />
     </div>
@@ -199,11 +200,11 @@ export const TitleMatchStep = ({
       </Box>
 
       <Group justify="space-between">
-        <Button variant="outline" onClick={onBack}>
-          ← {t("import.backStepButton")}
+        <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
+          {t("import.backStepButton")}
         </Button>
-        <Button onClick={onNext} disabled={!allResolved}>
-          {isLastBatch ? t("import.continueButton") : t("import.nextButton")} →
+        <Button onClick={onNext} disabled={!allResolved} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
+          {isLastBatch ? t("import.continueButton") : t("import.nextButton")}
         </Button>
       </Group>
     </Stack>

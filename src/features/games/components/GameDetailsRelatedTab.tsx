@@ -1,47 +1,86 @@
-import { Box, Stack } from "@mantine/core";
+import { Box, Group, Stack } from "@mantine/core";
+import { useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Game, CompanyGame } from "@/client";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import ItemOverlay from "@/components/ui/ItemOverlay";
+import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
+import { ClientPaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useListViewStore } from "@/lib/listViewStore";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import { createCompanyGameColumns } from "./companyGameColumns";
 
 interface GameDetailsRelatedTabProps {
   gameDetails?: Game;
 }
 
-function renderRelatedGamesSection(title: string, games: CompanyGame[] | undefined) {
-  if (!games || games.length === 0) return null;
-  return (
-    <CollapsibleSection title={title} count={games.length}>
-      <VirtualGridList
-        items={games}
-        hasNextPage={false}
-        isFetchingNextPage={false}
-        fetchNextPage={() => {}}
-        style={{ height: "400px" }}
-        renderItem={(game: CompanyGame) => (
-          <ItemOverlay
-            itemPageUrl={`/game/${game.id}/${game.slug}`}
-            itemCoverUrl={
-              game.cover_image_id ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
-            }
-            name={game.title}
-          />
-        )}
-      />
-    </CollapsibleSection>
-  );
-}
-
 export default function GameDetailsRelatedTab({ gameDetails }: Readonly<GameDetailsRelatedTabProps>) {
   const { t } = useTranslation("games");
+  const navigate = useNavigate();
+  const renderMode = useListViewStore(state => state.mode);
+  const columns = React.useMemo(() => createCompanyGameColumns(), []);
+
+  const sections: { title: string; games: CompanyGame[] | undefined }[] = [
+    { title: t("related.dlcs"), games: gameDetails?.dlcs },
+    { title: t("related.expansions"), games: gameDetails?.expansions },
+    { title: t("related.standaloneExpansions"), games: gameDetails?.standalone_expansions },
+    { title: t("related.bundles"), games: gameDetails?.bundles },
+    { title: t("related.expandedGames"), games: gameDetails?.expanded_games },
+    { title: t("related.forks"), games: gameDetails?.forks },
+    { title: t("related.ports"), games: gameDetails?.ports },
+  ];
+
+  const hasAnyList = sections.some(section => section.games && section.games.length > 0);
+
+  const renderSection = ({ title, games }: { title: string; games: CompanyGame[] | undefined }) => {
+    if (!games || games.length === 0) {
+      return null;
+    }
+    return (
+      <CollapsibleSection key={title} title={title} count={games.length}>
+        {renderMode === "table" ? (
+          <ClientPaginatedTable
+            rows={games}
+            columns={columns}
+            getRowId={row => String(row.id)}
+            onRowClick={row =>
+              navigate({ to: "/game/$id/$slug", params: { id: String(row.id), slug: row.slug ?? "" } })
+            }
+          />
+        ) : (
+          <VirtualGridList
+            items={games}
+            hasNextPage={false}
+            isFetchingNextPage={false}
+            fetchNextPage={() => {}}
+            style={{ height: "400px" }}
+            renderItem={(game: CompanyGame) => (
+              <ItemOverlay
+                itemPageUrl={`/game/${game.id}/${game.slug}`}
+                itemCoverUrl={
+                  game.cover_image_id ? getIGDBImageURL(game.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
+                }
+                name={game.title}
+              />
+            )}
+          />
+        )}
+      </CollapsibleSection>
+    );
+  };
 
   return (
     <Stack gap={16}>
+      {hasAnyList && (
+        <Group justify="flex-end">
+          <ListViewModeToggle />
+        </Group>
+      )}
+
       {gameDetails?.parent_game && (
         <CollapsibleSection title={t("related.parentGame")} defaultOpen={true}>
           <Box maw={200}>
@@ -57,37 +96,25 @@ export default function GameDetailsRelatedTab({ gameDetails }: Readonly<GameDeta
           </Box>
         </CollapsibleSection>
       )}
-      {renderRelatedGamesSection(t("related.dlcs"), gameDetails?.dlcs)}
-      {renderRelatedGamesSection(t("related.expansions"), gameDetails?.expansions)}
-      {renderRelatedGamesSection(t("related.standaloneExpansions"), gameDetails?.standalone_expansions)}
-      {renderRelatedGamesSection(t("related.bundles"), gameDetails?.bundles)}
-      {renderRelatedGamesSection(t("related.expandedGames"), gameDetails?.expanded_games)}
-      {renderRelatedGamesSection(t("related.forks"), gameDetails?.forks)}
-      {renderRelatedGamesSection(t("related.ports"), gameDetails?.ports)}
 
-      {!gameDetails?.parent_game &&
-        (!gameDetails?.dlcs || gameDetails.dlcs.length === 0) &&
-        (!gameDetails?.expansions || gameDetails.expansions.length === 0) &&
-        (!gameDetails?.standalone_expansions || gameDetails.standalone_expansions.length === 0) &&
-        (!gameDetails?.bundles || gameDetails.bundles.length === 0) &&
-        (!gameDetails?.expanded_games || gameDetails.expanded_games.length === 0) &&
-        (!gameDetails?.forks || gameDetails.forks.length === 0) &&
-        (!gameDetails?.ports || gameDetails.ports.length === 0) && (
-          <Box
-            style={{
-              background: "var(--color-background-100)",
-              borderRadius: "12px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              border: "1px solid var(--color-background-200)",
-              padding: "32px",
-              textAlign: "center",
-              color: "var(--color-text-500)",
-              fontStyle: "italic",
-            }}
-          >
-            {t("related.noRelatedGames")}
-          </Box>
-        )}
+      {sections.map(section => renderSection(section))}
+
+      {!gameDetails?.parent_game && !hasAnyList && (
+        <Box
+          style={{
+            background: "var(--color-background-100)",
+            borderRadius: "12px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            border: "1px solid var(--color-background-200)",
+            padding: "32px",
+            textAlign: "center",
+            color: "var(--color-text-500)",
+            fontStyle: "italic",
+          }}
+        >
+          {t("related.noRelatedGames")}
+        </Box>
+      )}
     </Stack>
   );
 }
