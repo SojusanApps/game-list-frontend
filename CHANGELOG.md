@@ -2,7 +2,7 @@
 
 > Date format is DD.MM.YYYY.
 
-## v. [1.0.0] -
+## v. [1.0.0] - 02.09.2026
 
 **Compatible backend version: [5.3.3]**
 
