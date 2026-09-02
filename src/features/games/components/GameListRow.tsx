@@ -8,6 +8,7 @@ import { GameList, GameListStatusEnum, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { STATUS_CONFIG } from "@/features/games/utils/statusConfig";
+import { StatusIcon } from "@/features/games/utils/StatusIcon";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
@@ -55,13 +56,14 @@ export const GameListRow = React.memo(({ gameListItem, isOwner, onEdit, ownerUse
                   <Badge
                     variant="light"
                     size="sm"
+                    leftSection={<StatusIcon status={gameListItem.status_code} size={12} />}
                     style={{
                       ...statusConfig.badgeStyle,
                       borderWidth: "1px",
                       borderStyle: "solid",
                     }}
                   >
-                    {statusConfig.emoji} {statusConfig.label}
+                    {statusConfig.label}
                   </Badge>
                 )}
                 {hasNote && (

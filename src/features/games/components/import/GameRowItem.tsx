@@ -12,6 +12,7 @@ import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
+import { StatusIcon } from "../../utils/StatusIcon";
 import { GameRow } from "./types";
 
 import styles from "./GameRowItem.module.css";
@@ -20,6 +21,13 @@ import styles from "./GameRowItem.module.css";
 // `React.memo` on the row actually holds (a fresh `data` array or `renderOption`
 // closure each render would still churn the Mantine Select internals).
 const SCORE_DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(s => ({ value: s.toString(), label: s.toString() }));
+
+const renderStatusOption = ({ option }: { option: ComboboxItem }) => (
+  <Group gap={8} wrap="nowrap">
+    <StatusIcon status={option.value} size={16} neon />
+    {option.label}
+  </Group>
+);
 
 const renderScoreOption = ({ option }: { option: ComboboxItem }) => (
   <Box
@@ -86,6 +94,8 @@ const GameRowItemComponent = ({
             size="xs"
             w={160}
             data={statusData}
+            renderOption={renderStatusOption}
+            leftSection={row.status ? <StatusIcon status={row.status} size={14} neon /> : undefined}
             value={row.status}
             onChange={val => onStatusChange(index, (val as GameListStatusEnum) ?? GameListStatusEnum.PTP)}
             aria-label={t("import.status")}

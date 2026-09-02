@@ -206,76 +206,82 @@ export default function CollectionPage(): React.JSX.Element {
           <>
             {statsBanner}
 
-            <VirtualGridList
-              items={allItems}
-              hasNextPage={!!hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              fetchNextPage={fetchNextPage}
-              columnCount={8}
-              rowHeight={280}
-              renderItem={(item: CollectionItem) => (
-                <Box key={item.id} className={pageStyles.collectionItem}>
-                  <ItemOverlay
-                    name={item.game.title}
-                    itemPageUrl={`/game/${item.game.id}/${item.game.slug}`}
-                    itemCoverUrl={getIGDBImageURL(item.game.cover_image_id ?? "", IGDBImageSize.COVER_BIG_264_374)}
-                  />
+            {/* Empty state is handled by the "no games in this collection" notice below,
+                so skip the grid (and its own "no results found" message) when empty. */}
+            {allItems.length > 0 && (
+              <VirtualGridList
+                items={allItems}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={fetchNextPage}
+                columnCount={8}
+                rowHeight={280}
+                renderItem={(item: CollectionItem) => (
+                  <Box key={item.id} className={pageStyles.collectionItem}>
+                    <ItemOverlay
+                      name={item.game.title}
+                      itemPageUrl={`/game/${item.game.id}/${item.game.slug}`}
+                      itemCoverUrl={getIGDBImageURL(item.game.cover_image_id ?? "", IGDBImageSize.COVER_BIG_264_374)}
+                    />
 
-                  {/* Added By Badge - Only show in Collaborative mode */}
-                  {collection?.mode === ModeEnum.C && (
-                    <Box style={{ position: "absolute", top: "12px", left: "12px", zIndex: 30, pointerEvents: "none" }}>
-                      <Text
-                        span
-                        style={{
-                          background: "rgba(79,70,229,0.8)",
-                          color: "white",
-                          fontSize: "8px",
-                          padding: "4px 8px",
-                          borderRadius: "6px",
-                          textTransform: "uppercase",
-                          fontWeight: 900,
-                          letterSpacing: "0.05em",
-                          backdropFilter: "blur(8px)",
-                          boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
-                          border: "1px solid rgba(255,255,255,0.1)",
-                          width: "fit-content",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
+                    {/* Added By Badge - Only show in Collaborative mode */}
+                    {collection?.mode === ModeEnum.C && (
+                      <Box
+                        style={{ position: "absolute", top: "12px", left: "12px", zIndex: 30, pointerEvents: "none" }}
                       >
-                        <Text span style={{ opacity: 0.6 }}>
-                          {t("detail.addedByLabel")}
-                        </Text>{" "}
-                        {item.added_by.username}
-                      </Text>
-                    </Box>
-                  )}
+                        <Text
+                          span
+                          style={{
+                            background: "rgba(79,70,229,0.8)",
+                            color: "white",
+                            fontSize: "8px",
+                            padding: "4px 8px",
+                            borderRadius: "6px",
+                            textTransform: "uppercase",
+                            fontWeight: 900,
+                            letterSpacing: "0.05em",
+                            backdropFilter: "blur(8px)",
+                            boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            width: "fit-content",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          <Text span style={{ opacity: 0.6 }}>
+                            {t("detail.addedByLabel")}
+                          </Text>{" "}
+                          {item.added_by.username}
+                        </Text>
+                      </Box>
+                    )}
 
-                  {canEdit && (
-                    <Box className={pageStyles.collectionItemDelete}>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "9999px",
-                          boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
-                        }}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteItem(item.id, item.game.title);
-                        }}
-                      >
-                        <IconTrash style={{ width: 16, height: 16 }} />
-                      </Button>
-                    </Box>
-                  )}
-                </Box>
-              )}
-            />
+                    {canEdit && (
+                      <Box className={pageStyles.collectionItemDelete}>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "9999px",
+                            boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
+                          }}
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteItem(item.id, item.game.title);
+                          }}
+                        >
+                          <IconTrash style={{ width: 16, height: 16 }} />
+                        </Button>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              />
+            )}
           </>
         );
       }
@@ -345,9 +351,7 @@ export default function CollectionPage(): React.JSX.Element {
                   justifyContent: "center",
                 }}
               >
-                <Text span fz={36}>
-                  🎮
-                </Text>
+                <IconDeviceGamepad2 size={36} stroke={1.5} style={{ color: "var(--color-text-400)" }} />
               </Box>
               <Title order={3} fz="lg" fw={700} c="var(--color-text-900)">
                 {t("detail.noGames")}

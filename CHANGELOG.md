@@ -17,6 +17,11 @@
 - Gaming background graphic: the close icon no longer looks like a plus sign.
 - Polish translations reworded to be gender-neutral.
 - Added the common layout for modals.
+- Emoji and text-character icons were replaced with monochrome SVG icons everywhere they were used — game list status labels, empty-state and info graphics, the Steam "not found" warning, collection filters, the ranking screens, and the back/continue arrows in the import flows.
+- Game list status now shows a coloured icon consistently across the app: the list, the compare table, the profile statistics and recent-activity, the add/edit dialog (the icon now also shows in the status field itself, not only in the dropdown), and the import "configure games" step.
+- Collections list: the type filter uses a filled yellow folder ("All") and a filled red heart ("Favorites").
+- Collection and collections pages: an empty collection or an empty result set no longer shows two "nothing here" messages at once.
+- Pairwise ranking button now uses an icon instead of an emoji.
 
 ## v. [0.1.0] - 27.08.2026
 

@@ -7,7 +7,7 @@ export default function code_to_value_mapping() {
     const config = getStatusConfig(code);
     return {
       code,
-      value: config ? `${config.emoji} ${config.label}` : code,
+      value: config ? config.label : code,
     };
   });
 }

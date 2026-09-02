@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Group, Box, Title, Text, Select, TextInput, UnstyledButton } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { IconFolder, IconFolderFilled, IconHeartFilled, IconSearch, type TablerIcon } from "@tabler/icons-react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
@@ -123,6 +123,12 @@ export default function CollectionsPage(): React.JSX.Element {
       );
     }
 
+    // Empty state is handled by the "no collections" notice below, so skip the
+    // grid (and its own "no results found" message) when empty.
+    if (allItems.length === 0) {
+      return null;
+    }
+
     return (
       <VirtualGridList
         items={allItems}
@@ -140,9 +146,9 @@ export default function CollectionsPage(): React.JSX.Element {
     ? t("list.loading")
     : t("list.collectionsPageTitle", { username: userDetails?.username });
 
-  const favoriteFilters = [
-    { id: null, label: t("list.filterAll"), emoji: "📂" },
-    { id: true, label: t("list.filterFavorites"), emoji: "❤️" },
+  const favoriteFilters: { id: boolean | null; label: string; icon: TablerIcon; iconColor: string }[] = [
+    { id: null, label: t("list.filterAll"), icon: IconFolderFilled, iconColor: "var(--mantine-color-yellow-6)" },
+    { id: true, label: t("list.filterFavorites"), icon: IconHeartFilled, iconColor: "var(--mantine-color-red-6)" },
   ];
 
   const scopeFilters = [
@@ -272,9 +278,10 @@ export default function CollectionsPage(): React.JSX.Element {
                               }),
                         }}
                       >
-                        <Text span style={{ marginRight: "8px" }}>
-                          {filter.emoji}
-                        </Text>
+                        <filter.icon
+                          size={14}
+                          style={{ marginRight: "8px", verticalAlign: "-2px", color: filter.iconColor }}
+                        />
                         {filter.label}
                       </UnstyledButton>
                     ))}
@@ -437,9 +444,7 @@ export default function CollectionsPage(): React.JSX.Element {
                   justifyContent: "center",
                 }}
               >
-                <Text span fz={36}>
-                  📂
-                </Text>
+                <IconFolder size={36} stroke={1.5} style={{ color: "var(--color-text-400)" }} />
               </Box>
               <Title order={3} fz="lg" fw={700} c="var(--color-text-900)">
                 {t("list.noCollections")}

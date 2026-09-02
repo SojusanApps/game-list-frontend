@@ -8,6 +8,7 @@ import { GameList } from "@/client";
 import { type PaginatedTableFeatures } from "@/components/ui/PaginatedTable";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { StatusIcon } from "@/features/games/utils/StatusIcon";
 
 import { CoverThumb } from "./CoverThumb";
 import { ScoreBadge } from "./ScoreBadge";
@@ -68,8 +69,13 @@ export function createGameListColumns({
           return <Text fz="sm">{EMPTY}</Text>;
         }
         return (
-          <Badge variant="light" size="sm" style={{ ...config.badgeStyle, borderWidth: 1, borderStyle: "solid" }}>
-            {config.emoji} {config.label}
+          <Badge
+            variant="light"
+            size="sm"
+            leftSection={<StatusIcon status={info.getValue()} size={12} />}
+            style={{ ...config.badgeStyle, borderWidth: 1, borderStyle: "solid" }}
+          >
+            {config.label}
           </Badge>
         );
       },

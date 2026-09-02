@@ -27,6 +27,7 @@ import {
   usePartialUpdateGameList,
 } from "../hooks/gameQueries";
 import code_to_value_mapping from "../utils/GameListStatuses";
+import { StatusIcon } from "../utils/StatusIcon";
 
 const validationSchema = z.object({
   status: z.enum(GameListStatusEnum),
@@ -208,10 +209,17 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
               label={t("modal.statusLabel")}
               name="status"
               searchable
+              leftSection={form.values.status ? <StatusIcon status={form.values.status} size={16} neon /> : undefined}
               data={code_to_value_mapping().map(item => ({
                 value: item.code,
                 label: item.value,
               }))}
+              renderOption={({ option }) => (
+                <Group gap={8} wrap="nowrap">
+                  <StatusIcon status={option.value} size={16} neon />
+                  {option.label}
+                </Group>
+              )}
               {...form.getInputProps("status")}
             />
             <Select

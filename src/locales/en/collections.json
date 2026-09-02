@@ -68,7 +68,7 @@
     }
   },
   "header": {
-    "pairwiseRank": "\u2694\uFE0F Pairwise Rank",
+    "pairwiseRank": "Pairwise Rank",
     "addGame": "Add Game",
     "editCollection": "Edit Collection",
     "collectionsLink": "'s Collections"

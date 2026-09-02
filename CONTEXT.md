@@ -1,8 +1,12 @@
 # Sojusan GameList Frontend
 
-A game-tracking and review platform. This context covers user-generated content moderation: how users report content, and how staff act on it.
+A game-tracking and review platform. This context covers user-generated content moderation (how users report content and how staff act on it) plus core game-tracking vocabulary.
 
 ## Language
+
+**Game List Status**:
+The state a user assigns to a game on their list — one of exactly five: `P` playing, `C` completed, `PTP` plan to play, `OH` on hold, `D` dropped. `D` dropped means the user abandoned the game (stopped playing with no intent to finish); it does not mean the list entry was deleted. Backed by `GameListStatusEnum`.
+_Avoid_: progress, list state; do not conflate "dropped" with removing/deleting an entry
 
 **Target**:
 A piece of user-generated content or a profile field that can be reported — one of: avatar, username, review, translation suggestion, game list note, collection, collection item note. Identified by a `target_type` plus the matching entity id (or the owning user's id, for avatar/username).

@@ -12,7 +12,15 @@ import {
   Title,
   ActionIcon,
 } from "@mantine/core";
-import { IconEdit, IconFilter, IconDownload, IconSearch, IconUpload } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconFilter,
+  IconDownload,
+  IconInfinity,
+  IconSearch,
+  IconUpload,
+  type TablerIcon,
+} from "@tabler/icons-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
@@ -177,36 +185,36 @@ export default function GameListPage(): React.JSX.Element {
 
   const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
 
-  const statuses: { id: GameListStatusEnum | null; label: string; emoji: string; color: string }[] = [
-    { id: null, label: t("gameList.all"), emoji: "♾️", color: "gray" },
+  const statuses: { id: GameListStatusEnum | null; label: string; icon: TablerIcon; color: string }[] = [
+    { id: null, label: t("gameList.all"), icon: IconInfinity, color: "gray" },
     {
       id: GameListStatusEnum.P,
       label: STATUS_CONFIG[GameListStatusEnum.P].label,
-      emoji: STATUS_CONFIG[GameListStatusEnum.P].emoji,
+      icon: STATUS_CONFIG[GameListStatusEnum.P].icon,
       color: "teal",
     },
     {
       id: GameListStatusEnum.C,
       label: STATUS_CONFIG[GameListStatusEnum.C].label,
-      emoji: STATUS_CONFIG[GameListStatusEnum.C].emoji,
+      icon: STATUS_CONFIG[GameListStatusEnum.C].icon,
       color: "indigo",
     },
     {
       id: GameListStatusEnum.PTP,
       label: STATUS_CONFIG[GameListStatusEnum.PTP].label,
-      emoji: STATUS_CONFIG[GameListStatusEnum.PTP].emoji,
+      icon: STATUS_CONFIG[GameListStatusEnum.PTP].icon,
       color: "gray",
     },
     {
       id: GameListStatusEnum.OH,
       label: STATUS_CONFIG[GameListStatusEnum.OH].label,
-      emoji: STATUS_CONFIG[GameListStatusEnum.OH].emoji,
+      icon: STATUS_CONFIG[GameListStatusEnum.OH].icon,
       color: "orange",
     },
     {
       id: GameListStatusEnum.D,
       label: STATUS_CONFIG[GameListStatusEnum.D].label,
-      emoji: STATUS_CONFIG[GameListStatusEnum.D].emoji,
+      icon: STATUS_CONFIG[GameListStatusEnum.D].icon,
       color: "red",
     },
   ];
@@ -324,7 +332,7 @@ export default function GameListPage(): React.JSX.Element {
                   size="md"
                   radius="xl"
                   onClick={() => setSelectedGameStatus(status.id)}
-                  leftSection={<span>{status.emoji}</span>}
+                  leftSection={<status.icon size={16} stroke={1.5} />}
                   style={{
                     border: `2px solid var(--mantine-color-${status.color}-${selectedGameStatus === status.id ? "7" : "4"})`,
                     transition: "border-color 0.2s ease",

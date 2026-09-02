@@ -1,3 +1,11 @@
+import {
+  IconCalendarClock,
+  IconCircleX,
+  IconDeviceGamepad2,
+  IconPlayerPause,
+  IconTrophy,
+  type TablerIcon,
+} from "@tabler/icons-react";
 import type React from "react";
 
 import { GameListStatusEnum } from "@/client";
@@ -5,8 +13,10 @@ import i18n from "@/lib/i18n";
 
 export interface StatusConfig {
   label: string;
-  emoji: string;
+  icon: TablerIcon;
   badgeStyle: React.CSSProperties;
+  /** Saturated hue + matching glow for a "neon sign" rendering of the icon. */
+  neonStyle: React.CSSProperties;
 }
 
 const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
@@ -37,12 +47,41 @@ const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
   },
 };
 
-const STATUS_EMOJIS: Record<GameListStatusEnum, string> = {
-  [GameListStatusEnum.P]: "🎮",
-  [GameListStatusEnum.C]: "🏆",
-  [GameListStatusEnum.PTP]: "🗓️",
-  [GameListStatusEnum.OH]: "⏸️",
-  [GameListStatusEnum.D]: "🗑️",
+/**
+ * Doubling the glow token stacks it to roughly 0.65 alpha — a visible halo on
+ * the dark theme, a soft tint on the light one. Hues mirror BADGE_STYLES:
+ * playing→success, completed→primary, on-hold→secondary, dropped→error,
+ * plan-to-play→achromatic (a "white neon" tube).
+ */
+const NEON_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
+  [GameListStatusEnum.P]: {
+    color: "var(--color-success-500)",
+    filter: "drop-shadow(var(--shadow-glow-success)) drop-shadow(var(--shadow-glow-success))",
+  },
+  [GameListStatusEnum.C]: {
+    color: "var(--color-primary-500)",
+    filter: "drop-shadow(var(--shadow-glow-primary)) drop-shadow(var(--shadow-glow-primary))",
+  },
+  [GameListStatusEnum.PTP]: {
+    color: "var(--color-text-500)",
+    filter: "drop-shadow(var(--shadow-glow-background)) drop-shadow(var(--shadow-glow-background))",
+  },
+  [GameListStatusEnum.OH]: {
+    color: "var(--color-secondary-500)",
+    filter: "drop-shadow(var(--shadow-glow-secondary)) drop-shadow(var(--shadow-glow-secondary))",
+  },
+  [GameListStatusEnum.D]: {
+    color: "var(--color-error-500)",
+    filter: "drop-shadow(var(--shadow-glow-error)) drop-shadow(var(--shadow-glow-error))",
+  },
+};
+
+const STATUS_ICONS: Record<GameListStatusEnum, TablerIcon> = {
+  [GameListStatusEnum.P]: IconDeviceGamepad2,
+  [GameListStatusEnum.C]: IconTrophy,
+  [GameListStatusEnum.PTP]: IconCalendarClock,
+  [GameListStatusEnum.OH]: IconPlayerPause,
+  [GameListStatusEnum.D]: IconCircleX,
 };
 
 const STATUS_TRANSLATION_KEYS: Record<GameListStatusEnum, string> = {
@@ -61,8 +100,9 @@ export const getStatusConfig = (status: GameListStatusEnum | string | undefined)
   const key = status as GameListStatusEnum;
   return {
     label: i18n.t(STATUS_TRANSLATION_KEYS[key] as any),
-    emoji: STATUS_EMOJIS[key],
+    icon: STATUS_ICONS[key],
     badgeStyle: BADGE_STYLES[key],
+    neonStyle: NEON_STYLES[key],
   };
 };
 

@@ -1,7 +1,7 @@
 import { Box, Stack, Text, Stepper, Group, Textarea } from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -375,8 +375,12 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
             onFieldChange={onFieldChange}
           />
           <Group justify="space-between">
-            <Button variant="outline" onClick={handleConfigureBack}>
-              ← {t("import.backStepButton")}
+            <Button
+              variant="outline"
+              onClick={handleConfigureBack}
+              leftSection={<IconArrowLeft size={16} stroke={1.5} />}
+            >
+              {t("import.backStepButton")}
             </Button>
             <Button
               onClick={handleImport}

@@ -1,7 +1,7 @@
 import { Box, Stack, Text, Stepper, TextInput, Group, Accordion, Badge } from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconDownload, IconCheck, IconInfoCircle } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconDownload, IconCheck, IconInfoCircle } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -153,7 +153,7 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
           {notFound.length > 0 && (
             <Accordion variant="separated" radius="md">
               <Accordion.Item value="not-found">
-                <Accordion.Control icon="⚠️">
+                <Accordion.Control icon={<IconAlertTriangle size={18} stroke={1.5} />}>
                   <Group gap={8}>
                     <Text fw={600}>{t("import.notFoundTitle")}</Text>
                     <Badge
@@ -190,8 +190,12 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
           )}
 
           <Group justify="space-between">
-            <Button variant="outline" onClick={() => setActiveStep(0)}>
-              ← {t("import.stepConnect")}
+            <Button
+              variant="outline"
+              onClick={() => setActiveStep(0)}
+              leftSection={<IconArrowLeft size={16} stroke={1.5} />}
+            >
+              {t("import.stepConnect")}
             </Button>
             <Button
               onClick={handleImport}
