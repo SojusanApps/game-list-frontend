@@ -82,28 +82,25 @@ export default function AsyncMultiSelectAutocomplete<T>({
     }
   }, [allOptions, selectedItems, getOptionValue]);
 
+  // Fire `callback` for every value in `source` that is missing from `other`,
+  // resolving each value back to its full item via the seen-items lookup.
+  const notifyMissing = (source: string[], other: string[], callback?: (item: T) => void) => {
+    if (!callback) {
+      return;
+    }
+    const others = new Set(other);
+    for (const v of source) {
+      const item = others.has(v) ? undefined : seenItemsRef.current.get(v);
+      if (item !== undefined) {
+        callback(item);
+      }
+    }
+  };
+
   const handleChange = (next: string[]) => {
     const prev = value ?? [];
-    if (onAdd) {
-      for (const v of next) {
-        if (!prev.includes(v)) {
-          const item = seenItemsRef.current.get(v);
-          if (item !== undefined) {
-            onAdd(item);
-          }
-        }
-      }
-    }
-    if (onRemove) {
-      for (const v of prev) {
-        if (!next.includes(v)) {
-          const item = seenItemsRef.current.get(v);
-          if (item !== undefined) {
-            onRemove(item);
-          }
-        }
-      }
-    }
+    notifyMissing(next, prev, onAdd);
+    notifyMissing(prev, next, onRemove);
     onChange?.(next);
   };
 

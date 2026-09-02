@@ -1,4 +1,4 @@
-import { Stack, Group } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useTranslation } from "react-i18next";
