@@ -250,7 +250,7 @@ export default function CollectionPage(): React.JSX.Element {
                             gap: "4px",
                           }}
                         >
-                          <Text span style={{ opacity: 0.6 }}>
+                          <Text span inherit style={{ opacity: 0.6 }}>
                             {t("detail.addedByLabel")}
                           </Text>{" "}
                           {item.added_by.username}
