@@ -103,7 +103,9 @@
   "addModal": {
     "title": "Add to Collection",
     "selectLabel": "Select Collections",
-    "selectPlaceholder": "Search your collections...",
+    "selectPlaceholder": "Search your collections or ones shared with you...",
+    "shared": "Shared",
+    "sharedBy": "by {{username}}",
     "adding": "Adding...",
     "addButton": "Add to Selected Collections",
     "addSuccess": "Added to collections successfully",

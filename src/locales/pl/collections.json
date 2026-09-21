@@ -103,7 +103,9 @@
   "addModal": {
     "title": "Dodaj do kolekcji",
     "selectLabel": "Wybierz kolekcje",
-    "selectPlaceholder": "Szukaj kolekcji...",
+    "selectPlaceholder": "Szukaj swoich lub udostępnionych kolekcji...",
+    "shared": "Udostępniona",
+    "sharedBy": "od {{username}}",
     "adding": "Dodawanie...",
     "addButton": "Dodaj do wybranych kolekcji",
     "addSuccess": "Pomyślnie dodano do kolekcji",

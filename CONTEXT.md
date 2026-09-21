@@ -51,3 +51,19 @@ _Avoid_: Liked, starred, pinned; do not describe it as a flag or attribute "set 
 **Game List Ordering**:
 The sort a viewer applies to a user's Game List: by game title (A–Z or Z–A) or by Score (high to low or low to high). Defaults to title A–Z. An explicit ordering always applies, including while searching by title (best-match order is not used). Unscored entries always come last when ordering by Score, in either direction. Distinct from the search page's ordering, which sorts games by created date, rank position or popularity.
 _Avoid_: Sort mode, filter (ordering does not narrow the list)
+
+**Collection**:
+A user-curated, named set of games with a visibility and a mode. Distinct from a Game List (a user's per-game tracking record); a game in a Collection is a "collection item", not a Game List Entry.
+_Avoid_: Playlist, folder
+
+**Collaborative**:
+The mode of a Collection that its owner has opened to a chosen set of Collaborators, who may add games to it alongside the owner. The other mode is Solo, where only the owner edits.
+_Avoid_: Team, group collection
+
+**Collaborator**:
+A user, other than the owner, whom the owner has added to a Collaborative Collection so they can contribute games to it.
+_Avoid_: Member (as a domain word), co-owner, editor
+
+**Shared Collection**:
+From the viewer's point of view, a Collaborative Collection owned by someone else in which the viewer is a Collaborator — "shared with me". Relative to the viewer: the owner's own Collaborative Collection is not "shared" from the owner's side.
+_Avoid_: Collaborative (that names the mode, not the viewer's relationship), team collection
