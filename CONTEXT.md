@@ -41,8 +41,12 @@ One user's record of one game on their list. Carries a Game List Status, an opti
 _Avoid_: List item, library item; do not conflate with a Collection item (a game placed in a user-curated Collection)
 
 **Score**:
-The owner's own rating of a game on their list, an integer from 1 to 10. Optional: an entry without one is "unscored". Not an aggregate of other users' ratings.
+The owner's own rating of a game on their list, an integer from 1 to 10. Optional: an entry without one is "unscored". Not an aggregate of other users' ratings (see **Average Score**).
 _Avoid_: Rating (in prose about the domain), rank; do not conflate with `rank_position` (a game's position in the global ranking)
+
+**Average Score**:
+The mean of all users' Scores for a game, shown on game cards and in game tables. 0 means no one has scored the game yet — the API has no "unrated" null for it — so it is treated as "no score" and not displayed. Distinct from a **Score**, which is one owner's own rating of a game on their list.
+_Avoid_: Rating, community score; do not conflate with `rank_position` (derived from it, but a different thing)
 
 **Favorite**:
 A user's own private bookmark on a Collection. Each user has their own set, independent of the Collection's owner and of every other viewer; any signed-in user who can see a Collection may favorite it. It is not a property of the Collection itself. Anonymous visitors have none. The "My favorites" filter on a Collections list narrows to the Collections the viewer has favorited: on the viewer's own profile that is every Collection they have favorited, whoever owns it; on another user's profile it is only that user's Collections the viewer has favorited (one user's Favorites are never visible to another).
