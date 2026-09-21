@@ -35,3 +35,15 @@ _Avoid_: Strike, violation
 **Staff**:
 A user with `is_staff` set, who can moderate Reports, use Warn & Remove, and Ban accounts. The codebase has no finer-grained roles than this single flag.
 _Avoid_: Admin, moderator (the UI/backend consistently say "staff")
+
+**Game List Entry**:
+One user's record of one game on their list. Carries a Game List Status, an optional Score, and an optional note. The user's Game List is the collection of their entries.
+_Avoid_: List item, library item; do not conflate with a Collection item (a game placed in a user-curated Collection)
+
+**Score**:
+The owner's own rating of a game on their list, an integer from 1 to 10. Optional: an entry without one is "unscored". Not an aggregate of other users' ratings.
+_Avoid_: Rating (in prose about the domain), rank; do not conflate with `rank_position` (a game's position in the global ranking)
+
+**Game List Ordering**:
+The sort a viewer applies to a user's Game List: by game title (A–Z or Z–A) or by Score (high to low or low to high). Defaults to title A–Z. An explicit ordering always applies, including while searching by title (best-match order is not used). Unscored entries always come last when ordering by Score, in either direction. Distinct from the search page's ordering, which sorts games by created date, rank position or popularity.
+_Avoid_: Sort mode, filter (ordering does not narrow the list)

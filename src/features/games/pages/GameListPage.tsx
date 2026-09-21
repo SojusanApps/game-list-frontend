@@ -43,6 +43,11 @@ import { GameListModal } from "../components/GameListModal";
 import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
 import { useGetGameListsList } from "../hooks/gameQueries";
 import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
+import {
+  buildGameListFilters,
+  countActiveGameListFilters,
+  DEFAULT_GAME_LIST_ORDERING,
+} from "../utils/gameListOrdering";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { STATUS_CONFIG } from "../utils/statusConfig";
 
@@ -113,7 +118,9 @@ export default function GameListPage(): React.JSX.Element {
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
-  const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({});
+  const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({
+    ordering: DEFAULT_GAME_LIST_ORDERING,
+  });
   const [titleInput, setTitleInput] = React.useState("");
   const [page, setPage] = React.useState(1);
 
@@ -136,22 +143,10 @@ export default function GameListPage(): React.JSX.Element {
     { enabled: renderMode === "table" && !!userId, placeholderData: keepPreviousData },
   );
 
-  const activeFilterCount = Object.values(gameFilters).filter(v =>
-    Array.isArray(v) ? v.length > 0 : v !== undefined && v !== "",
-  ).length;
+  const activeFilterCount = countActiveGameListFilters(gameFilters);
 
   const handleApplyFilters = (data: GameSearchFilterSchema) => {
-    const filters: GameListGameFilters = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (key === "ordering") {
-        continue;
-      }
-      if (value === "" || value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
-        continue;
-      }
-      (filters as Record<string, unknown>)[key] = value instanceof Date ? value.toISOString().split("T")[0] : value;
-    }
-    setGameFilters(filters);
+    setGameFilters(buildGameListFilters(data));
     setFilterDrawerOpen(false);
   };
 
@@ -184,6 +179,13 @@ export default function GameListPage(): React.JSX.Element {
   );
 
   const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
+
+  const orderingOptions = [
+    { value: "title", label: t("filter.titleAsc") },
+    { value: "-title", label: t("filter.titleDesc") },
+    { value: "-score", label: t("filter.scoreDesc") },
+    { value: "score", label: t("filter.scoreAsc") },
+  ];
 
   const statuses: { id: GameListStatusEnum | null; label: string; icon: TablerIcon; color: string }[] = [
     { id: null, label: t("gameList.all"), icon: IconInfinity, color: "gray" },
@@ -495,7 +497,8 @@ export default function GameListPage(): React.JSX.Element {
         styles={{ body: { paddingBottom: "120px" } }}
       >
         <GameSearchFilter
-          showOrdering={false}
+          orderingOptions={orderingOptions}
+          orderingClearable={false}
           datePickerWithinPortal
           initialFilters={gameFilters as Record<string, unknown>}
           onSubmitHandlerCallback={handleApplyFilters}
