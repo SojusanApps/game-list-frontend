@@ -11,6 +11,8 @@ import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
+import { FavoriteButton } from "./FavoriteButton";
+
 import styles from "./CollectionHeader.module.css";
 
 interface CollectionHeaderProps {
@@ -66,6 +68,7 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
             >
               {collection.name}
             </Title>
+            <FavoriteButton collectionId={collection.id} isFavorite={collection.is_favorite} iconSize={18} />
             <ReportButton
               targetType={TargetTypeEnum.COLLECTION}
               targetId={collection.id}

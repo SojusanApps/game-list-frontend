@@ -338,7 +338,7 @@
         "/api/collection/collections/": {
             "get": {
                 "operationId": "collection_collections_list",
-                "description": "List collections visible to the authenticated user. The response includes: the user's own collections, collections they collaborate on, all PUBLIC collections, and FRIENDS collections owned by their friends. PRIVATE collections are only visible to their owner.",
+                "description": "List collections visible to the authenticated user. The response includes: the user's own collections, collections they collaborate on, all PUBLIC collections, and FRIENDS collections owned by their friends. PRIVATE collections are only visible to their owner. `is_favorite` reflects the requesting user's own favorite.",
                 "parameters": [
                     {
                         "in": "query",
@@ -362,7 +362,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "When true, return only collections the owner has marked as a favourite."
+                        "description": "When true, return only collections the requesting user has favorited; when false, only those they have not. Favorites are per user, so anonymous visitors have none."
                     },
                     {
                         "in": "query",
@@ -448,7 +448,7 @@
             },
             "post": {
                 "operationId": "collection_collections_create",
-                "description": "Create a new collection. The authenticated user is automatically set as the owner.",
+                "description": "Create a new collection. The authenticated user is automatically set as the owner. Favorites are not part of the payload; use the `favorite` endpoint.",
                 "tags": [
                     "collection"
                 ],
@@ -497,7 +497,7 @@
         "/api/collection/collections/{id}/": {
             "get": {
                 "operationId": "collection_collections_retrieve",
-                "description": "Retrieve a single collection by ID. Returns full detail including collaborators and the list of items. Visibility rules apply: PRIVATE collections are only accessible to their owner.",
+                "description": "Retrieve a single collection by ID. Returns full detail including collaborators and the list of items. Visibility rules apply: PRIVATE collections are only accessible to their owner. `is_favorite` reflects the requesting user's own favorite.",
                 "parameters": [
                     {
                         "in": "path",
@@ -718,6 +718,70 @@
                     },
                     "required": true
                 },
+                "security": [
+                    {
+                        "basicAuth": []
+                    },
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/collection/collections/{id}/favorite/": {
+            "post": {
+                "operationId": "collection_collections_favorite_create",
+                "description": "Add the collection to the requesting user's favorites. Any authenticated user who can see the collection may do so; a collection that is not visible to them returns 404. Favorites are private to the user and independent of the owner's. Idempotent: favoriting an already favorited collection succeeds without change.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this collection.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "collection"
+                ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    },
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "collection_collections_favorite_destroy",
+                "description": "Remove the collection from the requesting user's favorites. Other users' favorites are unaffected. Idempotent: unfavoriting a collection that is not favorited succeeds without change.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this collection.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "collection"
+                ],
                 "security": [
                     {
                         "basicAuth": []
@@ -5214,7 +5278,8 @@
                     },
                     "is_favorite": {
                         "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
+                        "readOnly": true,
+                        "description": "Whether the requesting user has favorited the collection. Always false for anonymous visitors."
                     },
                     "visibility": {
                         "allOf": [
@@ -5299,6 +5364,7 @@
                     "created_at",
                     "description",
                     "id",
+                    "is_favorite",
                     "items_count",
                     "items_cover_image_ids",
                     "last_modified_at",
@@ -5326,10 +5392,6 @@
                         "type": "string",
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
-                    },
-                    "is_favorite": {
-                        "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
                     },
                     "visibility": {
                         "allOf": [
@@ -5422,7 +5484,8 @@
                     },
                     "is_favorite": {
                         "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
+                        "readOnly": true,
+                        "description": "Whether the requesting user has favorited the collection. Always false for anonymous visitors."
                     },
                     "visibility": {
                         "allOf": [
@@ -5514,6 +5577,7 @@
                     "created_at",
                     "description",
                     "id",
+                    "is_favorite",
                     "items",
                     "items_count",
                     "items_cover_image_ids",
@@ -8010,10 +8074,6 @@
                         "type": "string",
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
-                    },
-                    "is_favorite": {
-                        "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
                     },
                     "visibility": {
                         "allOf": [

@@ -52,6 +52,16 @@ export const updateCollection = async (id: number, body: CollectionCollectionsPa
   return data;
 };
 
+/** Adds (`favorite: true`) or removes (`favorite: false`) the collection from the requesting user's favorites. */
+export const setCollectionFavorite = async (id: number, favorite: boolean) => {
+  const { error, response } = favorite
+    ? await CollectionService.collectionCollectionsFavoriteCreate({ path: { id } })
+    : await CollectionService.collectionCollectionsFavoriteDestroy({ path: { id } });
+  if (response?.status !== StatusCode.NO_CONTENT) {
+    return await handleApiError(error, response, "Error updating favorite");
+  }
+};
+
 export const deleteCollection = async (id: number) => {
   const { error, response } = await CollectionService.collectionCollectionsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {

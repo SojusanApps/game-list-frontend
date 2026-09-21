@@ -10,7 +10,7 @@
     "namePlaceholder": "Search by collection name...",
     "filterType": "Type",
     "filterAll": "All",
-    "filterFavorites": "Favorites",
+    "filterFavorites": "My favorites",
     "filterScope": "Scope",
     "filterMyOnly": "My Collections",
     "filterIncludeShared": "Including Shared",
@@ -90,7 +90,6 @@
     "collaboratorsLabel": "Collaborators",
     "collaboratorsPlaceholder": "Search friends...",
     "selectedCollaborators": "Selected Collaborators",
-    "favoriteLabel": "Mark as Favorite",
     "cancelButton": "Cancel",
     "createButton": "Create",
     "saveButton": "Save Changes",
@@ -160,6 +159,10 @@
     "failedToMoveDown": "Failed to move item down",
     "itemNotFound": "Item not found",
     "cannotMoveToPosition": "Cannot move to position {{position}}. Only {{count}} items available."
+  },
+  "favorite": {
+    "add": "Add to favorites",
+    "remove": "Remove from favorites"
   },
   "card": {
     "game": "Game",

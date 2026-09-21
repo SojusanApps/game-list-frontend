@@ -1,4 +1,4 @@
-import { TextInput, Select, Checkbox, ActionIcon, Stack, Group, Box, Text } from "@mantine/core";
+import { TextInput, Select, ActionIcon, Stack, Group, Box, Text } from "@mantine/core";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
@@ -16,11 +16,11 @@ import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 
 import { useCreateCollection, useFriendSearch, useUpdateCollection } from "../hooks/useCollectionQueries";
+import { buildCollectionPayload } from "../utils/collectionPayload";
 
 const validationSchema = z.object({
   name: z.string().min(1, i18n.t("validation:nameRequired")).max(100),
   description: z.string().max(500).optional(),
-  is_favorite: z.boolean(),
   visibility: z.enum(VisibilityEnum),
   mode: z.enum(ModeEnum),
   type: z.enum(TypeEnum),
@@ -60,7 +60,6 @@ export default function CreateCollectionModal({
     baseline: {
       name: initialData?.name ?? "",
       description: initialData?.description ?? "",
-      is_favorite: initialData?.is_favorite ?? false,
       visibility: initialData?.visibility ?? VisibilityEnum.PUB,
       mode: initialData?.mode ?? ModeEnum.S,
       type: initialData?.type ?? TypeEnum.NOR,
@@ -105,15 +104,7 @@ export default function CreateCollectionModal({
   };
 
   const onSubmit = (data: CollectionFormValues) => {
-    const payload = {
-      name: data.name,
-      description: data.description,
-      is_favorite: data.is_favorite,
-      visibility: data.visibility,
-      mode: data.mode,
-      type: data.type,
-      collaborators: data.collaborators.map(Number),
-    };
+    const payload = buildCollectionPayload(data);
 
     if (mode === "edit" && initialData) {
       updateCollection(
@@ -354,13 +345,6 @@ export default function CreateCollectionModal({
               )}
             </Stack>
           )}
-
-          <Checkbox
-            id="is_favorite_checkbox"
-            label={t("createModal.favoriteLabel")}
-            name="is_favorite"
-            {...form.getInputProps("is_favorite", { type: "checkbox" })}
-          />
         </Stack>
       </form>
     </AppModal>

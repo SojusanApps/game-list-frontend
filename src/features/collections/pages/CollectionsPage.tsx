@@ -12,9 +12,10 @@ import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
-import { useIsOwner } from "@/features/auth";
+import { useAuthStore, useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
 import { useListViewStore } from "@/lib/listViewStore";
+import type { CollectionListScope } from "@/lib/queryKeys";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import CollectionCard from "../components/CollectionCard";
@@ -33,6 +34,8 @@ export default function CollectionsPage(): React.JSX.Element {
   const { data: userDetails, isLoading: isUserLoading } = useGetUserDetails(userId);
 
   const isOwner = useIsOwner(userId);
+  // Favorites are per user, so anonymous visitors have none and the filter would only ever return nothing.
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const { t } = useTranslation("collections");
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
@@ -47,6 +50,12 @@ export default function CollectionsPage(): React.JSX.Element {
   const [useMember, setUseMember] = React.useState(false);
   const [nameInput, setNameInput] = React.useState("");
   const [nameFilter, setNameFilter] = React.useState("");
+
+  // On your own profile the favorites filter lists everything you've favorited, whoever owns it. Favorites are
+  // private, so on someone else's profile it stays scoped to that user's collections you've favorited.
+  const isAllFavorites = isOwner && isFavoriteFilter === true;
+  const sharedScope: CollectionListScope = useMember ? "member" : "user";
+  const scope: CollectionListScope = isAllFavorites ? "any" : sharedScope;
 
   const commitNameFilter = () => setNameFilter(nameInput.trim());
 
@@ -73,7 +82,7 @@ export default function CollectionsPage(): React.JSX.Element {
   // Any filter or scope change restarts pagination.
   React.useEffect(() => {
     setPage(1);
-  }, [queryFilters, useMember]);
+  }, [queryFilters, scope]);
 
   const {
     data: collectionsResults,
@@ -82,9 +91,9 @@ export default function CollectionsPage(): React.JSX.Element {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useCollectionsInfiniteQuery(userId, queryFilters, useMember, { enabled: renderMode === "infinite" });
+  } = useCollectionsInfiniteQuery(userId, queryFilters, scope, { enabled: renderMode === "infinite" });
 
-  const tableQuery = useCollectionsQuery(userId, page, queryFilters, useMember, {
+  const tableQuery = useCollectionsQuery(userId, page, queryFilters, scope, {
     enabled: renderMode === "table",
   });
 
@@ -237,57 +246,59 @@ export default function CollectionsPage(): React.JSX.Element {
                 }}
               >
                 {/* Favorite Filters */}
-                <Stack gap={12}>
-                  <Text
-                    span
-                    style={{
-                      fontSize: "10px",
-                      fontWeight: 900,
-                      color: "var(--color-text-400)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                      marginLeft: "4px",
-                    }}
-                  >
-                    {t("list.filterType")}
-                  </Text>
-                  <Group wrap="wrap" gap={8}>
-                    {favoriteFilters.map(filter => (
-                      <UnstyledButton
-                        key={String(filter.id)}
-                        onClick={() => setIsFavoriteFilter(filter.id)}
-                        style={{
-                          padding: "8px 20px",
-                          fontSize: "12px",
-                          fontWeight: 900,
-                          borderRadius: "12px",
-                          border: "1px solid",
-                          transition: "all 300ms",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          ...(isFavoriteFilter === filter.id
-                            ? {
-                                background: "var(--mantine-color-primary-6)",
-                                color: "white",
-                                borderColor: "var(--mantine-color-primary-6)",
-                                boxShadow: "0 4px 6px -1px rgba(99,102,241,0.3)",
-                              }
-                            : {
-                                background: "var(--color-background-100)",
-                                color: "var(--color-text-500)",
-                                borderColor: "var(--color-background-200)",
-                              }),
-                        }}
-                      >
-                        <filter.icon
-                          size={14}
-                          style={{ marginRight: "8px", verticalAlign: "-2px", color: filter.iconColor }}
-                        />
-                        {filter.label}
-                      </UnstyledButton>
-                    ))}
-                  </Group>
-                </Stack>
+                {isAuthenticated && (
+                  <Stack gap={12}>
+                    <Text
+                      span
+                      style={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "var(--color-text-400)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        marginLeft: "4px",
+                      }}
+                    >
+                      {t("list.filterType")}
+                    </Text>
+                    <Group wrap="wrap" gap={8}>
+                      {favoriteFilters.map(filter => (
+                        <UnstyledButton
+                          key={String(filter.id)}
+                          onClick={() => setIsFavoriteFilter(filter.id)}
+                          style={{
+                            padding: "8px 20px",
+                            fontSize: "12px",
+                            fontWeight: 900,
+                            borderRadius: "12px",
+                            border: "1px solid",
+                            transition: "all 300ms",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                            ...(isFavoriteFilter === filter.id
+                              ? {
+                                  background: "var(--mantine-color-primary-6)",
+                                  color: "white",
+                                  borderColor: "var(--mantine-color-primary-6)",
+                                  boxShadow: "0 4px 6px -1px rgba(99,102,241,0.3)",
+                                }
+                              : {
+                                  background: "var(--color-background-100)",
+                                  color: "var(--color-text-500)",
+                                  borderColor: "var(--color-background-200)",
+                                }),
+                          }}
+                        >
+                          <filter.icon
+                            size={14}
+                            style={{ marginRight: "8px", verticalAlign: "-2px", color: filter.iconColor }}
+                          />
+                          {filter.label}
+                        </UnstyledButton>
+                      ))}
+                    </Group>
+                  </Stack>
+                )}
 
                 {/* Scope Filter */}
                 <Stack gap={12}>
@@ -309,7 +320,10 @@ export default function CollectionsPage(): React.JSX.Element {
                       <UnstyledButton
                         key={String(filter.id)}
                         onClick={() => setUseMember(filter.id)}
+                        disabled={isAllFavorites}
                         style={{
+                          opacity: isAllFavorites ? 0.5 : 1,
+                          cursor: isAllFavorites ? "not-allowed" : "pointer",
                           padding: "8px 20px",
                           fontSize: "12px",
                           fontWeight: 900,

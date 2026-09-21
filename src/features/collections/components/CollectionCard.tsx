@@ -1,6 +1,5 @@
 import { Stack, Group, Box, Title, Text } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -15,17 +14,11 @@ import {
   getTypeBadgeStyle,
   getVisibilityBadgeStyle,
 } from "../utils/collectionBadgeStyles";
+import { FavoriteButton } from "./FavoriteButton";
 
 interface CollectionCardProps {
   collection: Collection;
 }
-
-const HeartIcon = ({ filled }: { filled?: boolean }) =>
-  filled ? (
-    <IconHeartFilled size={20} style={{ color: "#ef4444" }} />
-  ) : (
-    <IconHeart size={20} style={{ color: "var(--color-text-400)" }} />
-  );
 
 export default function CollectionCard({ collection }: Readonly<CollectionCardProps>) {
   const { t } = useTranslation("collections");
@@ -121,26 +114,25 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
               );
             })
         )}
-
-        {/* Favorite Badge */}
-        {collection.is_favorite && (
-          <Box
-            style={{
-              position: "absolute",
-              top: "-8px",
-              right: "-8px",
-              zIndex: 20,
-              padding: "6px",
-              borderRadius: "9999px",
-              background: "var(--color-background-100)",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              border: "1px solid var(--color-background-100)",
-            }}
-          >
-            <HeartIcon filled />
-          </Box>
-        )}
       </Link>
+
+      {/* Favorite toggle (sibling of the deck link so the button is not nested in an anchor) */}
+      <Box
+        style={{
+          position: "absolute",
+          top: "24px",
+          right: "calc(12.5% - 8px)",
+          zIndex: 20,
+          borderRadius: "9999px",
+          background: "var(--color-background-100)",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          border: "1px solid var(--color-background-100)",
+          transition: "transform 500ms ease-out",
+          transform: hovered ? "translateY(-16px)" : "translateY(0)",
+        }}
+      >
+        <FavoriteButton collectionId={collection.id} isFavorite={collection.is_favorite} />
+      </Box>
 
       {/* Info Card (Base) */}
       <Box

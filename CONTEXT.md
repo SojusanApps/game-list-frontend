@@ -44,6 +44,10 @@ _Avoid_: List item, library item; do not conflate with a Collection item (a game
 The owner's own rating of a game on their list, an integer from 1 to 10. Optional: an entry without one is "unscored". Not an aggregate of other users' ratings.
 _Avoid_: Rating (in prose about the domain), rank; do not conflate with `rank_position` (a game's position in the global ranking)
 
+**Favorite**:
+A user's own private bookmark on a Collection. Each user has their own set, independent of the Collection's owner and of every other viewer; any signed-in user who can see a Collection may favorite it. It is not a property of the Collection itself. Anonymous visitors have none. The "My favorites" filter on a Collections list narrows to the Collections the viewer has favorited: on the viewer's own profile that is every Collection they have favorited, whoever owns it; on another user's profile it is only that user's Collections the viewer has favorited (one user's Favorites are never visible to another).
+_Avoid_: Liked, starred, pinned; do not describe it as a flag or attribute "set by the owner" (the old model)
+
 **Game List Ordering**:
 The sort a viewer applies to a user's Game List: by game title (A–Z or Z–A) or by Score (high to low or low to high). Defaults to title A–Z. An explicit ordering always applies, including while searching by title (best-match order is not used). Unscored entries always come last when ordering by Score, in either direction. Distinct from the search page's ordering, which sorts games by created date, rank position or popularity.
 _Avoid_: Sort mode, filter (ordering does not narrow the list)
