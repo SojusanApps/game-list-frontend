@@ -19,6 +19,7 @@ import { PairwiseRankingModal } from "@/features/ranking";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useListViewStore } from "@/lib/listViewStore";
 import { cn } from "@/utils/cn";
+import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
 import { CollectionHeader } from "../components/CollectionHeader";
@@ -330,11 +331,12 @@ export default function CollectionPage(): React.JSX.Element {
 
         <Box
           className={cn(
-            "rounded-2xl min-h-212.5 transition-all outline-hidden",
+            "rounded-2xl transition-all outline-hidden",
             collection?.type === TypeEnum.NOR || !collection?.type
               ? "bg-white shadow-sm border border-background-200 p-6 md:p-8"
               : "",
           )}
+          style={GRID_BOX_STYLE}
         >
           {renderView()}
 

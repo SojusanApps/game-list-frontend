@@ -15,6 +15,7 @@ import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
 import { useListViewStore } from "@/lib/listViewStore";
+import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import CollectionCard from "../components/CollectionCard";
 import { createCollectionColumns } from "../components/collectionColumns";
@@ -412,7 +413,7 @@ export default function CollectionsPage(): React.JSX.Element {
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",
             padding: "24px",
-            minHeight: "850px",
+            ...GRID_BOX_STYLE,
           }}
         >
           {renderResults()}

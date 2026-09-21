@@ -11,6 +11,7 @@ import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useListViewStore } from "@/lib/listViewStore";
+import { GRID_VIEWPORT_HEIGHT } from "@/utils/gridLayout";
 
 import { createGameColumns } from "../../components/gameSearchColumns";
 import { useGetGamesInfinite, useGetGamesList } from "../../hooks/gameQueries";
@@ -109,6 +110,7 @@ export default function ListView(): React.JSX.Element {
         columnCount={5}
         rowHeight={320}
         gap={16}
+        style={{ height: GRID_VIEWPORT_HEIGHT }}
         renderItem={(game: GameSimpleList) => (
           <ItemOverlay
             key={game.id}

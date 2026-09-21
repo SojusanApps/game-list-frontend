@@ -27,6 +27,7 @@ import { useSearchInfiniteQuery, useSearchQuery, SearchCategory } from "@/featur
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { useListViewStore } from "@/lib/listViewStore";
 import { Route } from "@/routes/search";
+import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import { createCompanyColumns, createGameColumns, createUserColumns } from "../components/gameSearchColumns";
 
@@ -494,7 +495,7 @@ export default function SearchEnginePage(): React.JSX.Element {
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               border: "1px solid var(--color-background-200)",
               padding: "32px",
-              minHeight: "850px",
+              ...GRID_BOX_STYLE,
               position: "relative",
             }}
           >
