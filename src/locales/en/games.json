@@ -384,7 +384,10 @@
     "matchIntroDescription": "For each title below, click the game that matches it, or choose \"None of these\" if none of them is right. You need to pick an option for every title before continuing to the next page.",
     "sortBy": "Sort by {{column}}",
     "ascending": "ascending",
-    "descending": "descending"
+    "descending": "descending",
+    "bulkStatusLabel": "Set status for all games",
+    "bulkStatusPlaceholder": "Choose a status",
+    "bulkStatusApply": "Apply to All"
   },
   "export": {
     "title": "Export Game List"

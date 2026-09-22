@@ -384,7 +384,10 @@
     "matchIntroDescription": "Dla każdego tytułu poniżej kliknij grę, która do niego pasuje, lub wybierz „Żaden z tych”, jeśli żadna nie jest właściwa. Zanim przejdziesz do następnej strony, musisz wybrać opcję dla każdego tytułu.",
     "sortBy": "Sortuj według: {{column}}",
     "ascending": "rosnąco",
-    "descending": "malejąco"
+    "descending": "malejąco",
+    "bulkStatusLabel": "Ustaw status dla wszystkich gier",
+    "bulkStatusPlaceholder": "Wybierz status",
+    "bulkStatusApply": "Zastosuj do wszystkich"
   },
   "export": {
     "title": "Eksportuj listę gier"

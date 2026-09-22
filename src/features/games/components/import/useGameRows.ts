@@ -32,5 +32,9 @@ export function useGameRows() {
     });
   }, []);
 
-  return { rows, setRows, onStatusChange, onScoreChange, onFieldChange };
+  const onBulkStatusChange = React.useCallback((value: GameListStatusEnum) => {
+    setRows(prev => prev.map(row => ({ ...row, status: value })));
+  }, []);
+
+  return { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange };
 }

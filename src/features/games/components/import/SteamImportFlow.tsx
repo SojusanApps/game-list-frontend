@@ -34,7 +34,7 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
   const currentUserId = useCurrentUserId();
 
   const [activeStep, setActiveStep] = React.useState(0);
-  const { rows, setRows, onStatusChange, onScoreChange, onFieldChange } = useGameRows();
+  const { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange } = useGameRows();
   const [notFound, setNotFound] = React.useState<SteamImportNotFound[]>([]);
   const [totalImported, setTotalImported] = React.useState(0);
   const [importedCount, setImportedCount] = React.useState(0);
@@ -147,6 +147,7 @@ export const SteamImportFlow = ({ sourceSelector }: SteamImportFlowProps) => {
             onStatusChange={onStatusChange}
             onScoreChange={onScoreChange}
             onFieldChange={onFieldChange}
+            onBulkStatusChange={onBulkStatusChange}
           />
 
           {/* Not found accordion */}

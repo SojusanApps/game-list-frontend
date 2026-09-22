@@ -1,4 +1,4 @@
-import { Box, Stack, Title, Text, Group, Badge, Divider, ScrollArea } from "@mantine/core";
+import { Box, Stack, Title, Text, Group, Badge, Divider, ScrollArea, Select, ComboboxItem } from "@mantine/core";
 import { IconSelector, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import * as React from "react";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 
 import code_to_value_mapping from "../../utils/GameListStatuses";
 import { getSortedRowIndices, SortColumn, SortDirection, SortState } from "../../utils/sortGameRows";
+import { StatusIcon } from "../../utils/StatusIcon";
 import { GameRowItem } from "./GameRowItem";
 import { GameRow } from "./types";
 
@@ -50,15 +51,29 @@ const SortableHeader = ({ column, label, active, onSort, style }: SortableHeader
   );
 };
 
+const renderStatusOption = ({ option }: { option: ComboboxItem }) => (
+  <Group gap={8} wrap="nowrap">
+    <StatusIcon status={option.value} size={16} neon />
+    {option.label}
+  </Group>
+);
+
 interface ConfigureGameListProps {
   rows: GameRow[];
   onStatusChange: (index: number, value: GameListStatusEnum) => void;
   onScoreChange: (index: number, value: number | null) => void;
   onFieldChange: (index: number, field: keyof GameRow, value: unknown) => void;
+  onBulkStatusChange: (value: GameListStatusEnum) => void;
 }
 
 /** The "review and configure the games to import" card shared by both flows. */
-export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onFieldChange }: ConfigureGameListProps) => {
+export const ConfigureGameList = ({
+  rows,
+  onStatusChange,
+  onScoreChange,
+  onFieldChange,
+  onBulkStatusChange,
+}: ConfigureGameListProps) => {
   const { t, i18n } = useTranslation("games");
 
   // Status labels are translated at call time (see statusConfig), so this can't
@@ -109,6 +124,15 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
     [activeSort],
   );
 
+  // The status picked in the "set all" control; not tied to any row, cleared
+  // after each apply so it can't be mistaken for a summary of the rows' state.
+  const [bulkStatus, setBulkStatus] = React.useState<GameListStatusEnum | null>(null);
+  const handleApplyBulkStatus = React.useCallback(() => {
+    if (!bulkStatus) return;
+    onBulkStatusChange(bulkStatus);
+    setBulkStatus(null);
+  }, [bulkStatus, onBulkStatusChange]);
+
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count: rows.length,
@@ -138,6 +162,33 @@ export const ConfigureGameList = ({ rows, onStatusChange, onScoreChange, onField
           >
             {rows.length}
           </Badge>
+        </Group>
+
+        <Group gap={8} align="center">
+          <Text fz="sm" c="dimmed">
+            {t("import.bulkStatusLabel")}
+          </Text>
+          <Select
+            size="xs"
+            w={180}
+            data={statusData}
+            renderOption={renderStatusOption}
+            leftSection={bulkStatus ? <StatusIcon status={bulkStatus} size={14} neon /> : undefined}
+            value={bulkStatus}
+            onChange={val => setBulkStatus((val as GameListStatusEnum) ?? null)}
+            placeholder={t("import.bulkStatusPlaceholder")}
+            clearable
+            aria-label={t("import.bulkStatusLabel")}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!bulkStatus || rows.length === 0}
+            onClick={handleApplyBulkStatus}
+          >
+            {t("import.bulkStatusApply")}
+          </Button>
         </Group>
 
         <Group fz="sm" fw={600} c="dimmed" gap={16} style={{ paddingLeft: 64 }}>

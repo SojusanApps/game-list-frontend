@@ -87,7 +87,7 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
   const [hadUnmatched, setHadUnmatched] = React.useState(false);
   const [importedCount, setImportedCount] = React.useState(0);
 
-  const { rows, setRows, onStatusChange, onScoreChange, onFieldChange } = useGameRows();
+  const { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange } = useGameRows();
   const { mutateAsync: matchTitles, isPending: isMatching } = useTitleImport();
   const { mutateAsync: runBulkCreate, isPending: isImporting } = useBulkCreateGameList();
 
@@ -373,6 +373,7 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
             onStatusChange={onStatusChange}
             onScoreChange={onScoreChange}
             onFieldChange={onFieldChange}
+            onBulkStatusChange={onBulkStatusChange}
           />
           <Group justify="space-between">
             <Button
