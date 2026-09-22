@@ -381,7 +381,10 @@
     "duplicatesDescription": "Te tytuły zostały dopasowane do tej samej gry. Każda gra zostanie zaimportowana tylko raz.",
     "duplicatesChosenFor": "Wybrano dla: {{titles}}",
     "matchIntroTitle": "Twoje tytuły i ich dopasowania",
-    "matchIntroDescription": "Dla każdego tytułu poniżej kliknij grę, która do niego pasuje, lub wybierz „Żaden z tych”, jeśli żadna nie jest właściwa. Zanim przejdziesz do następnej strony, musisz wybrać opcję dla każdego tytułu."
+    "matchIntroDescription": "Dla każdego tytułu poniżej kliknij grę, która do niego pasuje, lub wybierz „Żaden z tych”, jeśli żadna nie jest właściwa. Zanim przejdziesz do następnej strony, musisz wybrać opcję dla każdego tytułu.",
+    "sortBy": "Sortuj według: {{column}}",
+    "ascending": "rosnąco",
+    "descending": "malejąco"
   },
   "export": {
     "title": "Eksportuj listę gier"
