@@ -57,6 +57,18 @@
       "question": "Where does the game data come from?",
       "answer": "Game, company, and cover-art information shown on this site comes from IGDB. We don't own this data — it belongs to IGDB and its licensors.",
       "linkLabel": "IGDB"
+    },
+    "statuses": {
+      "question": "What do the statuses on my game list mean?",
+      "answer": "Everyone can give these their own meaning, since it's your game list — but here's the general understanding of each:",
+      "list": {
+        "playing": "You're currently playing the game.",
+        "completed": "You've finished the game — that could mean beating its campaign, reaching 100%, or simply deciding for yourself that you're done with it. Some games have no defined ending (competitive games like League of Legends, for example, have no progress route to complete), so for those, \"completed\" is just your own call.",
+        "planToPlay": "You intend to play the game at some point in the future.",
+        "onHold": "You've paused the game and plan to come back to it later.",
+        "dropped": "You started the game but don't intend to finish it.",
+        "notPlanned": "You own it but don't intend to play it."
+      }
     }
   }
 }

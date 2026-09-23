@@ -51,6 +51,11 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
                 label: t("stats.planToPlay"),
                 count: userDetails?.game_list_statistics.plan_to_play,
               },
+              {
+                key: GameListStatusEnum.NP,
+                label: t("stats.notPlanned"),
+                count: userDetails?.game_list_statistics.not_planned,
+              },
             ].map(({ key, label, count }) => {
               return (
                 <Group key={key} justify="space-between" align="center">

@@ -5,8 +5,8 @@ A game-tracking and review platform. This context covers user-generated content 
 ## Language
 
 **Game List Status**:
-The state a user assigns to a game on their list — one of exactly five: `P` playing, `C` completed, `PTP` plan to play, `OH` on hold, `D` dropped. `D` dropped means the user abandoned the game (stopped playing with no intent to finish); it does not mean the list entry was deleted. Backed by `GameListStatusEnum`.
-_Avoid_: progress, list state; do not conflate "dropped" with removing/deleting an entry
+The state a user assigns to a game on their list — one of six: `P` playing, `C` completed, `PTP` plan to play, `OH` on hold, `D` dropped, `NP` not planned. `D` dropped means the user started the game then abandoned it (stopped playing with no intent to finish); it does not mean the list entry was deleted. `NP` not planned means the user owns the game but does not intend to play it — never started, and no future intent, which distinguishes it from both `D` dropped (implies it was started) and `PTP` plan to play (implies future intent). Backed by `GameListStatusEnum`.
+_Avoid_: progress, list state; do not conflate "dropped" with removing/deleting an entry; do not conflate "not planned" with "dropped" (never started vs. abandoned) or "plan to play" (no intent vs. future intent)
 
 **Target**:
 A piece of user-generated content or a profile field that can be reported — one of: avatar, username, review, translation suggestion, game list note, collection, collection item note. Identified by a `target_type` plus the matching entity id (or the owning user's id, for avatar/username).

@@ -4,7 +4,8 @@
     "completed": "Ukończone",
     "planToPlay": "Planuję zagrać",
     "onHold": "Wstrzymane",
-    "dropped": "Porzucone"
+    "dropped": "Porzucone",
+    "notPlanned": "Nieplanowane"
   },
   "detail": {
     "loading": "Wczytywanie gry...",

@@ -6755,7 +6755,7 @@
                                 "$ref": "#/components/schemas/GameListStatusEnum"
                             }
                         ],
-                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold, Not Planned).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
                     },
                     "score": {
                         "type": "integer",
@@ -6838,6 +6838,9 @@
                     "playing": {
                         "type": "integer"
                     },
+                    "not_planned": {
+                        "type": "integer"
+                    },
                     "total": {
                         "type": "integer"
                     },
@@ -6850,6 +6853,7 @@
                     "completed",
                     "dropped",
                     "mean_score",
+                    "not_planned",
                     "on_hold",
                     "plan_to_play",
                     "playing",
@@ -6862,10 +6866,11 @@
                     "PTP",
                     "P",
                     "D",
-                    "OH"
+                    "OH",
+                    "NP"
                 ],
                 "type": "string",
-                "description": "* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                "description": "* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
             },
             "GameMedia": {
                 "type": "object",
@@ -8198,7 +8203,7 @@
                                 "$ref": "#/components/schemas/GameListStatusEnum"
                             }
                         ],
-                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold, Not Planned).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
                     },
                     "score": {
                         "type": "integer",

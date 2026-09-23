@@ -1,9 +1,12 @@
-import { Accordion, Anchor, Stack, Text } from "@mantine/core";
+import { Accordion, Anchor, Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { FAQ_ITEM_LINKS, FAQ_ITEM_ORDER } from "../content/faqItems";
+import { getStatusConfig } from "@/features/games/utils/statusConfig";
+import { StatusIcon } from "@/features/games/utils/StatusIcon";
+
+import { FAQ_ITEM_LINKS, FAQ_ITEM_ORDER, FAQ_STATUS_LIST } from "../content/faqItems";
 
 export function FaqAccordion(): React.JSX.Element {
   const { t } = useTranslation("faq");
@@ -40,6 +43,25 @@ export function FaqAccordion(): React.JSX.Element {
             <Accordion.Panel>
               <Stack gap={8}>
                 <Text c="var(--color-text-700)">{t(`items.${id}.answer`)}</Text>
+                {id === "statuses" && (
+                  <Stack gap={10} mt={4}>
+                    {FAQ_STATUS_LIST.map(({ status, descriptionKey }) => {
+                      const config = getStatusConfig(status);
+                      return (
+                        <Group key={status} gap={10} align="flex-start" wrap="nowrap">
+                          <StatusIcon status={status} size={18} neon style={{ marginTop: 3, flexShrink: 0 }} />
+                          <Text c="var(--color-text-700)">
+                            <Text component="span" fw={700} c="var(--color-text-900)">
+                              {config?.label}
+                            </Text>
+                            {" — "}
+                            {t(descriptionKey)}
+                          </Text>
+                        </Group>
+                      );
+                    })}
+                  </Stack>
+                )}
                 {links && (
                   <Stack gap={4}>
                     {links.map(link =>

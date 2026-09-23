@@ -220,6 +220,12 @@ export default function GameListPage(): React.JSX.Element {
       icon: STATUS_CONFIG[GameListStatusEnum.D].icon,
       color: "red",
     },
+    {
+      id: GameListStatusEnum.NP,
+      label: STATUS_CONFIG[GameListStatusEnum.NP].label,
+      icon: STATUS_CONFIG[GameListStatusEnum.NP].icon,
+      color: "grape",
+    },
   ];
 
   const renderContent = () => {

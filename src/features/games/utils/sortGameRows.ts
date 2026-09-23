@@ -11,8 +11,8 @@ export interface SortState {
 }
 
 /**
- * Logical progress order for sorting by status (plan to play through dropped),
- * not the enum's declaration order or its translated label.
+ * Logical progress order for sorting by status (plan to play through not
+ * planned), not the enum's declaration order or its translated label.
  */
 const STATUS_SORT_RANK: Record<GameListStatusEnum, number> = {
   [GameListStatusEnum.PTP]: 0,
@@ -20,6 +20,7 @@ const STATUS_SORT_RANK: Record<GameListStatusEnum, number> = {
   [GameListStatusEnum.OH]: 2,
   [GameListStatusEnum.C]: 3,
   [GameListStatusEnum.D]: 4,
+  [GameListStatusEnum.NP]: 5,
 };
 
 /** Ascending comparison with unscored (`null`) rows placed last. */

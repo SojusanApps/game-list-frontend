@@ -4,7 +4,8 @@
     "completed": "Completed",
     "planToPlay": "Plan to Play",
     "onHold": "On Hold",
-    "dropped": "Dropped"
+    "dropped": "Dropped",
+    "notPlanned": "Not Planned"
   },
   "detail": {
     "loading": "Loading Game...",
