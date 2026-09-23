@@ -5,6 +5,7 @@ import {
   Drawer,
   Group,
   Indicator,
+  Select,
   Skeleton,
   Stack,
   Text,
@@ -12,15 +13,7 @@ import {
   Title,
   ActionIcon,
 } from "@mantine/core";
-import {
-  IconEdit,
-  IconFilter,
-  IconDownload,
-  IconInfinity,
-  IconSearch,
-  IconUpload,
-  type TablerIcon,
-} from "@tabler/icons-react";
+import { IconEdit, IconFilter, IconDownload, IconInfinity, IconSearch, IconUpload } from "@tabler/icons-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
@@ -51,6 +44,9 @@ import {
 } from "../utils/gameListOrdering";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { STATUS_CONFIG } from "../utils/statusConfig";
+import { StatusIcon } from "../utils/StatusIcon";
+
+const ALL_STATUS_VALUE = "all";
 
 interface GameListItemProps {
   gameListItem: GameList;
@@ -90,6 +86,14 @@ function EditAction({ gameId, onEdit }: Readonly<EditActionProps>) {
 
 function renderEditActionSlot(hovered: boolean, gameId: number, onEdit: (id: number) => void) {
   return hovered ? <EditAction gameId={gameId} onEdit={onEdit} /> : null;
+}
+
+/** Status filter's "All" option has no GameListStatusEnum value, so it renders its own neutral icon. */
+function renderStatusIcon(status: GameListStatusEnum | null, size = 16) {
+  if (!status) {
+    return <IconInfinity size={size} stroke={1.5} color="var(--color-text-400)" />;
+  }
+  return <StatusIcon status={status} size={size} neon />;
 }
 
 const GameListGridItem = React.memo(({ gameListItem, isOwner, onEdit }: GameListItemProps) => {
@@ -188,44 +192,14 @@ export default function GameListPage(): React.JSX.Element {
     { value: "score", label: t("filter.scoreAsc") },
   ];
 
-  const statuses: { id: GameListStatusEnum | null; label: string; icon: TablerIcon; color: string }[] = [
-    { id: null, label: t("gameList.all"), icon: IconInfinity, color: "gray" },
-    {
-      id: GameListStatusEnum.P,
-      label: STATUS_CONFIG[GameListStatusEnum.P].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.P].icon,
-      color: "teal",
-    },
-    {
-      id: GameListStatusEnum.C,
-      label: STATUS_CONFIG[GameListStatusEnum.C].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.C].icon,
-      color: "indigo",
-    },
-    {
-      id: GameListStatusEnum.PTP,
-      label: STATUS_CONFIG[GameListStatusEnum.PTP].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.PTP].icon,
-      color: "gray",
-    },
-    {
-      id: GameListStatusEnum.OH,
-      label: STATUS_CONFIG[GameListStatusEnum.OH].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.OH].icon,
-      color: "orange",
-    },
-    {
-      id: GameListStatusEnum.D,
-      label: STATUS_CONFIG[GameListStatusEnum.D].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.D].icon,
-      color: "red",
-    },
-    {
-      id: GameListStatusEnum.NP,
-      label: STATUS_CONFIG[GameListStatusEnum.NP].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.NP].icon,
-      color: "grape",
-    },
+  const statuses: { value: string; label: string }[] = [
+    { value: ALL_STATUS_VALUE, label: t("gameList.all") },
+    { value: GameListStatusEnum.P, label: STATUS_CONFIG[GameListStatusEnum.P].label },
+    { value: GameListStatusEnum.C, label: STATUS_CONFIG[GameListStatusEnum.C].label },
+    { value: GameListStatusEnum.PTP, label: STATUS_CONFIG[GameListStatusEnum.PTP].label },
+    { value: GameListStatusEnum.OH, label: STATUS_CONFIG[GameListStatusEnum.OH].label },
+    { value: GameListStatusEnum.D, label: STATUS_CONFIG[GameListStatusEnum.D].label },
+    { value: GameListStatusEnum.NP, label: STATUS_CONFIG[GameListStatusEnum.NP].label },
   ];
 
   const renderContent = () => {
@@ -332,25 +306,30 @@ export default function GameListPage(): React.JSX.Element {
             style={{ flexDirection: "column", alignItems: "center" }}
             pr={{ sm: isOwner ? 210 : 90 }}
           >
-            <Group justify="center" wrap="wrap" gap={8}>
-              {statuses.map(status => (
-                <Button
-                  key={String(status.id)}
-                  variant={selectedGameStatus === status.id ? "filled" : "light"}
-                  color={status.color}
-                  size="md"
-                  radius="xl"
-                  onClick={() => setSelectedGameStatus(status.id)}
-                  leftSection={<status.icon size={16} stroke={1.5} />}
-                  style={{
-                    border: `2px solid var(--mantine-color-${status.color}-${selectedGameStatus === status.id ? "7" : "4"})`,
-                    transition: "border-color 0.2s ease",
-                  }}
-                >
-                  {status.label}
-                </Button>
-              ))}
-            </Group>
+            <Select
+              aria-label={t("gameList.table.status")}
+              value={selectedGameStatus ?? ALL_STATUS_VALUE}
+              onChange={value =>
+                setSelectedGameStatus(value && value !== ALL_STATUS_VALUE ? (value as GameListStatusEnum) : null)
+              }
+              data={statuses}
+              allowDeselect={false}
+              leftSection={renderStatusIcon(selectedGameStatus)}
+              renderOption={({ option }) => (
+                <Group gap={8} wrap="nowrap">
+                  {renderStatusIcon(option.value === ALL_STATUS_VALUE ? null : (option.value as GameListStatusEnum))}
+                  {option.label}
+                </Group>
+              )}
+              w={220}
+              styles={{
+                input: {
+                  background: "var(--color-background-100)",
+                  border: "1px solid var(--color-background-300)",
+                  borderRadius: "12px",
+                },
+              }}
+            />
 
             <Group
               gap={8}
