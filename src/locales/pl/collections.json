@@ -10,7 +10,7 @@
     "namePlaceholder": "Szukaj po nazwie kolekcji...",
     "filterType": "Typ",
     "filterAll": "Wszystkie",
-    "filterFavorites": "Ulubione",
+    "filterFavorites": "Moje ulubione",
     "filterScope": "Zakres",
     "filterMyOnly": "Moje kolekcje",
     "filterIncludeShared": "Z udostępnionymi",
@@ -90,7 +90,6 @@
     "collaboratorsLabel": "Współtwórcy",
     "collaboratorsPlaceholder": "Szukaj znajomych...",
     "selectedCollaborators": "Wybrani współtwórcy",
-    "favoriteLabel": "Oznacz jako ulubione",
     "cancelButton": "Anuluj",
     "createButton": "Utwórz",
     "saveButton": "Zapisz zmiany",
@@ -104,7 +103,9 @@
   "addModal": {
     "title": "Dodaj do kolekcji",
     "selectLabel": "Wybierz kolekcje",
-    "selectPlaceholder": "Szukaj kolekcji...",
+    "selectPlaceholder": "Szukaj swoich lub udostępnionych kolekcji...",
+    "shared": "Udostępniona",
+    "sharedBy": "od {{username}}",
     "adding": "Dodawanie...",
     "addButton": "Dodaj do wybranych kolekcji",
     "addSuccess": "Pomyślnie dodano do kolekcji",
@@ -162,6 +163,10 @@
     "failedToMoveDown": "Nie udało się przesunąć niżej",
     "itemNotFound": "Nie znaleziono pozycji",
     "cannotMoveToPosition": "Nie można przenieść na pozycję {{position}}. Dostępnych jest tylko {{count}} pozycji."
+  },
+  "favorite": {
+    "add": "Dodaj do ulubionych",
+    "remove": "Usuń z ulubionych"
   },
   "card": {
     "game": "Gra",

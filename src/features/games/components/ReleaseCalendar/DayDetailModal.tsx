@@ -10,6 +10,7 @@ import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useResettableState } from "@/hooks/useResettableState";
 import { useListViewStore } from "@/lib/listViewStore";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
@@ -27,11 +28,7 @@ export default function DayDetailModal({ opened, onClose, dateStr }: Readonly<Da
   const { t } = useTranslation("games");
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
-  const [page, setPage] = React.useState(1);
-
-  React.useEffect(() => {
-    setPage(1);
-  }, [dateStr, opened]);
+  const [page, setPage] = useResettableState(1, [dateStr, opened]);
 
   const { data, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetGamesInfinite(
     {

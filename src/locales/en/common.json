@@ -71,5 +71,15 @@
   "noResults": "No results found",
   "noResultsDescription": "Try adjusting your search or filters",
   "searching": "Searching...",
-  "scrollToTop": "Scroll to top"
+  "scrollToTop": "Scroll to top",
+  "apiError": {
+    "errorTitle": "Error",
+    "network": "Couldn't reach the server. Check your connection and try again.",
+    "unauthorized": "You need to log in to do that.",
+    "forbidden": "You don't have permission to do that.",
+    "notFound": "This could not be found. It may have been removed.",
+    "tooManyRequests": "Too many requests. Wait a moment and try again.",
+    "server": "Something went wrong on the server. Try again later.",
+    "generic": "Something went wrong. Try again."
+  }
 }

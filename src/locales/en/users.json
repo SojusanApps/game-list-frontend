@@ -66,6 +66,7 @@
     "dropped": "Dropped",
     "completed": "Completed",
     "planToPlay": "Plan To Play",
+    "notPlanned": "Not Planned",
     "totalEntries": "Total Entries",
     "meanScore": "Mean Score"
   },

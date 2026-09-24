@@ -10,7 +10,7 @@ export interface BanUserBody {
 export const getUserLists = async (query?: UserUsersListDataQuery) => {
   const { data, error, response } = await UserService.userUsersList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching users");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -18,7 +18,7 @@ export const getUserLists = async (query?: UserUsersListDataQuery) => {
 export const getUserDetails = async (id: number) => {
   const { data, error, response } = await UserService.userUsersRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching user details");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -26,7 +26,7 @@ export const getUserDetails = async (id: number) => {
 export const getCurrentUser = async () => {
   const { data, error, response } = await UserService.userUsersMeRetrieve();
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching current user");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -37,7 +37,7 @@ export const banUser = async (id: number, body: BanUserBody) => {
     body: body as UserUsersBanCreateData["body"],
   });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error banning user");
+    return await handleApiError(error, response);
   }
   return data;
 };

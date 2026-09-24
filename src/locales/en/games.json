@@ -4,7 +4,8 @@
     "completed": "Completed",
     "planToPlay": "Plan to Play",
     "onHold": "On Hold",
-    "dropped": "Dropped"
+    "dropped": "Dropped",
+    "notPlanned": "Not Planned"
   },
   "detail": {
     "loading": "Loading Game...",
@@ -44,7 +45,8 @@
     "score": "Score",
     "readFull": "Read Full Review",
     "showLess": "Show Less",
-    "noReviews": "No reviews yet."
+    "noReviews": "No reviews yet.",
+    "noReviewsInLanguage": "No reviews in this language."
   },
   "recommendation": {
     "recommended": "Recommended",
@@ -75,7 +77,12 @@
     "errorMessage": "An error occurred",
     "validationRequired": "Review text is required",
     "validationMaxLength": "Review must be at most {{max}} characters",
-    "validationRecommendationRequired": "Recommendation is required"
+    "validationRecommendationRequired": "Recommendation is required",
+    "languageQuestion": "Which language is your review written in?",
+    "languageHint": "Pick the language you will write in. Readers can filter reviews by language.",
+    "languageLabel": "Language",
+    "changeLanguage": "Change review language",
+    "validationLanguageRequired": "Review language is required"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Suggest Translation",
@@ -148,10 +155,10 @@
     "saveButton": "Save Changes",
     "addButton": "Add to List",
     "invalidContext": "Invalid context",
-    "updateSuccess": "Updated list successfully",
     "addSuccess": "Added to list successfully",
-    "removeSuccess": "Removed from list successfully",
-    "removeFailed": "Failed to remove",
+    "saveFailedTitle": "Couldn't save changes to {{title}}",
+    "addFailedTitle": "Couldn't add {{title}} to your list",
+    "removeFailedTitle": "Couldn't remove {{title}} from your list",
     "errorOccurred": "An error occurred",
     "successTitle": "Success",
     "errorTitle": "Error",
@@ -167,6 +174,10 @@
     "popularityAsc": "Popularity",
     "popularity": "Popularity",
     "popularityDesc": "Popularity (Descending)",
+    "titleAsc": "Title (A-Z)",
+    "titleDesc": "Title (Z-A)",
+    "scoreDesc": "Score (High to Low)",
+    "scoreAsc": "Score (Low to High)",
     "releaseAfter": "Release After",
     "releaseBefore": "Release Before",
     "yearPlaceholder": "Year...",
@@ -377,7 +388,13 @@
     "duplicatesDescription": "These titles resolved to the same game. Each game will be imported only once.",
     "duplicatesChosenFor": "Chosen for: {{titles}}",
     "matchIntroTitle": "Your Titles and Their Matches",
-    "matchIntroDescription": "For each title below, click the game that matches it, or choose \"None of these\" if none of them is right. You need to pick an option for every title before continuing to the next page."
+    "matchIntroDescription": "For each title below, click the game that matches it, or choose \"None of these\" if none of them is right. You need to pick an option for every title before continuing to the next page.",
+    "sortBy": "Sort by {{column}}",
+    "ascending": "ascending",
+    "descending": "descending",
+    "bulkStatusLabel": "Set status for all games",
+    "bulkStatusPlaceholder": "Choose a status",
+    "bulkStatusApply": "Apply to All"
   },
   "export": {
     "title": "Export Game List"
@@ -392,5 +409,11 @@
     "onlyFirstUser": "Only {{username}}",
     "onlySecondUser": "Only {{username}}",
     "emptySection": "No games in this section."
+  },
+  "reviewLanguage": {
+    "all": "All",
+    "filterLabel": "Filter reviews by language",
+    "en": "English",
+    "pl": "Polish"
   }
 }

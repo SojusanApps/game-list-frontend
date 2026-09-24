@@ -1,6 +1,6 @@
 import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { getRouteApi, Link } from "@tanstack/react-router";
+import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -12,13 +12,25 @@ import { useCurrentUserId, useRequireAuth } from "@/features/auth";
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
+import ReviewLanguageFilter from "../components/ReviewLanguageFilter";
 import { useGetGameReviewsList, useGetGamesDetails } from "../hooks/gameQueries";
+import {
+  getDefaultReviewLanguageFilter,
+  isReviewLanguageFilter,
+  reviewLanguageQuery,
+  type ReviewLanguageFilter as ReviewLanguageFilterValue,
+} from "../utils/reviewLanguage";
 
 const routeApi = getRouteApi("/game_/$id/$slug/reviews");
 
 export default function GameReviewsPage(): React.JSX.Element {
-  const { t } = useTranslation("games");
+  const { t, i18n } = useTranslation("games");
   const { id, slug } = routeApi.useParams();
+  const { language: languageParam } = routeApi.useSearch();
+  const navigate = useNavigate();
+  const languageFilter = isReviewLanguageFilter(languageParam)
+    ? languageParam
+    : getDefaultReviewLanguageFilter(i18n.language);
   const gameId = Number(id);
 
   const [page, setPage] = React.useState(1);
@@ -29,7 +41,7 @@ export default function GameReviewsPage(): React.JSX.Element {
 
   const { data: gameDetails } = useGetGamesDetails(gameId);
   const { data: gameReviewItems, isLoading } = useGetGameReviewsList(
-    { game: String(gameId), page },
+    { game: String(gameId), page, ...reviewLanguageQuery(languageFilter) },
     { enabled: !!gameId },
   );
   const { data: userReviewData } = useGetGameReviewsList(
@@ -42,6 +54,11 @@ export default function GameReviewsPage(): React.JSX.Element {
     () => (gameReviewItems?.results ?? []).filter(r => r.id !== userReview?.id),
     [gameReviewItems?.results, userReview?.id],
   );
+
+  const handleLanguageFilterChange = (next: ReviewLanguageFilterValue) => {
+    setPage(1);
+    void navigate({ to: ".", search: prev => ({ ...prev, language: next }), replace: true });
+  };
 
   const totalPages = derivePageCount({ count: gameReviewItems?.count, pageSize: LIST_PAGE_SIZE, page });
 
@@ -84,6 +101,8 @@ export default function GameReviewsPage(): React.JSX.Element {
           )}
         </Title>
 
+        <ReviewLanguageFilter value={languageFilter} onChange={handleLanguageFilterChange} />
+
         <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
 
         <Stack gap={16}>
@@ -97,7 +116,7 @@ export default function GameReviewsPage(): React.JSX.Element {
           )}
           {!isLoading && !userReview && otherReviews.length === 0 && (
             <Text c="dimmed" fs="italic">
-              {t("review.noReviews")}
+              {languageFilter === "all" ? t("review.noReviews") : t("review.noReviewsInLanguage")}
             </Text>
           )}
           {!isLoading && otherReviews.map(gameReview => <GameReview key={gameReview.id} gameReview={gameReview} />)}
@@ -112,6 +131,7 @@ export default function GameReviewsPage(): React.JSX.Element {
           existingReviewId={userReview?.id}
           existingReviewText={userReview?.review}
           existingRecommendation={userReview?.recommendation}
+          existingLanguage={userReview?.language}
           opened={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
         />

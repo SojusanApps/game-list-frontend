@@ -1,26 +1,34 @@
-import { Textarea, Stack, Group, Text, Select, Box } from "@mantine/core";
+import { Textarea, Stack, Group, Text, Select, Box, SimpleGrid, UnstyledButton } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { RecommendationEnum } from "@/client";
+import { LanguageEnum, RecommendationEnum } from "@/client";
 import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
 import { useModalDraft } from "@/hooks/useModalDraft";
+import { useResettableState } from "@/hooks/useResettableState";
 
 import { useCreateGameReview, useUpdateGameReview, useDeleteGameReview } from "../hooks/gameQueries";
 import { getRecommendationConfig, RECOMMENDATION_ORDER } from "../utils/recommendationConfig";
+import { REVIEW_LANGUAGE_ORDER } from "../utils/reviewLanguage";
 
 const MAX_REVIEW_LENGTH = 1000;
 
-type ReviewFormValues = { review: string; recommendation: RecommendationEnum | null };
+type ReviewFormValues = {
+  review: string;
+  recommendation: RecommendationEnum | null;
+  language: LanguageEnum | null;
+};
 
 interface GameReviewModalProps {
   gameId: number;
   existingReviewId?: number;
   existingReviewText?: string;
   existingRecommendation?: RecommendationEnum;
+  existingLanguage?: LanguageEnum;
   opened: boolean;
   onClose: () => void;
 }
@@ -30,6 +38,7 @@ export function GameReviewModal({
   existingReviewId,
   existingReviewText,
   existingRecommendation,
+  existingLanguage,
   opened,
   onClose,
 }: Readonly<GameReviewModalProps>) {
@@ -54,17 +63,31 @@ export function GameReviewModal({
     return null;
   };
 
+  const validateLanguage = (value: LanguageEnum | null) => {
+    if (!value) {
+      return t("reviewModal.validationLanguageRequired");
+    }
+    return null;
+  };
+
   const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ReviewFormValues>({
     draftKey: `game-review:${gameId}`,
     opened,
     baseline: {
       review: existingReviewText ?? "",
       recommendation: existingRecommendation ?? null,
+      language: existingLanguage ?? null,
     },
     formOptions: {
-      validate: { review: validateReview, recommendation: validateRecommendation },
+      validate: { review: validateReview, recommendation: validateRecommendation, language: validateLanguage },
     },
   });
+
+  // Step 1 (language) is shown until a language is set, so a new review always asks for one.
+  // A restored draft or an existing review already has a language and opens on the text step.
+  const [isChangingLanguage, setIsChangingLanguage] = useResettableState(false, [opened]);
+  const language = form.values.language;
+  const isLanguageStep = !language || isChangingLanguage;
 
   const { mutateAsync: createReview, isPending: isCreating } = useCreateGameReview();
   const { mutateAsync: updateReview, isPending: isUpdating } = useUpdateGameReview();
@@ -72,7 +95,7 @@ export function GameReviewModal({
   const isPending = isCreating || isUpdating || isDeleting;
 
   const handleSubmit = async (values: ReviewFormValues) => {
-    if (!currentUserId || !values.recommendation) {
+    if (!currentUserId || !values.recommendation || !values.language) {
       return;
     }
     try {
@@ -82,12 +105,13 @@ export function GameReviewModal({
       if (isEditing) {
         await updateReview({
           id: existingReviewId,
-          body: { review: values.review, recommendation: values.recommendation },
+          body: { review: values.review, recommendation: values.recommendation, language: values.language },
         });
       } else {
         await createReview({
           review: values.review,
           recommendation: values.recommendation,
+          language: values.language,
           game: gameId,
         });
       }
@@ -148,14 +172,16 @@ export function GameReviewModal({
             <Button variant="outline" onClick={onClose} disabled={isPending}>
               {t("reviewModal.cancelButton")}
             </Button>
-            <Button
-              type="submit"
-              form="game-review-form"
-              isLoading={isCreating || isUpdating}
-              disabled={isOverLimit || isPending}
-            >
-              {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
-            </Button>
+            {!isLanguageStep && (
+              <Button
+                type="submit"
+                form="game-review-form"
+                isLoading={isCreating || isUpdating}
+                disabled={isOverLimit || isPending}
+              >
+                {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
+              </Button>
+            )}
           </Group>
         </Group>
       }
@@ -163,49 +189,111 @@ export function GameReviewModal({
       <form id="game-review-form" onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={16}>
           {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-          <Select
-            label={t("reviewModal.recommendationLabel")}
-            placeholder={t("reviewModal.recommendationPlaceholder")}
-            data={RECOMMENDATION_ORDER.map(value => ({
-              value,
-              label: getRecommendationConfig(value)?.label ?? value,
-            }))}
-            renderOption={({ option }) => (
-              <Box
-                style={{
-                  ...getRecommendationConfig(option.value as RecommendationEnum)?.badgeStyle,
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  padding: "2px 8px",
-                  borderRadius: "6px",
-                  display: "inline-block",
-                }}
-              >
-                {option.label}
-              </Box>
-            )}
-            styles={{
-              input: {
-                ...getRecommendationConfig(form.values.recommendation ?? undefined)?.badgeStyle,
-                fontWeight: 700,
-              },
-            }}
-            {...form.getInputProps("recommendation")}
-          />
-          <Stack gap={4}>
-            <Textarea
-              {...form.getInputProps("review")}
-              placeholder={t("reviewModal.reviewPlaceholder")}
-              minRows={6}
-              autosize
-              maxRows={16}
-            />
-            <Group justify="flex-end">
-              <Text fz="xs" c={isOverLimit ? "red" : "dimmed"}>
-                {charCount} / {MAX_REVIEW_LENGTH}
+          {isLanguageStep ? (
+            <Stack gap={12}>
+              <Text fw={600}>{t("reviewModal.languageQuestion")}</Text>
+              <Text fz="sm" c="dimmed">
+                {t("reviewModal.languageHint")}
               </Text>
-            </Group>
-          </Stack>
+              <SimpleGrid cols={2} spacing={12}>
+                {REVIEW_LANGUAGE_ORDER.map(option => (
+                  <UnstyledButton
+                    key={option}
+                    type="button"
+                    onClick={() => {
+                      form.setFieldValue("language", option);
+                      setIsChangingLanguage(false);
+                    }}
+                    aria-pressed={language === option}
+                    style={{
+                      padding: "24px 16px",
+                      borderRadius: 12,
+                      textAlign: "center",
+                      fontWeight: 700,
+                      fontSize: 18,
+                      border:
+                        language === option
+                          ? "2px solid var(--color-primary-600)"
+                          : "1px solid var(--color-background-200)",
+                    }}
+                  >
+                    {t(`reviewLanguage.${option}`)}
+                  </UnstyledButton>
+                ))}
+              </SimpleGrid>
+              {form.errors.language && (
+                <Text fz="xs" c="red">
+                  {form.errors.language}
+                </Text>
+              )}
+            </Stack>
+          ) : (
+            <>
+              <Group gap={8} align="center">
+                <Text fz="sm" c="dimmed">
+                  {t("reviewModal.languageLabel")}
+                </Text>
+                <UnstyledButton
+                  type="button"
+                  onClick={() => setIsChangingLanguage(true)}
+                  aria-label={t("reviewModal.changeLanguage")}
+                  style={{
+                    padding: "2px 10px",
+                    borderRadius: 9999,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    border: "1px solid var(--color-primary-600)",
+                    color: "var(--color-primary-600)",
+                  }}
+                >
+                  {language ? t(`reviewLanguage.${language}`) : ""}
+                </UnstyledButton>
+              </Group>
+              <Select
+                label={t("reviewModal.recommendationLabel")}
+                placeholder={t("reviewModal.recommendationPlaceholder")}
+                data={RECOMMENDATION_ORDER.map(value => ({
+                  value,
+                  label: getRecommendationConfig(value)?.label ?? value,
+                }))}
+                renderOption={({ option }) => (
+                  <Box
+                    style={{
+                      ...getRecommendationConfig(option.value as RecommendationEnum)?.badgeStyle,
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {option.label}
+                  </Box>
+                )}
+                styles={{
+                  input: {
+                    ...getRecommendationConfig(form.values.recommendation ?? undefined)?.badgeStyle,
+                    fontWeight: 700,
+                  },
+                }}
+                {...form.getInputProps("recommendation")}
+              />
+              <Stack gap={4}>
+                <Textarea
+                  {...form.getInputProps("review")}
+                  placeholder={t("reviewModal.reviewPlaceholder")}
+                  minRows={6}
+                  autosize
+                  maxRows={16}
+                />
+                <Group justify="flex-end">
+                  <Text fz="xs" c={isOverLimit ? "red" : "dimmed"}>
+                    {charCount} / {MAX_REVIEW_LENGTH}
+                  </Text>
+                </Group>
+              </Stack>
+            </>
+          )}
         </Stack>
       </form>
     </AppModal>

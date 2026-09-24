@@ -1,4 +1,5 @@
 import {
+  IconArchive,
   IconCalendarClock,
   IconCircleX,
   IconDeviceGamepad2,
@@ -45,13 +46,18 @@ const BADGE_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
     color: "var(--color-status-dropped-text)",
     borderColor: "var(--color-status-dropped-border)",
   },
+  [GameListStatusEnum.NP]: {
+    background: "var(--color-status-notplanned-bg)",
+    color: "var(--color-status-notplanned-text)",
+    borderColor: "var(--color-status-notplanned-border)",
+  },
 };
 
 /**
  * Doubling the glow token stacks it to roughly 0.65 alpha — a visible halo on
  * the dark theme, a soft tint on the light one. Hues mirror BADGE_STYLES:
  * playing→success, completed→primary, on-hold→secondary, dropped→error,
- * plan-to-play→achromatic (a "white neon" tube).
+ * plan-to-play→achromatic (a "white neon" tube), not-planned→grape/violet.
  */
 const NEON_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
   [GameListStatusEnum.P]: {
@@ -74,6 +80,10 @@ const NEON_STYLES: Record<GameListStatusEnum, React.CSSProperties> = {
     color: "var(--color-error-500)",
     filter: "drop-shadow(var(--shadow-glow-error)) drop-shadow(var(--shadow-glow-error))",
   },
+  [GameListStatusEnum.NP]: {
+    color: "var(--color-status-notplanned-icon)",
+    filter: "drop-shadow(var(--shadow-glow-notplanned)) drop-shadow(var(--shadow-glow-notplanned))",
+  },
 };
 
 const STATUS_ICONS: Record<GameListStatusEnum, TablerIcon> = {
@@ -82,6 +92,7 @@ const STATUS_ICONS: Record<GameListStatusEnum, TablerIcon> = {
   [GameListStatusEnum.PTP]: IconCalendarClock,
   [GameListStatusEnum.OH]: IconPlayerPause,
   [GameListStatusEnum.D]: IconCircleX,
+  [GameListStatusEnum.NP]: IconArchive,
 };
 
 const STATUS_TRANSLATION_KEYS: Record<GameListStatusEnum, string> = {
@@ -90,6 +101,7 @@ const STATUS_TRANSLATION_KEYS: Record<GameListStatusEnum, string> = {
   [GameListStatusEnum.PTP]: "games:status.planToPlay",
   [GameListStatusEnum.OH]: "games:status.onHold",
   [GameListStatusEnum.D]: "games:status.dropped",
+  [GameListStatusEnum.NP]: "games:status.notPlanned",
 };
 
 /** Returns a fresh StatusConfig reading the current i18n language at call time. */

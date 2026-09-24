@@ -22,15 +22,6 @@ import {
   useGetPlayerPerspectivesInfiniteQuery,
 } from "../hooks/gameQueries";
 
-const ORDERING_OPTIONS = [
-  "-created_at",
-  "created_at",
-  "-rank_position",
-  "rank_position",
-  "-popularity",
-  "popularity",
-] as const;
-
 const dateField = z
   .preprocess(val => {
     if (val === null || val === undefined || val === "") return null;
@@ -52,7 +43,7 @@ const validationSchema = z
     game_status: z.string().array().optional(),
     game_type: z.string().array().optional(),
     player_perspectives: z.string().array().optional(),
-    ordering: z.enum(ORDERING_OPTIONS).optional().or(z.literal("")),
+    ordering: z.string().optional(),
   })
   .refine(
     data => {
@@ -77,11 +68,16 @@ function GameSearchFilter({
   onSubmitHandlerCallback,
   initialFilters,
   showOrdering = true,
+  orderingOptions,
+  orderingClearable = true,
   datePickerWithinPortal = false,
 }: Readonly<{
   onSubmitHandlerCallback: (data: ValidationSchema) => void;
   initialFilters?: Record<string, unknown>;
   showOrdering?: boolean;
+  /** Overrides the default game-search sort options; each value is sent verbatim as the `ordering` param. */
+  orderingOptions?: { value: string; label: string }[];
+  orderingClearable?: boolean;
   datePickerWithinPortal?: boolean;
 }>) {
   const { t } = useTranslation("games");
@@ -102,15 +98,7 @@ function GameSearchFilter({
       game_status: (initialFilters?.game_status as string[]) ?? [],
       game_type: (initialFilters?.game_type as string[]) ?? [],
       player_perspectives: (initialFilters?.player_perspectives as string[]) ?? [],
-      ordering:
-        (initialFilters?.ordering as
-          | "-created_at"
-          | "created_at"
-          | "-rank_position"
-          | "rank_position"
-          | "-popularity"
-          | "popularity"
-          | "") ?? "",
+      ordering: (initialFilters?.ordering as string | undefined) ?? "",
     },
     validate: schemaResolver(validationSchema),
   });
@@ -132,15 +120,18 @@ function GameSearchFilter({
               label={t("filter.sortBy")}
               name="ordering"
               searchable
-              clearable
-              data={[
-                { value: "created_at", label: t("filter.createdAt") },
-                { value: "-created_at", label: t("filter.createdAtDesc") },
-                { value: "rank_position", label: t("filter.rankPosition") },
-                { value: "-rank_position", label: t("filter.rankPositionDesc") },
-                { value: "popularity", label: t("filter.popularity") },
-                { value: "-popularity", label: t("filter.popularityDesc") },
-              ]}
+              clearable={orderingClearable}
+              allowDeselect={orderingClearable}
+              data={
+                orderingOptions ?? [
+                  { value: "created_at", label: t("filter.createdAt") },
+                  { value: "-created_at", label: t("filter.createdAtDesc") },
+                  { value: "rank_position", label: t("filter.rankPosition") },
+                  { value: "-rank_position", label: t("filter.rankPositionDesc") },
+                  { value: "popularity", label: t("filter.popularity") },
+                  { value: "-popularity", label: t("filter.popularityDesc") },
+                ]
+              }
               comboboxProps={{
                 withinPortal: false,
                 position: "bottom",

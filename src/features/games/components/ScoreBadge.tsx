@@ -1,6 +1,6 @@
 import { Box, Text } from "@mantine/core";
 
-import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor, hasScore } from "@/utils/ratingUtils";
 
 import styles from "./ScoreBadge.module.css";
 
@@ -9,7 +9,7 @@ import styles from "./ScoreBadge.module.css";
  * `ItemOverlay`, `GameListRow` and the compare table.
  */
 export function ScoreBadge({ score }: Readonly<{ score: number | null | undefined }>): React.JSX.Element {
-  if (!score) {
+  if (!hasScore(score)) {
     return <Text fz="sm">—</Text>;
   }
   return (

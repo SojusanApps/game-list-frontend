@@ -4,11 +4,13 @@ import * as React from "react";
 import { BlankEnum, TierEnum } from "@/client";
 import { useCurrentUserId } from "@/features/auth";
 import { useGetFriendshipsInfiniteQuery } from "@/features/users/hooks/friendshipQueries";
-import { collectionKeys } from "@/lib/queryKeys";
+import { useAppMutation } from "@/hooks/useAppMutation";
+import { collectionKeys, type CollectionListScope } from "@/lib/queryKeys";
 
 import {
   getCollectionsList,
   createCollection,
+  setCollectionFavorite,
   getCollectionDetail,
   getCollectionItems,
   updateCollection,
@@ -22,21 +24,23 @@ import {
 } from "../api/collection";
 
 const fetchCollections = async ({ pageParam = 1, queryKey }: { pageParam?: number; queryKey: readonly unknown[] }) => {
-  const [, _kind, userId, filters, useMember] = queryKey as [string, string, number, object, boolean];
-  const query = useMember
-    ? { page: pageParam, member: String(userId), ...filters }
-    : { page: pageParam, user: String(userId), ...filters };
-  return await getCollectionsList(query);
+  const [, _kind, userId, filters, scope] = queryKey as [string, string, number, object, CollectionListScope];
+  const scopeQuery = {
+    user: { user: String(userId) },
+    member: { member: String(userId) },
+    any: {},
+  }[scope];
+  return await getCollectionsList({ page: pageParam, ...scopeQuery, ...filters });
 };
 
 export const useCollectionsInfiniteQuery = (
   userId?: number,
   filters: object = {},
-  useMember = false,
+  scope: CollectionListScope = "user",
   options: { enabled?: boolean } = {},
 ) => {
   return useInfiniteQuery({
-    queryKey: collectionKeys.infinite(userId ?? -1, filters, useMember),
+    queryKey: collectionKeys.infinite(userId ?? -1, filters, scope),
     queryFn: fetchCollections,
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
@@ -53,12 +57,12 @@ export const useCollectionsQuery = (
   userId?: number,
   page: number = 1,
   filters: object = {},
-  useMember = false,
+  scope: CollectionListScope = "user",
   options: { enabled?: boolean } = {},
 ) => {
   return useQuery({
-    queryKey: [...collectionKeys.infinite(userId ?? -1, filters, useMember), "page", page],
-    queryFn: () => fetchCollections({ pageParam: page, queryKey: ["", "", userId ?? -1, filters, useMember] }),
+    queryKey: [...collectionKeys.infinite(userId ?? -1, filters, scope), "page", page],
+    queryFn: () => fetchCollections({ pageParam: page, queryKey: ["", "", userId ?? -1, filters, scope] }),
     placeholderData: keepPreviousData,
     enabled: !!userId && (options.enabled ?? true),
   });
@@ -82,6 +86,18 @@ export const useUpdateCollection = () => {
     onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: collectionKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: collectionKeys.lists() });
+    },
+  });
+};
+
+export const useSetCollectionFavorite = () => {
+  const queryClient = useQueryClient();
+  return useAppMutation({
+    mutationFn: ({ id, favorite }: { id: number; favorite: boolean }) => setCollectionFavorite(id, favorite),
+    onSuccess: () => {
+      // The Collections page lists live under `collectionKeys.infinite`, not `lists()`, and `is_favorite` also
+      // appears on the detail, so refresh everything under the collections root.
+      queryClient.invalidateQueries({ queryKey: collectionKeys.all });
     },
   });
 };

@@ -105,6 +105,20 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
         </Group>
 
         <Group gap={8} align="center">
+          <Box
+            title={t(`reviewLanguage.${gameReview.language}`)}
+            style={{
+              padding: "4px 8px",
+              borderRadius: "8px",
+              fontSize: "11px",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              border: "1px solid var(--color-background-200)",
+              color: "var(--color-text-500)",
+            }}
+          >
+            {gameReview.language.toUpperCase()}
+          </Box>
           {gameReview?.recommendation && (
             <Box
               style={{

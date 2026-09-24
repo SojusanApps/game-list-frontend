@@ -63,6 +63,7 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
 
   const itemCount = items.length > 0 ? items.length + 1 : 0;
 
+  // oxlint-disable-next-line react/incompatible-library -- only matters under React Compiler, which this app does not use.
   const virtualizer = useVirtualizer({
     count: itemCount,
     getScrollElement: () => parentRef.current,

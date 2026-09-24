@@ -26,6 +26,11 @@ import {
   useDeleteGameFollow,
 } from "../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import {
+  getDefaultReviewLanguageFilter,
+  reviewLanguageQuery,
+  type ReviewLanguageFilter as ReviewLanguageFilterValue,
+} from "../utils/reviewLanguage";
 
 const routeApi = getRouteApi("/game/$id/$slug");
 
@@ -129,8 +134,12 @@ export default function GameDetailPage(): React.JSX.Element {
   const gameId = Number(id);
 
   const { data: gameDetails, isLoading: isGameDetailsLoading } = useGetGamesDetails(gameId);
+  const { t, i18n } = useTranslation("games");
+  const [reviewLanguageFilter, setReviewLanguageFilter] = React.useState<ReviewLanguageFilterValue>(() =>
+    getDefaultReviewLanguageFilter(i18n.language),
+  );
   const { data: gameReviewItems, isLoading: isGameReviewsLoading } = useGetGameReviewsList(
-    { game: String(gameId) },
+    { game: String(gameId), ...reviewLanguageQuery(reviewLanguageFilter) },
     { enabled: !!gameId },
   );
 
@@ -146,7 +155,6 @@ export default function GameDetailPage(): React.JSX.Element {
     { enabled: !!gameId && !!currentUserId },
   );
   const userReview = userReviewData?.results?.[0];
-  const { t } = useTranslation("games");
 
   const pageTitle = isGameDetailsLoading ? t("detail.loading") : gameDetails?.title;
 
@@ -226,6 +234,8 @@ export default function GameDetailPage(): React.JSX.Element {
                       isGameReviewsLoading={isGameReviewsLoading}
                       isLoggedIn={isAuthenticated}
                       userReview={userReview}
+                      reviewLanguageFilter={reviewLanguageFilter}
+                      onReviewLanguageFilterChange={setReviewLanguageFilter}
                       gameSlug={slug}
                     />
                   </Tabs.Panel>

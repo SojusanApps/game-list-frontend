@@ -57,6 +57,18 @@
       "question": "Skąd pochodzą dane o grach?",
       "answer": "Informacje o grach, firmach i okładkach prezentowane w serwisie pochodzą z IGDB. Nie jesteśmy właścicielem tych danych — należą do IGDB i jego licencjodawców.",
       "linkLabel": "IGDB"
+    },
+    "statuses": {
+      "question": "Co oznaczają statusy na mojej liście gier?",
+      "answer": "Każdy może nadać im własne znaczenie, bo to Twoja lista gier — ale ogólne rozumienie każdego z nich jest następujące:",
+      "list": {
+        "playing": "Obecnie grasz w tę grę.",
+        "completed": "Ukończyłeś/aś tę grę — a to może oznaczać przejście kampanii, zdobycie 100%, albo po prostu Twoją własną decyzję, że gra jest dla Ciebie skończona. Niektóre gry nie mają zdefiniowanego zakończenia (np. gry jak League of Legends nie mają ścieżki fabularnej do ukończenia), więc w ich przypadku \"ukończone\" to wyłącznie Twoja subiektywna ocena.",
+        "planToPlay": "Zamierzasz zagrać w tę grę w przyszłości.",
+        "onHold": "Zrobiłeś/aś przerwę w grze i planujesz do niej wrócić.",
+        "dropped": "Zacząłeś/aś grę, ale nie zamierzasz jej kończyć.",
+        "notPlanned": "Posiadasz ją, ale nie zamierzasz w nią zagrać."
+      }
     }
   }
 }

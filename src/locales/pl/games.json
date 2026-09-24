@@ -4,7 +4,8 @@
     "completed": "Ukończone",
     "planToPlay": "Planuję zagrać",
     "onHold": "Wstrzymane",
-    "dropped": "Porzucone"
+    "dropped": "Porzucone",
+    "notPlanned": "Nieplanowane"
   },
   "detail": {
     "loading": "Wczytywanie gry...",
@@ -44,7 +45,8 @@
     "score": "Ocena",
     "readFull": "Czytaj całą recenzję",
     "showLess": "Zwiń",
-    "noReviews": "Brak recenzji."
+    "noReviews": "Brak recenzji.",
+    "noReviewsInLanguage": "Brak recenzji w tym języku."
   },
   "recommendation": {
     "recommended": "Polecam",
@@ -75,7 +77,12 @@
     "errorMessage": "Wystąpił błąd",
     "validationRequired": "Treść recenzji jest wymagana",
     "validationMaxLength": "Recenzja może mieć maksymalnie {{max}} znaków",
-    "validationRecommendationRequired": "Rekomendacja jest wymagana"
+    "validationRecommendationRequired": "Rekomendacja jest wymagana",
+    "languageQuestion": "W jakim języku napiszesz recenzję?",
+    "languageHint": "Wybierz język, w którym będziesz pisać. Czytelnicy mogą filtrować recenzje według języka.",
+    "languageLabel": "Język",
+    "changeLanguage": "Zmień język recenzji",
+    "validationLanguageRequired": "Język recenzji jest wymagany"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Zaproponuj tłumaczenie",
@@ -148,10 +155,10 @@
     "saveButton": "Zapisz zmiany",
     "addButton": "Dodaj do listy",
     "invalidContext": "Nieprawidłowy kontekst",
-    "updateSuccess": "Pomyślnie zaktualizowano listę",
     "addSuccess": "Pomyślnie dodano do listy",
-    "removeSuccess": "Pomyślnie usunięto z listy",
-    "removeFailed": "Nie udało się usunąć",
+    "saveFailedTitle": "Nie udało się zapisać zmian: {{title}}",
+    "addFailedTitle": "Nie udało się dodać do listy: {{title}}",
+    "removeFailedTitle": "Nie udało się usunąć z listy: {{title}}",
     "errorOccurred": "Wystąpił błąd",
     "successTitle": "Sukces",
     "errorTitle": "Błąd",
@@ -167,6 +174,10 @@
     "popularityAsc": "Popularność",
     "popularity": "Popularność",
     "popularityDesc": "Popularność (malejąco)",
+    "titleAsc": "Tytuł (A-Z)",
+    "titleDesc": "Tytuł (Z-A)",
+    "scoreDesc": "Ocena (malejąco)",
+    "scoreAsc": "Ocena (rosnąco)",
     "releaseAfter": "Wydane po",
     "releaseBefore": "Wydane przed",
     "yearPlaceholder": "Rok...",
@@ -377,7 +388,13 @@
     "duplicatesDescription": "Te tytuły zostały dopasowane do tej samej gry. Każda gra zostanie zaimportowana tylko raz.",
     "duplicatesChosenFor": "Wybrano dla: {{titles}}",
     "matchIntroTitle": "Twoje tytuły i ich dopasowania",
-    "matchIntroDescription": "Dla każdego tytułu poniżej kliknij grę, która do niego pasuje, lub wybierz „Żaden z tych”, jeśli żadna nie jest właściwa. Zanim przejdziesz do następnej strony, musisz wybrać opcję dla każdego tytułu."
+    "matchIntroDescription": "Dla każdego tytułu poniżej kliknij grę, która do niego pasuje, lub wybierz „Żaden z tych”, jeśli żadna nie jest właściwa. Zanim przejdziesz do następnej strony, musisz wybrać opcję dla każdego tytułu.",
+    "sortBy": "Sortuj według: {{column}}",
+    "ascending": "rosnąco",
+    "descending": "malejąco",
+    "bulkStatusLabel": "Ustaw status dla wszystkich gier",
+    "bulkStatusPlaceholder": "Wybierz status",
+    "bulkStatusApply": "Zastosuj do wszystkich"
   },
   "export": {
     "title": "Eksportuj listę gier"
@@ -392,5 +409,11 @@
     "onlyFirstUser": "Tylko {{username}}",
     "onlySecondUser": "Tylko {{username}}",
     "emptySection": "Brak gier w tej sekcji."
+  },
+  "reviewLanguage": {
+    "all": "Wszystkie",
+    "filterLabel": "Filtruj recenzje według języka",
+    "en": "Angielski",
+    "pl": "Polski"
   }
 }

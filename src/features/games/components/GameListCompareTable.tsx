@@ -62,6 +62,7 @@ export function GameListCompareTable({
 
   const { rows } = table.getRowModel();
 
+  // oxlint-disable-next-line react/incompatible-library -- only matters under React Compiler, which this app does not use.
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollContainerRef.current,

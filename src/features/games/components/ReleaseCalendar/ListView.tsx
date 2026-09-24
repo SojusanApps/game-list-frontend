@@ -10,7 +10,9 @@ import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useResettableState } from "@/hooks/useResettableState";
 import { useListViewStore } from "@/lib/listViewStore";
+import { GRID_VIEWPORT_HEIGHT } from "@/utils/gridLayout";
 
 import { createGameColumns } from "../../components/gameSearchColumns";
 import { useGetGamesInfinite, useGetGamesList } from "../../hooks/gameQueries";
@@ -24,12 +26,8 @@ export default function ListView(): React.JSX.Element {
 
   const [dateAfter, setDateAfter] = React.useState<string | null>(() => formatISODate(new Date()));
   const [dateBefore, setDateBefore] = React.useState<string | null>(() => formatISODate(getEndOfMonth(new Date())));
-  const [page, setPage] = React.useState(1);
-
   // Any change to the date range restarts pagination.
-  React.useEffect(() => {
-    setPage(1);
-  }, [dateAfter, dateBefore]);
+  const [page, setPage] = useResettableState(1, [dateAfter, dateBefore]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useGetGamesInfinite(
     {
@@ -109,6 +107,7 @@ export default function ListView(): React.JSX.Element {
         columnCount={5}
         rowHeight={320}
         gap={16}
+        style={{ height: GRID_VIEWPORT_HEIGHT }}
         renderItem={(game: GameSimpleList) => (
           <ItemOverlay
             key={game.id}

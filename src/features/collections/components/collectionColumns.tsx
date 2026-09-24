@@ -1,5 +1,4 @@
 import { Group, Text } from "@mantine/core";
-import { IconHeartFilled } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
@@ -16,6 +15,7 @@ import {
   getTypeBadgeStyle,
   getVisibilityBadgeStyle,
 } from "../utils/collectionBadgeStyles";
+import { FavoriteButton } from "./FavoriteButton";
 
 const COVER_WIDTH = 72;
 const COVER_HEIGHT = 96;
@@ -79,9 +79,11 @@ export function createCollectionColumns(
           >
             {info.getValue()}
           </Link>
-          {info.row.original.is_favorite && (
-            <IconHeartFilled size={14} style={{ color: "var(--mantine-color-red-6)", flexShrink: 0 }} />
-          )}
+          <FavoriteButton
+            collectionId={info.row.original.id}
+            isFavorite={info.row.original.is_favorite}
+            iconSize={16}
+          />
         </Group>
       ),
     }),
