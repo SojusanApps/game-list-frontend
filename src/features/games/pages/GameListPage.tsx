@@ -5,6 +5,7 @@ import {
   Drawer,
   Group,
   Indicator,
+  Select,
   Skeleton,
   Stack,
   Text,
@@ -12,15 +13,7 @@ import {
   Title,
   ActionIcon,
 } from "@mantine/core";
-import {
-  IconEdit,
-  IconFilter,
-  IconDownload,
-  IconInfinity,
-  IconSearch,
-  IconUpload,
-  type TablerIcon,
-} from "@tabler/icons-react";
+import { IconEdit, IconFilter, IconDownload, IconInfinity, IconSearch, IconUpload } from "@tabler/icons-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
@@ -35,7 +28,9 @@ import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+import { useResettableState } from "@/hooks/useResettableState";
 import { useListViewStore } from "@/lib/listViewStore";
+import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import { exportGameList } from "../api/game";
 import { createGameListColumns } from "../components/gameListColumns";
@@ -43,8 +38,16 @@ import { GameListModal } from "../components/GameListModal";
 import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
 import { useGetGameListsList } from "../hooks/gameQueries";
 import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
+import {
+  buildGameListFilters,
+  countActiveGameListFilters,
+  DEFAULT_GAME_LIST_ORDERING,
+} from "../utils/gameListOrdering";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { STATUS_CONFIG } from "../utils/statusConfig";
+import { StatusIcon } from "../utils/StatusIcon";
+
+const ALL_STATUS_VALUE = "all";
 
 interface GameListItemProps {
   gameListItem: GameList;
@@ -86,6 +89,14 @@ function renderEditActionSlot(hovered: boolean, gameId: number, onEdit: (id: num
   return hovered ? <EditAction gameId={gameId} onEdit={onEdit} /> : null;
 }
 
+/** Status filter's "All" option has no GameListStatusEnum value, so it renders its own neutral icon. */
+function renderStatusIcon(status: GameListStatusEnum | null, size = 16) {
+  if (!status) {
+    return <IconInfinity size={size} stroke={1.5} color="var(--color-text-400)" />;
+  }
+  return <StatusIcon status={status} size={size} neon />;
+}
+
 const GameListGridItem = React.memo(({ gameListItem, isOwner, onEdit }: GameListItemProps) => {
   return (
     <ItemOverlay
@@ -113,14 +124,12 @@ export default function GameListPage(): React.JSX.Element {
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
-  const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({});
+  const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({
+    ordering: DEFAULT_GAME_LIST_ORDERING,
+  });
   const [titleInput, setTitleInput] = React.useState("");
-  const [page, setPage] = React.useState(1);
-
   // Any status or filter change restarts pagination.
-  React.useEffect(() => {
-    setPage(1);
-  }, [selectedGameStatus, gameFilters]);
+  const [page, setPage] = useResettableState(1, [selectedGameStatus, gameFilters]);
 
   const {
     data: gameListResults,
@@ -136,22 +145,10 @@ export default function GameListPage(): React.JSX.Element {
     { enabled: renderMode === "table" && !!userId, placeholderData: keepPreviousData },
   );
 
-  const activeFilterCount = Object.values(gameFilters).filter(v =>
-    Array.isArray(v) ? v.length > 0 : v !== undefined && v !== "",
-  ).length;
+  const activeFilterCount = countActiveGameListFilters(gameFilters);
 
   const handleApplyFilters = (data: GameSearchFilterSchema) => {
-    const filters: GameListGameFilters = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (key === "ordering") {
-        continue;
-      }
-      if (value === "" || value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
-        continue;
-      }
-      (filters as Record<string, unknown>)[key] = value instanceof Date ? value.toISOString().split("T")[0] : value;
-    }
-    setGameFilters(filters);
+    setGameFilters(buildGameListFilters(data));
     setFilterDrawerOpen(false);
   };
 
@@ -185,38 +182,21 @@ export default function GameListPage(): React.JSX.Element {
 
   const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
 
-  const statuses: { id: GameListStatusEnum | null; label: string; icon: TablerIcon; color: string }[] = [
-    { id: null, label: t("gameList.all"), icon: IconInfinity, color: "gray" },
-    {
-      id: GameListStatusEnum.P,
-      label: STATUS_CONFIG[GameListStatusEnum.P].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.P].icon,
-      color: "teal",
-    },
-    {
-      id: GameListStatusEnum.C,
-      label: STATUS_CONFIG[GameListStatusEnum.C].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.C].icon,
-      color: "indigo",
-    },
-    {
-      id: GameListStatusEnum.PTP,
-      label: STATUS_CONFIG[GameListStatusEnum.PTP].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.PTP].icon,
-      color: "gray",
-    },
-    {
-      id: GameListStatusEnum.OH,
-      label: STATUS_CONFIG[GameListStatusEnum.OH].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.OH].icon,
-      color: "orange",
-    },
-    {
-      id: GameListStatusEnum.D,
-      label: STATUS_CONFIG[GameListStatusEnum.D].label,
-      icon: STATUS_CONFIG[GameListStatusEnum.D].icon,
-      color: "red",
-    },
+  const orderingOptions = [
+    { value: "title", label: t("filter.titleAsc") },
+    { value: "-title", label: t("filter.titleDesc") },
+    { value: "-score", label: t("filter.scoreDesc") },
+    { value: "score", label: t("filter.scoreAsc") },
+  ];
+
+  const statuses: { value: string; label: string }[] = [
+    { value: ALL_STATUS_VALUE, label: t("gameList.all") },
+    { value: GameListStatusEnum.P, label: STATUS_CONFIG[GameListStatusEnum.P].label },
+    { value: GameListStatusEnum.C, label: STATUS_CONFIG[GameListStatusEnum.C].label },
+    { value: GameListStatusEnum.PTP, label: STATUS_CONFIG[GameListStatusEnum.PTP].label },
+    { value: GameListStatusEnum.OH, label: STATUS_CONFIG[GameListStatusEnum.OH].label },
+    { value: GameListStatusEnum.D, label: STATUS_CONFIG[GameListStatusEnum.D].label },
+    { value: GameListStatusEnum.NP, label: STATUS_CONFIG[GameListStatusEnum.NP].label },
   ];
 
   const renderContent = () => {
@@ -323,25 +303,30 @@ export default function GameListPage(): React.JSX.Element {
             style={{ flexDirection: "column", alignItems: "center" }}
             pr={{ sm: isOwner ? 210 : 90 }}
           >
-            <Group justify="center" wrap="wrap" gap={8}>
-              {statuses.map(status => (
-                <Button
-                  key={String(status.id)}
-                  variant={selectedGameStatus === status.id ? "filled" : "light"}
-                  color={status.color}
-                  size="md"
-                  radius="xl"
-                  onClick={() => setSelectedGameStatus(status.id)}
-                  leftSection={<status.icon size={16} stroke={1.5} />}
-                  style={{
-                    border: `2px solid var(--mantine-color-${status.color}-${selectedGameStatus === status.id ? "7" : "4"})`,
-                    transition: "border-color 0.2s ease",
-                  }}
-                >
-                  {status.label}
-                </Button>
-              ))}
-            </Group>
+            <Select
+              aria-label={t("gameList.table.status")}
+              value={selectedGameStatus ?? ALL_STATUS_VALUE}
+              onChange={value =>
+                setSelectedGameStatus(value && value !== ALL_STATUS_VALUE ? (value as GameListStatusEnum) : null)
+              }
+              data={statuses}
+              allowDeselect={false}
+              leftSection={renderStatusIcon(selectedGameStatus)}
+              renderOption={({ option }) => (
+                <Group gap={8} wrap="nowrap">
+                  {renderStatusIcon(option.value === ALL_STATUS_VALUE ? null : (option.value as GameListStatusEnum))}
+                  {option.label}
+                </Group>
+              )}
+              w={220}
+              styles={{
+                input: {
+                  background: "var(--color-background-100)",
+                  border: "1px solid var(--color-background-300)",
+                  borderRadius: "12px",
+                },
+              }}
+            />
 
             <Group
               gap={8}
@@ -459,7 +444,7 @@ export default function GameListPage(): React.JSX.Element {
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             border: "1px solid var(--color-background-200)",
             padding: "24px",
-            minHeight: "850px",
+            ...GRID_BOX_STYLE,
           }}
         >
           {renderContent()}
@@ -495,7 +480,8 @@ export default function GameListPage(): React.JSX.Element {
         styles={{ body: { paddingBottom: "120px" } }}
       >
         <GameSearchFilter
-          showOrdering={false}
+          orderingOptions={orderingOptions}
+          orderingClearable={false}
           datePickerWithinPortal
           initialFilters={gameFilters as Record<string, unknown>}
           onSubmitHandlerCallback={handleApplyFilters}

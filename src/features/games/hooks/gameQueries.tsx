@@ -1,3 +1,4 @@
+import { notifications } from "@mantine/notifications";
 import {
   useInfiniteQuery,
   useQuery,
@@ -6,6 +7,7 @@ import {
   UseInfiniteQueryOptions,
   InfiniteData,
 } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   GameList,
@@ -26,11 +28,6 @@ import {
   getGameReviewsList,
   GameGameListsListDataQuery,
   getGameListsList,
-  deleteGameList,
-  createGameList,
-  GameListCreateDataBody,
-  GameListPartialUpdateDataBody,
-  partialUpdateGameList,
   getGameListByFilters,
   getGameMediaList,
   getCompaniesList,
@@ -58,6 +55,11 @@ import {
   GameReviewCreateDataBody,
   GameReviewPartialUpdateDataBody,
 } from "../api/game";
+import {
+  createGameListEntryOptions,
+  deleteGameListEntryOptions,
+  updateGameListEntryOptions,
+} from "./gameListEntryMutations";
 
 export const useGetPlatformsInfiniteQuery = (name?: string) => {
   return useInfiniteQuery({
@@ -68,7 +70,6 @@ export const useGetPlatformsInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -82,7 +83,6 @@ export const useGetGameEnginesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -96,7 +96,6 @@ export const useGetGameModesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -110,7 +109,6 @@ export const useGetGameStatusesInfiniteQuery = (status?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -124,7 +122,6 @@ export const useGetGameTypesInfiniteQuery = (type?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -138,7 +135,6 @@ export const useGetPlayerPerspectivesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -153,7 +149,6 @@ export const useGetGenresInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -167,7 +162,6 @@ export const useGetGameMediasInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };
@@ -201,7 +195,6 @@ export const useGetGamesInfinite = (
       if (lastPage?.next) {
         return allPages.length + 1;
       }
-      return;
     },
     ...options,
   });
@@ -273,53 +266,68 @@ export const useGetGameListByFilters = (
   });
 };
 
+/** Error toast naming the game (ADR 0008): by the time a Game List Entry save fails, its modal is closed. */
+const showGameListEntryError = (title: string, error: Error, fallbackMessage: string) => {
+  notifications.show({ title, message: error.message || fallbackMessage, color: "red" });
+};
+
 export const useCreateGameList = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation("games");
+  const options = createGameListEntryOptions(queryClient);
 
   return useAppMutation({
-    mutationFn: (body: GameListCreateDataBody) => createGameList(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: gameListKeys.all,
-      });
-      // Also invalidate user details to update statistics
-      queryClient.invalidateQueries({
-        queryKey: userKeys.details(),
-      });
+    ...options,
+    showErrorToast: () => false,
+    onSuccess: (...args) => {
+      options.onSuccess?.(...args);
+      notifications.show({ title: t("modal.successTitle"), message: t("modal.addSuccess"), color: "green" });
     },
+    onError: (error, { title }) =>
+      showGameListEntryError(
+        title ? t("modal.addFailedTitle", { title }) : t("modal.errorTitle"),
+        error,
+        t("modal.errorMessage"),
+      ),
   });
 };
 
 export const usePartialUpdateGameList = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation("games");
+  const options = updateGameListEntryOptions(queryClient);
 
   return useAppMutation({
-    mutationFn: ({ id, body }: { id: number; body: GameListPartialUpdateDataBody }) => partialUpdateGameList(id, body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: gameListKeys.all,
-      });
-      // Also invalidate user details to update statistics
-      queryClient.invalidateQueries({
-        queryKey: userKeys.details(),
-      });
+    ...options,
+    showErrorToast: () => false,
+    onError: (...args) => {
+      options.onError?.(...args);
+      const [error, { title }] = args;
+      showGameListEntryError(
+        title ? t("modal.saveFailedTitle", { title }) : t("modal.errorTitle"),
+        error,
+        t("modal.errorMessage"),
+      );
     },
   });
 };
 
 export const useDeleteGameList = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation("games");
+  const options = deleteGameListEntryOptions(queryClient);
 
   return useAppMutation({
-    mutationFn: (id: number) => deleteGameList(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: gameListKeys.all,
-      });
-      // Also invalidate user details to update statistics
-      queryClient.invalidateQueries({
-        queryKey: userKeys.details(),
-      });
+    ...options,
+    showErrorToast: () => false,
+    onError: (...args) => {
+      options.onError?.(...args);
+      const [error, { title }] = args;
+      showGameListEntryError(
+        title ? t("modal.removeFailedTitle", { title }) : t("modal.errorTitle"),
+        error,
+        t("modal.errorMessage"),
+      );
     },
   });
 };
@@ -333,7 +341,6 @@ export const useGetCompaniesInfiniteQuery = (name?: string) => {
       if (lastPage.next) {
         return allPages.length + 1;
       }
-      return;
     },
   });
 };

@@ -1,9 +1,11 @@
 import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
-import { useViewportSize } from "@mantine/hooks";
+import { useElementSize, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+
+import { computeCardRowHeight } from "@/utils/gridLayout";
 
 interface VirtualGridListProps<T> {
   items: T[];
@@ -14,6 +16,7 @@ interface VirtualGridListProps<T> {
   className?: string;
   style?: React.CSSProperties;
   columnCount?: number;
+  /** Fixed row height for cards that are not 264/374 posters. Omit to size rows from the real card height. */
   rowHeight?: number;
   gap?: number;
 }
@@ -50,6 +53,9 @@ function renderTrailingContent(
 /**
  * A virtualized grid list component for high-performance rendering of large datasets.
  * Encapsulates TanStack Virtual logic and handles infinite loading.
+ *
+ * Without `style.height` the grid fills its parent, which must be a flex column with a height
+ * (see `GRID_BOX_STYLE`). Pass `style.height` when there is no such parent, e.g. in a modal or tab.
  */
 export const VirtualGridList = React.forwardRef(function VirtualGridListComponent<T>(
   {
@@ -68,6 +74,8 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
 ) {
   const internalRef = useRef<HTMLDivElement>(null);
   const parentRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+  const { ref: sizeRef, width: gridWidth } = useElementSize();
+  const viewportRef = useMergedRef(parentRef, sizeRef);
   const { width: viewportWidth } = useViewportSize();
   const { t } = useTranslation("common");
 
@@ -97,14 +105,16 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
   };
   const columnCount = getCols();
 
+  // px, so the row height can be computed from the same value the CSS grid uses
+  const columnGap = gap * 4;
+
   const getRowHeight = () => {
-    if (viewportWidth === 0) return propRowHeight ?? 300;
-
-    // Assume max width container of roughly 1280px minus padding
-    const containerWidth = Math.min(viewportWidth, 1280) - 32;
-    const itemWidth = containerWidth / columnCount;
-
     if (propRowHeight) {
+      if (viewportWidth === 0) return propRowHeight;
+
+      // Assume max width container of roughly 1280px minus padding
+      const containerWidth = Math.min(viewportWidth, 1280) - 32;
+      const itemWidth = containerWidth / columnCount;
       const desktopCols = propColumnCount ?? 7;
       // 1248 is a typical 1280 max-width wrapper minus 32px padding
       const expectedDesktopWidth = 1248 / desktopCols;
@@ -113,20 +123,26 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
       return itemWidth * ratio;
     }
 
-    // Scale height by typical aspect ratio 1.42 plus gap/padding allowance
-    const computedHeight = itemWidth * 1.42 + gap * 4 + 8;
-    return Math.max(200, Math.min(computedHeight, 450));
+    // Poster cards: the real card height plus one gap, from the measured grid width.
+    // Falls back to a rough height until the grid has been measured.
+    return computeCardRowHeight({ gridWidth, columnCount, columnGap }) || 300;
   };
   const rowHeight = getRowHeight();
 
   const rowCount = items.length > 0 ? Math.ceil(items.length / columnCount) + 1 : 0;
 
+  // oxlint-disable-next-line react/incompatible-library -- only matters under React Compiler, which this app does not use.
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => parentRef.current,
     estimateSize: () => rowHeight,
     overscan: 3,
   });
+
+  // Row sizes are cached by the virtualizer, so drop them when the row height changes (resize).
+  useEffect(() => {
+    rowVirtualizer.measure();
+  }, [rowVirtualizer, rowHeight]);
 
   const virtualRows = rowVirtualizer.getVirtualItems();
 
@@ -139,15 +155,17 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
     }
   }, [virtualRows, hasNextPage, isFetchingNextPage, fetchNextPage, rowCount]);
 
+  // The padding leaves room for the hover zoom of the cards; the negative margin cancels it out.
+  // When filling the parent, the margin reaches the parent's own padding so no space is left unused.
+  const fillsParent = style?.height === undefined;
+
   return (
     <ScrollArea
-      viewportRef={parentRef}
+      viewportRef={viewportRef}
       className={className}
       style={{
-        height: "calc(100vh - 250px)",
-        minHeight: style?.height ? undefined : "500px",
+        ...(fillsParent ? { flex: "1 1 0", minHeight: 0, margin: "-24px" } : { margin: "-32px -24px" }),
         padding: "32px",
-        margin: "-32px -24px",
         ...style,
       }}
       viewportProps={{ style: { contain: "strict" } }}
@@ -183,8 +201,8 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
                   style={{
                     display: "grid",
                     gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-                    gap: `${gap * 0.25}rem`,
-                    paddingBlock: "8px",
+                    gap: `${columnGap}px`,
+                    paddingBlock: propRowHeight ? "8px" : `${columnGap / 2}px`,
                   }}
                 >
                   {items

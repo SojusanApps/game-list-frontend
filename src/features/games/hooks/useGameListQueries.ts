@@ -4,6 +4,7 @@ import { GameListStatusEnum } from "@/client";
 import { gameListKeys } from "@/lib/queryKeys";
 
 import { getGameListCompare, getGameListsList, getRandomPtpGame } from "../api/game";
+import type { GameListOrdering } from "../utils/gameListOrdering";
 
 export type GameListGameFilters = {
   developer?: string;
@@ -17,6 +18,7 @@ export type GameListGameFilters = {
   player_perspectives?: string[];
   release_date_after?: string;
   release_date_before?: string;
+  ordering?: GameListOrdering;
 };
 
 const fetchGameListItems = async ({

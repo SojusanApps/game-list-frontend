@@ -64,11 +64,11 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
     { enabled: !!parsedGameId && !!currentUserId && opened },
   );
 
-  const { mutateAsync: deleteGameListItem, isPending: isDeleting } = useDeleteGameList();
-  const { mutateAsync: createGameListItem, isPending: isCreating } = useCreateGameList();
-  const { mutateAsync: partialUpdateGameListItem, isPending: isUpdating } = usePartialUpdateGameList();
-
-  const isSubmitting = isCreating || isUpdating;
+  // Saving and removing close the modal straight away: update and delete are optimistic, and the
+  // hooks report failures and clear the draft once the server confirms (ADR 0008).
+  const { mutate: deleteGameListItem } = useDeleteGameList();
+  const { mutate: createGameListItem } = useCreateGameList();
+  const { mutate: partialUpdateGameListItem } = usePartialUpdateGameList();
 
   const isEditing = !!gameListDetails?.id;
   const resolvedGameTitle = gameTitle ?? gameListDetails?.title;
@@ -93,8 +93,9 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
         playtime: null,
       };
 
-  const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<ValidationSchema>({
-    draftKey: `game-list:${gameId}`,
+  const draftKey = `game-list:${gameId}`;
+  const { form, hasDraft, discardDraft } = useModalDraft<ValidationSchema>({
+    draftKey,
     opened,
     baseline,
     formOptions: { validate: schemaResolver(validationSchema) },
@@ -116,7 +117,7 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
     // oxlint-disable-next-line react/exhaustive-deps
   }, [form.values.status]);
 
-  const onSubmitHandler = async (data: ValidationSchema) => {
+  const onSubmitHandler = (data: ValidationSchema) => {
     if (!parsedGameId || !currentUserId) {
       notifications.show({ title: t("modal.errorTitle"), message: t("modal.invalidContext"), color: "red" });
       return;
@@ -132,45 +133,18 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
       playtime: playtimeHoursToMinutes(data.playtime),
     };
 
-    try {
-      if (gameListDetails?.id) {
-        await partialUpdateGameListItem({
-          id: gameListDetails.id,
-          body: payload,
-        });
-        notifications.show({ title: t("modal.successTitle"), message: t("modal.updateSuccess"), color: "green" });
-      } else {
-        await createGameListItem({
-          ...payload,
-          game: parsedGameId,
-        });
-        notifications.show({ title: t("modal.successTitle"), message: t("modal.addSuccess"), color: "green" });
-      }
-      clearDraft();
-      onClose();
-    } catch (error: unknown) {
-      notifications.show({
-        title: t("modal.errorTitle"),
-        message: error instanceof Error ? error.message : t("modal.errorMessage"),
-        color: "red",
-      });
+    if (gameListDetails?.id) {
+      partialUpdateGameListItem({ id: gameListDetails.id, body: payload, title: resolvedGameTitle, draftKey });
+    } else {
+      createGameListItem({ body: { ...payload, game: parsedGameId }, title: resolvedGameTitle, draftKey });
     }
+    onClose();
   };
 
-  const handleRemove = async () => {
+  const handleRemove = () => {
     if (gameListDetails?.id) {
-      try {
-        await deleteGameListItem(gameListDetails.id);
-        notifications.show({ title: t("modal.successTitle"), message: t("modal.removeSuccess"), color: "green" });
-        clearDraft();
-        onClose();
-      } catch (error: unknown) {
-        notifications.show({
-          title: t("modal.errorTitle"),
-          message: error instanceof Error ? error.message : t("modal.removeFailed"),
-          color: "red",
-        });
-      }
+      deleteGameListItem({ id: gameListDetails.id, title: resolvedGameTitle, draftKey });
+      onClose();
     }
   };
 
@@ -184,15 +158,15 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
       footer={
         <Group justify={isEditing ? "space-between" : "flex-end"}>
           {isEditing && (
-            <Button type="button" onClick={handleRemove} variant="destructive" isLoading={isDeleting}>
+            <Button type="button" onClick={handleRemove} variant="destructive">
               {t("modal.removeButton")}
             </Button>
           )}
           <Group>
-            <Button type="button" onClick={onClose} variant="outline" disabled={isSubmitting}>
+            <Button type="button" onClick={onClose} variant="outline">
               {t("modal.cancelButton")}
             </Button>
-            <Button type="submit" form="game-list-form" isLoading={isSubmitting}>
+            <Button type="submit" form="game-list-form">
               {isEditing ? t("modal.saveButton") : t("modal.addButton")}
             </Button>
           </Group>

@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Sojusan GameList API",
-        "version": "5.3.3",
+        "version": "5.4.0",
         "description": "Application to manage game lists."
     },
     "paths": {
@@ -338,7 +338,7 @@
         "/api/collection/collections/": {
             "get": {
                 "operationId": "collection_collections_list",
-                "description": "List collections visible to the authenticated user. The response includes: the user's own collections, collections they collaborate on, all PUBLIC collections, and FRIENDS collections owned by their friends. PRIVATE collections are only visible to their owner.",
+                "description": "List collections visible to the authenticated user. The response includes: the user's own collections, collections they collaborate on, all PUBLIC collections, and FRIENDS collections owned by their friends. PRIVATE collections are only visible to their owner. `is_favorite` reflects the requesting user's own favorite.",
                 "parameters": [
                     {
                         "in": "query",
@@ -362,7 +362,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "When true, return only collections the owner has marked as a favourite."
+                        "description": "When true, return only collections the requesting user has favorited; when false, only those they have not. Favorites are per user, so anonymous visitors have none."
                     },
                     {
                         "in": "query",
@@ -448,7 +448,7 @@
             },
             "post": {
                 "operationId": "collection_collections_create",
-                "description": "Create a new collection. The authenticated user is automatically set as the owner.",
+                "description": "Create a new collection. The authenticated user is automatically set as the owner. Favorites are not part of the payload; use the `favorite` endpoint.",
                 "tags": [
                     "collection"
                 ],
@@ -497,7 +497,7 @@
         "/api/collection/collections/{id}/": {
             "get": {
                 "operationId": "collection_collections_retrieve",
-                "description": "Retrieve a single collection by ID. Returns full detail including collaborators and the list of items. Visibility rules apply: PRIVATE collections are only accessible to their owner.",
+                "description": "Retrieve a single collection by ID. Returns full detail including collaborators and the list of items. Visibility rules apply: PRIVATE collections are only accessible to their owner. `is_favorite` reflects the requesting user's own favorite.",
                 "parameters": [
                     {
                         "in": "path",
@@ -718,6 +718,70 @@
                     },
                     "required": true
                 },
+                "security": [
+                    {
+                        "basicAuth": []
+                    },
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/collection/collections/{id}/favorite/": {
+            "post": {
+                "operationId": "collection_collections_favorite_create",
+                "description": "Add the collection to the requesting user's favorites. Any authenticated user who can see the collection may do so; a collection that is not visible to them returns 404. Favorites are private to the user and independent of the owner's. Idempotent: favoriting an already favorited collection succeeds without change.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this collection.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "collection"
+                ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    },
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "collection_collections_favorite_destroy",
+                "description": "Remove the collection from the requesting user's favorites. Other users' favorites are unaffected. Idempotent: unfavoriting a collection that is not favorited succeeds without change.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this collection.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "collection"
+                ],
                 "security": [
                     {
                         "basicAuth": []
@@ -1129,7 +1193,8 @@
                         "name": "friend__username",
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "description": "Filter friendships by the friend's username (case-insensitive, partial match)."
                     },
                     {
                         "in": "query",
@@ -1750,7 +1815,7 @@
         "/api/game/game-lists/": {
             "get": {
                 "operationId": "game_game_lists_list",
-                "description": "List game-list entries. Open to anonymous visitors as well as authenticated users. Each entry tracks a user's relationship to a game including the play status (e.g. Playing, Completed, Plan to Play). Filter by status, game ID, user ID, or any game attribute.",
+                "description": "List game-list entries. Open to anonymous visitors as well as authenticated users. Each entry tracks a user's relationship to a game including the play status (e.g. Playing, Completed, Plan to Play). Filter by status, game ID, user ID, or any game attribute. Entries can be ordered by the owner's score or by game title using the `ordering` parameter.",
                 "parameters": [
                     {
                         "in": "query",
@@ -1841,6 +1906,14 @@
                             "type": "string"
                         },
                         "description": "Filter by exact game-list entry ID."
+                    },
+                    {
+                        "in": "query",
+                        "name": "ordering",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Order results by the owner's score or by game title (in the requested language, falling back to English). Accepted values: score, -score, title, -title. Prefix with '-' for descending. Several values can be combined with commas, e.g. `-score,title`. Unscored entries always come last when ordering by score. Ties are ordered by game title A-Z (unless title is already requested), then by ID. An explicit ordering replaces the best-match-first order of the `title` filter."
                     },
                     {
                         "name": "page",
@@ -2858,6 +2931,18 @@
                             "type": "string"
                         },
                         "description": "Filter by exact game review ID."
+                    },
+                    {
+                        "in": "query",
+                        "name": "language",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "pl"
+                            ]
+                        },
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
                     },
                     {
                         "name": "page",
@@ -5205,7 +5290,8 @@
                     },
                     "is_favorite": {
                         "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
+                        "readOnly": true,
+                        "description": "Whether the requesting user has favorited the collection. Always false for anonymous visitors."
                     },
                     "visibility": {
                         "allOf": [
@@ -5290,6 +5376,7 @@
                     "created_at",
                     "description",
                     "id",
+                    "is_favorite",
                     "items_count",
                     "items_cover_image_ids",
                     "last_modified_at",
@@ -5317,10 +5404,6 @@
                         "type": "string",
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
-                    },
-                    "is_favorite": {
-                        "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
                     },
                     "visibility": {
                         "allOf": [
@@ -5413,7 +5496,8 @@
                     },
                     "is_favorite": {
                         "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
+                        "readOnly": true,
+                        "description": "Whether the requesting user has favorited the collection. Always false for anonymous visitors."
                     },
                     "visibility": {
                         "allOf": [
@@ -5505,6 +5589,7 @@
                     "created_at",
                     "description",
                     "id",
+                    "is_favorite",
                     "items",
                     "items_count",
                     "items_cover_image_ids",
@@ -6682,7 +6767,7 @@
                                 "$ref": "#/components/schemas/GameListStatusEnum"
                             }
                         ],
-                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold, Not Planned).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
                     },
                     "score": {
                         "type": "integer",
@@ -6765,6 +6850,9 @@
                     "playing": {
                         "type": "integer"
                     },
+                    "not_planned": {
+                        "type": "integer"
+                    },
                     "total": {
                         "type": "integer"
                     },
@@ -6777,6 +6865,7 @@
                     "completed",
                     "dropped",
                     "mean_score",
+                    "not_planned",
                     "on_hold",
                     "plan_to_play",
                     "playing",
@@ -6789,10 +6878,11 @@
                     "PTP",
                     "P",
                     "D",
-                    "OH"
+                    "OH",
+                    "NP"
                 ],
                 "type": "string",
-                "description": "* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                "description": "* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
             },
             "GameMedia": {
                 "type": "object",
@@ -6906,6 +6996,14 @@
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
                     },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -6929,6 +7027,7 @@
                     "created_at",
                     "game",
                     "id",
+                    "language",
                     "recommendation",
                     "review",
                     "score",
@@ -6962,6 +7061,14 @@
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
                     },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
                     "game": {
                         "type": "integer",
                         "description": "The game being reviewed."
@@ -6971,6 +7078,7 @@
                     "created_at",
                     "game",
                     "id",
+                    "language",
                     "recommendation"
                 ]
             },
@@ -7166,6 +7274,14 @@
                     "igdb_updated_at",
                     "name"
                 ]
+            },
+            "LanguageEnum": {
+                "enum": [
+                    "en",
+                    "pl"
+                ],
+                "type": "string",
+                "description": "* `en` - English\n* `pl` - Polish"
             },
             "ModeEnum": {
                 "enum": [
@@ -8002,10 +8118,6 @@
                         "description": "An optional description of the collection.",
                         "maxLength": 1000
                     },
-                    "is_favorite": {
-                        "type": "boolean",
-                        "description": "Whether the collection is marked as a favorite by its owner."
-                    },
                     "visibility": {
                         "allOf": [
                             {
@@ -8129,7 +8241,7 @@
                                 "$ref": "#/components/schemas/GameListStatusEnum"
                             }
                         ],
-                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold"
+                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold, Not Planned).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
                     },
                     "score": {
                         "type": "integer",
@@ -8227,6 +8339,14 @@
                             }
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
+                    },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
                     },
                     "game": {
                         "type": "integer",

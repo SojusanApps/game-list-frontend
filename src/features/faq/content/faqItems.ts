@@ -1,3 +1,5 @@
+import { GameListStatusEnum } from "@/client";
+
 export type FaqItemId =
   | "about"
   | "creator"
@@ -10,7 +12,8 @@ export type FaqItemId =
   | "deleteAccount"
   | "listsVsCollections"
   | "friends"
-  | "gameData";
+  | "gameData"
+  | "statuses";
 
 export const FAQ_ITEM_ORDER: FaqItemId[] = [
   "about",
@@ -25,6 +28,7 @@ export const FAQ_ITEM_ORDER: FaqItemId[] = [
   "listsVsCollections",
   "friends",
   "gameData",
+  "statuses",
 ];
 
 export type FaqLinkLabelKey =
@@ -62,3 +66,26 @@ export const FAQ_ITEM_LINKS: Partial<Record<FaqItemId, FaqItemLink[]>> = {
   deleteAccount: [{ labelKey: "items.deleteAccount.linkLabel", to: "/privacy" }],
   gameData: [{ labelKey: "items.gameData.linkLabel", href: "https://www.igdb.com/" }],
 };
+
+export type FaqStatusDescriptionKey =
+  | "items.statuses.list.playing"
+  | "items.statuses.list.completed"
+  | "items.statuses.list.planToPlay"
+  | "items.statuses.list.onHold"
+  | "items.statuses.list.dropped"
+  | "items.statuses.list.notPlanned";
+
+export interface FaqStatusListItem {
+  status: GameListStatusEnum;
+  descriptionKey: FaqStatusDescriptionKey;
+}
+
+/** Statuses shown as an icon + label + description bullet list under the "statuses" FAQ item. */
+export const FAQ_STATUS_LIST: FaqStatusListItem[] = [
+  { status: GameListStatusEnum.P, descriptionKey: "items.statuses.list.playing" },
+  { status: GameListStatusEnum.C, descriptionKey: "items.statuses.list.completed" },
+  { status: GameListStatusEnum.PTP, descriptionKey: "items.statuses.list.planToPlay" },
+  { status: GameListStatusEnum.OH, descriptionKey: "items.statuses.list.onHold" },
+  { status: GameListStatusEnum.D, descriptionKey: "items.statuses.list.dropped" },
+  { status: GameListStatusEnum.NP, descriptionKey: "items.statuses.list.notPlanned" },
+];

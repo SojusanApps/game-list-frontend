@@ -41,6 +41,8 @@ export const gameListKeys = {
   export: () => [...gameListKeys.all, "export"] as const,
   compare: (firstUserId: number, secondUserId: number) =>
     [...gameListKeys.all, "compare", firstUserId, secondUserId] as const,
+  /** Mutation key shared by create/update/delete of a Game List Entry, so they can see each other in flight. */
+  entryMutation: () => [...gameListKeys.all, "entry-mutation"] as const,
 };
 
 export const gameFollowKeys = {
@@ -70,12 +72,18 @@ export const notificationKeys = {
   unreadCount: ["notifications", "unread-count"] as const,
 };
 
+/**
+ * Which collections a list is scoped to: `user` = owned by the user, `member` = owned by or shared with the user,
+ * `any` = not scoped to a user at all (e.g. everything the viewer has favorited).
+ */
+export type CollectionListScope = "user" | "member" | "any";
+
 export const collectionKeys = {
   all: ["collections"] as const,
   lists: () => [...collectionKeys.all, "list"] as const,
   list: (query: object | undefined) => [...collectionKeys.lists(), query] as const,
-  infinite: (userId: number, filters: object, useMember: boolean) =>
-    [...collectionKeys.all, "infinite", userId, filters, useMember] as const,
+  infinite: (userId: number, filters: object, scope: CollectionListScope) =>
+    [...collectionKeys.all, "infinite", userId, filters, scope] as const,
   details: () => [...collectionKeys.all, "detail"] as const,
   detail: (id: number) => [...collectionKeys.details(), id] as const,
   items: (collectionId: number, filters: object) => [...collectionKeys.all, "items", collectionId, filters] as const,

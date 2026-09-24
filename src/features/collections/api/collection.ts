@@ -19,7 +19,7 @@ export type CollectionCollectionsListDataQuery = CollectionCollectionsListData["
 export const getCollectionsList = async (query?: CollectionCollectionsListDataQuery) => {
   const { data, error, response } = await CollectionService.collectionCollectionsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching collections");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -27,7 +27,7 @@ export const getCollectionsList = async (query?: CollectionCollectionsListDataQu
 export const getCollectionDetail = async (id: number) => {
   const { data, error, response } = await CollectionService.collectionCollectionsRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching collection details");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -37,7 +37,7 @@ export type CollectionCollectionsCreateDataBody = CollectionCollectionsCreateDat
 export const createCollection = async (body: CollectionCollectionsCreateDataBody) => {
   const { data, error, response } = await CollectionService.collectionCollectionsCreate({ body });
   if (response?.status !== StatusCode.CREATED || !data) {
-    return await handleApiError(error, response, "Error creating collection");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -47,15 +47,25 @@ export type CollectionCollectionsPartialUpdateDataBody = CollectionCollectionsPa
 export const updateCollection = async (id: number, body: CollectionCollectionsPartialUpdateDataBody) => {
   const { data, error, response } = await CollectionService.collectionCollectionsPartialUpdate({ path: { id }, body });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error updating collection");
+    return await handleApiError(error, response);
   }
   return data;
+};
+
+/** Adds (`favorite: true`) or removes (`favorite: false`) the collection from the requesting user's favorites. */
+export const setCollectionFavorite = async (id: number, favorite: boolean) => {
+  const { error, response } = favorite
+    ? await CollectionService.collectionCollectionsFavoriteCreate({ path: { id } })
+    : await CollectionService.collectionCollectionsFavoriteDestroy({ path: { id } });
+  if (response?.status !== StatusCode.NO_CONTENT) {
+    return await handleApiError(error, response);
+  }
 };
 
 export const deleteCollection = async (id: number) => {
   const { error, response } = await CollectionService.collectionCollectionsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error deleting collection");
+    return await handleApiError(error, response);
   }
 };
 
@@ -64,7 +74,7 @@ export type CollectionCollectionItemsListDataQuery = CollectionCollectionItemsLi
 export const getCollectionItems = async (query?: CollectionCollectionItemsListDataQuery) => {
   const { data, error, response } = await CollectionService.collectionCollectionItemsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching collection items");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -74,7 +84,7 @@ export type CollectionCollectionItemsCreateDataBody = CollectionCollectionItemsC
 export const addCollectionItem = async (body: CollectionCollectionItemsCreateDataBody) => {
   const { data, error, response } = await CollectionService.collectionCollectionItemsCreate({ body });
   if (response?.status !== StatusCode.CREATED || !data) {
-    return await handleApiError(error, response, "Error adding item to collection");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -82,7 +92,7 @@ export const addCollectionItem = async (body: CollectionCollectionItemsCreateDat
 export const removeCollectionItem = async (id: number) => {
   const { error, response } = await CollectionService.collectionCollectionItemsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error removing item from collection");
+    return await handleApiError(error, response);
   }
 };
 
@@ -94,7 +104,7 @@ export const updateCollectionItem = async (id: number, body: CollectionCollectio
     body,
   });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error updating collection item");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -106,7 +116,7 @@ export const bulkReorderCollectionItems = async (collectionId: number, items: Co
   });
 
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error bulk-reordering collection items");
+    return await handleApiError(error, response);
   }
 
   return data;
@@ -119,7 +129,7 @@ export const reorderCollectionItem = async (collectionId: number, itemId: number
   });
 
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error reordering collection item");
+    return await handleApiError(error, response);
   }
 
   return data;
@@ -142,7 +152,7 @@ export const updateCollectionItemTier = async (
   });
 
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error updating collection item tier");
+    return await handleApiError(error, response);
   }
 
   return data;

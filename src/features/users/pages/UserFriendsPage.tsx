@@ -9,6 +9,7 @@ import { PageMeta } from "@/components/ui/PageMeta";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useListViewStore } from "@/lib/listViewStore";
+import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
 import FriendCard from "../components/FriendCard";
 import { createFriendshipColumns } from "../components/friendshipColumns";
@@ -162,7 +163,7 @@ export default function UserFriendsPage(): React.JSX.Element {
           <ListViewModeToggle />
         </Group>
 
-        <Box style={{ flexGrow: 1, minHeight: 600 }}>{renderFriendsContent()}</Box>
+        <Box style={{ flexGrow: 1, ...GRID_BOX_STYLE }}>{renderFriendsContent()}</Box>
       </Stack>
     </Box>
   );

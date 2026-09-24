@@ -6,6 +6,11 @@ function getRatingBucket(rating: number): RatingBucket {
   return "high";
 }
 
+/** A score of 0 (or a missing one) means nobody has scored yet, so there is nothing to display. */
+export function hasScore(score: number | null | undefined): score is number {
+  return typeof score === "number" && score > 0;
+}
+
 export function getRatingColor(rating: number | null | undefined): string {
   if (rating === null || rating === undefined) return "transparent";
   return `var(--color-rating-${getRatingBucket(rating)}-bg)`;

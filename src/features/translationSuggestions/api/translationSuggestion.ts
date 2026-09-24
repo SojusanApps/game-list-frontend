@@ -18,7 +18,7 @@ export interface TranslationSuggestionRejectBody {
 export const getTranslationSuggestions = async (query?: TranslationSuggestionListQuery) => {
   const { data, error, response } = await GameService.gameTranslationSuggestionsList({ query });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error fetching translation suggestions");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -26,7 +26,7 @@ export const getTranslationSuggestions = async (query?: TranslationSuggestionLis
 export const createTranslationSuggestion = async (body: TranslationSuggestionCreateWritable) => {
   const { data, error, response } = await GameService.gameTranslationSuggestionsCreate({ body });
   if (response?.status !== StatusCode.CREATED) {
-    return await handleApiError(error, response, "Error creating translation suggestion");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -34,7 +34,7 @@ export const createTranslationSuggestion = async (body: TranslationSuggestionCre
 export const withdrawTranslationSuggestion = async (path: TranslationSuggestionWithdrawPath) => {
   const { data, error, response } = await GameService.gameTranslationSuggestionsWithdrawCreate({ path });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error withdrawing translation suggestion");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -42,7 +42,7 @@ export const withdrawTranslationSuggestion = async (path: TranslationSuggestionW
 export const acceptTranslationSuggestion = async (path: TranslationSuggestionModerationPath) => {
   const { data, error, response } = await GameService.gameTranslationSuggestionsAcceptCreate({ path });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error accepting translation suggestion");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -56,7 +56,7 @@ export const rejectTranslationSuggestion = async (
     body: body as GameTranslationSuggestionsRejectCreateData["body"],
   });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error rejecting translation suggestion");
+    return await handleApiError(error, response);
   }
   return data;
 };

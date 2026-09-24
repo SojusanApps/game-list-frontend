@@ -81,5 +81,15 @@
   "noResults": "Brak wyników",
   "noResultsDescription": "Spróbuj zmienić wyszukiwanie lub filtry",
   "searching": "Wyszukiwanie...",
-  "scrollToTop": "Przewiń na górę strony"
+  "scrollToTop": "Przewiń na górę strony",
+  "apiError": {
+    "errorTitle": "Błąd",
+    "network": "Brak połączenia z serwerem. Sprawdź połączenie i spróbuj ponownie.",
+    "unauthorized": "Musisz się zalogować, aby to zrobić.",
+    "forbidden": "Brak uprawnień do wykonania tej czynności.",
+    "notFound": "Nie znaleziono. Mogło zostać usunięte.",
+    "tooManyRequests": "Zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
+    "server": "Wystąpił błąd serwera. Spróbuj ponownie później.",
+    "generic": "Coś poszło nie tak. Spróbuj ponownie."
+  }
 }

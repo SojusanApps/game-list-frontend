@@ -12,11 +12,10 @@ exclude = '(?x)^(openapi\.json|src/client/.*|src/routeTree\.gen\.ts)$'
 hooks = [
   { id = "trailing-whitespace" },
   { id = "end-of-file-fixer" },
-  { id = "check-yaml" },
+  # Newer pnpm writes pnpm-lock.yaml as two YAML documents (the pinned pnpm itself, then the project).
+  { id = "check-yaml", args = ["--allow-multiple-documents"] },
   { id = "check-json" },
-  { id = "mixed-line-ending", args = [
-    "--fix=lf",
-  ] },
+  { id = "mixed-line-ending", args = ["--fix=lf"] },
 ]
 repo = "https://github.com/pre-commit/pre-commit-hooks"
 rev = "v6.0.0"

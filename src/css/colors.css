@@ -94,6 +94,7 @@
   --shadow-glow-secondary: 0 0 8px rgba(251, 146, 60, 0.4);
   --shadow-glow-error: 0 0 8px rgba(239, 68, 68, 0.4);
   --shadow-glow-background: 0 0 8px rgba(148, 163, 184, 0.4);
+  --shadow-glow-notplanned: 0 0 8px rgba(168, 85, 247, 0.4);
 
   /* Button elevation shadow (e.g. the primary CTA on the pairwise ranking
      modal's idle screen). Re-sourced from the neon primary ramp in dark
@@ -168,6 +169,19 @@
   --color-status-dropped-bg: var(--color-error-tint-bg);
   --color-status-dropped-text: var(--color-error-tint-text);
   --color-status-dropped-border: var(--color-error-tint-border);
+  /* Not-planned has no ramp of its own, so it gets a scoped grape/violet tint
+     pair rather than forwarding to one of the five ramps above — same
+     approach as the --color-type-* / --color-category-* hues below, and
+     reuses their exact values so the app doesn't gain a second purple. */
+  --color-status-notplanned-bg: var(--color-type-tierlist-bg);
+  --color-status-notplanned-text: var(--color-type-tierlist-text);
+  --color-status-notplanned-border: var(--color-type-tierlist-border);
+  /* Standalone icon color (NEON_STYLES) — deliberately NOT the -text token
+     above, which goes near-black in dark mode for contrast against the
+     badge's own bright pill background and would be invisible against the
+     dark page itself. Kept unchanged in both schemes, same as the
+     success/error ramps' -500 step that the other statuses' neon icons use. */
+  --color-status-notplanned-icon: #a855f7;
 
   /* Random plan-to-play callout box (GameListPage). Light mode uses the
      primary tint like other callouts; dark mode (below) drops the hue and

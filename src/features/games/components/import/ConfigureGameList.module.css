@@ -9,3 +9,17 @@
 .scrollList {
   padding-right: 4px;
 }
+
+.sortableHeader {
+  padding-inline: 0;
+  height: auto;
+  min-height: unset;
+  color: var(--color-text-600);
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.sortableHeader:hover {
+  color: var(--color-text-900);
+  background: none;
+}

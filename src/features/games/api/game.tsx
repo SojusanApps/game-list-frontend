@@ -41,7 +41,7 @@ export type GameGamesReleaseCalendarListDataQuery = GameGamesReleaseCalendarList
 export const getGenresList = async (query?: GameGenresListDataQuery) => {
   const { data, error, response } = await GameService.gameGenresList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching genres");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -49,7 +49,7 @@ export const getGenresList = async (query?: GameGenresListDataQuery) => {
 export const getGameEnginesList = async (query?: GameGameEnginesListDataQuery) => {
   const { data, error, response } = await GameService.gameGameEnginesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game engines");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -57,7 +57,7 @@ export const getGameEnginesList = async (query?: GameGameEnginesListDataQuery) =
 export const getGameModesList = async (query?: GameGameModesListDataQuery) => {
   const { data, error, response } = await GameService.gameGameModesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game modes");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -65,7 +65,7 @@ export const getGameModesList = async (query?: GameGameModesListDataQuery) => {
 export const getGameStatusesList = async (query?: GameGameStatusesListDataQuery) => {
   const { data, error, response } = await GameService.gameGameStatusesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game statuses");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -73,7 +73,7 @@ export const getGameStatusesList = async (query?: GameGameStatusesListDataQuery)
 export const getGameTypesList = async (query?: GameGameTypesListDataQuery) => {
   const { data, error, response } = await GameService.gameGameTypesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game types");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -81,7 +81,7 @@ export const getGameTypesList = async (query?: GameGameTypesListDataQuery) => {
 export const getPlayerPerspectivesList = async (query?: GamePlayerPerspectivesListDataQuery) => {
   const { data, error, response } = await GameService.gamePlayerPerspectivesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching player perspectives");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -89,7 +89,7 @@ export const getPlayerPerspectivesList = async (query?: GamePlayerPerspectivesLi
 export const getPlatformsList = async (query?: GamePlatformsListDataQuery) => {
   const { data, error, response } = await GameService.gamePlatformsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching platforms");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -97,7 +97,7 @@ export const getPlatformsList = async (query?: GamePlatformsListDataQuery) => {
 export const getCompaniesList = async (query?: GameCompaniesListDataQuery) => {
   const { data, error, response } = await GameService.gameCompaniesList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching companies");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -105,7 +105,7 @@ export const getCompaniesList = async (query?: GameCompaniesListDataQuery) => {
 export const getCompanyDetail = async (id: number) => {
   const { data, error, response } = await GameService.gameCompaniesRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching company details");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -116,7 +116,7 @@ export const getGamesList = async (query?: GameGamesListDataQuery) => {
     querySerializer: { array: { explode: true, style: "form" } },
   });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching games");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -124,7 +124,7 @@ export const getGamesList = async (query?: GameGamesListDataQuery) => {
 export const getGamesDetail = async (id: number) => {
   const { data, error, response } = await GameService.gameGamesRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game details");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -132,7 +132,7 @@ export const getGamesDetail = async (id: number) => {
 export const getReleaseCalendar = async (query: GameGamesReleaseCalendarListDataQuery) => {
   const { data, error, response } = await GameService.gameGamesReleaseCalendarList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching release calendar");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -140,7 +140,7 @@ export const getReleaseCalendar = async (query: GameGamesReleaseCalendarListData
 export const getGameListsList = async (query?: GameGameListsListDataQuery) => {
   const { data, error, response } = await GameService.gameGameListsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game list");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -156,7 +156,7 @@ export const getGameListByFilters = async (query?: GameGameListsListDataQuery) =
 export const deleteGameList = async (id: number) => {
   const { error, response } = await GameService.gameGameListsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error deleting game list entry");
+    return await handleApiError(error, response);
   }
 };
 
@@ -164,7 +164,7 @@ export type GameListCreateDataBody = GameGameListsCreateData["body"];
 export const createGameList = async (body: GameListCreateDataBody) => {
   const { data, error, response } = await GameService.gameGameListsCreate({ body });
   if (response?.status !== StatusCode.CREATED || !data) {
-    return await handleApiError(error, response, "Error creating game list entry");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -173,7 +173,7 @@ export type GameListPartialUpdateDataBody = GameGameListsPartialUpdateData["body
 export const partialUpdateGameList = async (id: number, body: GameListPartialUpdateDataBody) => {
   const { data, error, response } = await GameService.gameGameListsPartialUpdate({ path: { id }, body });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error updating game list entry");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -181,7 +181,7 @@ export const partialUpdateGameList = async (id: number, body: GameListPartialUpd
 export const exportGameList = async () => {
   const { data, error, response } = await GameService.gameGameListsExportList();
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error exporting game list");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -191,7 +191,7 @@ export const getGameListCompare = async (firstUserId: number, secondUserId: numb
     path: { first_user_id: String(firstUserId), second_user_id: String(secondUserId) },
   });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error comparing game lists");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -202,7 +202,7 @@ export const getRandomPtpGame = async () => {
     return null;
   }
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching random PTP game");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -210,7 +210,7 @@ export const getRandomPtpGame = async () => {
 export const getGameReviewsList = async (query?: GameGameReviewsListDataQuery) => {
   const { data, error, response } = await GameService.gameGameReviewsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game reviews");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -218,7 +218,7 @@ export const getGameReviewsList = async (query?: GameGameReviewsListDataQuery) =
 export const getGameReviewsDetail = async (id: number) => {
   const { data, error, response } = await GameService.gameGameReviewsRetrieve({ path: { id } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game review details");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -227,7 +227,7 @@ export type GameReviewCreateDataBody = GameGameReviewsCreateData["body"];
 export const createGameReview = async (body: GameReviewCreateDataBody) => {
   const { data, error, response } = await GameService.gameGameReviewsCreate({ body });
   if (response?.status !== StatusCode.CREATED || !data) {
-    return await handleApiError(error, response, "Error creating game review");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -236,7 +236,7 @@ export type GameReviewPartialUpdateDataBody = GameGameReviewsPartialUpdateData["
 export const updateGameReview = async (id: number, body: GameReviewPartialUpdateDataBody) => {
   const { data, error, response } = await GameService.gameGameReviewsPartialUpdate({ path: { id }, body });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error updating game review");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -244,7 +244,7 @@ export const updateGameReview = async (id: number, body: GameReviewPartialUpdate
 export const deleteGameReview = async (id: number) => {
   const { error, response } = await GameService.gameGameReviewsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error deleting game review");
+    return await handleApiError(error, response);
   }
 };
 
@@ -252,7 +252,7 @@ export type GameGameMediasListDataQuery = GameGameMediasListData["query"];
 export const getGameMediaList = async (query?: GameGameMediasListDataQuery) => {
   const { data, error, response } = await GameService.gameGameMediasList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game medias");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -260,7 +260,7 @@ export const getGameMediaList = async (query?: GameGameMediasListDataQuery) => {
 export const getGameFollowsList = async (query?: GameGameFollowsListDataQuery) => {
   const { data, error, response } = await GameService.gameGameFollowsList({ query });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error fetching game follows");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -269,7 +269,7 @@ export type GameFollowCreateDataBody = GameGameFollowsCreateData["body"];
 export const createGameFollow = async (body: GameFollowCreateDataBody) => {
   const { data, error, response } = await GameService.gameGameFollowsCreate({ body });
   if (response?.status !== StatusCode.CREATED || !data) {
-    return await handleApiError(error, response, "Error following game");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -277,7 +277,7 @@ export const createGameFollow = async (body: GameFollowCreateDataBody) => {
 export const deleteGameFollow = async (id: number) => {
   const { error, response } = await GameService.gameGameFollowsDestroy({ path: { id } });
   if (response?.status !== StatusCode.NO_CONTENT) {
-    return await handleApiError(error, response, "Error unfollowing game");
+    return await handleApiError(error, response);
   }
   return true;
 };
@@ -287,7 +287,7 @@ export const steamImportGameList = async (steamProfileId: string) => {
     query: { steam_profile_id: steamProfileId },
   });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error performing Steam library import");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -295,7 +295,7 @@ export const steamImportGameList = async (steamProfileId: string) => {
 export const titleImportGameList = async (titles: Array<string>) => {
   const { data, error, response } = await GameService.gameGameListsTitleImportCreate({ body: { titles } });
   if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response, "Error matching game titles");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -303,7 +303,7 @@ export const titleImportGameList = async (titles: Array<string>) => {
 export const bulkCreateGameList = async (body: Array<GameListCreateWritable>) => {
   const { data, error, response } = await GameService.gameGameListsBulkCreateCreate({ body });
   if (response?.status !== StatusCode.OK && response?.status !== StatusCode.CREATED) {
-    return await handleApiError(error, response, "Error creating bulk game list entries");
+    return await handleApiError(error, response);
   }
   return data;
 };

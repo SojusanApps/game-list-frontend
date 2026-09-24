@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { cn } from "@/utils/cn";
 import { formatDisplayDate } from "@/utils/dateUtils";
-import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
+import { getRatingColor, getRatingTextColor, hasScore } from "@/utils/ratingUtils";
 
 import { SafeImage } from "./SafeImage";
 
@@ -98,7 +98,7 @@ function ItemOverlay({
       </Box>
 
       {/* Top Badges (Floating Chips) & Right Ribbon */}
-      {rating !== null && rating !== undefined && (
+      {hasScore(rating) && (
         <Box
           className={styles.scoreBadge}
           style={{
