@@ -51,15 +51,18 @@ export default function AddGameToCollectionModal({
     [collectionItemsData],
   );
 
-  React.useEffect(() => {
+  // Drop pending ids once they show up in the collection — done during render,
+  // not in an effect, so a game never renders as both "Added" and pending.
+  const [prunedForGameIds, setPrunedForGameIds] = React.useState(existingGameIds);
+  if (prunedForGameIds !== existingGameIds) {
+    setPrunedForGameIds(existingGameIds);
     setPendingGameIds(prev => {
       if (![...prev].some(id => existingGameIds.has(id))) {
         return prev;
       }
-      const next = new Set([...prev].filter(id => !existingGameIds.has(id)));
-      return next;
+      return new Set([...prev].filter(id => !existingGameIds.has(id)));
     });
-  }, [existingGameIds]);
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);

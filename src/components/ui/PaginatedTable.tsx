@@ -3,6 +3,8 @@ import { type ColumnDef, flexRender, tableFeatures, useTable } from "@tanstack/r
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useResettableState } from "@/hooks/useResettableState";
+
 import { Button } from "./Button";
 
 export const paginatedTableFeatures = tableFeatures({});
@@ -59,11 +61,7 @@ interface GoToPageProps {
 
 function GoToPage({ page, totalPages, onPageChange }: Readonly<GoToPageProps>): React.JSX.Element {
   const { t } = useTranslation("common");
-  const [value, setValue] = React.useState<string | number>(page);
-
-  React.useEffect(() => {
-    setValue(page);
-  }, [page]);
+  const [value, setValue] = useResettableState<string | number>(page, [page]);
 
   const commit = () => {
     const parsed = typeof value === "number" ? value : Math.trunc(Number(value));
@@ -300,11 +298,7 @@ export function ClientPaginatedTable<TData extends Record<string, any>>({
   pageSize = LIST_PAGE_SIZE,
   ...rest
 }: Readonly<ClientPaginatedTableProps<TData>>): React.JSX.Element {
-  const [page, setPage] = React.useState(1);
-
-  React.useEffect(() => {
-    setPage(1);
-  }, [rows.length]);
+  const [page, setPage] = useResettableState(1, [rows.length]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);

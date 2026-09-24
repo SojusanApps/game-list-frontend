@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
 import { useModalDraft } from "@/hooks/useModalDraft";
+import { useResettableState } from "@/hooks/useResettableState";
 
 import { useCreateGameReview, useUpdateGameReview, useDeleteGameReview } from "../hooks/gameQueries";
 import { getRecommendationConfig, RECOMMENDATION_ORDER } from "../utils/recommendationConfig";
@@ -84,15 +85,9 @@ export function GameReviewModal({
 
   // Step 1 (language) is shown until a language is set, so a new review always asks for one.
   // A restored draft or an existing review already has a language and opens on the text step.
-  const [isChangingLanguage, setIsChangingLanguage] = React.useState(false);
+  const [isChangingLanguage, setIsChangingLanguage] = useResettableState(false, [opened]);
   const language = form.values.language;
   const isLanguageStep = !language || isChangingLanguage;
-
-  React.useEffect(() => {
-    if (!opened) {
-      setIsChangingLanguage(false);
-    }
-  }, [opened]);
 
   const { mutateAsync: createReview, isPending: isCreating } = useCreateGameReview();
   const { mutateAsync: updateReview, isPending: isUpdating } = useUpdateGameReview();

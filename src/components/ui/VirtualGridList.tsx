@@ -131,6 +131,7 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
 
   const rowCount = items.length > 0 ? Math.ceil(items.length / columnCount) + 1 : 0;
 
+  // oxlint-disable-next-line react/incompatible-library -- only matters under React Compiler, which this app does not use.
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => parentRef.current,

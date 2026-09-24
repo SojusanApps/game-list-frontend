@@ -28,6 +28,7 @@ import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+import { useResettableState } from "@/hooks/useResettableState";
 import { useListViewStore } from "@/lib/listViewStore";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
@@ -127,12 +128,8 @@ export default function GameListPage(): React.JSX.Element {
     ordering: DEFAULT_GAME_LIST_ORDERING,
   });
   const [titleInput, setTitleInput] = React.useState("");
-  const [page, setPage] = React.useState(1);
-
   // Any status or filter change restarts pagination.
-  React.useEffect(() => {
-    setPage(1);
-  }, [selectedGameStatus, gameFilters]);
+  const [page, setPage] = useResettableState(1, [selectedGameStatus, gameFilters]);
 
   const {
     data: gameListResults,

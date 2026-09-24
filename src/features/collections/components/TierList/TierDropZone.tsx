@@ -1,4 +1,4 @@
-import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter";
 import { Box } from "@mantine/core";
 import * as React from "react";
 

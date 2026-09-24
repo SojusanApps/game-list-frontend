@@ -14,6 +14,7 @@ import { PaginatedTable } from "@/components/ui/PaginatedTable";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useAuthStore, useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
+import { useResettableState } from "@/hooks/useResettableState";
 import { useListViewStore } from "@/lib/listViewStore";
 import type { CollectionListScope } from "@/lib/queryKeys";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
@@ -39,7 +40,6 @@ export default function CollectionsPage(): React.JSX.Element {
   const { t } = useTranslation("collections");
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
-  const [page, setPage] = React.useState(1);
 
   const skeletonIds = React.useMemo(() => Array.from({ length: 8 }).map((_, i) => `skeleton-${i}`), []);
 
@@ -80,9 +80,7 @@ export default function CollectionsPage(): React.JSX.Element {
   }, [isFavoriteFilter, visibilityFilter, modeFilter, typeFilter, nameFilter]);
 
   // Any filter or scope change restarts pagination.
-  React.useEffect(() => {
-    setPage(1);
-  }, [queryFilters, scope]);
+  const [page, setPage] = useResettableState(1, [queryFilters, scope]);
 
   const {
     data: collectionsResults,
