@@ -16,7 +16,7 @@ export interface ReportRejectBody {
 export const getReports = async (query?: ModerationReportsListQuery) => {
   const { data, error, response } = await ModerationService.moderationReportsList({ query });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error fetching reports");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -24,7 +24,7 @@ export const getReports = async (query?: ModerationReportsListQuery) => {
 export const createReport = async (body: ReportCreateWritable) => {
   const { data, error, response } = await ModerationService.moderationReportsCreate({ body });
   if (response?.status !== StatusCode.CREATED) {
-    return await handleApiError(error, response, "Error creating report");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -32,7 +32,7 @@ export const createReport = async (body: ReportCreateWritable) => {
 export const createDirectModerateReport = async (body: ReportDirectModerateWritable) => {
   const { data, error, response } = await ModerationService.moderationReportsDirectModerateCreate({ body });
   if (response?.status !== StatusCode.CREATED) {
-    return await handleApiError(error, response, "Error issuing warning");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -40,7 +40,7 @@ export const createDirectModerateReport = async (body: ReportDirectModerateWrita
 export const acceptReport = async (id: number) => {
   const { data, error, response } = await ModerationService.moderationReportsAcceptCreate({ path: { id } });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error accepting report");
+    return await handleApiError(error, response);
   }
   return data;
 };
@@ -51,7 +51,7 @@ export const rejectReport = async (id: number, body?: ReportRejectBody) => {
     body: body as ModerationReportsRejectCreateData["body"],
   });
   if (response?.status !== StatusCode.OK) {
-    return await handleApiError(error, response, "Error rejecting report");
+    return await handleApiError(error, response);
   }
   return data;
 };

@@ -41,6 +41,8 @@ export const gameListKeys = {
   export: () => [...gameListKeys.all, "export"] as const,
   compare: (firstUserId: number, secondUserId: number) =>
     [...gameListKeys.all, "compare", firstUserId, secondUserId] as const,
+  /** Mutation key shared by create/update/delete of a Game List Entry, so they can see each other in flight. */
+  entryMutation: () => [...gameListKeys.all, "entry-mutation"] as const,
 };
 
 export const gameFollowKeys = {

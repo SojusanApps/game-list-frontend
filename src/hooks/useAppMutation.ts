@@ -1,6 +1,8 @@
 import { notifications } from "@mantine/notifications";
 import { useMutation, UseMutationOptions, DefaultError } from "@tanstack/react-query";
 
+import i18n from "@/lib/i18n";
+
 /**
  * Custom wrapper around useMutation that provides consistent error handling
  * by automatically showing a notification on failure.
@@ -20,8 +22,8 @@ export function useAppMutation<TData = unknown, TError = DefaultError, TVariable
     onError: (...args) => {
       const [error] = args;
       if (showErrorToast?.(error) ?? true) {
-        const message = error instanceof Error ? error.message : "An unexpected error occurred";
-        notifications.show({ title: "Error", message, color: "red" });
+        const message = error instanceof Error && error.message ? error.message : i18n.t("apiError.generic");
+        notifications.show({ title: i18n.t("apiError.errorTitle"), message, color: "red" });
       }
 
       if (options.onError) {
