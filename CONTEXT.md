@@ -56,6 +56,10 @@ _Avoid_: Liked, starred, pinned; do not describe it as a flag or attribute "set 
 The sort a viewer applies to a user's Game List: by game title (A–Z or Z–A) or by Score (high to low or low to high). Defaults to title A–Z. An explicit ordering always applies, including while searching by title (best-match order is not used). Unscored entries always come last when ordering by Score, in either direction. Distinct from the search page's ordering, which sorts games by created date, rank position or popularity.
 _Avoid_: Sort mode, filter (ordering does not narrow the list)
 
+**Review Language**:
+The language a Review's text is written in — English (`en`) or Polish (`pl`). Chosen explicitly by the author for every Review, with no default. Independent of the interface language the author or reader happens to use. Readers can narrow a game's Reviews to one Review Language. A user still has at most one Review per game; Review Language is an attribute of it, not a second Review.
+_Avoid_: Locale, translation (a translation suggestion is a separate concept)
+
 **Collection**:
 A user-curated, named set of games with a visibility and a mode. Distinct from a Game List (a user's per-game tracking record); a game in a Collection is a "collection item", not a Game List Entry.
 _Avoid_: Playlist, folder

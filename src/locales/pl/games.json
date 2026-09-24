@@ -45,7 +45,8 @@
     "score": "Ocena",
     "readFull": "Czytaj całą recenzję",
     "showLess": "Zwiń",
-    "noReviews": "Brak recenzji."
+    "noReviews": "Brak recenzji.",
+    "noReviewsInLanguage": "Brak recenzji w tym języku."
   },
   "recommendation": {
     "recommended": "Polecam",
@@ -76,7 +77,12 @@
     "errorMessage": "Wystąpił błąd",
     "validationRequired": "Treść recenzji jest wymagana",
     "validationMaxLength": "Recenzja może mieć maksymalnie {{max}} znaków",
-    "validationRecommendationRequired": "Rekomendacja jest wymagana"
+    "validationRecommendationRequired": "Rekomendacja jest wymagana",
+    "languageQuestion": "W jakim języku napiszesz recenzję?",
+    "languageHint": "Wybierz język, w którym będziesz pisać. Czytelnicy mogą filtrować recenzje według języka.",
+    "languageLabel": "Język",
+    "changeLanguage": "Zmień język recenzji",
+    "validationLanguageRequired": "Język recenzji jest wymagany"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Zaproponuj tłumaczenie",
@@ -403,5 +409,11 @@
     "onlyFirstUser": "Tylko {{username}}",
     "onlySecondUser": "Tylko {{username}}",
     "emptySection": "Brak gier w tej sekcji."
+  },
+  "reviewLanguage": {
+    "all": "Wszystkie",
+    "filterLabel": "Filtruj recenzje według języka",
+    "en": "Angielski",
+    "pl": "Polski"
   }
 }

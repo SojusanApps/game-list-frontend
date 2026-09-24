@@ -45,7 +45,8 @@
     "score": "Score",
     "readFull": "Read Full Review",
     "showLess": "Show Less",
-    "noReviews": "No reviews yet."
+    "noReviews": "No reviews yet.",
+    "noReviewsInLanguage": "No reviews in this language."
   },
   "recommendation": {
     "recommended": "Recommended",
@@ -76,7 +77,12 @@
     "errorMessage": "An error occurred",
     "validationRequired": "Review text is required",
     "validationMaxLength": "Review must be at most {{max}} characters",
-    "validationRecommendationRequired": "Recommendation is required"
+    "validationRecommendationRequired": "Recommendation is required",
+    "languageQuestion": "Which language is your review written in?",
+    "languageHint": "Pick the language you will write in. Readers can filter reviews by language.",
+    "languageLabel": "Language",
+    "changeLanguage": "Change review language",
+    "validationLanguageRequired": "Review language is required"
   },
   "translationSuggestionModal": {
     "buttonLabel": "Suggest Translation",
@@ -403,5 +409,11 @@
     "onlyFirstUser": "Only {{username}}",
     "onlySecondUser": "Only {{username}}",
     "emptySection": "No games in this section."
+  },
+  "reviewLanguage": {
+    "all": "All",
+    "filterLabel": "Filter reviews by language",
+    "en": "English",
+    "pl": "Polish"
   }
 }

@@ -13,6 +13,8 @@ import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
 import GameStatistics from "../components/GameStatistics";
 import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
+import ReviewLanguageFilter from "../components/ReviewLanguageFilter";
+import type { ReviewLanguageFilter as ReviewLanguageFilterValue } from "../utils/reviewLanguage";
 
 const REVIEWS_PREVIEW_COUNT = 3;
 
@@ -22,6 +24,8 @@ interface GameDetailsMainTabProps {
   isGameReviewsLoading: boolean;
   isLoggedIn: boolean;
   userReview?: GameReviewType;
+  reviewLanguageFilter: ReviewLanguageFilterValue;
+  onReviewLanguageFilterChange: (value: ReviewLanguageFilterValue) => void;
   gameSlug?: string;
 }
 
@@ -31,6 +35,8 @@ export default function GameDetailsMainTab({
   isGameReviewsLoading,
   isLoggedIn,
   userReview,
+  reviewLanguageFilter,
+  onReviewLanguageFilterChange,
   gameSlug,
 }: Readonly<GameDetailsMainTabProps>) {
   const { t } = useTranslation("games");
@@ -111,6 +117,7 @@ export default function GameDetailsMainTab({
           )}
         </Group>
         <Stack gap={16}>
+          <ReviewLanguageFilter value={reviewLanguageFilter} onChange={onReviewLanguageFilterChange} />
           <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
           {isGameReviewsLoading && <Skeleton h={96} radius="xl" />}
           {previewReviews.length > 0 ? (
@@ -123,6 +130,7 @@ export default function GameDetailsMainTab({
                   <Link
                     to="/game/$id/$slug/reviews"
                     params={{ id: String(gameDetails.id), slug: gameSlug }}
+                    search={{ language: reviewLanguageFilter }}
                     style={{
                       color: "var(--color-primary-600)",
                       fontWeight: 600,
@@ -138,7 +146,7 @@ export default function GameDetailsMainTab({
           ) : (
             !isGameReviewsLoading && (
               <Text c="dimmed" fs="italic">
-                {t("review.noReviews")}
+                {reviewLanguageFilter === "all" ? t("review.noReviews") : t("review.noReviewsInLanguage")}
               </Text>
             )
           )}
@@ -151,6 +159,7 @@ export default function GameDetailsMainTab({
           existingReviewId={userReview?.id}
           existingReviewText={userReview?.review}
           existingRecommendation={userReview?.recommendation}
+          existingLanguage={userReview?.language}
           opened={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
         />

@@ -2933,6 +2933,18 @@
                         "description": "Filter by exact game review ID."
                     },
                     {
+                        "in": "query",
+                        "name": "language",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "pl"
+                            ]
+                        },
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
+                    {
                         "name": "page",
                         "required": false,
                         "in": "query",
@@ -6984,6 +6996,14 @@
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
                     },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -7007,6 +7027,7 @@
                     "created_at",
                     "game",
                     "id",
+                    "language",
                     "recommendation",
                     "review",
                     "score",
@@ -7040,6 +7061,14 @@
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
                     },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
                     "game": {
                         "type": "integer",
                         "description": "The game being reviewed."
@@ -7049,6 +7078,7 @@
                     "created_at",
                     "game",
                     "id",
+                    "language",
                     "recommendation"
                 ]
             },
@@ -7244,6 +7274,14 @@
                     "igdb_updated_at",
                     "name"
                 ]
+            },
+            "LanguageEnum": {
+                "enum": [
+                    "en",
+                    "pl"
+                ],
+                "type": "string",
+                "description": "* `en` - English\n* `pl` - Polish"
             },
             "ModeEnum": {
                 "enum": [
@@ -8301,6 +8339,14 @@
                             }
                         ],
                         "description": "Whether the reviewer recommends this game (Recommended, Not Recommended, Undecided).\n\n* `recommended` - Recommended\n* `not_recommended` - Not Recommended\n* `undecided` - Undecided"
+                    },
+                    "language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LanguageEnum"
+                            }
+                        ],
+                        "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
                     },
                     "game": {
                         "type": "integer",
