@@ -1,4 +1,4 @@
-import { Box, Stack, Text, Stepper, Group, Textarea } from "@mantine/core";
+import { Box, Stack, Text, Stepper, Group } from "@mantine/core";
 import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
@@ -16,6 +16,7 @@ import { useTitleImport, useBulkCreateGameList } from "../../hooks/gameQueries";
 import {
   TITLE_IMPORT_BATCH_SIZE,
   parseTitles,
+  appendTitles,
   chunkTitles,
   findDuplicateGroups,
   uniquePickedGames,
@@ -23,6 +24,8 @@ import {
   DuplicateGroup,
 } from "../../utils/titleImport";
 import { ConfigureGameList } from "./ConfigureGameList";
+import { NumberedTextarea } from "./NumberedTextarea";
+import { PlatformSyncButtons } from "./PlatformSyncButtons";
 import { SuccessStep } from "./SuccessStep";
 import { TitleMatchStep } from "./TitleMatchStep";
 import { TitleMergeStep } from "./TitleMergeStep";
@@ -67,11 +70,7 @@ const STEP_MERGE = 3;
 const STEP_CONFIGURE = 4;
 const STEP_DONE = 5;
 
-interface TitleImportFlowProps {
-  sourceSelector: React.ReactNode;
-}
-
-export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
+export const TitleImportFlow = () => {
   const { t } = useTranslation("games");
   const currentUserId = useCurrentUserId();
 
@@ -79,7 +78,8 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
   const [titles, setTitles] = React.useState<string[]>([]);
   const [batchIndex, setBatchIndex] = React.useState(0);
   const [batchResults, setBatchResults] = React.useState<Record<number, TitleImportResult[]>>({});
-  const [batchError, setBatchError] = React.useState(false);
+  // Batches whose request failed, keyed by batch index (a prefetched batch can fail while another is on screen).
+  const [failedBatches, setFailedBatches] = React.useState<Record<number, boolean>>({});
   // Match-step decisions and manual resolve-step picks, both keyed by title index.
   const [decisions, setDecisions] = React.useState<Record<number, MatchDecision>>({});
   const [manualPicks, setManualPicks] = React.useState<Record<number, ImportedGame>>({});
@@ -88,7 +88,7 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
   const [importedCount, setImportedCount] = React.useState(0);
 
   const { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange } = useGameRows();
-  const { mutateAsync: matchTitles, isPending: isMatching } = useTitleImport();
+  const { mutateAsync: matchTitles } = useTitleImport();
   const { mutateAsync: runBulkCreate, isPending: isImporting } = useBulkCreateGameList();
 
   const batches = React.useMemo(() => chunkTitles(titles), [titles]);
@@ -125,14 +125,18 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
   // ── Batch fetching ──────────────────────────────────────────────────────
   // Guards against an in-flight batch response landing after the titles were re-submitted.
   const runIdRef = React.useRef(0);
+  // Batch indexes with a request in flight, so a prefetch and a click on "next" never request the same batch twice.
+  const inFlightRef = React.useRef(new Set<number>());
 
   const fetchBatch = React.useCallback(
     async (index: number, batchTitles: string[], options?: { newRun?: boolean }) => {
       if (options?.newRun) {
         runIdRef.current += 1;
+        inFlightRef.current.clear();
       }
       const runId = runIdRef.current;
-      setBatchError(false);
+      inFlightRef.current.add(index);
+      setFailedBatches(prev => ({ ...prev, [index]: false }));
       try {
         const response = await matchTitles(batchTitles);
         if (runIdRef.current !== runId) {
@@ -143,12 +147,33 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
       } catch {
         // toast shown by useAppMutation
         if (runIdRef.current === runId) {
-          setBatchError(true);
+          setFailedBatches(prev => ({ ...prev, [index]: true }));
+        }
+      } finally {
+        if (runIdRef.current === runId) {
+          inFlightRef.current.delete(index);
         }
       }
     },
     [matchTitles],
   );
+
+  // While the user reviews a batch, request the next one so it is already there when they continue.
+  React.useEffect(() => {
+    if (activeStep !== STEP_MATCH || !batchResults[batchIndex]) {
+      return;
+    }
+    const nextIndex = batchIndex + 1;
+    if (nextIndex >= batches.length || batchResults[nextIndex] || inFlightRef.current.has(nextIndex)) {
+      return;
+    }
+    void fetchBatch(nextIndex, batches[nextIndex]);
+  }, [activeStep, batchIndex, batchResults, batches, fetchBatch]);
+
+  // A new step or batch is a new page: start it from the top, as the Next/Back buttons sit at the bottom.
+  React.useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeStep, batchIndex]);
 
   // ── Step transitions ────────────────────────────────────────────────────
   const handleTitlesSubmit = (values: TitleFormValues) => {
@@ -156,7 +181,7 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
     setTitles(parsed);
     setBatchIndex(0);
     setBatchResults({});
-    setBatchError(false);
+    setFailedBatches({});
     setDecisions({});
     setManualPicks({});
     setRows([]);
@@ -192,9 +217,8 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
   const handleMatchNext = () => {
     if (batchIndex < batches.length - 1) {
       const nextIndex = batchIndex + 1;
-      setBatchError(false);
       setBatchIndex(nextIndex);
-      if (!batchResults[nextIndex]) {
+      if (!batchResults[nextIndex] && !inFlightRef.current.has(nextIndex)) {
         void fetchBatch(nextIndex, batches[nextIndex]);
       }
     } else {
@@ -204,7 +228,6 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
 
   const handleMatchBack = () => {
     if (batchIndex > 0) {
-      setBatchError(false);
       setBatchIndex(batchIndex - 1);
     } else {
       setActiveStep(STEP_INPUT);
@@ -296,21 +319,21 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
         <Box className={styles.card}>
           <form onSubmit={event => form.onSubmit(handleTitlesSubmit)(event)} noValidate>
             <Stack gap={24}>
-              {sourceSelector}
+              <PlatformSyncButtons
+                onTitles={incoming => form.setFieldValue("titlesRaw", appendTitles(form.values.titlesRaw, incoming))}
+              />
 
-              <Textarea
+              <NumberedTextarea
                 id="import-titles"
                 label={t("import.titlesLabel")}
                 placeholder={t("import.titlesPlaceholder")}
-                autosize
-                minRows={6}
                 maxRows={16}
                 {...form.getInputProps("titlesRaw")}
               />
 
               <div className={styles.noticeBox}>
                 <IconInfoCircle size={20} style={{ color: "var(--color-primary-tint-text)", flexShrink: 0 }} />
-                <Text fz="sm" c="var(--color-text-700)">
+                <Text fz="sm" className={styles.noticeText}>
                   {t("import.titlesNotice")}
                 </Text>
               </div>
@@ -333,8 +356,8 @@ export const TitleImportFlow = ({ sourceSelector }: TitleImportFlowProps) => {
           batchTitles={batches[batchIndex] ?? []}
           batchOffset={batchIndex * TITLE_IMPORT_BATCH_SIZE}
           results={batchResults[batchIndex]}
-          isLoading={isMatching}
-          isError={batchError}
+          isLoading={!batchResults[batchIndex] && !failedBatches[batchIndex]}
+          isError={Boolean(failedBatches[batchIndex])}
           onRetry={() => void fetchBatch(batchIndex, batches[batchIndex])}
           decisions={decisions}
           onDecide={handleDecide}

@@ -7,6 +7,5 @@
   "nameRequired": "Nazwa jest wymagana",
   "selectAtLeastOne": "Wybierz co najmniej jedną kolekcję",
   "descriptionMax": "Opis musi mieć 500 znaków lub mniej",
-  "steamProfileIdRequired": "Identyfikator profilu Steam jest wymagany",
   "titlesRequired": "Wymagany jest co najmniej jeden tytuł gry"
 }
