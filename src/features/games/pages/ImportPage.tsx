@@ -11,7 +11,7 @@ export default function ImportPage(): React.JSX.Element {
 
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
-      <PageMeta title={t("import.title")} />
+      <PageMeta title={t("import.title")} noindex />
       <Stack gap={40} maw={960} mx="auto" px={16}>
         {/* Header */}
         <Stack align="center" gap={8}>

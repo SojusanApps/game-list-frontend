@@ -210,7 +210,10 @@
     "applyFilters": "Apply Filters"
   },
   "home": {
-    "title": "Home",
+    "title": "Track, rate and discover games",
+    "heading": "Track, rate and discover games",
+    "intro": "Sojusan GameList helps you keep track of the games you play, rate and review them, build collections and compare lists with friends.",
+    "metaDescription": "Track your gaming progress, rate and review games, build collections and discover new titles with Sojusan GameList.",
     "highestRated": "Highest Rated Games",
     "mostPopular": "Most Popular Games",
     "recentlyAdded": "Recently Added Games"

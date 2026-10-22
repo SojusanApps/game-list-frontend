@@ -210,7 +210,10 @@
     "applyFilters": "Zastosuj filtry"
   },
   "home": {
-    "title": "Strona główna",
+    "title": "Śledź, oceniaj i odkrywaj gry",
+    "heading": "Śledź, oceniaj i odkrywaj gry",
+    "intro": "Sojusan GameList pomaga śledzić gry, w które grasz, oceniać je i recenzować, tworzyć kolekcje i porównywać listy ze znajomymi.",
+    "metaDescription": "Śledź postępy w grach, oceniaj i recenzuj tytuły, twórz kolekcje i odkrywaj nowe gry w Sojusan GameList.",
     "highestRated": "Najwyżej oceniane gry",
     "mostPopular": "Najpopularniejsze gry",
     "recentlyAdded": "Ostatnio dodane gry"

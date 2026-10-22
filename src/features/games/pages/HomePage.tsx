@@ -1,5 +1,5 @@
 import { Carousel } from "@mantine/carousel";
-import { Box, SimpleGrid, Skeleton, Stack } from "@mantine/core";
+import { Box, SimpleGrid, Skeleton, Stack, Text, Title } from "@mantine/core";
 import Autoplay from "embla-carousel-autoplay";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { GameSimpleList } from "@/client";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { SITE_NAME, SITE_URL } from "@/config/site";
 
 import { useGetGamesList } from "../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
@@ -79,8 +80,31 @@ export default function HomePage(): React.JSX.Element {
 
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
-      <PageMeta title={t("home.title")} />
+      <PageMeta
+        title={t("home.title")}
+        description={t("home.metaDescription")}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: SITE_NAME,
+          url: `${SITE_URL}/`,
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${SITE_URL}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <Stack gap={64} maw={1280} mx="auto" px={16}>
+        <Box component="header">
+          <Title order={1} mb="xs">
+            {t("home.heading")}
+          </Title>
+          <Text c="dimmed" maw={1280}>
+            {t("home.intro")}
+          </Text>
+        </Box>
+
         <Box component="section">
           <SectionHeader
             title={t("home.highestRated")}
