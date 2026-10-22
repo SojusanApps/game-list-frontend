@@ -7,6 +7,5 @@
   "nameRequired": "Name is required",
   "selectAtLeastOne": "Select at least one collection",
   "descriptionMax": "Description must be 500 characters or less",
-  "steamProfileIdRequired": "Steam Profile ID is required",
   "titlesRequired": "At least one game title is required"
 }

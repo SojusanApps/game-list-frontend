@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+# Private or user-specific areas.
+Disallow: /admin
+Disallow: /settings
+Disallow: /notifications
+Disallow: /import
+Disallow: /game-list/compare/
+# Faceted/filtered URLs (e.g. /search?ordering=...) are duplicates of their canonical page.
+Disallow: /*?
+
+Sitemap: https://gamelist.sojusan.pl/sitemap.xml

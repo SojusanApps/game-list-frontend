@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Sojusan GameList API",
-        "version": "5.4.0",
+        "version": "6.0.0",
         "description": "Application to manage game lists."
     },
     "paths": {
@@ -82,9 +82,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -129,9 +126,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -168,9 +162,6 @@
                     "collection"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -227,9 +218,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -284,9 +272,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -321,9 +306,6 @@
                     "collection"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -427,9 +409,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -474,9 +453,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -513,9 +489,6 @@
                     "collection"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -572,9 +545,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -629,9 +599,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -666,9 +633,6 @@
                     "collection"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -720,9 +684,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -753,9 +714,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -783,9 +741,6 @@
                     "collection"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -845,9 +800,6 @@
                     "required": true
                 },
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -915,9 +867,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -979,9 +928,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1026,9 +972,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1066,9 +1009,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1104,9 +1044,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1137,9 +1074,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1169,9 +1103,6 @@
                     "friendship"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -1227,9 +1158,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1267,9 +1195,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1304,9 +1229,6 @@
                     "friendship"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -1362,9 +1284,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1401,9 +1320,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -1466,9 +1382,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1505,9 +1418,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -1570,9 +1480,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1609,9 +1516,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -1674,9 +1578,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1721,9 +1622,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1761,9 +1659,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -1798,9 +1693,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2000,9 +1892,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     },
                     {}
@@ -2047,9 +1936,6 @@
                     "required": true
                 },
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2097,9 +1983,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     },
                     {}
@@ -2137,9 +2020,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -2197,9 +2077,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2254,9 +2131,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2292,9 +2166,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2308,7 +2179,7 @@
         "/api/game/game-lists/bulk-create/": {
             "post": {
                 "operationId": "game_game_lists_bulk_create_create",
-                "description": "Bulk-create game-list entries for the authenticated user. Accepts a list of objects each containing a game ID and play status. Returns the list of created game-list entries. This endpoint is useful for bulk-adding games to the user's list, for example after a Steam import.",
+                "description": "Bulk-create game-list entries for the authenticated user. Accepts a list of objects each containing a game ID and play status. Returns the list of created game-list entries. This endpoint is useful for bulk-adding games to the user's list.",
                 "tags": [
                     "game"
                 ],
@@ -2343,9 +2214,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2374,9 +2242,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -2408,9 +2273,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     },
                     {}
@@ -2421,46 +2283,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/GameList"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/game/game-lists/steam-import/": {
-            "get": {
-                "operationId": "game_game_lists_steam_import_retrieve",
-                "description": "Import the authenticated user's Steam library by providing a Steam profile ID. Returns the list of Steam games that were successfully matched to entries in our catalogue and the list of unmatched games with their app IDs and names. Matched games are those that have a linked ExternalGame record with the Steam app ID and source. Unmatched games may not be in our catalogue or may be missing the Steam external ID. ",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "steam_profile_id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "The user's Steam profile ID. This is the numeric identifier found in the URL of their Steam community profile (e.g. https://steamcommunity.com/profiles/12345678901234567).The user must have a public profile and public game library for the import to work."
-                    }
-                ],
-                "tags": [
-                    "game"
-                ],
-                "security": [
-                    {
-                        "basicAuth": []
-                    },
-                    {
-                        "keycloakAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SteamImportResponse"
                                 }
                             }
                         },
@@ -2497,9 +2319,6 @@
                     "required": true
                 },
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2554,9 +2373,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2601,9 +2417,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2640,9 +2453,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2699,9 +2509,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2756,9 +2563,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2793,9 +2597,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2851,9 +2652,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -2890,9 +2688,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -2983,9 +2778,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     },
                     {}
@@ -3031,9 +2823,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3070,9 +2859,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -3130,9 +2916,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3187,9 +2970,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3224,9 +3004,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3282,9 +3059,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3321,9 +3095,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3386,9 +3157,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3425,9 +3193,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3586,9 +3351,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3625,9 +3387,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3676,9 +3435,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3747,9 +3503,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3786,9 +3539,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3851,9 +3601,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3890,9 +3637,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -3955,9 +3699,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -3994,9 +3735,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4075,9 +3813,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4122,9 +3857,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4161,9 +3893,6 @@
                     "game"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4221,9 +3950,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4280,9 +4006,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4338,9 +4061,6 @@
                     }
                 },
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4427,9 +4147,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4474,9 +4191,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4513,9 +4227,6 @@
                     "moderation"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4573,9 +4284,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4632,9 +4340,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4680,9 +4385,6 @@
                     "required": true
                 },
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4745,9 +4447,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4785,9 +4484,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4823,9 +4519,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4856,9 +4549,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4877,9 +4567,6 @@
                     "notification"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4900,9 +4587,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -4921,9 +4605,6 @@
                     "notification"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     }
@@ -4974,9 +4655,6 @@
                     "schema"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -5067,9 +4745,6 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     },
                     {}
@@ -5107,9 +4782,6 @@
                     "user"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -5168,9 +4840,6 @@
                 },
                 "security": [
                     {
-                        "basicAuth": []
-                    },
-                    {
                         "keycloakAuth": []
                     }
                 ],
@@ -5196,9 +4865,6 @@
                     "user"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -5226,9 +4892,6 @@
                     "version"
                 ],
                 "security": [
-                    {
-                        "basicAuth": []
-                    },
                     {
                         "keycloakAuth": []
                     },
@@ -8757,53 +8420,6 @@
                 "type": "string",
                 "description": "* `user_submitted` - User submitted\n* `admin_direct` - Admin direct"
             },
-            "SteamImportNotFound": {
-                "type": "object",
-                "description": "A serializer for the Steam games that were not found in the database.",
-                "properties": {
-                    "appid": {
-                        "type": "integer",
-                        "description": "The AppID of the Steam game."
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "The name of the Steam game."
-                    }
-                },
-                "required": [
-                    "appid",
-                    "name"
-                ]
-            },
-            "SteamImportResponse": {
-                "type": "object",
-                "description": "A serializer for the Steam import endpoint response.",
-                "properties": {
-                    "matched": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/GameSimpleList"
-                        },
-                        "description": "List of matched games found in the database."
-                    },
-                    "not_found": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/SteamImportNotFound"
-                        },
-                        "description": "List of games not found in the database."
-                    },
-                    "total_imported": {
-                        "type": "integer",
-                        "description": "Total number of games retrieved from Steam before filtration."
-                    }
-                },
-                "required": [
-                    "matched",
-                    "not_found",
-                    "total_imported"
-                ]
-            },
             "TargetTypeEnum": {
                 "enum": [
                     "avatar",
@@ -9351,10 +8967,6 @@
             }
         },
         "securitySchemes": {
-            "basicAuth": {
-                "type": "http",
-                "scheme": "basic"
-            },
             "keycloakAuth": {
                 "type": "http",
                 "scheme": "bearer",

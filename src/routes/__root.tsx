@@ -1,6 +1,6 @@
 import { HelmetProvider } from "@dr.pogodin/react-helmet";
 import { QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext } from "@tanstack/react-router";
+import { createRootRouteWithContext, useRouterState } from "@tanstack/react-router";
 import React from "react";
 
 import Layout from "@/components/layout/Layout";
@@ -13,10 +13,15 @@ export interface MyRouterContext {
   auth: AuthContextType;
 }
 
+function RootMeta() {
+  const pathname = useRouterState({ select: state => state.location.pathname });
+  return <PageMeta path={pathname} />;
+}
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <HelmetProvider>
-      <PageMeta />
+      <RootMeta />
       <Layout />
     </HelmetProvider>
   ),

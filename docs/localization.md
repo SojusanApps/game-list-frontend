@@ -61,7 +61,7 @@ Rules for `pl/` strings:
   `powinienem`, `sam`.
 - Prefer **impersonal/nominal** forms for prose and labels: `należy się zachowywać`
   (not `powinieneś`), `Data dołączenia:` (not `Dołączył:`), `Ta czynność wymaga
-zalogowania` (not `musisz być zalogowany`).
+  zalogowania` (not `musisz być zalogowany`).
 - Drop gendered adjectives/participles (`gotowy`, `zalogowany`, `zbanowany`). Reword
   around a neuter noun (`Konto zbanowane`) or rephrase (`Czas na odkrywanie?`).
 - This applies to strings about a **target/viewed user** too — their gender is

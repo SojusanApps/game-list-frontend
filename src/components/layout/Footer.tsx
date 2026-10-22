@@ -9,8 +9,9 @@ import AppLogo from "@/components/ui/AppLogo";
 
 import styles from "./Footer.module.css";
 
+const currentYear = new Date().getFullYear();
+
 const Footer = (): React.JSX.Element => {
-  const currentYear = new Date().getFullYear();
   const colorScheme = useComputedColorScheme("light");
   const { t } = useTranslation();
 

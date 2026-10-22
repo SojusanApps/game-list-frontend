@@ -48,7 +48,7 @@ export default function UserSettingsPage(): React.JSX.Element {
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
       <Box maw={720} mx="auto" px={16}>
-        <PageMeta title={t("settings.title")} />
+        <PageMeta title={t("settings.title")} noindex />
         <Title order={1} fz={28} fw={700} c="var(--color-text-900)" mb={32}>
           {t("settings.title")}
         </Title>

@@ -282,16 +282,6 @@ export const deleteGameFollow = async (id: number) => {
   return true;
 };
 
-export const steamImportGameList = async (steamProfileId: string) => {
-  const { data, error, response } = await GameService.gameGameListsSteamImportRetrieve({
-    query: { steam_profile_id: steamProfileId },
-  });
-  if (response?.status !== StatusCode.OK || !data) {
-    return await handleApiError(error, response);
-  }
-  return data;
-};
-
 export const titleImportGameList = async (titles: Array<string>) => {
   const { data, error, response } = await GameService.gameGameListsTitleImportCreate({ body: { titles } });
   if (response?.status !== StatusCode.OK || !data) {

@@ -95,7 +95,7 @@ export default function AdminTranslationSuggestionsPage(): React.JSX.Element {
 
   return (
     <Stack gap={24} maw={1024} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("translationSuggestions.title")} />
+      <PageMeta title={t("translationSuggestions.title")} noindex />
       <Stack gap={8}>
         <Title order={2}>{t("translationSuggestions.title")}</Title>
         <Text c="dimmed">{t("translationSuggestions.subtitle")}</Text>

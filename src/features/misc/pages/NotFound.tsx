@@ -11,7 +11,7 @@ export default function NotFound(): React.JSX.Element {
 
   return (
     <Center style={{ minHeight: "70vh" }}>
-      <PageMeta title={t("notFound.title")} />
+      <PageMeta title={t("notFound.title")} noindex />
 
       <Paper p="xl" radius="md" style={{ textAlign: "center", maxWidth: 500 }} w="100%">
         <Stack align="center" gap="md">

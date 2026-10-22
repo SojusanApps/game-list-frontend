@@ -167,7 +167,7 @@ function ItemOverlay({
           )}
           <Title
             order={2}
-            lineClamp={2}
+            lineClamp={hovered ? undefined : 2}
             style={{
               fontSize: "11px",
               fontWeight: 700,

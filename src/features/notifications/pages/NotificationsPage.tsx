@@ -89,7 +89,7 @@ export default function NotificationsPage(): React.JSX.Element {
   return (
     <Box maw={1024} mx="auto" p={16}>
       {confirmModal}
-      <PageMeta title={t("page.title")} />
+      <PageMeta title={t("page.title")} noindex />
       <Group justify="space-between" align="center" mb={24} gap={16} wrap="wrap">
         <Group gap={8}>
           <Title order={1} fz={24} fw={700}>

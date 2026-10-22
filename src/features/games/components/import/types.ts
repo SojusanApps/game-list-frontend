@@ -2,7 +2,7 @@ import { GameListStatusEnum } from "@/client";
 
 /**
  * The minimal game shape both import flows work with. Satisfied by
- * `GameSimpleList` (Steam import, catalogue search) and `TitleImportMatch`
+ * `GameSimpleList` (catalogue search) and `TitleImportMatch`
  * (title import candidates).
  */
 export interface ImportedGame {
