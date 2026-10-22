@@ -17,7 +17,8 @@ export interface SyncResult {
   error?: string;
 }
 
-export const CHROME_EXTENSION_URL = "https://chromewebstore.google.com/detail/pngolcdcdjlekmfmojdedcicnjhepkmf";
+export const CHROME_EXTENSION_URL =
+  "https://chromewebstore.google.com/detail/sojusan-gamelist/pngolcdcdjlekmfmojdedcicnjhepkmf";
 export const FIREFOX_EXTENSION_URL = "https://addons.mozilla.org/en-US/firefox/addon/sojusan-browser-extension/";
 
 export const PLATFORM_LOGIN_URLS: Record<SyncPlatform, string> = {

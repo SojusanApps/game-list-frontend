@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Sojusan GameList API",
-        "version": "5.4.0",
+        "version": "6.0.0",
         "description": "Application to manage game lists."
     },
     "paths": {
