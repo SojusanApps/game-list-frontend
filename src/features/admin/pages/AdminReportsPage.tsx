@@ -308,7 +308,7 @@ export default function AdminReportsPage(): React.JSX.Element {
 
   return (
     <Stack gap={24} maw={1024} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("reports.title")} />
+      <PageMeta title={t("reports.title")} noindex />
       <Stack gap={8}>
         <Title order={2}>{t("reports.title")}</Title>
         <Text c="dimmed">{t("reports.subtitle")}</Text>

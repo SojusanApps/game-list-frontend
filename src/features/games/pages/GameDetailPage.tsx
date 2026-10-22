@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { SITE_URL } from "@/config/site";
 import { useCurrentUserId, useRequireAuth } from "@/features/auth";
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import AddToCollectionModal from "@/features/collections/components/AddToCollectionModal";
@@ -158,10 +159,29 @@ export default function GameDetailPage(): React.JSX.Element {
 
   const pageTitle = isGameDetailsLoading ? t("detail.loading") : gameDetails?.title;
 
+  const coverUrl = gameDetails?.cover_image_id
+    ? getIGDBImageURL(gameDetails.cover_image_id, IGDBImageSize.COVER_BIG_264_374)
+    : undefined;
+  const gameJsonLd = gameDetails
+    ? {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        name: gameDetails.title,
+        url: `${SITE_URL}/game/${gameDetails.id}/${gameDetails.slug ?? ""}`,
+        ...(gameDetails.summary && { description: gameDetails.summary }),
+        ...(coverUrl && { image: coverUrl }),
+        ...(gameDetails.release_date && { datePublished: gameDetails.release_date }),
+        ...(gameDetails.genres?.length && { genre: gameDetails.genres.map(genre => genre.name) }),
+        ...(gameDetails.platforms?.length && { gamePlatform: gameDetails.platforms.map(platform => platform.name) }),
+        ...(gameDetails.developer && { author: { "@type": "Organization", name: gameDetails.developer.name } }),
+        ...(gameDetails.publisher && { publisher: { "@type": "Organization", name: gameDetails.publisher.name } }),
+      }
+    : undefined;
+
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
       <Grid gap="md" maw={1152} mx="auto" px={16}>
-        <PageMeta title={pageTitle} description={gameDetails?.summary} />
+        <PageMeta title={pageTitle} description={gameDetails?.summary} image={coverUrl} jsonLd={gameJsonLd} />
 
         {isGameDetailsLoading ? (
           <GameDetailSkeleton />

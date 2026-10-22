@@ -37,7 +37,7 @@ export default function GameListComparePage(): React.JSX.Element {
 
   return (
     <Box py={48} style={{ minHeight: "100vh" }}>
-      <PageMeta title={pageTitle} />
+      <PageMeta title={pageTitle} noindex />
       <Stack gap={40} maw={1280} mx="auto" px={16}>
         <Title
           order={1}

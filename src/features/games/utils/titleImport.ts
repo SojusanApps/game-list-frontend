@@ -23,6 +23,11 @@ export function parseTitles(raw: string): string[] {
   return titles;
 }
 
+/** Append `incoming` titles to the textarea content, one per line, skipping ones already present. */
+export function appendTitles(raw: string, incoming: string[]): string {
+  return parseTitles([raw, ...incoming].join("\n")).join("\n");
+}
+
 export function chunkTitles(titles: string[], size: number = TITLE_IMPORT_BATCH_SIZE): string[][] {
   const chunks: string[][] = [];
   for (let i = 0; i < titles.length; i += size) {

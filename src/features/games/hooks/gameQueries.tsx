@@ -45,7 +45,6 @@ import {
   getGameFollowsList,
   createGameFollow,
   deleteGameFollow,
-  steamImportGameList,
   titleImportGameList,
   bulkCreateGameList,
   exportGameList,
@@ -394,12 +393,6 @@ export const useDeleteGameFollow = () => {
         queryKey: gameFollowKeys.all,
       });
     },
-  });
-};
-
-export const useSteamImport = () => {
-  return useAppMutation({
-    mutationFn: (steamProfileId: string) => steamImportGameList(steamProfileId),
   });
 };
 

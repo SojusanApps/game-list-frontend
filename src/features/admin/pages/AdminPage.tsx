@@ -63,7 +63,7 @@ export default function AdminPage(): React.JSX.Element {
 
   return (
     <Stack gap={40} maw={1280} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("page.title")} />
+      <PageMeta title={t("page.title")} noindex />
       <Stack gap={8}>
         <Title order={2}>{t("page.title")}</Title>
         <Text c="dimmed">{t("page.subtitle")}</Text>
