@@ -13,6 +13,7 @@ import type { TFunction } from "i18next";
 
 import { GameListCompareRow, UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
@@ -77,13 +78,13 @@ function GameCell({ row }: Readonly<{ row: GameListCompareRow }>) {
       <Box className={styles.coverWrapper}>
         <SafeImage src={coverUrl} alt={row.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </Box>
-      <Text
+      <TruncatedText
         fw={600}
         c="var(--color-text-900)"
         style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}
       >
         {row.title}
-      </Text>
+      </TruncatedText>
     </Box>
   );
 }

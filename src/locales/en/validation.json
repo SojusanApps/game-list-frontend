@@ -7,5 +7,7 @@
   "nameRequired": "Name is required",
   "selectAtLeastOne": "Select at least one collection",
   "descriptionMax": "Description must be 500 characters or less",
-  "titlesRequired": "At least one game title is required"
+  "storePlatformRequired": "Select a store",
+  "storeIdRequired": "Store id is required",
+  "storeGameRequired": "Select a game"
 }

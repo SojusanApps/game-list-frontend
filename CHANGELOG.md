@@ -2,6 +2,19 @@
 
 > Date format is DD.MM.YYYY.
 
+## v. [1.3.0] - 29.10.2026
+
+**Compatible backend version: [6.1.0]**
+
+- Game import: filling the list from a store now also reads each game's store id. Games GameList already knows are added to your list straight away (as Plan to Play, marked as owned on that store unless they are only on the wishlist; a game already on your list just gets the store added to where you own it), and only the games it could not recognise are listed, with their store and store id, for you to match against the catalogue. The import page no longer has a free-text titles box: the list is filled only by the store buttons, and single entries can be removed before matching. Your matches are remembered as suggestions for those store games, so the next sync recognises them for you, and an admin can approve them for everyone. The extension must be up to date (version 1.1.0 or newer); otherwise the page asks you to update it.
+- Admin panel: new "Store Mappings" page to review the matches users made between store games and catalogue games (accept or reject, with filters), and a form to add a mapping by hand. The form can also mark a store item as "not a game" (a soundtrack, for example), so the import skips it. On the import page, unmatched titles can be marked "Not a game" too; the admin then confirms it for everyone. Games already on your list can now be picked in the match step too: the store id is matched to the game and only the store is added to its "owned on" (nothing else of the entry changes).
+- Game import: every step after the store buttons now shows where each game came from — the shop logo, the shop name and the store id, as on the first page. This applies to the matching step (under each title), the duplicates step (under each title that resolved to the same game) and the "configure the games to import" table (under each game).
+- Game import: the "Match" and "Resolve" steps are now one "Match" step. All titles are listed on the left; pick one and search the whole catalogue on the right, with the same filters as the Search Engine (the search starts with the title, the filters reset for each title). After a pick the next unmatched title opens. "Not a game" is available for every title. The list of titles can be hidden to give the search the full width. Titles are no longer sent to the backend for suggestions.
+- Search filters: new "IGDB ID" filter to find a game by its exact IGDB id. It is available in the Search Engine (and in its URL, for example `/search?igdb_id=1942`), on the import Match step and in the game picker of the admin "Store Mappings" page; it is not shown on a user's game list, which cannot filter by it.
+- Admin panel: on the "Store Mappings" page the game field of the "add a mapping" form now opens a window with the search and all the game filters, instead of a plain dropdown. Each mapping shows the store logo in its store badge, and who submitted it as an avatar with the nickname, as on the other admin pages.
+- Search filters: the Publisher and Developer filters now show the selected company again after the filters are reopened, and clearing one no longer fails with "Invalid input: expected string, received null".
+- Shortened text: whenever a name is cut off with "…" (game titles in the search box, list rows, the compare table, rankings, tier lists and the import steps; collection names; usernames; notifications; your latest list update), hovering it now shows the full text in a tooltip. The tooltip appears only when the text is actually cut off, and replaces the plain browser tooltips that a few of these places had.
+
 ## v. [1.2.0] - 22.10.2026
 
 **Compatible backend version: [6.0.0]**

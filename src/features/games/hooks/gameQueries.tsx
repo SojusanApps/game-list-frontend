@@ -14,7 +14,10 @@ import {
   PaginatedGameSimpleListList,
   PaginatedGameListList,
   PaginatedGameFollowList,
-  GameListCreateWritable,
+  GameListBulkCreateItemWritable,
+  StoreEntry,
+  StoreLinkItem,
+  StoreMappingRef,
 } from "@/client";
 import { gameKeys, gameListKeys, gameReviewKeys, userKeys, gameFollowKeys } from "@/lib/queryKeys";
 
@@ -45,8 +48,10 @@ import {
   getGameFollowsList,
   createGameFollow,
   deleteGameFollow,
-  titleImportGameList,
   bulkCreateGameList,
+  storeImportGameList,
+  storeLinkGameList,
+  storeNotAGameGameList,
   exportGameList,
   createGameReview,
   updateGameReview,
@@ -396,12 +401,6 @@ export const useDeleteGameFollow = () => {
   });
 };
 
-export const useTitleImport = () => {
-  return useAppMutation({
-    mutationFn: (titles: Array<string>) => titleImportGameList(titles),
-  });
-};
-
 export const useGetExportedGameList = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: gameListKeys.export(),
@@ -410,11 +409,39 @@ export const useGetExportedGameList = (options?: { enabled?: boolean }) => {
   });
 };
 
+export const useStoreImport = () => {
+  const queryClient = useQueryClient();
+
+  return useAppMutation({
+    mutationFn: (entries: Array<StoreEntry>) => storeImportGameList(entries),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gameListKeys.all });
+      queryClient.invalidateQueries({ queryKey: userKeys.details() });
+    },
+  });
+};
+
+export const useStoreLink = () => {
+  const queryClient = useQueryClient();
+
+  return useAppMutation({
+    mutationFn: (entries: Array<StoreLinkItem>) => storeLinkGameList(entries),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gameListKeys.all });
+    },
+  });
+};
+
+export const useStoreNotAGame = () =>
+  useAppMutation({
+    mutationFn: (entries: Array<StoreMappingRef>) => storeNotAGameGameList(entries),
+  });
+
 export const useBulkCreateGameList = () => {
   const queryClient = useQueryClient();
 
   return useAppMutation({
-    mutationFn: (body: Array<GameListCreateWritable>) => bulkCreateGameList(body),
+    mutationFn: (body: Array<GameListBulkCreateItemWritable>) => bulkCreateGameList(body),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: gameListKeys.all,

@@ -1,4 +1,4 @@
-import { Select, Box, Group, Stack } from "@mantine/core";
+import { Select, Box, Group, NumberInput, Stack } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useForm, schemaResolver } from "@mantine/form";
 import * as React from "react";
@@ -30,12 +30,15 @@ const dateField = z
   }, z.date().nullable())
   .optional();
 
+// Clearing an async select sets its value to null.
+const optionalString = z.preprocess(val => val ?? undefined, z.string().optional());
+
 const validationSchema = z
   .object({
     release_date_after: dateField,
     release_date_before: dateField,
-    publisher: z.string().optional(),
-    developer: z.string().optional(),
+    publisher: optionalString,
+    developer: optionalString,
     platforms: z.string().array().optional(),
     genres: z.string().array().optional(),
     game_engines: z.string().array().optional(),
@@ -43,6 +46,10 @@ const validationSchema = z
     game_status: z.string().array().optional(),
     game_type: z.string().array().optional(),
     player_perspectives: z.string().array().optional(),
+    igdb_id: z.preprocess(
+      val => (val === "" || val === null ? undefined : val),
+      z.number().int().positive().optional(),
+    ),
     ordering: z.string().optional(),
   })
   .refine(
@@ -71,6 +78,7 @@ function GameSearchFilter({
   orderingOptions,
   orderingClearable = true,
   datePickerWithinPortal = false,
+  showIgdbId = false,
 }: Readonly<{
   onSubmitHandlerCallback: (data: ValidationSchema) => void;
   initialFilters?: Record<string, unknown>;
@@ -79,6 +87,8 @@ function GameSearchFilter({
   orderingOptions?: { value: string; label: string }[];
   orderingClearable?: boolean;
   datePickerWithinPortal?: boolean;
+  /** Adds the IGDB id filter; only the games endpoint supports it, not a user's game list. */
+  showIgdbId?: boolean;
 }>) {
   const { t } = useTranslation("games");
   const form = useForm<ValidationInput>({
@@ -98,6 +108,7 @@ function GameSearchFilter({
       game_status: (initialFilters?.game_status as string[]) ?? [],
       game_type: (initialFilters?.game_type as string[]) ?? [],
       player_perspectives: (initialFilters?.player_perspectives as string[]) ?? [],
+      igdb_id: (initialFilters?.igdb_id as number | undefined) ?? "",
       ordering: (initialFilters?.ordering as string | undefined) ?? "",
     },
     validate: schemaResolver(validationSchema),
@@ -170,6 +181,18 @@ function GameSearchFilter({
               {...form.getInputProps("release_date_before")}
             />
           </Box>
+          {showIgdbId && (
+            <NumberInput
+              id="igdb_id"
+              name="igdb_id"
+              label={t("filter.igdbId")}
+              placeholder={t("filter.igdbIdPlaceholder")}
+              hideControls
+              allowDecimal={false}
+              allowNegative={false}
+              {...form.getInputProps("igdb_id")}
+            />
+          )}
         </Stack>
 
         {/* Group 2: Entities & Genres */}

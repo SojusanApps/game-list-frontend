@@ -69,6 +69,11 @@ export default function AsyncAutocomplete<T>({
         seen.add(option.value);
         return true;
       });
+    // The value can be missing from the results (restored filter, narrowed search); keep it as an option,
+    // labelled by the value itself, so the input still shows it.
+    if (value && !seen.has(value)) {
+      options.unshift({ value, label: value });
+    }
     if (!hasNextPage && !isLoading && options.length > 0) {
       options.push({
         value: "__all_results_loaded__",
@@ -77,7 +82,7 @@ export default function AsyncAutocomplete<T>({
       } as (typeof options)[number]);
     }
     return options;
-  }, [allOptions, getOptionLabel, getOptionValue, hasNextPage, isLoading, t]);
+  }, [allOptions, getOptionLabel, getOptionValue, hasNextPage, isLoading, t, value]);
 
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 

@@ -96,7 +96,7 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
       </Box>
       <Stack gap={12} p="md">
         <GameInfoRow label={t("info.igdbId")}>
-          <IgdbLink id={gameDetails?.id.toString() || ""} slug={gameDetails?.slug || ""} />
+          <IgdbLink id={gameDetails?.igdb_id?.toString() || ""} slug={gameDetails?.slug || ""} />
         </GameInfoRow>
         {language === "pl" && gameDetails?.title_en && (
           <GameInfoRow label={t("info.titleEn")} value={gameDetails.title_en} />

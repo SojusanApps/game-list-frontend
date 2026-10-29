@@ -32,6 +32,10 @@ _Avoid_: Suspend, deactivate, deactivation
 The consequence recorded against a user's account when a Report targeting them is accepted — whether via the normal queue (Accept) or via Warn & Remove. A user's `warning_count` is visible only to the account owner and to staff.
 _Avoid_: Strike, violation
 
+**Store Mapping**:
+A link between a game on a store (a store's own id of it) and a game in the catalogue, proposed automatically when a user matches a title that came from a **Platform Sync** by hand during the import. It applies only to that user until a **Staff** member accepts it; staff can also add one by hand. Reviewed on the admin "Store Mappings" page.
+_Avoid_: alias, store link
+
 **Staff**:
 A user with `is_staff` set, who can moderate Reports, use Warn & Remove, and Ban accounts. The codebase has no finer-grained roles than this single flag.
 _Avoid_: Admin, moderator (the UI/backend consistently say "staff")

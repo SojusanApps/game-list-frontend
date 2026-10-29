@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import code_to_value_mapping from "../../utils/GameListStatuses";
 import { getSortedRowIndices, SortColumn, SortDirection, SortState } from "../../utils/sortGameRows";
 import { StatusIcon } from "../../utils/StatusIcon";
+import { StoreRef } from "../../utils/titleImport";
 import { GameRowItem } from "./GameRowItem";
 import { GameRow } from "./types";
 
@@ -60,6 +61,8 @@ const renderStatusOption = ({ option }: { option: ComboboxItem }) => (
 
 interface ConfigureGameListProps {
   rows: GameRow[];
+  /** The store games each game was picked for, by game id. */
+  storeRefsByGameId?: Record<number, StoreRef[]>;
   onStatusChange: (index: number, value: GameListStatusEnum) => void;
   onScoreChange: (index: number, value: number | null) => void;
   onFieldChange: (index: number, field: keyof GameRow, value: unknown) => void;
@@ -69,6 +72,7 @@ interface ConfigureGameListProps {
 /** The "review and configure the games to import" card shared by both flows. */
 export const ConfigureGameList = ({
   rows,
+  storeRefsByGameId,
   onStatusChange,
   onScoreChange,
   onFieldChange,
@@ -242,6 +246,7 @@ export const ConfigureGameList = ({
                   >
                     <GameRowItem
                       row={row}
+                      storeRefs={storeRefsByGameId?.[row.game.id]}
                       index={i}
                       statusData={statusData}
                       expanded={expandedRows.has(i)}

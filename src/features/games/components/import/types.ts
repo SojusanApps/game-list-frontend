@@ -2,8 +2,7 @@ import { GameListStatusEnum } from "@/client";
 
 /**
  * The minimal game shape both import flows work with. Satisfied by
- * `GameSimpleList` (catalogue search) and `TitleImportMatch`
- * (title import candidates).
+ * `GameSimpleList` (catalogue search).
  */
 export interface ImportedGame {
   id: number;
@@ -24,10 +23,11 @@ export interface GameRow {
 }
 
 /**
- * The user's decision for one imported title on the match step:
- * a chosen candidate, "none of these", or auto-set "no matches found".
+ * What the user decided for one imported title on the match step: the game it
+ * is, or "not a game" (a soundtrack, for example). A title without a
+ * resolution is skipped from the import.
  */
-export type MatchDecision = { kind: "game"; game: ImportedGame } | { kind: "none" } | { kind: "no-matches" };
+export type TitleResolution = { kind: "game"; game: ImportedGame } | { kind: "not-a-game" };
 
 export function createGameRow(game: ImportedGame, ownedOn: string[] = []): GameRow {
   return {

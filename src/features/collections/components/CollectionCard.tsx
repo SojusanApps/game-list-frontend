@@ -1,4 +1,4 @@
-import { Stack, Group, Box, Title, Text } from "@mantine/core";
+import { Stack, Group, Box, Title, Text, Tooltip } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Collection, TypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useClippedTooltip } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
 import {
@@ -23,6 +24,7 @@ interface CollectionCardProps {
 export default function CollectionCard({ collection }: Readonly<CollectionCardProps>) {
   const { t } = useTranslation("collections");
   const { hovered, ref } = useHover<HTMLDivElement>();
+  const { isClipped: isTitleClipped, onMouseEnter: onTitleMouseEnter } = useClippedTooltip();
   const images = collection.items_cover_image_ids || [];
   const deckLimit = 5;
 
@@ -158,22 +160,24 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
             params={{ id: collection.id.toString(), slug: collection.slug || "" }}
             style={{ display: "block" }}
           >
-            <Title
-              order={3}
-              fz="lg"
-              fw={900}
-              c={hovered ? "var(--color-primary-600)" : "var(--color-text-900)"}
-              style={{
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitLineClamp: 1,
-                WebkitBoxOrient: "vertical",
-                transition: "color 200ms",
-              }}
-              title={collection.name}
-            >
-              {collection.name}
-            </Title>
+            <Tooltip label={collection.name} disabled={!isTitleClipped} multiline withArrow style={{ maxWidth: 320 }}>
+              <Title
+                order={3}
+                fz="lg"
+                fw={900}
+                c={hovered ? "var(--color-primary-600)" : "var(--color-text-900)"}
+                style={{
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: "vertical",
+                  transition: "color 200ms",
+                }}
+                onMouseEnter={onTitleMouseEnter}
+              >
+                {collection.name}
+              </Title>
+            </Tooltip>
           </Link>
 
           <Stack align="center" justify="center" gap={8}>

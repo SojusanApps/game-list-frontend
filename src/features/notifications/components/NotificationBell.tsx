@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Notification } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
 import {
@@ -157,15 +158,15 @@ export default function NotificationBell(): React.JSX.Element {
 
                     <Stack gap={0} style={{ minWidth: 0, flex: 1 }}>
                       <Group justify="space-between" align="flex-start" gap={8}>
-                        <Text
-                          component="span"
+                        <TruncatedText
+                          span
                           fw={700}
                           fz="sm"
                           c="var(--color-text-900)"
                           style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                         >
                           {displayEntity?.str || "Someone"}
-                        </Text>
+                        </TruncatedText>
                         <Text
                           component="span"
                           style={{
@@ -179,7 +180,7 @@ export default function NotificationBell(): React.JSX.Element {
                           {formatDisplayDate(notification.timestamp)}
                         </Text>
                       </Group>
-                      <Text
+                      <TruncatedText
                         size="xs"
                         c="var(--color-text-600)"
                         style={{
@@ -193,7 +194,7 @@ export default function NotificationBell(): React.JSX.Element {
                         }}
                       >
                         {notification.verb}
-                      </Text>
+                      </TruncatedText>
                     </Stack>
                   </Link>
                 </Box>

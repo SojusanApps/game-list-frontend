@@ -17,7 +17,10 @@ import {
   GameGamesReleaseCalendarListData,
   GameGameFollowsListData,
   GameGameFollowsCreateData,
-  GameListCreateWritable,
+  GameListBulkCreateItemWritable,
+  StoreLinkItem,
+  StoreMappingRef,
+  StoreEntry,
   GameGameReviewsCreateData,
   GameGameReviewsPartialUpdateData,
 } from "@/client";
@@ -282,15 +285,29 @@ export const deleteGameFollow = async (id: number) => {
   return true;
 };
 
-export const titleImportGameList = async (titles: Array<string>) => {
-  const { data, error, response } = await GameService.gameGameListsTitleImportCreate({ body: { titles } });
+export const storeImportGameList = async (entries: Array<StoreEntry>) => {
+  const { data, error, response } = await GameService.gameGameListsStoreImportCreate({ body: { entries } });
   if (response?.status !== StatusCode.OK || !data) {
     return await handleApiError(error, response);
   }
   return data;
 };
 
-export const bulkCreateGameList = async (body: Array<GameListCreateWritable>) => {
+export const storeNotAGameGameList = async (entries: Array<StoreMappingRef>) => {
+  const { error, response } = await GameService.gameGameListsStoreNotAGameCreate({ body: { entries } });
+  if (response?.status !== StatusCode.NO_CONTENT) {
+    return await handleApiError(error, response);
+  }
+};
+
+export const storeLinkGameList = async (entries: Array<StoreLinkItem>) => {
+  const { error, response } = await GameService.gameGameListsStoreLinkCreate({ body: { entries } });
+  if (response?.status !== StatusCode.NO_CONTENT) {
+    return await handleApiError(error, response);
+  }
+};
+
+export const bulkCreateGameList = async (body: Array<GameListBulkCreateItemWritable>) => {
   const { data, error, response } = await GameService.gameGameListsBulkCreateCreate({ body });
   if (response?.status !== StatusCode.OK && response?.status !== StatusCode.CREATED) {
     return await handleApiError(error, response);

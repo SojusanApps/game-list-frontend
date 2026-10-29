@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import type { User } from "@/client";
 import { TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
@@ -78,8 +79,8 @@ export const GameCard = (props: GameCardProps) => {
             style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none", borderRadius: "12px" }}
           />
           <Box className={cardStyles.tierGameCardOverlay}>
-            <Text
-              component="span"
+            <TruncatedText
+              span
               style={{
                 fontSize: 12,
                 fontWeight: 800,
@@ -95,7 +96,7 @@ export const GameCard = (props: GameCardProps) => {
               }}
             >
               {title}
-            </Text>
+            </TruncatedText>
           </Box>
         </Box>
 

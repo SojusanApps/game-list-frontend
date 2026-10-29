@@ -12,6 +12,10 @@
     "reports": {
       "label": "Zgłoszenia",
       "description": "Przeglądaj oczekujące zgłoszenia dotyczące treści użytkowników i pól profilu."
+    },
+    "storeMappings": {
+      "label": "Mapowania sklepów",
+      "description": "Przeglądaj, jak użytkownicy dopasowali gry ze sklepów do katalogu, i dodawaj mapowania ręcznie."
     }
   },
   "reports": {
@@ -74,5 +78,51 @@
   },
   "versions": "Wersje",
   "apiVersion": "Wersja API",
-  "uiVersion": "Wersja UI"
+  "uiVersion": "Wersja UI",
+  "storeMappings": {
+    "title": "Mapowania sklepów",
+    "subtitle": "Przeglądaj dopasowania gier ze sklepu do gier w katalogu. Zaakceptowanie mapowania czyni je globalnym.",
+    "addTitle": "Dodaj mapowanie",
+    "addDescription": "Dodane przez Ciebie mapowanie jest od razu zaakceptowane i zastępuje obecnie zaakceptowane mapowanie tego identyfikatora.",
+    "platformLabel": "Sklep",
+    "storeIdField": "Identyfikator w sklepie",
+    "storeTitleField": "Tytuł w sklepie (opcjonalnie)",
+    "gameField": "Gra",
+    "gamePlaceholder": "Kliknij, aby wybrać grę",
+    "pickGameTitle": "Wybierz grę",
+    "clearGame": "Wyczyść wybraną grę",
+    "addButton": "Dodaj mapowanie",
+    "statusFilterLabel": "Status",
+    "platformFilterLabel": "Sklep",
+    "storeIdFilterLabel": "Identyfikator w sklepie",
+    "filterAll": "Wszystkie",
+    "clearFilters": "Wyczyść filtry",
+    "status": {
+      "pending": "Oczekujące",
+      "accepted": "Zaakceptowane",
+      "rejected": "Odrzucone"
+    },
+    "platform": {
+      "steam": "Steam",
+      "epic": "Epic Games Store",
+      "gog": "GOG",
+      "playstation": "PlayStation Store",
+      "nintendo": "Nintendo eShop"
+    },
+    "storeIdLabel": "Identyfikator: {{id}}",
+    "mappedToLabel": "Zmapowano na",
+    "submittedByLabel": "Dodane przez",
+    "submittedOn": "dnia {{date}}",
+    "rejectionReason": "Powód: {{reason}}",
+    "acceptButton": "Zaakceptuj",
+    "rejectButton": "Odrzuć",
+    "confirmRejectButton": "Odrzuć mapowanie",
+    "cancelButton": "Anuluj",
+    "rejectReasonPlaceholder": "Powód (opcjonalnie)",
+    "loading": "Ładowanie...",
+    "empty": "Brak mapowań do przejrzenia.",
+    "notAGame": "To nie jest gra",
+    "notAGameField": "To nie jest gra (np. ścieżka dźwiękowa)",
+    "notAGameHint": "Import ją pominie zamiast dodać do listy gier."
+  }
 }

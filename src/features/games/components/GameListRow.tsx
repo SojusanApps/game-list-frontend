@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { GameList, GameListStatusEnum, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { STATUS_CONFIG } from "@/features/games/utils/statusConfig";
 import { StatusIcon } from "@/features/games/utils/StatusIcon";
@@ -47,9 +48,9 @@ export const GameListRow = React.memo(({ gameListItem, isOwner, onEdit, ownerUse
         <Box style={{ flex: 1, padding: "12px 16px" }}>
           <Group justify="space-between" align="flex-start" wrap="nowrap">
             <Stack gap={4}>
-              <Text fw={600} fz="lg" c="var(--color-text-900)" className={styles.title}>
+              <TruncatedText fw={600} fz="lg" c="var(--color-text-900)" className={styles.title}>
                 {gameListItem.title}
-              </Text>
+              </TruncatedText>
 
               <Group gap={8}>
                 {statusConfig && (

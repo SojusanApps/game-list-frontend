@@ -1,74 +1,51 @@
 import { Box, Stack, Text, Stepper, Group } from "@mantine/core";
-import { useForm, schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { z } from "zod";
 
-import { GameListCreateWritable, GameSimpleList, TitleImportResult } from "@/client";
+import { GameListBulkCreateItemWritable, GameSimpleList, StoreEntry } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
-import i18n from "@/lib/i18n";
 import { playtimeHoursToMinutes } from "@/utils/playtimeUtils";
 
-import { useTitleImport, useBulkCreateGameList } from "../../hooks/gameQueries";
+import { useBulkCreateGameList, useStoreLink, useStoreNotAGame, useGetExportedGameList } from "../../hooks/gameQueries";
 import {
-  TITLE_IMPORT_BATCH_SIZE,
   parseTitles,
-  appendTitles,
-  chunkTitles,
   findDuplicateGroups,
   uniquePickedGames,
   TitleGamePick,
   DuplicateGroup,
+  mergeStoreEntries,
+  storeRefsFromEntries,
+  storeRefsForTitle,
+  storeRefsForTitles,
+  storeLinksForPicks,
+  StoreRef,
+  StoreRefsByTitle,
 } from "../../utils/titleImport";
 import { ConfigureGameList } from "./ConfigureGameList";
-import { NumberedTextarea } from "./NumberedTextarea";
+import { ImportEntryList } from "./ImportEntryList";
 import { PlatformSyncButtons } from "./PlatformSyncButtons";
 import { SuccessStep } from "./SuccessStep";
-import { TitleMatchStep } from "./TitleMatchStep";
+import { MatchTitle, TitleMatchStep } from "./TitleMatchStep";
 import { TitleMergeStep } from "./TitleMergeStep";
-import { TitleResolveStep, UnmatchedTitle } from "./TitleResolveStep";
-import { createGameRow, GameRow, ImportedGame, MatchDecision } from "./types";
+import { createGameRow, GameRow, ImportedGame, TitleResolution } from "./types";
 import { useGameRows } from "./useGameRows";
 
 import styles from "./TitleImportFlow.module.css";
-
-const titleFormSchema = z.object({
-  titlesRaw: z.string().refine(raw => parseTitles(raw).length > 0, {
-    message: i18n.t("validation:titlesRequired"),
-  }),
-});
-type TitleFormValues = z.infer<typeof titleFormSchema>;
 
 /** Keep configuration already entered for games that are still picked. */
 function reconcileRows(games: ImportedGame[], prevRows: GameRow[]): GameRow[] {
   return games.map(game => prevRows.find(row => row.game.id === game.id) ?? createGameRow(game));
 }
 
-/** Auto-resolve titles that came back with zero candidates as unmatched. */
-function withAutoUnmatched(
-  prev: Record<number, MatchDecision>,
-  results: TitleImportResult[],
-  offset: number,
-): Record<number, MatchDecision> {
-  const next = { ...prev };
-  for (const [i, result] of results.entries()) {
-    if (result.matches.length === 0 && !next[offset + i]) {
-      next[offset + i] = { kind: "no-matches" };
-    }
-  }
-  return next;
-}
-
 // Stepper indices for the title flow.
 const STEP_INPUT = 0;
 const STEP_MATCH = 1;
-const STEP_RESOLVE = 2;
-const STEP_MERGE = 3;
-const STEP_CONFIGURE = 4;
-const STEP_DONE = 5;
+const STEP_MERGE = 2;
+const STEP_CONFIGURE = 3;
+const STEP_DONE = 4;
 
 export const TitleImportFlow = () => {
   const { t } = useTranslation("games");
@@ -76,121 +53,73 @@ export const TitleImportFlow = () => {
 
   const [activeStep, setActiveStep] = React.useState(STEP_INPUT);
   const [titles, setTitles] = React.useState<string[]>([]);
-  const [batchIndex, setBatchIndex] = React.useState(0);
-  const [batchResults, setBatchResults] = React.useState<Record<number, TitleImportResult[]>>({});
-  // Batches whose request failed, keyed by batch index (a prefetched batch can fail while another is on screen).
-  const [failedBatches, setFailedBatches] = React.useState<Record<number, boolean>>({});
-  // Match-step decisions and manual resolve-step picks, both keyed by title index.
-  const [decisions, setDecisions] = React.useState<Record<number, MatchDecision>>({});
-  const [manualPicks, setManualPicks] = React.useState<Record<number, ImportedGame>>({});
+  // Match-step result per title index; a title without one is skipped from the import.
+  const [resolutions, setResolutions] = React.useState<Record<number, TitleResolution>>({});
   const [duplicateGroups, setDuplicateGroups] = React.useState<Array<DuplicateGroup<ImportedGame>>>([]);
-  const [hadUnmatched, setHadUnmatched] = React.useState(false);
   const [importedCount, setImportedCount] = React.useState(0);
+  // Store games waiting to be matched; the only source of titles. Filled by the Platform Sync buttons.
+  const [pendingEntries, setPendingEntries] = React.useState<StoreEntry[]>([]);
+  // Store ids of the titles that came from a Platform Sync, so a pick can be recorded as a Store Mapping.
+  const [storeRefs, setStoreRefs] = React.useState<StoreRefsByTitle>({});
 
   const { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange } = useGameRows();
-  const { mutateAsync: matchTitles } = useTitleImport();
+  const { mutateAsync: linkListedGames } = useStoreLink();
+  const { mutateAsync: submitNotAGame } = useStoreNotAGame();
   const { mutateAsync: runBulkCreate, isPending: isImporting } = useBulkCreateGameList();
 
-  const batches = React.useMemo(() => chunkTitles(titles), [titles]);
+  // Games already on the user's list can still be matched to a store id; they only get the store added to "owned on".
+  const { data: exportedList } = useGetExportedGameList();
+  const listedGameIds = React.useMemo(() => new Set(exportedList?.map(entry => entry.game_id)), [exportedList]);
+  const isListed = React.useCallback((game: ImportedGame) => listedGameIds.has(game.id), [listedGameIds]);
 
-  const form = useForm<TitleFormValues>({
-    initialValues: { titlesRaw: "" },
-    validate: schemaResolver(titleFormSchema),
-  });
-
-  // ── Data derived from decisions ─────────────────────────────────────────
-  const unmatched: UnmatchedTitle[] = React.useMemo(
-    () =>
-      titles
-        .map((title, titleIndex) => ({ title, titleIndex }))
-        .filter(({ titleIndex }) => {
-          const decision = decisions[titleIndex];
-          return decision?.kind === "none" || decision?.kind === "no-matches";
-        }),
-    [titles, decisions],
+  // ── Data derived from resolutions ───────────────────────────────────────
+  const matchTitles: MatchTitle[] = React.useMemo(
+    () => titles.map((title, titleIndex) => ({ title, titleIndex, storeRefs: storeRefsForTitle(storeRefs, title) })),
+    [titles, storeRefs],
   );
 
   const gamePicks: Array<TitleGamePick<ImportedGame>> = React.useMemo(
     () =>
       titles
         .map((title, titleIndex) => {
-          const decision = decisions[titleIndex];
-          const game = decision?.kind === "game" ? decision.game : manualPicks[titleIndex];
-          return game ? { title, game } : null;
+          const resolution = resolutions[titleIndex];
+          return resolution?.kind === "game" ? { title, game: resolution.game } : null;
         })
         .filter((pick): pick is TitleGamePick<ImportedGame> => pick !== null),
-    [titles, decisions, manualPicks],
+    [titles, resolutions],
   );
 
-  // ── Batch fetching ──────────────────────────────────────────────────────
-  // Guards against an in-flight batch response landing after the titles were re-submitted.
-  const runIdRef = React.useRef(0);
-  // Batch indexes with a request in flight, so a prefetch and a click on "next" never request the same batch twice.
-  const inFlightRef = React.useRef(new Set<number>());
-
-  const fetchBatch = React.useCallback(
-    async (index: number, batchTitles: string[], options?: { newRun?: boolean }) => {
-      if (options?.newRun) {
-        runIdRef.current += 1;
-        inFlightRef.current.clear();
-      }
-      const runId = runIdRef.current;
-      inFlightRef.current.add(index);
-      setFailedBatches(prev => ({ ...prev, [index]: false }));
-      try {
-        const response = await matchTitles(batchTitles);
-        if (runIdRef.current !== runId) {
-          return;
-        }
-        setBatchResults(prev => ({ ...prev, [index]: response.results }));
-        setDecisions(prev => withAutoUnmatched(prev, response.results, index * TITLE_IMPORT_BATCH_SIZE));
-      } catch {
-        // toast shown by useAppMutation
-        if (runIdRef.current === runId) {
-          setFailedBatches(prev => ({ ...prev, [index]: true }));
-        }
-      } finally {
-        if (runIdRef.current === runId) {
-          inFlightRef.current.delete(index);
-        }
-      }
-    },
-    [matchTitles],
+  // The store games each picked game was chosen for, by game id; kept apart from `rows` so editing a row leaves it alone.
+  const listedCount = React.useMemo(
+    () => uniquePickedGames(gamePicks).filter(game => isListed(game)).length,
+    [gamePicks, isListed],
   );
 
-  // While the user reviews a batch, request the next one so it is already there when they continue.
-  React.useEffect(() => {
-    if (activeStep !== STEP_MATCH || !batchResults[batchIndex]) {
-      return;
+  const storeRefsByGameId = React.useMemo(() => {
+    const byGameId: Record<number, StoreRef[]> = {};
+    for (const pick of gamePicks) {
+      byGameId[pick.game.id] = [...(byGameId[pick.game.id] ?? []), ...storeRefsForTitle(storeRefs, pick.title)];
     }
-    const nextIndex = batchIndex + 1;
-    if (nextIndex >= batches.length || batchResults[nextIndex] || inFlightRef.current.has(nextIndex)) {
-      return;
-    }
-    void fetchBatch(nextIndex, batches[nextIndex]);
-  }, [activeStep, batchIndex, batchResults, batches, fetchBatch]);
+    return byGameId;
+  }, [gamePicks, storeRefs]);
 
-  // A new step or batch is a new page: start it from the top, as the Next/Back buttons sit at the bottom.
+  // A new step is a new page: start it from the top, as the Next/Back buttons sit at the bottom.
   React.useEffect(() => {
     window.scrollTo({ top: 0 });
-  }, [activeStep, batchIndex]);
+  }, [activeStep]);
 
   // ── Step transitions ────────────────────────────────────────────────────
-  const handleTitlesSubmit = (values: TitleFormValues) => {
-    const parsed = parseTitles(values.titlesRaw);
+  const handleTitlesSubmit = () => {
+    const parsed = parseTitles(pendingEntries.map(entry => entry.title).join("\n"));
     setTitles(parsed);
-    setBatchIndex(0);
-    setBatchResults({});
-    setFailedBatches({});
-    setDecisions({});
-    setManualPicks({});
+    setStoreRefs(storeRefsFromEntries(pendingEntries));
+    setResolutions({});
     setRows([]);
     setActiveStep(STEP_MATCH);
-    void fetchBatch(0, parsed.slice(0, TITLE_IMPORT_BATCH_SIZE), { newRun: true });
   };
 
   const goToConfigure = () => {
-    const games = uniquePickedGames(gamePicks);
+    const games = uniquePickedGames(gamePicks).filter(game => !isListed(game));
     setRows(prev => reconcileRows(games, prev));
     setActiveStep(STEP_CONFIGURE);
   };
@@ -205,78 +134,59 @@ export const TitleImportFlow = () => {
     }
   };
 
-  const goToResolveOrBeyond = () => {
-    setHadUnmatched(unmatched.length > 0);
-    if (unmatched.length > 0) {
-      setActiveStep(STEP_RESOLVE);
-    } else {
-      goToMergeOrConfigure();
-    }
-  };
-
-  const handleMatchNext = () => {
-    if (batchIndex < batches.length - 1) {
-      const nextIndex = batchIndex + 1;
-      setBatchIndex(nextIndex);
-      if (!batchResults[nextIndex] && !inFlightRef.current.has(nextIndex)) {
-        void fetchBatch(nextIndex, batches[nextIndex]);
-      }
-    } else {
-      goToResolveOrBeyond();
-    }
-  };
-
-  const handleMatchBack = () => {
-    if (batchIndex > 0) {
-      setBatchIndex(batchIndex - 1);
-    } else {
-      setActiveStep(STEP_INPUT);
-    }
-  };
-
   const handleConfigureBack = () => {
-    if (duplicateGroups.length > 0) {
-      setActiveStep(STEP_MERGE);
-    } else if (hadUnmatched) {
-      setActiveStep(STEP_RESOLVE);
-    } else {
-      setActiveStep(STEP_MATCH);
-    }
+    setActiveStep(duplicateGroups.length > 0 ? STEP_MERGE : STEP_MATCH);
   };
 
-  // ── Decision handlers ───────────────────────────────────────────────────
-  const handleDecide = React.useCallback((titleIndex: number, decision: MatchDecision | null) => {
-    setDecisions(prev => {
-      const next = { ...prev };
-      if (decision === null) {
-        delete next[titleIndex];
-      } else {
-        next[titleIndex] = decision;
-      }
-      return next;
-    });
-    // A fresh match-step decision supersedes any earlier manual pick.
-    setManualPicks(prev => {
-      if (!(titleIndex in prev)) {
-        return prev;
-      }
-      const next = { ...prev };
-      delete next[titleIndex];
-      return next;
+  // ── Resolution handlers ─────────────────────────────────────────────────
+  const handlePick = React.useCallback((titleIndex: number, game: GameSimpleList) => {
+    setResolutions(prev => ({ ...prev, [titleIndex]: { kind: "game", game } }));
+  }, []);
+
+  const handleClear = React.useCallback((titleIndex: number) => {
+    setResolutions(prev => {
+      const { [titleIndex]: _removed, ...rest } = prev;
+      return rest;
     });
   }, []);
 
-  const handleManualPick = React.useCallback((titleIndex: number, game: GameSimpleList) => {
-    setManualPicks(prev => ({ ...prev, [titleIndex]: game }));
-  }, []);
-
-  const handleClearManualPick = React.useCallback((titleIndex: number) => {
-    setManualPicks(prev => {
-      const next = { ...prev };
-      delete next[titleIndex];
-      return next;
+  const handleToggleNotAGame = React.useCallback((titleIndex: number) => {
+    setResolutions(prev => {
+      if (prev[titleIndex]?.kind === "not-a-game") {
+        const { [titleIndex]: _removed, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [titleIndex]: { kind: "not-a-game" } };
     });
   }, []);
+
+  // Titles marked as not a game are proposed to the backend before moving on; a failure only shows a toast.
+  const handleMatchContinue = async () => {
+    const markedTitles = matchTitles.filter(item => resolutions[item.titleIndex]?.kind === "not-a-game");
+    const refs = storeRefsForTitles(
+      storeRefs,
+      markedTitles.map(item => item.title),
+    );
+    if (refs.length > 0) {
+      try {
+        await submitNotAGame(refs);
+      } catch {
+        // toast shown by useAppMutation
+      }
+    }
+    goToMergeOrConfigure();
+  };
+
+  // Entries the backend could not match by store id are listed to go through title matching.
+  const handleUnmatchedFromStore = (entries: StoreEntry[]) => {
+    setPendingEntries(prev => mergeStoreEntries(prev, entries));
+  };
+
+  const handleRemoveEntry = (entry: StoreEntry) => {
+    setPendingEntries(prev =>
+      prev.filter(other => other.platform !== entry.platform || other.store_id !== entry.store_id),
+    );
+  };
 
   // ── Final import ────────────────────────────────────────────────────────
   const handleImport = async () => {
@@ -284,8 +194,9 @@ export const TitleImportFlow = () => {
       notifications.show({ title: "Error", message: "User not identified.", color: "red" });
       return;
     }
-    const body: GameListCreateWritable[] = rows.map(row => ({
+    const body: GameListBulkCreateItemWritable[] = rows.map(row => ({
       game: row.game.id,
+      store_refs: storeRefsByGameId[row.game.id] ?? [],
       status: row.status,
       score: row.score,
       owned_on: row.owned_on.map(Number),
@@ -294,9 +205,18 @@ export const TitleImportFlow = () => {
       playtime: playtimeHoursToMinutes(row.playtime),
       description: row.description || undefined,
     }));
+    const links = storeLinksForPicks(
+      pendingEntries,
+      gamePicks.filter(pick => isListed(pick.game)),
+    );
     try {
-      await runBulkCreate(body);
-      setImportedCount(rows.length);
+      if (body.length > 0) {
+        await runBulkCreate(body);
+      }
+      if (links.length > 0) {
+        await linkListedGames(links);
+      }
+      setImportedCount(rows.length + listedCount);
       setActiveStep(STEP_DONE);
     } catch {
       // handled by useAppMutation
@@ -308,7 +228,6 @@ export const TitleImportFlow = () => {
       <Stepper active={activeStep} size="sm" className={styles.stepperWrapper}>
         <Stepper.Step label={t("import.stepTitles")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepMatch")} completedIcon={<IconCheck size={16} />} />
-        <Stepper.Step label={t("import.stepResolve")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepDuplicates")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepConfigure")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepDone")} completedIcon={<IconCheck size={16} />} />
@@ -317,82 +236,71 @@ export const TitleImportFlow = () => {
       {/* ── Step 0: Titles input ────────────────────────── */}
       {activeStep === STEP_INPUT && (
         <Box className={styles.card}>
-          <form onSubmit={event => form.onSubmit(handleTitlesSubmit)(event)} noValidate>
-            <Stack gap={24}>
-              <PlatformSyncButtons
-                onTitles={incoming => form.setFieldValue("titlesRaw", appendTitles(form.values.titlesRaw, incoming))}
-              />
+          <Stack gap={24}>
+            <PlatformSyncButtons onUnmatched={handleUnmatchedFromStore} />
 
-              <NumberedTextarea
-                id="import-titles"
-                label={t("import.titlesLabel")}
-                placeholder={t("import.titlesPlaceholder")}
-                maxRows={16}
-                {...form.getInputProps("titlesRaw")}
-              />
+            <ImportEntryList
+              entries={pendingEntries}
+              onRemove={handleRemoveEntry}
+              onClear={() => setPendingEntries([])}
+            />
 
-              <div className={styles.noticeBox}>
-                <IconInfoCircle size={20} style={{ color: "var(--color-primary-tint-text)", flexShrink: 0 }} />
-                <Text fz="sm" className={styles.noticeText}>
-                  {t("import.titlesNotice")}
-                </Text>
-              </div>
+            <div className={styles.noticeBox}>
+              <IconInfoCircle size={20} style={{ color: "var(--color-primary-tint-text)", flexShrink: 0 }} />
+              <Text fz="sm" className={styles.noticeText}>
+                {t("import.titlesNotice")}
+              </Text>
+            </div>
 
-              <Group justify="flex-end">
-                <Button type="submit" leftSection={<IconListSearch size={16} />}>
-                  {t("import.matchButton")}
-                </Button>
-              </Group>
-            </Stack>
-          </form>
+            <Group justify="flex-end">
+              <Button
+                type="button"
+                leftSection={<IconListSearch size={16} />}
+                disabled={pendingEntries.length === 0}
+                onClick={handleTitlesSubmit}
+              >
+                {t("import.matchButton")}
+              </Button>
+            </Group>
+          </Stack>
         </Box>
       )}
 
-      {/* ── Step 1: Match batches ───────────────────────── */}
+      {/* ── Step 1: Match titles to catalogue games ─────── */}
       {activeStep === STEP_MATCH && (
         <TitleMatchStep
-          batchIndex={batchIndex}
-          batchCount={batches.length}
-          batchTitles={batches[batchIndex] ?? []}
-          batchOffset={batchIndex * TITLE_IMPORT_BATCH_SIZE}
-          results={batchResults[batchIndex]}
-          isLoading={!batchResults[batchIndex] && !failedBatches[batchIndex]}
-          isError={Boolean(failedBatches[batchIndex])}
-          onRetry={() => void fetchBatch(batchIndex, batches[batchIndex])}
-          decisions={decisions}
-          onDecide={handleDecide}
-          onBack={handleMatchBack}
-          onNext={handleMatchNext}
-          isLastBatch={batchIndex === batches.length - 1}
+          titles={matchTitles}
+          resolutions={resolutions}
+          isListed={isListed}
+          onPick={handlePick}
+          onClear={handleClear}
+          onToggleNotAGame={handleToggleNotAGame}
+          onBack={() => setActiveStep(STEP_INPUT)}
+          onContinue={() => void handleMatchContinue()}
         />
       )}
 
-      {/* ── Step 2: Resolve unmatched ───────────────────── */}
-      {activeStep === STEP_RESOLVE && (
-        <TitleResolveStep
-          unmatched={unmatched}
-          manualPicks={manualPicks}
-          onPick={handleManualPick}
-          onClearPick={handleClearManualPick}
-          onBack={() => setActiveStep(STEP_MATCH)}
-          onContinue={goToMergeOrConfigure}
-        />
-      )}
-
-      {/* ── Step 3: Duplicate merge ─────────────────────── */}
+      {/* ── Step 2: Duplicate merge ─────────────────────── */}
       {activeStep === STEP_MERGE && (
         <TitleMergeStep
           groups={duplicateGroups}
-          onBack={() => setActiveStep(hadUnmatched ? STEP_RESOLVE : STEP_MATCH)}
+          storeRefs={storeRefs}
+          onBack={() => setActiveStep(STEP_MATCH)}
           onConfirm={goToConfigure}
         />
       )}
 
-      {/* ── Step 4: Configure ───────────────────────────── */}
+      {/* ── Step 3: Configure ───────────────────────────── */}
       {activeStep === STEP_CONFIGURE && (
         <Stack gap={24}>
+          {listedCount > 0 && (
+            <Text fz="sm" c="dimmed">
+              {t("import.listedGamesNote", { count: listedCount })}
+            </Text>
+          )}
           <ConfigureGameList
             rows={rows}
+            storeRefsByGameId={storeRefsByGameId}
             onStatusChange={onStatusChange}
             onScoreChange={onScoreChange}
             onFieldChange={onFieldChange}
@@ -409,16 +317,16 @@ export const TitleImportFlow = () => {
             <Button
               onClick={handleImport}
               isLoading={isImporting}
-              disabled={rows.length === 0}
+              disabled={rows.length === 0 && listedCount === 0}
               leftSection={<IconDownload size={16} />}
             >
-              {t("import.importButton", { count: rows.length })}
+              {t("import.importButton", { count: rows.length + listedCount })}
             </Button>
           </Group>
         </Stack>
       )}
 
-      {/* ── Step 5: Success ─────────────────────────────── */}
+      {/* ── Step 4: Success ─────────────────────────────── */}
       {activeStep === STEP_DONE && <SuccessStep importedCount={importedCount} />}
     </>
   );

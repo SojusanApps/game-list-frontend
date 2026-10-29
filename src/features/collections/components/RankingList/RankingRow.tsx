@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import type { User } from "@/client";
 import { TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
@@ -400,7 +401,7 @@ export const RankingRow = React.memo(
 
             {/* Title and Inline Description */}
             <Stack gap={2} style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
-              <Text
+              <TruncatedText
                 fw={800}
                 fz="sm"
                 style={{
@@ -413,9 +414,10 @@ export const RankingRow = React.memo(
                 }}
               >
                 {title}
-              </Text>
+              </TruncatedText>
               {hasDescription && (
-                <Text
+                <TruncatedText
+                  label={description}
                   size="xs"
                   c="var(--color-text-500)"
                   style={{
@@ -428,7 +430,7 @@ export const RankingRow = React.memo(
                   }}
                 >
                   “{description}”
-                </Text>
+                </TruncatedText>
               )}
               {!hasDescription && isOwner && (
                 <Text

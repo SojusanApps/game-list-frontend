@@ -55,6 +55,11 @@ export default function AdminPage(): React.JSX.Element {
       to: "/admin/translation-suggestions",
     },
     {
+      label: t("actions.storeMappings.label"),
+      description: t("actions.storeMappings.description"),
+      to: "/admin/store-mappings",
+    },
+    {
       label: t("actions.reports.label"),
       description: t("actions.reports.description"),
       to: "/admin/reports",

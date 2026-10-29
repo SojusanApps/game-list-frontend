@@ -1,13 +1,12 @@
 import { Box, Group, Popover, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { Link } from "@tanstack/react-router";
 import { diffWords, type Change } from "diff";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { TargetTypeEnum, TranslationSuggestion, TranslationSuggestionStatusEnum, type UserSimple } from "@/client";
+import { TargetTypeEnum, TranslationSuggestion, TranslationSuggestionStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
-import { SafeImage } from "@/components/ui/SafeImage";
+import { UserChip } from "@/components/ui/UserChip";
 import { useCurrentUserId, useIsStaff } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
@@ -18,27 +17,6 @@ import {
   useWithdrawTranslationSuggestion,
 } from "../hooks/translationSuggestionQueries";
 import { canModerate, canWithdraw } from "../utils/translationSuggestion";
-
-function UserChip({ user, size = 20 }: Readonly<{ user: UserSimple; size?: number }>) {
-  return (
-    <Link
-      to="/profile/$id/$slug"
-      params={{ id: user.id.toString(), slug: user.slug || "" }}
-      style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}
-    >
-      <Box style={{ width: size, height: size, borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
-        <SafeImage
-          src={user.gravatar_url || undefined}
-          alt={user.username}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </Box>
-      <Text fz="xs" c="dimmed">
-        {user.username}
-      </Text>
-    </Link>
-  );
-}
 
 const CODE_BLOCK_STYLE: React.CSSProperties = {
   fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
@@ -66,18 +44,26 @@ function diffPartStyle(part: Change): React.CSSProperties {
   return {};
 }
 
+/**
+ * Diff chunks have no identity of their own; their start offset in the combined diff text is unique
+ * (chunks are never empty) and depends only on the content before them.
+ */
+function keyedDiffParts(current: string, proposed: string): Array<{ part: Change; key: number }> {
+  const keyed: Array<{ part: Change; key: number }> = [];
+  let offset = 0;
+  for (const part of diffWords(current, proposed)) {
+    keyed.push({ part, key: offset });
+    offset += part.value.length;
+  }
+  return keyed;
+}
+
 function ValueDiff({ current, proposed }: Readonly<{ current: string; proposed: string }>) {
-  const parts = diffWords(current, proposed);
+  const parts = React.useMemo(() => keyedDiffParts(current, proposed), [current, proposed]);
   return (
     <Box style={CODE_BLOCK_STYLE}>
-      {parts.map((part, index) => (
-        <Text
-          // Diff chunks have no stable identity of their own, so the index is the only usable key.
-          // oxlint-disable-next-line react/no-array-index-key
-          key={index}
-          component="span"
-          style={diffPartStyle(part)}
-        >
+      {parts.map(({ part, key }) => (
+        <Text key={key} component="span" style={diffPartStyle(part)}>
           {part.value}
         </Text>
       ))}

@@ -13,15 +13,14 @@ import {
   Title,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum, type UserSimple } from "@/client";
+import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
-import { SafeImage } from "@/components/ui/SafeImage";
+import { UserChip } from "@/components/ui/UserChip";
 import { useIsStaff } from "@/features/auth";
 import { useAcceptReport, useGetReports, useRejectReport } from "@/features/moderation/hooks/moderationQueries";
 import { buildReportFilters, canModerateReport, ReportFilterState } from "@/features/moderation/utils/report";
@@ -71,27 +70,6 @@ const TARGET_TYPE_OPTIONS = [
   TargetTypeEnum.COLLECTION,
   TargetTypeEnum.COLLECTION_ITEM_NOTE,
 ];
-
-function UserChip({ user, size = 20 }: Readonly<{ user: UserSimple; size?: number }>) {
-  return (
-    <Link
-      to="/profile/$id/$slug"
-      params={{ id: user.id.toString(), slug: user.slug || "" }}
-      style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}
-    >
-      <Box style={{ width: size, height: size, borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
-        <SafeImage
-          src={user.gravatar_url || undefined}
-          alt={user.username}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </Box>
-      <Text fz="xs" c="dimmed">
-        {user.username}
-      </Text>
-    </Link>
-  );
-}
 
 function ReportRow({ report }: Readonly<{ report: Report }>) {
   const { t } = useTranslation("admin");

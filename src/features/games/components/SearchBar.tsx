@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { GameSimpleList } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { useGetGamesList } from "@/features/games/hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
@@ -103,15 +104,15 @@ export default function SearchBar({ variant = "dark" }: Readonly<SearchBarProps>
               />
             </Box>
             <Stack gap={0} style={{ overflow: "hidden" }}>
-              <Text
-                component="span"
+              <TruncatedText
+                span
                 fw={700}
                 c="var(--color-text-900)"
                 fz="sm"
                 style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
               >
                 {game.title}
-              </Text>
+              </TruncatedText>
               {game.release_date && (
                 <Text component="span" fz="xs" c="var(--color-text-500)" fw={500}>
                   {new Date(game.release_date).getFullYear()}

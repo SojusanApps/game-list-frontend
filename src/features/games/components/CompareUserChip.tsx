@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 import { UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 
 import styles from "./CompareUserChip.module.css";
 
@@ -24,7 +25,7 @@ export function CompareUserChip({ userDetails }: Readonly<CompareUserChipProps>)
           alt={`${userDetails.username}'s avatar`}
         />
       </Box>
-      <Text className={styles.username}>{userDetails.username}</Text>
+      <TruncatedText className={styles.username}>{userDetails.username}</TruncatedText>
     </Link>
   );
 }

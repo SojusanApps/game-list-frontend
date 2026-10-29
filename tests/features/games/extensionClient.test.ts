@@ -1,7 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { isExtensionInstalled, requestPlatformSync } from "@/features/games/extension/extensionClient";
-import { appendTitles } from "@/features/games/utils/titleImport";
+import { PlatformEnum } from "@/client";
+import { detectExtension, requestPlatformSync } from "@/features/games/extension/extensionClient";
+import {
+  addStoreRefs,
+  mergeStoreEntries,
+  storeRefsForTitles,
+  storeRefsFromEntries,
+} from "@/features/games/utils/titleImport";
 
 const ORIGIN = "http://localhost:5173";
 
@@ -24,24 +30,43 @@ function fakeWindow(reply: (message: Record<string, unknown>) => Record<string, 
   return win;
 }
 
-describe("isExtensionInstalled", () => {
-  it("is true when the extension answers PING with READY", async () => {
-    const win = fakeWindow(m => (m.type === "PING" ? { source: "gamelist-extension", type: "READY" } : null));
-    expect(await isExtensionInstalled(win as never)).toBe(true);
+describe("detectExtension", () => {
+  it("is ready when the extension answers PING with READY at the current contract version", async () => {
+    const win = fakeWindow(m =>
+      m.type === "PING" ? { source: "gamelist-extension", version: 2, type: "READY" } : null,
+    );
+    expect(await detectExtension(win as never)).toBe("ready");
   });
 
-  it("is false when nothing answers before the timeout", async () => {
+  it("is outdated when the extension speaks an older contract version", async () => {
+    const win = fakeWindow(m =>
+      m.type === "PING" ? { source: "gamelist-extension", version: 1, type: "READY" } : null,
+    );
+    expect(await detectExtension(win as never)).toBe("outdated");
+  });
+
+  it("is outdated when READY carries no version", async () => {
+    const win = fakeWindow(m => (m.type === "PING" ? { source: "gamelist-extension", type: "READY" } : null));
+    expect(await detectExtension(win as never)).toBe("outdated");
+  });
+
+  it("is missing when nothing answers before the timeout", async () => {
     vi.useFakeTimers();
-    const pending = isExtensionInstalled(fakeWindow(() => null) as never);
+    const pending = detectExtension(fakeWindow(() => null) as never);
     await vi.advanceTimersByTimeAsync(1500);
-    expect(await pending).toBe(false);
+    expect(await pending).toBe("missing");
     vi.useRealTimers();
   });
 });
 
 describe("requestPlatformSync", () => {
   it("resolves with the result carrying the same requestId", async () => {
-    const result = { platform: "steam", status: "ok", titles: ["Hades"], count: 1 };
+    const result = {
+      platform: "steam",
+      status: "ok",
+      entries: [{ storeId: "1145360", title: "Hades", wishlisted: false }],
+      count: 1,
+    };
     const win = fakeWindow(m =>
       m.type === "SYNC" ? { source: "gamelist-extension", type: "SYNC_RESULT", requestId: m.requestId, result } : null,
     );
@@ -54,7 +79,7 @@ describe("requestPlatformSync", () => {
       source: "gamelist-extension",
       type: "SYNC_RESULT",
       requestId: "someone-else",
-      result: { platform: "steam", status: "ok", titles: ["X"], count: 1 },
+      result: { platform: "steam", status: "ok", entries: [], count: 0 },
     }));
     const pending = requestPlatformSync("steam", win as never, 5000);
     await vi.advanceTimersByTimeAsync(6000);
@@ -63,12 +88,57 @@ describe("requestPlatformSync", () => {
   });
 });
 
-describe("appendTitles", () => {
-  it("appends one per line and skips titles already present, ignoring case", () => {
-    expect(appendTitles("Hades\nCeleste", ["celeste", "Hollow Knight"])).toBe("Hades\nCeleste\nHollow Knight");
+const entry = (platform: PlatformEnum, store_id: string, title = "Hades") => ({
+  platform,
+  store_id,
+  title,
+  wishlisted: false,
+});
+
+describe("mergeStoreEntries", () => {
+  it("appends new entries after the current ones", () => {
+    const merged = mergeStoreEntries([entry(PlatformEnum.STEAM, "1")], [entry(PlatformEnum.STEAM, "2", "Celeste")]);
+    expect(merged.map(e => e.store_id)).toEqual(["1", "2"]);
   });
 
-  it("works on an empty textarea", () => {
-    expect(appendTitles("", ["A", "B", "A"])).toBe("A\nB");
+  it("skips entries with an already present platform and store id, including duplicates in the incoming list", () => {
+    const merged = mergeStoreEntries(
+      [entry(PlatformEnum.STEAM, "1")],
+      [entry(PlatformEnum.STEAM, "1"), entry(PlatformEnum.GOG, "1"), entry(PlatformEnum.GOG, "1")],
+    );
+    expect(merged.map(e => `${e.platform}:${e.store_id}`)).toEqual(["steam:1", "gog:1"]);
+  });
+});
+
+describe("storeRefsFromEntries", () => {
+  it("collects a ref per entry under its lowercased title", () => {
+    const refs = storeRefsFromEntries([
+      { platform: PlatformEnum.STEAM, store_id: "1", title: "Hades", wishlisted: false },
+      { platform: PlatformEnum.GOG, store_id: "9", title: "hades", wishlisted: true },
+    ]);
+    expect(refs.hades.map(ref => ref.store_id)).toEqual(["1", "9"]);
+  });
+});
+
+describe("store refs", () => {
+  it("adds one ref per store id, keyed by lowercased title, and never twice", () => {
+    const entries = [
+      { store_id: "1", title: "Hades" },
+      { store_id: "1", title: "Hades" },
+      { store_id: "2", title: " HADES " },
+    ];
+    const refs = addStoreRefs({}, PlatformEnum.STEAM, entries);
+    expect(refs).toEqual({
+      hades: [
+        { platform: "steam", store_id: "1", store_title: "Hades" },
+        { platform: "steam", store_id: "2", store_title: "HADES" },
+      ],
+    });
+  });
+
+  it("collects the refs of several titles picked for one game", () => {
+    let refs = addStoreRefs({}, PlatformEnum.STEAM, [{ store_id: "1", title: "Hades" }]);
+    refs = addStoreRefs(refs, PlatformEnum.GOG, [{ store_id: "9", title: "Hades (GOG)" }]);
+    expect(storeRefsForTitles(refs, ["hades", "Hades (GOG)", "Unknown"]).map(ref => ref.store_id)).toEqual(["1", "9"]);
   });
 });

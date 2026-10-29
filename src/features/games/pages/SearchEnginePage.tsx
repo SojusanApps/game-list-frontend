@@ -25,6 +25,7 @@ import GameSearchFilter, {
 } from "@/features/games/components/GameSearchFilter";
 import { useSearchInfiniteQuery, useSearchQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { cleanGameFilters } from "@/features/games/utils/searchFilters";
 import { useListViewStore } from "@/lib/listViewStore";
 import { Route } from "@/routes/search";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
@@ -217,14 +218,7 @@ export default function SearchEnginePage(): React.JSX.Element {
   };
 
   const prepareFiltersForRequest = (data: SearchFilterValidatorsType) => {
-    const filterData: Record<string, unknown> = {};
-
-    for (const [key, value] of Object.entries(data)) {
-      if (value === "" || value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
-        continue;
-      }
-      Object.assign(filterData, { [key]: value instanceof Date ? value.toISOString().split("T")[0] : value });
-    }
+    const filterData = cleanGameFilters(data);
 
     navigate({
       search: prev => ({
@@ -477,6 +471,7 @@ export default function SearchEnginePage(): React.JSX.Element {
         >
           {selectedCategory === "games" && (
             <GameSearchFilter
+              showIgdbId
               initialFilters={otherFilters}
               onSubmitHandlerCallback={data => prepareFiltersForRequest(data)}
             />

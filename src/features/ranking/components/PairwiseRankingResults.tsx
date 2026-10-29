@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
 import type { RankedItem } from "../types";
@@ -112,9 +113,9 @@ export const PairwiseRankingResults = React.memo(function ({
 
                 {/* Title */}
                 <Box style={{ flex: 1, minWidth: 0 }}>
-                  <Text fw={700} c="var(--color-text-900)" lineClamp={1} fz="sm">
+                  <TruncatedText fw={700} c="var(--color-text-900)" lineClamp={1} fz="sm">
                     {item.title}
-                  </Text>
+                  </TruncatedText>
                 </Box>
 
                 {/* Stats */}

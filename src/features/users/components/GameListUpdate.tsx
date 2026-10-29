@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { GameList, GameListStatusEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { StatusIcon } from "@/features/games/utils/StatusIcon";
@@ -49,14 +50,14 @@ export default function GameListUpdate({ latestGameListUpdate }: Readonly<GameLi
 
       <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
         <Group justify="space-between" align="flex-start" gap={8}>
-          <Text
+          <TruncatedText
             fw={700}
             size="sm"
             c="var(--color-text-900)"
             style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}
           >
             {latestGameListUpdate.title}
-          </Text>
+          </TruncatedText>
           <Text
             component="span"
             size="xs"

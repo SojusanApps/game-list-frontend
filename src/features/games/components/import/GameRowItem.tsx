@@ -7,12 +7,15 @@ import { useTranslation } from "react-i18next";
 import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import i18n from "@/lib/i18n";
 import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 import { StatusIcon } from "../../utils/StatusIcon";
+import { StoreRef } from "../../utils/titleImport";
+import { StoreRefList } from "./StoreRefList";
 import { GameRow } from "./types";
 
 import styles from "./GameRowItem.module.css";
@@ -54,6 +57,8 @@ export interface StatusOption {
 
 interface GameRowItemProps {
   row: GameRow;
+  /** The store games this game was picked for; shown under the title. */
+  storeRefs?: readonly StoreRef[];
   index: number;
   statusData: StatusOption[];
   expanded: boolean;
@@ -65,6 +70,7 @@ interface GameRowItemProps {
 
 const GameRowItemComponent = ({
   row,
+  storeRefs,
   index,
   statusData,
   expanded,
@@ -86,9 +92,10 @@ const GameRowItemComponent = ({
             <IconSearch size={18} color="var(--color-text-400)" />
           </div>
         )}
-        <Text className={styles.gameTitle} title={row.game.title}>
-          {row.game.title}
-        </Text>
+        <div className={styles.gameInfo}>
+          <TruncatedText className={styles.gameTitle}>{row.game.title}</TruncatedText>
+          {storeRefs && <StoreRefList refs={storeRefs} />}
+        </div>
         <div className={styles.fieldGroup}>
           <Select
             size="xs"

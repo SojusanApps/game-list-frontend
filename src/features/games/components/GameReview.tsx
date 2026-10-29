@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
@@ -91,13 +92,13 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
             />
           </Box>
           <Stack gap={0} style={{ minWidth: 0 }}>
-            <Text
+            <TruncatedText
               fw={700}
               c="var(--color-text-900)"
               style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
             >
               {gameReview?.user.username}
-            </Text>
+            </TruncatedText>
             <Text fz="xs" c="var(--color-text-500)" fw={500} fs="italic">
               {createdAt}
             </Text>

@@ -7,5 +7,7 @@
   "nameRequired": "Nazwa jest wymagana",
   "selectAtLeastOne": "Wybierz co najmniej jedną kolekcję",
   "descriptionMax": "Opis musi mieć 500 znaków lub mniej",
-  "titlesRequired": "Wymagany jest co najmniej jeden tytuł gry"
+  "storePlatformRequired": "Wybierz sklep",
+  "storeIdRequired": "Identyfikator w sklepie jest wymagany",
+  "storeGameRequired": "Wybierz grę"
 }
