@@ -1,9 +1,11 @@
-import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Group, Stack, Text, Tooltip, VisuallyHidden } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Game, GameEngine, GameMode, Genre, Platform, PlayerPerspective } from "@/client";
+import { Panel } from "@/components/ui/Panel";
+import { PanelHeader } from "@/components/ui/PanelHeader";
 import { useLanguageStore } from "@/lib/languageStore";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
@@ -22,13 +24,17 @@ function GameInfoRow({
   value?: React.ReactNode;
   children?: React.ReactNode;
 }>) {
+  // Missing data is left out rather than shown as a placeholder row.
+  if (children === undefined && (value === undefined || value === null || value === "")) {
+    return null;
+  }
   return (
     <Group justify="space-between" align="flex-start" gap="md">
       <Text size="sm" fw={500} c="var(--color-text-600)" style={{ flexShrink: 0 }}>
         {label}
       </Text>
-      <Text size="sm" ta="right" c="var(--color-text-900)" style={{ flex: 1, wordBreak: "break-all" }}>
-        {children ?? value ?? "---"}
+      <Text size="sm" ta="right" c="var(--color-text-900)" style={{ flex: 1, overflowWrap: "anywhere" }}>
+        {children ?? value}
       </Text>
     </Group>
   );
@@ -43,19 +49,16 @@ function GameTags<T>({
   items?: T[];
   renderItem: (item: T) => React.ReactNode;
 }>) {
+  if (!items || items.length === 0) {
+    return null;
+  }
   return (
     <Stack gap={4}>
       <Text size="sm" fw={500} c="var(--color-text-600)">
         {title}
       </Text>
       <Group gap={8} wrap="wrap">
-        {items && items.length > 0 ? (
-          items.map(item => renderItem(item))
-        ) : (
-          <Text size="sm" c="var(--color-text-900)">
-            ---
-          </Text>
-        )}
+        {items.map(item => renderItem(item))}
       </Group>
     </Stack>
   );
@@ -74,29 +77,16 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
   const language = useLanguageStore(state => state.language);
   const externalGames = gameDetails?.external_games || [];
   return (
-    <Box
+    <Panel
+      p={0}
       style={{
-        background: "var(--color-background-100)",
-        borderRadius: 12,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        border: "1px solid var(--color-background-200)",
         overflow: "hidden",
       }}
     >
-      <Box
-        style={{
-          background: "var(--color-background-50)",
-          padding: "12px 16px",
-          borderBottom: "1px solid var(--color-background-200)",
-        }}
-      >
-        <Text fw={600} c="var(--color-text-900)">
-          {t("info.title")}
-        </Text>
-      </Box>
+      <PanelHeader title={t("info.title")} />
       <Stack gap={12} p="md">
         <GameInfoRow label={t("info.igdbId")}>
-          <IgdbLink id={gameDetails?.id.toString() || ""} slug={gameDetails?.slug || ""} />
+          <IgdbLink id={gameDetails?.igdb_id?.toString() || ""} slug={gameDetails?.slug || ""} />
         </GameInfoRow>
         {language === "pl" && gameDetails?.title_en && (
           <GameInfoRow label={t("info.titleEn")} value={gameDetails.title_en} />
@@ -165,7 +155,14 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
                   padding: "2px 8px",
                 }}
               >
-                {platform.abbreviation === "" ? platform.name : platform.abbreviation}
+                {platform.abbreviation === "" ? (
+                  platform.name
+                ) : (
+                  <>
+                    <span aria-hidden>{platform.abbreviation}</span>
+                    <VisuallyHidden>{platform.name}</VisuallyHidden>
+                  </>
+                )}
               </Text>
             </Tooltip>
           )}
@@ -236,6 +233,6 @@ export default function GameInformation({ gameDetails }: Readonly<GameInformatio
 
         <ExternalLinksSection externalGames={externalGames} />
       </Stack>
-    </Box>
+    </Panel>
   );
 }

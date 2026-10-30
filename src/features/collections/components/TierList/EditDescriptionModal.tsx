@@ -48,6 +48,7 @@ export const EditDescriptionModal = ({
 
   return (
     <AppModal
+      fullScreenOnMobile
       opened={isOpen}
       onClose={onClose}
       title={t("descriptionModal.tierTitle")}

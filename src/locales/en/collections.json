@@ -28,7 +28,12 @@
       "visibility": "Visibility",
       "mode": "Mode",
       "updated": "Updated"
-    }
+    },
+    "filterShow": "Show",
+    "clearAll": "Clear all",
+    "removeFilter": "Remove filter: {{name}}",
+    "activeName": "Name: {{value}}",
+    "activeFilters": "Active filters"
   },
   "visibility": {
     "public": "Public",
@@ -98,7 +103,16 @@
     "updateSuccess": "Collection updated successfully",
     "updateFailed": "Failed to update collection",
     "successTitle": "Success",
-    "errorTitle": "Error"
+    "errorTitle": "Error",
+    "removeCollaborator": "Remove collaborator {{name}}",
+    "deleteButton": "Delete collection",
+    "deleteConfirmTitle": "Delete this collection?",
+    "deleteConfirmMessage_one": "\"{{name}}\" and its {{count}} game will be permanently deleted. This can't be undone.",
+    "deleteConfirmMessage_other": "\"{{name}}\" and its {{count}} games will be permanently deleted. This can't be undone.",
+    "deleteConfirmMessage_few": "\"{{name}}\" and its {{count}} games will be permanently deleted. This can't be undone.",
+    "deleteConfirmMessage_many": "\"{{name}}\" and its {{count}} games will be permanently deleted. This can't be undone.",
+    "deleteSuccess": "Collection deleted",
+    "deleteError": "Couldn't delete the collection. Try again."
   },
   "addModal": {
     "title": "Add to Collection",
@@ -168,7 +182,10 @@
   },
   "card": {
     "game": "Game",
-    "games": "Games"
+    "games": "Games",
+    "empty": "Empty",
+    "by": "by",
+    "gameAlt": "Game {{index}}"
   },
   "rankingRow": {
     "viewDetails": "View details",
@@ -176,7 +193,10 @@
     "addNote": "Add Note",
     "addNotePrompt": "+ Add a note",
     "removeGame": "Remove game",
-    "clickToEditRank": "Click to edit rank"
+    "clickToEditRank": "Click to edit rank",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moreActions": "More actions"
   },
   "tierList": {
     "totalGames": "Total Games",
@@ -196,6 +216,8 @@
     "itemReordered": "Item reordered successfully",
     "failedToReorder": "Failed to reorder item",
     "descriptionUpdated": "Description updated",
-    "failedToUpdateDescription": "Failed to update description"
+    "failedToUpdateDescription": "Failed to update description",
+    "moreActions": "More actions",
+    "viewNote": "View note"
   }
 }

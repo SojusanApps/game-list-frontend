@@ -1,4 +1,5 @@
 import { Box, Center, Group, Loader, NumberInput, Pagination, ScrollArea, Skeleton, Table, Text } from "@mantine/core";
+import { useReducedMotion } from "@mantine/hooks";
 import { type ColumnDef, flexRender, tableFeatures, useTable } from "@tanstack/react-table";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -125,25 +126,33 @@ export function PaginationControls({
   disabled = false,
   showGoToPage,
 }: Readonly<PaginationControlsProps>): React.JSX.Element | null {
+  const controlsRef = React.useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   if (totalPages <= 1) {
     return null;
   }
 
   const withGoTo = showGoToPage ?? totalPages > GO_TO_PAGE_THRESHOLD;
 
+  // A new page should start at the top of the list, not wherever the previous page's bottom left the viewport.
+  const handleChange = (next: number) => {
+    onPageChange(next);
+    controlsRef.current?.parentElement?.scrollIntoView({ block: "start", behavior: reducedMotion ? "auto" : "smooth" });
+  };
+
   return (
-    <Group justify="space-between" mt={16} wrap="wrap" gap={12}>
+    <Group ref={controlsRef} justify="space-between" mt={16} wrap="wrap" gap={12}>
       <Pagination
         total={totalPages}
         value={page}
-        onChange={onPageChange}
+        onChange={handleChange}
         siblings={1}
         boundaries={1}
         disabled={disabled}
       />
       {withGoTo && (
         <Center>
-          <GoToPage page={page} totalPages={totalPages} onPageChange={onPageChange} />
+          <GoToPage page={page} totalPages={totalPages} onPageChange={handleChange} />
         </Center>
       )}
     </Group>

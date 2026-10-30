@@ -1,10 +1,11 @@
-import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, ScrollArea, Text } from "@mantine/core";
 import { useElementSize, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { EmptyState } from "@/components/ui/EmptyState";
 import { computeCardRowHeight } from "@/utils/gridLayout";
 
 interface VirtualGridListProps<T> {
@@ -28,6 +29,33 @@ const BREAKPOINTS = [
   { minWidth: 768, maxCols8: 3, maxCols7: 3, maxCols5: 3, maxCols4: 2 },
   { minWidth: 0, maxCols8: 2, maxCols7: 2, maxCols5: 2, maxCols4: 1 },
 ];
+
+/**
+ * How many columns the grid shows: `requested` on wide screens, fewer as the viewport narrows. Exported so a
+ * parent can size the grid (e.g. by number of rows) from the same numbers the grid itself uses.
+ */
+export function resolveColumnCount(viewportWidth: number, requested = 7): number {
+  const breakpoint = BREAKPOINTS.find(bp => viewportWidth >= bp.minWidth);
+  if (!breakpoint || viewportWidth === 0) return requested;
+
+  switch (requested) {
+    case 8: {
+      return breakpoint.maxCols8;
+    }
+    case 7: {
+      return breakpoint.maxCols7;
+    }
+    case 5: {
+      return breakpoint.maxCols5;
+    }
+    case 4: {
+      return breakpoint.maxCols4;
+    }
+    default: {
+      return requested;
+    }
+  }
+}
 
 function renderTrailingContent(
   isFetchingNextPage: boolean | undefined,
@@ -79,31 +107,7 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
   const { width: viewportWidth } = useViewportSize();
   const { t } = useTranslation("common");
 
-  const getCols = () => {
-    const defaultCols = propColumnCount ?? 7;
-    const breakpoint = BREAKPOINTS.find(bp => viewportWidth >= bp.minWidth);
-
-    if (!breakpoint || viewportWidth === 0) return defaultCols;
-
-    switch (defaultCols) {
-      case 8: {
-        return breakpoint.maxCols8;
-      }
-      case 7: {
-        return breakpoint.maxCols7;
-      }
-      case 5: {
-        return breakpoint.maxCols5;
-      }
-      case 4: {
-        return breakpoint.maxCols4;
-      }
-      default: {
-        return defaultCols;
-      }
-    }
-  };
-  const columnCount = getCols();
+  const columnCount = resolveColumnCount(viewportWidth, propColumnCount);
 
   // px, so the row height can be computed from the same value the CSS grid uses
   const columnGap = gap * 4;
@@ -218,29 +222,7 @@ export const VirtualGridList = React.forwardRef(function VirtualGridListComponen
         })}
       </Box>
       {items.length === 0 && !isFetchingNextPage && (
-        <Stack align="center" justify="center" gap={24} style={{ paddingBlock: "80px", textAlign: "center" }}>
-          <Box
-            style={{
-              width: "80px",
-              height: "80px",
-              background: "var(--color-primary-tint-bg)",
-              borderRadius: "9999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconSearchOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
-          </Box>
-          <Stack gap={8}>
-            <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
-              {t("noResults")}
-            </Title>
-            <Text c="var(--color-text-500)" maw={384} mx="auto">
-              {t("noResultsDescription")}
-            </Text>
-          </Stack>
-        </Stack>
+        <EmptyState icon={<IconSearchOff size={40} />} title={t("noResults")} description={t("noResultsDescription")} />
       )}
     </ScrollArea>
   );

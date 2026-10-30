@@ -1,18 +1,26 @@
 /**
- * Message contract with the GameList browser extension (version 1).
+ * Message contract with the GameList browser extension (version 2).
  * Mirror of game-list-browser-extension/docs/frontend-contract.md.
  */
-export const EXTENSION_CONTRACT_VERSION = 1;
+export const EXTENSION_CONTRACT_VERSION = 2;
 
 export const SYNC_PLATFORMS = ["steam", "epic", "playstation", "nintendo", "gog"] as const;
 export type SyncPlatform = (typeof SYNC_PLATFORMS)[number];
 
 export type SyncStatus = "ok" | "not_logged_in" | "error";
 
+/** One game of a store library. `storeId` is the store's own id of the game. */
+export interface LibraryEntry {
+  storeId: string;
+  title: string;
+  /** True when the game is only on the store wishlist; false when the user owns it. */
+  wishlisted: boolean;
+}
+
 export interface SyncResult {
   platform: SyncPlatform;
   status: SyncStatus;
-  titles: string[];
+  entries: LibraryEntry[];
   count: number;
   error?: string;
 }

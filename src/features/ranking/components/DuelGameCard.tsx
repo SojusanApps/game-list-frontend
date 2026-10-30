@@ -3,6 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 
 import type { RankedItem } from "../types";
@@ -30,7 +31,7 @@ export const DuelGameCard = React.memo(function ({ item, side, onClick }: Readon
         />
       </Box>
 
-      <Text
+      <TruncatedText
         fw={900}
         c="var(--color-text-900)"
         ta="center"
@@ -39,7 +40,7 @@ export const DuelGameCard = React.memo(function ({ item, side, onClick }: Readon
         fz={{ base: "sm", md: "base" }}
       >
         {item.title}
-      </Text>
+      </TruncatedText>
 
       <Group gap={8}>
         <Text

@@ -13,13 +13,15 @@ export function LoginRequiredModal(): React.JSX.Element {
   const { login } = useAuth();
   const isOpen = useLoginPromptStore(state => state.isOpen);
   const close = useLoginPromptStore(state => state.close);
+  const reason = useLoginPromptStore(state => state.reason);
+  const redirectTo = useLoginPromptStore(state => state.redirectTo);
 
   return (
     <AppModal
       opened={isOpen}
       onClose={close}
       title={t("loginRequired.title")}
-      size="lg"
+      size="sm"
       centered
       footer={
         <Group justify="flex-end">
@@ -29,7 +31,7 @@ export function LoginRequiredModal(): React.JSX.Element {
           <Button
             onClick={() => {
               close();
-              login();
+              login(redirectTo);
             }}
           >
             {t("loginRequired.login")}
@@ -37,7 +39,9 @@ export function LoginRequiredModal(): React.JSX.Element {
         </Group>
       }
     >
-      <Text c="var(--color-text-700)">{t("loginRequired.message")}</Text>
+      <Text c="var(--color-text-700)">
+        {reason ? t(`loginRequired.reasons.${reason}`) : t("loginRequired.message")}
+      </Text>
     </AppModal>
   );
 }

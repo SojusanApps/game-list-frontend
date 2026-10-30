@@ -1,4 +1,4 @@
-import { Select, Box, Group, Stack } from "@mantine/core";
+import { Select, Box, Group, NumberInput, Stack } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useForm, schemaResolver } from "@mantine/form";
 import * as React from "react";
@@ -30,12 +30,15 @@ const dateField = z
   }, z.date().nullable())
   .optional();
 
+// Clearing an async select sets its value to null.
+const optionalString = z.preprocess(val => val ?? undefined, z.string().optional());
+
 const validationSchema = z
   .object({
     release_date_after: dateField,
     release_date_before: dateField,
-    publisher: z.string().optional(),
-    developer: z.string().optional(),
+    publisher: optionalString,
+    developer: optionalString,
     platforms: z.string().array().optional(),
     genres: z.string().array().optional(),
     game_engines: z.string().array().optional(),
@@ -43,7 +46,11 @@ const validationSchema = z
     game_status: z.string().array().optional(),
     game_type: z.string().array().optional(),
     player_perspectives: z.string().array().optional(),
-    ordering: z.string().optional(),
+    igdb_id: z.preprocess(
+      val => (val === "" || val === null ? undefined : String(val)),
+      z.string().regex(/^\d+$/).optional(),
+    ),
+    ordering: optionalString,
   })
   .refine(
     data => {
@@ -53,7 +60,8 @@ const validationSchema = z
       if (data.release_date_before === undefined || data.release_date_before === null) {
         return true;
       }
-      return data.release_date_before > data.release_date_after;
+      // Both are year pickers, so choosing the same year twice is a valid single-year range.
+      return data.release_date_before >= data.release_date_after;
     },
     {
       message: i18n.t("validation:dateRangeInvalid"),
@@ -64,6 +72,36 @@ const validationSchema = z
 export type ValidationSchema = z.output<typeof validationSchema>;
 export type ValidationInput = z.input<typeof validationSchema>;
 
+const EMPTY_VALUES: ValidationInput = {
+  release_date_after: null,
+  release_date_before: null,
+  publisher: "",
+  developer: "",
+  platforms: [],
+  genres: [],
+  game_engines: [],
+  game_modes: [],
+  game_status: [],
+  game_type: [],
+  player_perspectives: [],
+  igdb_id: "",
+  ordering: "",
+};
+
+/** `YYYY-MM-DD` as a local date; `new Date("2020-01-01")` is UTC midnight and shows as the previous year west of UTC. */
+function parseLocalDate(value: unknown): Date | null {
+  const match = typeof value === "string" ? /^(\d{4})-(\d{2})-(\d{2})/.exec(value) : null;
+  return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
+}
+
+/** "Released until 2020" is inclusive: the year picker yields 1 Jan, so widen it to the year's last day. */
+function endOfYear(value: ValidationInput["release_date_before"]): ValidationInput["release_date_before"] {
+  if (!(value instanceof Date)) {
+    return value;
+  }
+  return new Date(value.getFullYear(), 11, 31);
+}
+
 function GameSearchFilter({
   onSubmitHandlerCallback,
   initialFilters,
@@ -71,6 +109,7 @@ function GameSearchFilter({
   orderingOptions,
   orderingClearable = true,
   datePickerWithinPortal = false,
+  showIgdbId = false,
 }: Readonly<{
   onSubmitHandlerCallback: (data: ValidationSchema) => void;
   initialFilters?: Record<string, unknown>;
@@ -79,16 +118,14 @@ function GameSearchFilter({
   orderingOptions?: { value: string; label: string }[];
   orderingClearable?: boolean;
   datePickerWithinPortal?: boolean;
+  /** Adds the IGDB id filter; only the games endpoint supports it, not a user's game list. */
+  showIgdbId?: boolean;
 }>) {
   const { t } = useTranslation("games");
   const form = useForm<ValidationInput>({
     initialValues: {
-      release_date_after: initialFilters?.release_date_after
-        ? new Date(initialFilters.release_date_after as string)
-        : null,
-      release_date_before: initialFilters?.release_date_before
-        ? new Date(initialFilters.release_date_before as string)
-        : null,
+      release_date_after: parseLocalDate(initialFilters?.release_date_after),
+      release_date_before: parseLocalDate(initialFilters?.release_date_before),
       publisher: (initialFilters?.publisher as string) ?? "",
       developer: (initialFilters?.developer as string) ?? "",
       platforms: (initialFilters?.platforms as string[]) ?? [],
@@ -98,6 +135,7 @@ function GameSearchFilter({
       game_status: (initialFilters?.game_status as string[]) ?? [],
       game_type: (initialFilters?.game_type as string[]) ?? [],
       player_perspectives: (initialFilters?.player_perspectives as string[]) ?? [],
+      igdb_id: (initialFilters?.igdb_id as string | undefined) ?? "",
       ordering: (initialFilters?.ordering as string | undefined) ?? "",
     },
     validate: schemaResolver(validationSchema),
@@ -106,7 +144,12 @@ function GameSearchFilter({
   return (
     <Box
       component="form"
-      onSubmit={form.onSubmit(onSubmitHandlerCallback as (data: ValidationInput) => void)}
+      onSubmit={form.onSubmit(data =>
+        (onSubmitHandlerCallback as (data: ValidationInput) => void)({
+          ...data,
+          release_date_before: endOfYear(data.release_date_before),
+        }),
+      )}
       style={{ display: "flex", flexDirection: "column", gap: "32px" }}
       noValidate
     >
@@ -138,6 +181,8 @@ function GameSearchFilter({
                 middlewares: { flip: false, shift: false },
               }}
               {...form.getInputProps("ordering")}
+              // Empty means "no sort chosen"; as "" Mantine would show the clear (X) button with nothing to clear.
+              value={form.values.ordering || null}
             />
           )}
           <Box style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
@@ -170,6 +215,18 @@ function GameSearchFilter({
               {...form.getInputProps("release_date_before")}
             />
           </Box>
+          {showIgdbId && (
+            <NumberInput
+              id="igdb_id"
+              name="igdb_id"
+              label={t("filter.igdbId")}
+              placeholder={t("filter.igdbIdPlaceholder")}
+              hideControls
+              allowDecimal={false}
+              allowNegative={false}
+              {...form.getInputProps("igdb_id")}
+            />
+          )}
         </Stack>
 
         {/* Group 2: Entities & Genres */}
@@ -274,11 +331,31 @@ function GameSearchFilter({
         </Stack>
       </Box>
 
-      <Group justify="center" pt={16} style={{ borderTop: "1px solid var(--color-background-100)" }}>
+      <Group
+        justify="center"
+        wrap="wrap"
+        gap={12}
+        pt={16}
+        style={{ borderTop: "1px solid var(--color-background-100)" }}
+      >
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          style={{ flex: "0 0 auto" }}
+          onClick={() => {
+            form.setValues(EMPTY_VALUES);
+            (onSubmitHandlerCallback as (data: ValidationInput) => void)(EMPTY_VALUES);
+          }}
+        >
+          {t("filter.reset")}
+        </Button>
         <Button
           type="submit"
           size="lg"
-          style={{ width: "100%", maxWidth: "256px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+          // The basis keeps the longest (Polish) label whole; in a narrow sidebar the button wraps under Reset
+          // instead of squeezing both.
+          style={{ flex: "1 1 200px", maxWidth: "256px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
         >
           {t("filter.applyFilters")}
         </Button>

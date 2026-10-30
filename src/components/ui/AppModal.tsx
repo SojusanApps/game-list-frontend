@@ -1,4 +1,5 @@
 import { ActionIcon, Box, Group, Modal, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -26,6 +27,11 @@ interface AppModalProps {
    * has an effect when {@link scrollable} is false.
    */
   overflowVisible?: boolean;
+  /**
+   * Take over the whole screen on phones (with a fixed header and footer around a scrolling body).
+   * For long forms; small confirm/login dialogs should stay centered.
+   */
+  fullScreenOnMobile?: boolean;
   /** Override the body padding (default 32). */
   bodyPadding?: number | string;
   closeButtonLabel?: string;
@@ -33,6 +39,7 @@ interface AppModalProps {
 }
 
 const HEADER_FOOTER_PADDING = "24px 32px";
+const HEADER_FOOTER_PADDING_MOBILE = "16px";
 const VEIL_BACKGROUND = "rgba(var(--color-veil-rgb), 0.5)";
 const BORDER = "1px solid var(--color-background-100)";
 
@@ -51,18 +58,24 @@ export function AppModal({
   scrollable = false,
   footer,
   overflowVisible = false,
-  bodyPadding = 32,
+  fullScreenOnMobile = false,
+  bodyPadding,
   closeButtonLabel,
   children,
 }: Readonly<AppModalProps>) {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery("(max-width: 36em)");
+  const isFullScreen = fullScreenOnMobile && !!isMobile;
+  const useScrollingBody = scrollable || isFullScreen;
+  const headerFooterPadding = isMobile ? HEADER_FOOTER_PADDING_MOBILE : HEADER_FOOTER_PADDING;
+  const resolvedBodyPadding = bodyPadding ?? (isMobile ? 16 : 32);
 
   const header = (
     <Group
       justify="space-between"
       wrap="nowrap"
       align="flex-start"
-      style={{ padding: HEADER_FOOTER_PADDING, borderBottom: BORDER, background: VEIL_BACKGROUND }}
+      style={{ padding: headerFooterPadding, borderBottom: BORDER, background: VEIL_BACKGROUND }}
     >
       <Box style={{ minWidth: 0 }}>
         <Title order={2} fz={24} fw={900} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
@@ -87,7 +100,7 @@ export function AppModal({
   );
 
   const footerBar = footer ? (
-    <Box style={{ padding: HEADER_FOOTER_PADDING, borderTop: BORDER, background: VEIL_BACKGROUND }}>{footer}</Box>
+    <Box style={{ padding: headerFooterPadding, borderTop: BORDER, background: VEIL_BACKGROUND }}>{footer}</Box>
   ) : null;
 
   return (
@@ -96,25 +109,37 @@ export function AppModal({
       onClose={onClose}
       withCloseButton={false}
       padding={0}
-      radius="xl"
+      radius={isFullScreen ? 0 : "xl"}
+      fullScreen={isFullScreen}
       size={size}
       centered={centered}
       overlayProps={{ backgroundOpacity: 0.6 }}
       styles={
-        overflowVisible && !scrollable ? { content: { overflow: "visible" }, body: { overflow: "visible" } } : undefined
+        overflowVisible && !useScrollingBody
+          ? { content: { overflow: "visible" }, body: { overflow: "visible" } }
+          : undefined
       }
     >
-      <Stack gap={0} style={scrollable ? { height: "100%", maxHeight: "90vh" } : undefined}>
+      <Stack
+        gap={0}
+        style={
+          useScrollingBody
+            ? { height: isFullScreen ? "100dvh" : "100%", maxHeight: isFullScreen ? undefined : "90vh" }
+            : undefined
+        }
+      >
         {header}
-        {scrollable ? (
+        {useScrollingBody ? (
           <ScrollArea
             style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
-            viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: bodyPadding } }}
+            viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: resolvedBodyPadding } }}
           >
             {children}
           </ScrollArea>
         ) : (
-          <Box style={{ padding: bodyPadding, overflow: overflowVisible ? "visible" : undefined }}>{children}</Box>
+          <Box style={{ padding: resolvedBodyPadding, overflow: overflowVisible ? "visible" : undefined }}>
+            {children}
+          </Box>
         )}
         {footerBar}
       </Stack>

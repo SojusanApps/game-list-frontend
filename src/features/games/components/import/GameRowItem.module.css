@@ -35,8 +35,15 @@
   justify-content: center;
 }
 
-.gameTitle {
+.gameInfo {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gameTitle {
   font-weight: 600;
   color: var(--color-text-900);
   font-size: 0.95rem;
@@ -57,4 +64,19 @@
   flex-direction: column;
   gap: 12px;
   padding: 12px 0 4px 64px;
+}
+
+@media (max-width: 48em) {
+  .matchedRowMain {
+    flex-wrap: wrap;
+  }
+
+  .fieldGroup {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .expandedFields {
+    padding-left: 0;
+  }
 }

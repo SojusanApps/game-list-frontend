@@ -8,17 +8,20 @@ import {
   Loader,
   Center,
   Stack,
-  Button,
   ScrollArea,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import * as React from "react";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GameSimpleList } from "@/client";
+import { Button } from "@/components/ui/Button";
+import { ErrorState } from "@/components/ui/ErrorState";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { useUrlState } from "@/hooks/useUrlState";
 import { useLanguageStore } from "@/lib/languageStore";
 import { cn } from "@/utils/cn";
 
@@ -32,6 +35,7 @@ import {
   getCalendarGridDays,
   getWeekGridDays,
 } from "../../utils/calendarUtils";
+import { AgendaView } from "./AgendaView";
 import DayDetailModal from "./DayDetailModal";
 
 import styles from "./CalendarView.module.css";
@@ -39,8 +43,19 @@ import styles from "./CalendarView.module.css";
 export default function CalendarView(): React.JSX.Element {
   const { t } = useTranslation("games");
   const { language } = useLanguageStore();
-  const [viewMode, setViewMode] = useState<"week" | "month">("week");
-  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const { search, update } = useUrlState();
+  const viewMode: "week" | "month" = search.span === "month" ? "month" : "week";
+  const setViewMode = (next: "week" | "month") => update({ span: next === "week" ? undefined : next });
+  const dateParam = typeof search.date === "string" ? search.date : undefined;
+  const isMobile = useMediaQuery("(max-width: 48em)");
+  const [today] = useState(() => new Date());
+  const currentDate = useMemo(() => {
+    const match = dateParam ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateParam) : null;
+    return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : today;
+  }, [dateParam, today]);
+  // Today is the default, so it stays out of the URL.
+  const setCurrentDate = (next: Date) =>
+    update({ date: formatISODate(next) === formatISODate(today) ? undefined : formatISODate(next) });
 
   const [selectedDayObj, setSelectedDayObj] = useState<{ opened: boolean; dateStr: string }>({
     opened: false,
@@ -73,6 +88,7 @@ export default function CalendarView(): React.JSX.Element {
     data: items,
     isLoading,
     isError,
+    refetch,
   } = useGetReleaseCalendar({
     start_date: startDate,
     end_date: endDate,
@@ -139,17 +155,23 @@ export default function CalendarView(): React.JSX.Element {
       );
     }
     if (isError) {
-      return (
-        <Center py="xl" style={{ minHeight: "400px" }}>
-          <Text c="red" fw={500}>
-            {t("calendar.loadError")}
-          </Text>
-        </Center>
-      );
+      return <ErrorState message={t("calendar.loadError")} onRetry={() => refetch()} />;
     }
 
     const isWeekView = viewMode === "week";
     const maxVisible = 2;
+
+    if (isMobile) {
+      return (
+        <AgendaView
+          days={daysGrid}
+          gamesByDate={gamesByDate}
+          language={language}
+          isInPeriod={day => isWeekView || day.getMonth() === currentDate.getMonth()}
+          onSeeAll={dateStr => setSelectedDayObj({ opened: true, dateStr })}
+        />
+      );
+    }
 
     return (
       <ScrollArea className={styles.calendarGridWrapper} scrollbars="x">
@@ -222,7 +244,7 @@ export default function CalendarView(): React.JSX.Element {
                     )}
                   </Box>
 
-                  {games.length > 0 && (
+                  {games.length > maxVisible && (
                     <Button
                       className={styles.seeAllButton}
                       onClick={() => setSelectedDayObj({ opened: true, dateStr: dStr })}
@@ -243,16 +265,28 @@ export default function CalendarView(): React.JSX.Element {
     <Stack gap={24} className={styles.calendarContainer}>
       <Group justify="space-between" align="center" wrap="wrap" gap={12}>
         <Group gap={8}>
-          <ActionIcon variant="default" size="lg" radius="md" onClick={handlePrev}>
+          <ActionIcon
+            variant="default"
+            size="lg"
+            radius="md"
+            onClick={handlePrev}
+            aria-label={t("calendar.previousPeriod")}
+          >
             <IconChevronLeft size={20} />
           </ActionIcon>
-          <Title order={3} w={{ base: 180, sm: 240 }} fz={{ base: "md", sm: "lg" }} ta="center" fw={800}>
+          <Title order={2} w={{ base: 180, sm: 240 }} fz={{ base: "md", sm: "lg" }} ta="center" fw={800}>
             {getHeaderTitle()}
           </Title>
-          <ActionIcon variant="default" size="lg" radius="md" onClick={handleNext}>
+          <ActionIcon
+            variant="default"
+            size="lg"
+            radius="md"
+            onClick={handleNext}
+            aria-label={t("calendar.nextPeriod")}
+          >
             <IconChevronRight size={20} />
           </ActionIcon>
-          <Button variant="light" size="sm" radius="md" onClick={() => setCurrentDate(new Date())}>
+          <Button variant="light" size="sm" onClick={() => setCurrentDate(new Date())}>
             {t("calendar.today")}
           </Button>
         </Group>

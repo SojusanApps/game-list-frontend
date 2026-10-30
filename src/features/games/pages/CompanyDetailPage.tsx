@@ -8,8 +8,10 @@ import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { ClientPaginatedTable } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TagChip } from "@/components/ui/TagChip";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useListViewStore } from "@/lib/listViewStore";
 
@@ -33,6 +35,9 @@ export default function CompanyDetailPage(): React.JSX.Element {
 
   const developedCount = developedGamesList.length;
   const publishedCount = publishedGamesList.length;
+  // Open the first section that has games, so the page never lands on a row of collapsed bars.
+  const openDeveloped = developedCount > 0;
+  const openPublished = developedCount === 0 && publishedCount > 0;
 
   const pageTitle = isCompanyLoading ? t("company.loading") : companyDetails?.name;
 
@@ -64,8 +69,8 @@ export default function CompanyDetailPage(): React.JSX.Element {
     );
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Stack gap={24} maw={1152} mx="auto" px={16}>
+    <PageShell width="default">
+      <Stack gap={24}>
         <PageMeta title={pageTitle} />
 
         {isCompanyLoading ? (
@@ -130,21 +135,7 @@ export default function CompanyDetailPage(): React.JSX.Element {
 
                   <Stack gap={12} pb={8} style={{ flex: 1 }}>
                     <Group gap={12}>
-                      <Text
-                        component="span"
-                        style={{
-                          background: "var(--mantine-color-primary-6)",
-                          color: "white",
-                          fontSize: 10,
-                          fontWeight: 900,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.12em",
-                          padding: "3px 10px",
-                          borderRadius: 6,
-                        }}
-                      >
-                        {t("company.badge")}
-                      </Text>
+                      <TagChip tone="filled">{t("company.badge")}</TagChip>
                     </Group>
                     <Title
                       order={1}
@@ -166,7 +157,13 @@ export default function CompanyDetailPage(): React.JSX.Element {
               </Group>
             )}
 
-            <CollapsibleSection title={t("company.gamesDeveloped")} count={developedCount} defaultOpen={false}>
+            <CollapsibleSection
+              // Uncontrolled: remount once the counts are known so the right section opens by default.
+              key={`developed-${openDeveloped}`}
+              title={t("company.gamesDeveloped")}
+              count={developedCount}
+              defaultOpen={openDeveloped}
+            >
               {developedGamesList.length > 0 ? (
                 renderGamesList(developedGamesList)
               ) : (
@@ -176,7 +173,12 @@ export default function CompanyDetailPage(): React.JSX.Element {
               )}
             </CollapsibleSection>
 
-            <CollapsibleSection title={t("company.gamesPublished")} count={publishedCount} defaultOpen={false}>
+            <CollapsibleSection
+              key={`published-${openPublished}`}
+              title={t("company.gamesPublished")}
+              count={publishedCount}
+              defaultOpen={openPublished}
+            >
               {publishedGamesList.length > 0 ? (
                 renderGamesList(publishedGamesList)
               ) : (
@@ -188,6 +190,6 @@ export default function CompanyDetailPage(): React.JSX.Element {
           </>
         )}
       </Stack>
-    </Box>
+    </PageShell>
   );
 }

@@ -1,0 +1,21 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  min-width: 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--color-text-700);
+  font-size: 12px;
+}
+
+.storeId {
+  max-width: 200px;
+  font-variant-numeric: tabular-nums;
+}

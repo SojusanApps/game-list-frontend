@@ -3,9 +3,12 @@
   "scoreMax": "Maksymalna ocena to 10",
   "noteMax": "Maksymalnie 200 znaków",
   "playtimeMin": "Czas gry nie może być ujemny",
-  "dateRangeInvalid": "Data graniczna nie może być wcześniejsza niż data początkowa.",
+  "dateRangeInvalid": "Rok końcowy nie może być wcześniejszy niż początkowy.",
   "nameRequired": "Nazwa jest wymagana",
   "selectAtLeastOne": "Wybierz co najmniej jedną kolekcję",
   "descriptionMax": "Opis musi mieć 500 znaków lub mniej",
-  "titlesRequired": "Wymagany jest co najmniej jeden tytuł gry"
+  "storePlatformRequired": "Wybierz sklep",
+  "storeIdRequired": "Identyfikator w sklepie jest wymagany",
+  "storeGameRequired": "Wybierz grę",
+  "completedBeforeStarted": "Data ukończenia nie może być wcześniejsza niż data rozpoczęcia"
 }

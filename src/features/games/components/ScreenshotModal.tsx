@@ -8,21 +8,50 @@ import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 interface ScreenshotModalProps {
   initialScreenshot: string;
   screenshots: string[];
+  gameTitle?: string;
   onClose: () => void;
 }
 
-export default function ScreenshotModal({ initialScreenshot, screenshots, onClose }: Readonly<ScreenshotModalProps>) {
+const FULL_SIZE = IGDBImageSize.SCREENSHOT_HUGE_1280_720;
+/** How many screenshots on each side of the current one are fetched ahead of time. */
+const PRELOAD_RADIUS = 2;
+/** Horizontal distance a touch must travel to count as a swipe. */
+const SWIPE_THRESHOLD_PX = 50;
+
+/** URLs the browser has already fetched, kept across modal openings. */
+const loadedUrls = new Set<string>();
+
+function preload(url: string, onDone?: () => void) {
+  if (loadedUrls.has(url)) return;
+  const img = new Image();
+  img.addEventListener(
+    "load",
+    () => {
+      loadedUrls.add(url);
+      onDone?.();
+    },
+    { once: true },
+  );
+  img.src = url;
+}
+
+export default function ScreenshotModal({
+  initialScreenshot,
+  screenshots,
+  gameTitle = "",
+  onClose,
+}: Readonly<ScreenshotModalProps>) {
   const { t } = useTranslation("games");
   const [currentIndex, setCurrentIndex] = React.useState(() => {
     const idx = screenshots.indexOf(initialScreenshot);
     return idx === -1 ? 0 : idx;
   });
-  const [isLoaded, setIsLoaded] = React.useState(false);
+  // Bumped when a preloaded image finishes so the current one can show without waiting for its own onLoad.
+  const [, setLoadTick] = React.useState(0);
 
   const handleNext = React.useCallback(
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
-      setIsLoaded(false);
       setCurrentIndex(prev => (prev + 1) % screenshots.length);
     },
     [screenshots.length],
@@ -31,11 +60,26 @@ export default function ScreenshotModal({ initialScreenshot, screenshots, onClos
   const handlePrevious = React.useCallback(
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
-      setIsLoaded(false);
       setCurrentIndex(prev => (prev - 1 + screenshots.length) % screenshots.length);
     },
     [screenshots.length],
   );
+
+  // Swipe left/right on touch screens; the arrow buttons stay as the visible alternative.
+  const touchStartX = React.useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartX.current;
+    touchStartX.current = null;
+    const end = e.changedTouches[0]?.clientX;
+    if (start === null || end === undefined || screenshots.length < 2) return;
+    const delta = end - start;
+    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+    if (delta < 0) handleNext();
+    else handlePrevious();
+  };
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,6 +95,20 @@ export default function ScreenshotModal({ initialScreenshot, screenshots, onClos
   }, [handleNext, handlePrevious]);
 
   const currentScreenshot = screenshots[currentIndex];
+  const currentUrl = getIGDBImageURL(currentScreenshot, FULL_SIZE);
+  const isLoaded = loadedUrls.has(currentUrl);
+
+  // Current image first, then its neighbours (nearest first) so arrow navigation is instant.
+  React.useEffect(() => {
+    const count = screenshots.length;
+    const tick = () => setLoadTick(n => n + 1);
+    preload(getIGDBImageURL(screenshots[currentIndex], FULL_SIZE), tick);
+    for (let offset = 1; offset <= PRELOAD_RADIUS; offset++) {
+      for (const idx of [(currentIndex + offset) % count, (currentIndex - offset + count * offset) % count]) {
+        preload(getIGDBImageURL(screenshots[idx], FULL_SIZE), tick);
+      }
+    }
+  }, [currentIndex, screenshots]);
 
   return (
     <Modal
@@ -93,8 +151,30 @@ export default function ScreenshotModal({ initialScreenshot, screenshots, onClos
         <IconX size={20} stroke={2.5} />
       </UnstyledButton>
 
+      {/* Announced politely whenever the shown screenshot changes. */}
+      <Box
+        aria-live="polite"
+        style={{
+          position: "fixed",
+          bottom: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+          padding: "4px 12px",
+          borderRadius: 9999,
+          background: "rgba(0,0,0,0.6)",
+          color: "white",
+          fontSize: 14,
+          fontWeight: 600,
+          zIndex: 9999,
+        }}
+      >
+        {t("screenshot.position", { current: currentIndex + 1, total: screenshots.length })}
+      </Box>
+
       <Box
         onClick={onClose}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         style={{
           position: "relative",
           display: "flex",
@@ -161,9 +241,12 @@ export default function ScreenshotModal({ initialScreenshot, screenshots, onClos
           )}
 
           <img
-            src={getIGDBImageURL(currentScreenshot, IGDBImageSize.SCREENSHOT_HUGE_1280_720)}
-            alt={t("screenshot.enlargedAlt")}
-            onLoad={() => setIsLoaded(true)}
+            src={currentUrl}
+            alt={t("screenshot.alt", { title: gameTitle, index: currentIndex + 1 })}
+            onLoad={() => {
+              loadedUrls.add(currentUrl);
+              setLoadTick(n => n + 1);
+            }}
             style={{
               display: isLoaded ? "block" : "none",
               maxWidth: "90vw",

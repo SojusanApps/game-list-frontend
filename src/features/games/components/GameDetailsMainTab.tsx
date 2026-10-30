@@ -1,4 +1,4 @@
-import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Skeleton, Spoiler, Stack, Text, Title } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import { Game, GameReview as GameReviewType, PaginatedGameReviewList } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { Panel } from "@/components/ui/Panel";
 import { useRequireAuth } from "@/features/auth";
 import { TranslationSuggestionModal } from "@/features/translationSuggestions/components/TranslationSuggestionModal";
 
@@ -15,6 +16,8 @@ import GameStatistics from "../components/GameStatistics";
 import RecommendationSummaryBar from "../components/RecommendationSummaryBar";
 import ReviewLanguageFilter from "../components/ReviewLanguageFilter";
 import type { ReviewLanguageFilter as ReviewLanguageFilterValue } from "../utils/reviewLanguage";
+
+import styles from "./GameDetailsMainTab.module.css";
 
 const REVIEWS_PREVIEW_COUNT = 3;
 
@@ -54,69 +57,58 @@ export default function GameDetailsMainTab({
   const hasMore = (gameReviewItems?.count ?? 0) > REVIEWS_PREVIEW_COUNT;
 
   return (
-    <Stack gap={24} style={{ animation: "fadeIn 300ms ease" }}>
-      <Box
-        component="section"
-        style={{
-          background: "var(--color-background-100)",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          border: "1px solid var(--color-background-200)",
-          padding: "24px",
-        }}
-      >
-        <Title order={2} fz="xl" fw={700} c="var(--color-text-900)" mb={16}>
-          {t("mainTab.statistics")}
-        </Title>
-        <GameStatistics gameDetails={gameDetails} />
-      </Box>
-
-      <Box
-        component="section"
-        style={{
-          background: "var(--color-background-100)",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          border: "1px solid var(--color-background-200)",
-          padding: "24px",
-        }}
-      >
+    <Stack gap={24} className={styles.fadeIn}>
+      <Panel component="section">
         <Group justify="space-between" align="center" mb={8}>
           <Title order={2} fz="xl" fw={700} c="var(--color-text-900)">
             {t("mainTab.summary")}
           </Title>
           {isLoggedIn && gameDetails?.id && (
-            <Button size="sm" onClick={() => setIsSuggestionModalOpen(true)}>
+            <Button size="sm" variant="ghost" onClick={() => setIsSuggestionModalOpen(true)}>
               {t("translationSuggestionModal.buttonLabel")}
             </Button>
           )}
         </Group>
         <Box c="var(--color-text-700)">
-          <ReactMarkdown>{gameDetails?.summary || ""}</ReactMarkdown>
+          <Spoiler maxHeight={160} showLabel={t("mainTab.showMore")} hideLabel={t("mainTab.showLess")}>
+            <ReactMarkdown>{gameDetails?.summary || ""}</ReactMarkdown>
+          </Spoiler>
         </Box>
-      </Box>
+      </Panel>
 
-      <Box
-        component="section"
-        style={{
-          background: "var(--color-background-100)",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          border: "1px solid var(--color-background-200)",
-          padding: "24px",
-        }}
-      >
+      <Panel component="section">
+        <Title order={2} fz="xl" fw={700} c="var(--color-text-900)" mb={16}>
+          {t("mainTab.statistics")}
+        </Title>
+        <GameStatistics gameDetails={gameDetails} />
+      </Panel>
+
+      <Panel component="section">
         <Group justify="space-between" align="center" mb={16}>
           <Title order={2} fz="xl" fw={700} c="var(--color-text-900)">
             {t("mainTab.reviews")}
           </Title>
-          {gameDetails?.id && (
-            <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true))}>
-              {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
+          {gameDetails?.id && userReview && (
+            <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true), "review")}>
+              {t("reviewModal.editTitle")}
             </Button>
           )}
         </Group>
         <Stack gap={16}>
+          {gameDetails?.id && !userReview && (
+            <Group
+              justify="space-between"
+              p="md"
+              style={{ border: "1px dashed var(--color-background-400)", borderRadius: 12 }}
+            >
+              <Text fw={600} c="var(--color-text-900)">
+                {t("mainTab.reviewCta")}
+              </Text>
+              <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true), "review")}>
+                {t("reviewModal.addTitle")}
+              </Button>
+            </Group>
+          )}
           <ReviewLanguageFilter value={reviewLanguageFilter} onChange={onReviewLanguageFilterChange} />
           <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
           {isGameReviewsLoading && <Skeleton h={96} radius="xl" />}
@@ -151,7 +143,7 @@ export default function GameDetailsMainTab({
             )
           )}
         </Stack>
-      </Box>
+      </Panel>
 
       {gameDetails?.id && (
         <GameReviewModal

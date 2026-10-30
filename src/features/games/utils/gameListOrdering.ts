@@ -1,4 +1,5 @@
 import type { GameListGameFilters } from "../hooks/useGameListQueries";
+import { formatISODate } from "./calendarUtils";
 
 export const GAME_LIST_ORDERING_VALUES = ["title", "-title", "-score", "score"] as const;
 
@@ -26,7 +27,7 @@ export function buildGameListFilters(data: Record<string, unknown>): GameListGam
     if (key === "ordering" || isEmptyFilterValue(value)) {
       continue;
     }
-    filters[key] = value instanceof Date ? value.toISOString().split("T")[0] : value;
+    filters[key] = value instanceof Date ? formatISODate(value) : value;
   }
   filters.ordering = isGameListOrdering(data.ordering) ? data.ordering : DEFAULT_GAME_LIST_ORDERING;
   return filters as GameListGameFilters;

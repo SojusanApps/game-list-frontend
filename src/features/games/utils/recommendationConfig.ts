@@ -27,16 +27,16 @@ const BADGE_STYLES: Record<RecommendationEnum, React.CSSProperties> = {
     border: "1px solid var(--color-error-tint-border)",
   },
   [RecommendationEnum.UNDECIDED]: {
-    background: "var(--color-secondary-tint-bg)",
-    color: "var(--color-secondary-tint-text)",
-    border: "1px solid var(--color-secondary-tint-border)",
+    background: "var(--color-rating-mid-bg)",
+    color: "var(--color-rating-mid-text)",
+    border: "1px solid var(--color-type-ranking-border)",
   },
 };
 
 const SOLID_COLORS: Record<RecommendationEnum, string> = {
-  [RecommendationEnum.RECOMMENDED]: "var(--color-success-500)",
-  [RecommendationEnum.NOT_RECOMMENDED]: "var(--color-error-500)",
-  [RecommendationEnum.UNDECIDED]: "var(--color-secondary-500)",
+  [RecommendationEnum.RECOMMENDED]: "var(--color-success-700)",
+  [RecommendationEnum.NOT_RECOMMENDED]: "var(--color-error-600)",
+  [RecommendationEnum.UNDECIDED]: "var(--color-rating-mid-bg)",
 };
 
 const TRANSLATION_KEYS: Record<RecommendationEnum, string> = {

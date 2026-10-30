@@ -1,0 +1,6 @@
+/* Spans two columns only where the grid has four; on phones the grid is a single column. */
+@media (min-width: 62em) {
+  .breakdown {
+    grid-column: span 2;
+  }
+}

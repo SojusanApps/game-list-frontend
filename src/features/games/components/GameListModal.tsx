@@ -1,4 +1,4 @@
-import { Select, Group, Stack, Textarea, NumberInput, Box } from "@mantine/core";
+import { Select, Group, SimpleGrid, Stack, Textarea, NumberInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import { useCurrentUserId } from "@/features/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
 import { formatDate } from "@/utils/dateUtils";
 import { playtimeHoursToMinutes, playtimeMinutesToHours } from "@/utils/playtimeUtils";
-import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import {
   useCreateGameList,
@@ -28,21 +28,27 @@ import {
 } from "../hooks/gameQueries";
 import code_to_value_mapping from "../utils/GameListStatuses";
 import { StatusIcon } from "../utils/StatusIcon";
+import { ScorePicker } from "./ScorePicker";
 
-const validationSchema = z.object({
-  status: z.enum(GameListStatusEnum),
-  score: z.coerce
-    .number()
-    .min(1, { message: i18n.t("validation:scoreMin") })
-    .max(10, { message: i18n.t("validation:scoreMax") })
-    .nullish(),
-  owned_on: z.array(z.string()).optional(),
-  description: z.string().max(200, i18n.t("validation:noteMax")).nullish(),
-  started_at: z.string().nullish(),
-  completed_at: z.string().nullish(),
-  // Entered in hours (users think in hours); converted to minutes for the backend on submit.
-  playtime: z.coerce.number().min(0, i18n.t("validation:playtimeMin")).nullish(),
-});
+const validationSchema = z
+  .object({
+    status: z.enum(GameListStatusEnum),
+    score: z.coerce
+      .number()
+      .min(1, { message: i18n.t("validation:scoreMin") })
+      .max(10, { message: i18n.t("validation:scoreMax") })
+      .nullish(),
+    owned_on: z.array(z.string()).optional(),
+    description: z.string().max(200, i18n.t("validation:noteMax")).nullish(),
+    started_at: z.string().nullish(),
+    completed_at: z.string().nullish(),
+    // Entered in hours (users think in hours); converted to minutes for the backend on submit.
+    playtime: z.coerce.number().min(0, i18n.t("validation:playtimeMin")).nullish(),
+  })
+  .refine(data => !data.started_at || !data.completed_at || data.completed_at >= data.started_at, {
+    message: i18n.t("validation:completedBeforeStarted"),
+    path: ["completed_at"],
+  });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
@@ -55,6 +61,7 @@ interface GameListModalProps {
 
 export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<GameListModalProps>) {
   const { t } = useTranslation("games");
+  const { confirm, confirmModal } = useConfirm();
   const currentUserId = useCurrentUserId();
   const parsedGameIdResult = idSchema.safeParse(gameId);
   const parsedGameId = parsedGameIdResult.success ? parsedGameIdResult.data : undefined;
@@ -141,154 +148,156 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
     onClose();
   };
 
-  const handleRemove = () => {
-    if (gameListDetails?.id) {
+  const handleRemove = async () => {
+    if (gameListDetails?.id && parsedGameId) {
+      const confirmed = await confirm({
+        title: t("modal.removeConfirmTitle"),
+        message: t("modal.removeConfirmMessage", { title: resolvedGameTitle ?? "" }),
+        confirmLabel: t("modal.removeButton"),
+        isDestructive: true,
+      });
+      if (!confirmed) {
+        return;
+      }
       deleteGameListItem({ id: gameListDetails.id, title: resolvedGameTitle, draftKey });
+      notifications.show({
+        message: t("modal.removedToast", { title: resolvedGameTitle ?? "" }),
+        autoClose: 4000,
+      });
       onClose();
     }
   };
 
   return (
-    <AppModal
-      opened={opened}
-      onClose={onClose}
-      title={isEditing ? t("modal.editTitle") : t("modal.addTitle")}
-      subtitle={resolvedGameTitle}
-      overflowVisible
-      footer={
-        <Group justify={isEditing ? "space-between" : "flex-end"}>
-          {isEditing && (
-            <Button type="button" onClick={handleRemove} variant="destructive">
-              {t("modal.removeButton")}
-            </Button>
-          )}
-          <Group>
-            <Button type="button" onClick={onClose} variant="outline">
-              {t("modal.cancelButton")}
-            </Button>
-            <Button type="submit" form="game-list-form">
-              {isEditing ? t("modal.saveButton") : t("modal.addButton")}
-            </Button>
+    <>
+      <AppModal
+        fullScreenOnMobile
+        opened={opened}
+        onClose={onClose}
+        title={isEditing ? t("modal.editTitle") : t("modal.addTitle")}
+        subtitle={resolvedGameTitle}
+        overflowVisible
+        footer={
+          <Group justify={isEditing ? "space-between" : "flex-end"}>
+            {isEditing && (
+              <Button type="button" onClick={() => handleRemove()} variant="destructive">
+                {t("modal.removeButton")}
+              </Button>
+            )}
+            <Group>
+              <Button type="button" onClick={onClose} variant="outline">
+                {t("modal.cancelButton")}
+              </Button>
+              <Button type="submit" form="game-list-form">
+                {isEditing ? t("modal.saveButton") : t("modal.addButton")}
+              </Button>
+            </Group>
           </Group>
-        </Group>
-      }
-    >
-      <form id="game-list-form" onSubmit={form.onSubmit(onSubmitHandler)} noValidate>
-        <Stack gap={16}>
-          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-          <Group align="flex-start" grow>
-            <Select
-              required
-              id="status"
-              label={t("modal.statusLabel")}
-              name="status"
-              searchable
-              leftSection={form.values.status ? <StatusIcon status={form.values.status} size={16} neon /> : undefined}
-              data={code_to_value_mapping().map(item => ({
-                value: item.code,
-                label: item.value,
-              }))}
-              renderOption={({ option }) => (
-                <Group gap={8} wrap="nowrap">
-                  <StatusIcon status={option.value} size={16} neon />
-                  {option.label}
-                </Group>
-              )}
-              {...form.getInputProps("status")}
+        }
+      >
+        <form id="game-list-form" onSubmit={form.onSubmit(onSubmitHandler)} noValidate>
+          <Stack gap={16}>
+            {hasDraft && <DraftNotice onDiscard={discardDraft} />}
+            <Stack gap={16}>
+              <Select
+                required
+                id="status"
+                label={t("modal.statusLabel")}
+                name="status"
+                searchable
+                leftSection={form.values.status ? <StatusIcon status={form.values.status} size={16} neon /> : undefined}
+                data={code_to_value_mapping().map(item => ({
+                  value: item.code,
+                  label: item.value,
+                }))}
+                renderOption={({ option }) => (
+                  <Group gap={8} wrap="nowrap">
+                    <StatusIcon status={option.value} size={16} neon />
+                    {option.label}
+                  </Group>
+                )}
+                {...form.getInputProps("status")}
+              />
+              <ScorePicker
+                label={t("modal.scoreLabel")}
+                value={form.values.score}
+                onChange={score => form.setFieldValue("score", score)}
+                error={form.errors.score}
+              />
+            </Stack>
+
+            <AsyncMultiSelectAutocomplete
+              placeholder={t("modal.ownedOnPlaceholder")}
+              id="owned_on"
+              label={t("modal.ownedOnLabel")}
+              name="owned_on"
+              useInfiniteQueryHook={useGetGameMediasInfiniteQuery}
+              getOptionLabel={item => item.name}
+              getOptionValue={item => item.id.toString()}
+              {...form.getInputProps("owned_on")}
             />
-            <Select
-              id="score"
-              label={t("modal.scoreLabel")}
-              name="score"
-              searchable
-              clearable
-              data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(s => ({
-                value: s.toString(),
-                label: s.toString(),
-              }))}
-              renderOption={({ option }) => (
-                <Box
-                  style={{
-                    background: getRatingColor(Number(option.value)),
-                    color: getRatingTextColor(Number(option.value)),
-                    fontSize: "12px",
-                    fontWeight: 900,
-                    padding: "2px 8px",
-                    borderRadius: "6px",
-                    display: "inline-block",
-                  }}
+
+            <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={16}>
+              <Stack gap={2}>
+                <DateInput
+                  label={t("modal.startedAt")}
+                  placeholder={t("modal.pickDate")}
+                  clearable
+                  valueFormat="YYYY-MM-DD"
+                  {...form.getInputProps("started_at")}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => form.setFieldValue("started_at", formatDate(new Date(), "YYYY-MM-DD"))}
                 >
-                  {option.label}
-                </Box>
-              )}
-              value={form.values.score ? form.values.score.toString() : null}
-              onChange={val => form.setFieldValue("score", val ? Number(val) : null)}
-              error={form.errors.score}
-              leftSection={
-                form.values.score ? (
-                  <Box
-                    style={{
-                      background: getRatingColor(form.values.score),
-                      width: 12,
-                      height: 12,
-                      borderRadius: "50%",
-                      marginLeft: 10,
-                    }}
-                  />
-                ) : null
-              }
-            />
-          </Group>
+                  {t("modal.today")}
+                </Button>
+              </Stack>
+              <Stack gap={2}>
+                <DateInput
+                  label={t("modal.completedAt")}
+                  placeholder={t("modal.pickDate")}
+                  clearable
+                  valueFormat="YYYY-MM-DD"
+                  {...form.getInputProps("completed_at")}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => form.setFieldValue("completed_at", formatDate(new Date(), "YYYY-MM-DD"))}
+                >
+                  {t("modal.today")}
+                </Button>
+              </Stack>
+              <NumberInput
+                label={t("modal.playtime")}
+                placeholder={t("modal.playtimePlaceholder")}
+                min={0}
+                step={0.1}
+                decimalScale={1}
+                allowNegative={false}
+                decimalSeparator={i18n.language.startsWith("pl") ? "," : "."}
+                value={form.values.playtime ?? ""}
+                onChange={val => form.setFieldValue("playtime", val === "" ? null : Number(val))}
+                error={form.errors.playtime}
+              />
+            </SimpleGrid>
 
-          <AsyncMultiSelectAutocomplete
-            placeholder={t("modal.ownedOnPlaceholder")}
-            id="owned_on"
-            label={t("modal.ownedOnLabel")}
-            name="owned_on"
-            useInfiniteQueryHook={useGetGameMediasInfiniteQuery}
-            getOptionLabel={item => item.name}
-            getOptionValue={item => item.id.toString()}
-            {...form.getInputProps("owned_on")}
-          />
-
-          <Group align="flex-start" grow>
-            <DateInput
-              label={t("modal.startedAt")}
-              placeholder={t("modal.pickDate")}
-              clearable
-              valueFormat="YYYY-MM-DD"
-              {...form.getInputProps("started_at")}
+            <Textarea
+              label={t("modal.noteLabel")}
+              description={`${(form.values.description ?? "").length}/200 · ${t("modal.noteVisibleHint")}`}
+              placeholder={t("modal.notePlaceholder")}
+              maxLength={200}
+              rows={3}
+              {...form.getInputProps("description")}
             />
-            <DateInput
-              label={t("modal.completedAt")}
-              placeholder={t("modal.pickDate")}
-              clearable
-              valueFormat="YYYY-MM-DD"
-              {...form.getInputProps("completed_at")}
-            />
-            <NumberInput
-              label={t("modal.playtime")}
-              placeholder={t("modal.playtimePlaceholder")}
-              min={0}
-              step={0.1}
-              decimalScale={1}
-              allowNegative={false}
-              decimalSeparator={i18n.language.startsWith("pl") ? "," : "."}
-              value={form.values.playtime ?? ""}
-              onChange={val => form.setFieldValue("playtime", val === "" ? null : Number(val))}
-              error={form.errors.playtime}
-            />
-          </Group>
-
-          <Textarea
-            label={t("modal.noteLabel")}
-            placeholder={t("modal.notePlaceholder")}
-            maxLength={200}
-            rows={3}
-            {...form.getInputProps("description")}
-          />
-        </Stack>
-      </form>
-    </AppModal>
+          </Stack>
+        </form>
+      </AppModal>
+      {confirmModal}
+    </>
   );
 }

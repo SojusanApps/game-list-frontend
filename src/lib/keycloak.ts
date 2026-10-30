@@ -29,3 +29,12 @@ export function initKeycloak(): Promise<void> {
     });
   return initPromise;
 }
+
+/** Resolves once the session check has settled, whether it succeeded or failed; never rejects. For route guards. */
+export async function waitForSession(): Promise<void> {
+  try {
+    await initKeycloak();
+  } catch {
+    // A failed check just means "signed out"; callers read the auth store afterwards.
+  }
+}

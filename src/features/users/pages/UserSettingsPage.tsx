@@ -1,11 +1,14 @@
 import { GravatarQuickEditorCore } from "@gravatar-com/quick-editor";
-import { Box, Stack, Text, Title } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell, PageTitle } from "@/components/ui/PageShell";
+import { Panel } from "@/components/ui/Panel";
+import { PanelHeader } from "@/components/ui/PanelHeader";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { env } from "@/config/env";
 import { useCurrentUserId } from "@/features/auth";
@@ -46,33 +49,18 @@ export default function UserSettingsPage(): React.JSX.Element {
   };
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Box maw={720} mx="auto" px={16}>
+    <PageShell width="narrow">
+      <Box>
         <PageMeta title={t("settings.title")} noindex />
-        <Title order={1} fz={28} fw={700} c="var(--color-text-900)" mb={32}>
-          {t("settings.title")}
-        </Title>
+        <PageTitle mb={32}>{t("settings.title")}</PageTitle>
 
-        <Box
+        <Panel
+          p={0}
           style={{
-            background: "var(--color-background-100)",
-            borderRadius: 12,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            border: "1px solid var(--color-background-200)",
             overflow: "hidden",
           }}
         >
-          <Box
-            style={{
-              background: "var(--color-background-50)",
-              padding: "12px 16px",
-              borderBottom: "1px solid var(--color-background-200)",
-            }}
-          >
-            <Text fw={600} c="var(--color-text-900)">
-              {t("settings.avatar.sectionTitle")}
-            </Text>
-          </Box>
+          <PanelHeader title={t("settings.avatar.sectionTitle")} />
 
           <Stack align="center" gap={16} p={24}>
             <Box
@@ -101,30 +89,17 @@ export default function UserSettingsPage(): React.JSX.Element {
               {t("settings.avatar.changeButton")}
             </Button>
           </Stack>
-        </Box>
+        </Panel>
 
         {userDetails && currentUserId && (
-          <Box
+          <Panel
+            p={0}
             style={{
-              background: "var(--color-background-100)",
-              borderRadius: 12,
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              border: "1px solid var(--color-background-200)",
               overflow: "hidden",
             }}
             mt={24}
           >
-            <Box
-              style={{
-                background: "var(--color-background-50)",
-                padding: "12px 16px",
-                borderBottom: "1px solid var(--color-background-200)",
-              }}
-            >
-              <Text fw={600} c="var(--color-text-900)">
-                {t("settings.credentials.sectionTitle")}
-              </Text>
-            </Box>
+            <PanelHeader title={t("settings.credentials.sectionTitle")} />
 
             <Stack gap={16} p={24}>
               <Text fz="sm" c="var(--color-text-500)">
@@ -151,14 +126,14 @@ export default function UserSettingsPage(): React.JSX.Element {
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none" }}
               >
-                <Button variant="default" fullWidth>
+                <Button component="span" variant="default" fullWidth>
                   {t("settings.credentials.manageAccountButton")}
                 </Button>
               </a>
             </Stack>
-          </Box>
+          </Panel>
         )}
       </Box>
-    </Box>
+    </PageShell>
   );
 }

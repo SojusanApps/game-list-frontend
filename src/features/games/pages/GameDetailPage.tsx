@@ -1,11 +1,14 @@
-import { ActionIcon, Box, Grid, Group, Skeleton, Stack, Tabs, Title, Tooltip } from "@mantine/core";
-import { IconBell, IconBellFilled } from "@tabler/icons-react";
-import { getRouteApi } from "@tanstack/react-router";
+import { ActionIcon, Box, Grid, Group, Menu, Skeleton, Stack, Tabs, Title, Tooltip } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconBell, IconBellFilled, IconChevronDown } from "@tabler/icons-react";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { SITE_URL } from "@/config/site";
 import { useCurrentUserId, useRequireAuth } from "@/features/auth";
@@ -25,6 +28,8 @@ import {
   useGetGameFollowsList,
   useCreateGameFollow,
   useDeleteGameFollow,
+  useCreateGameList,
+  usePartialUpdateGameList,
 } from "../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import {
@@ -32,8 +37,12 @@ import {
   reviewLanguageQuery,
   type ReviewLanguageFilter as ReviewLanguageFilterValue,
 } from "../utils/reviewLanguage";
+import { STATUS_CONFIG } from "../utils/statusConfig";
+import { StatusIcon } from "../utils/StatusIcon";
 
 const routeApi = getRouteApi("/game/$id/$slug");
+
+const STATUS_VALUES = Object.values(GameListStatusEnum) as GameListStatusEnum[];
 
 function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId: number | null }>) {
   const { t } = useTranslation("games");
@@ -63,9 +72,10 @@ function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId:
         size="xl"
         variant="subtle"
         color={isFollowing ? "primary" : "gray"}
-        onClick={() => requireAuth(handleToggleFollow)}
+        onClick={() => requireAuth(handleToggleFollow, "follow")}
         loading={!!userId && (isGameFollowsPending || isCreatingGameFollow || isDeletingGameFollow)}
         radius="xl"
+        aria-label={isFollowing ? t("detail.unfollowGame") : t("detail.followGame")}
       >
         {isFollowing ? <IconBellFilled size={24} /> : <IconBell size={24} />}
       </ActionIcon>
@@ -75,11 +85,13 @@ function GameFollowButton({ gameId, userId }: Readonly<{ gameId: number; userId:
 
 function UserGameActions({
   gameId,
+  gameTitle,
   userId,
   setIsListModalOpen,
   setIsCollectionModalOpen,
 }: Readonly<{
   gameId: number;
+  gameTitle?: string;
   userId: number | null;
   setIsListModalOpen: (val: boolean) => void;
   setIsCollectionModalOpen: (val: boolean) => void;
@@ -91,6 +103,26 @@ function UserGameActions({
     { enabled: !!gameId && !!userId },
   );
 
+  const { mutate: createEntry } = useCreateGameList();
+  const { mutate: updateEntry } = usePartialUpdateGameList();
+
+  const setStatus = (status: GameListStatusEnum) => {
+    if (userGameList?.id) {
+      updateEntry({ id: userGameList.id, body: { status }, title: gameTitle });
+    } else {
+      createEntry(
+        { body: { game: gameId, status, owned_on: [] }, title: gameTitle },
+        {
+          onSuccess: () =>
+            notifications.show({
+              message: t("detail.addedToList", { status: STATUS_CONFIG[status].label }),
+              autoClose: 4000,
+            }),
+        },
+      );
+    }
+  };
+
   const listButtonText = userGameList?.id ? t("detail.editListEntry") : t("detail.addListEntry");
 
   return (
@@ -98,11 +130,56 @@ function UserGameActions({
       {isUserGameListPending && userId ? (
         <Skeleton h={36} w="100%" style={{ borderRadius: 8 }} />
       ) : (
-        <Button onClick={() => requireAuth(() => setIsListModalOpen(true))} fullWidth>
-          {listButtonText}
-        </Button>
+        <Group gap={2} wrap="nowrap">
+          <Button
+            style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+            onClick={() =>
+              requireAuth(
+                () => (userGameList?.id ? setIsListModalOpen(true) : setStatus(GameListStatusEnum.PTP)),
+                "addToList",
+              )
+            }
+          >
+            {listButtonText}
+          </Button>
+          <Menu position="bottom-end" shadow="md" width={220}>
+            <Menu.Target>
+              <Button
+                aria-label={t("detail.setStatus")}
+                size="icon"
+                style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                onClick={() => {
+                  if (!userId) {
+                    requireAuth(() => {}, "addToList");
+                  }
+                }}
+              >
+                <IconChevronDown size={16} />
+              </Button>
+            </Menu.Target>
+            {userId && (
+              <Menu.Dropdown>
+                <Menu.Label>{t("detail.setStatus")}</Menu.Label>
+                {STATUS_VALUES.map(status => (
+                  <Menu.Item
+                    key={status}
+                    disabled={status === userGameList?.status_code}
+                    leftSection={<StatusIcon status={status} size={16} neon />}
+                    onClick={() => setStatus(status)}
+                  >
+                    {STATUS_CONFIG[status].label}
+                  </Menu.Item>
+                ))}
+              </Menu.Dropdown>
+            )}
+          </Menu>
+        </Group>
       )}
-      <Button onClick={() => requireAuth(() => setIsCollectionModalOpen(true))} variant="outline" fullWidth>
+      <Button
+        onClick={() => requireAuth(() => setIsCollectionModalOpen(true), "addToCollection")}
+        variant="outline"
+        style={{ width: "100%" }}
+      >
         {t("detail.addToCollection")}
       </Button>
     </Stack>
@@ -144,7 +221,9 @@ export default function GameDetailPage(): React.JSX.Element {
     { enabled: !!gameId },
   );
 
-  const [activeTab, setActiveTab] = React.useState<"main" | "related" | "screenshots">("main");
+  const { tab } = routeApi.useSearch();
+  const navigate = useNavigate({ from: "/game/$id/$slug" });
+  const activeTab = tab ?? "main";
   const [selectedScreenshot, setSelectedScreenshot] = React.useState<string | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = React.useState(false);
   const [isListModalOpen, setIsListModalOpen] = React.useState(false);
@@ -179,8 +258,8 @@ export default function GameDetailPage(): React.JSX.Element {
     : undefined;
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Grid gap="md" maw={1152} mx="auto" px={16}>
+    <PageShell width="default">
+      <Grid gap="md">
         <PageMeta title={pageTitle} description={gameDetails?.summary} image={coverUrl} jsonLd={gameJsonLd} />
 
         {isGameDetailsLoading ? (
@@ -209,6 +288,7 @@ export default function GameDetailPage(): React.JSX.Element {
 
                 <UserGameActions
                   gameId={gameId}
+                  gameTitle={gameDetails?.title}
                   userId={currentUserId}
                   setIsListModalOpen={setIsListModalOpen}
                   setIsCollectionModalOpen={setIsCollectionModalOpen}
@@ -238,7 +318,12 @@ export default function GameDetailPage(): React.JSX.Element {
                 <Tabs
                   value={activeTab}
                   onChange={val => {
-                    if (val) setActiveTab(val as typeof activeTab);
+                    if (val) {
+                      void navigate({
+                        search: prev => ({ ...prev, tab: val === "main" ? undefined : (val as typeof activeTab) }),
+                        replace: true,
+                      });
+                    }
                   }}
                   keepMounted={false}
                 >
@@ -275,6 +360,7 @@ export default function GameDetailPage(): React.JSX.Element {
           <ScreenshotModal
             initialScreenshot={selectedScreenshot}
             screenshots={gameDetails.screenshots}
+            gameTitle={gameDetails.title}
             onClose={() => setSelectedScreenshot(null)}
           />
         )}
@@ -292,6 +378,6 @@ export default function GameDetailPage(): React.JSX.Element {
           />
         )}
       </Grid>
-    </Box>
+    </PageShell>
   );
 }

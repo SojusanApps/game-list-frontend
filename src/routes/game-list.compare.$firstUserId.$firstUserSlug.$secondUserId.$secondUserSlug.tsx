@@ -5,6 +5,7 @@ import { getGameListCompare } from "@/features/games/api/game";
 import { getUserDetails } from "@/features/users/api/user";
 import { gameListKeys, userKeys } from "@/lib/queryKeys";
 import { slugSchema, idSchema } from "@/lib/validation";
+import { rethrowAsNotFound } from "@/utils/routeUtils";
 
 export const Route = createFileRoute("/game-list/compare/$firstUserId/$firstUserSlug/$secondUserId/$secondUserSlug")({
   beforeLoad: ({ params }) => {
@@ -26,21 +27,24 @@ export const Route = createFileRoute("/game-list/compare/$firstUserId/$firstUser
     const secondUserId = Number(params.secondUserId);
     try {
       await Promise.all([
-        queryClient.ensureQueryData({
+        queryClient.query({
+          staleTime: "static",
           queryKey: userKeys.detail(firstUserId),
           queryFn: () => getUserDetails(firstUserId),
         }),
-        queryClient.ensureQueryData({
+        queryClient.query({
+          staleTime: "static",
           queryKey: userKeys.detail(secondUserId),
           queryFn: () => getUserDetails(secondUserId),
         }),
-        queryClient.ensureQueryData({
+        queryClient.query({
+          staleTime: "static",
           queryKey: gameListKeys.compare(firstUserId, secondUserId),
           queryFn: () => getGameListCompare(firstUserId, secondUserId),
         }),
       ]);
-    } catch {
-      throw notFound();
+    } catch (error) {
+      rethrowAsNotFound(error);
     }
   },
   component: GameListComparePage,

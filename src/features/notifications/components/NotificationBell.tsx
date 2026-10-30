@@ -5,14 +5,21 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Notification } from "@/client";
+import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TagChip } from "@/components/ui/TagChip";
+import { TruncatedText } from "@/components/ui/TruncatedText";
+import { useConfirm } from "@/hooks/useConfirm";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
 import {
   useGetNotifications,
   useGetUnreadNotificationCount,
+  useMarkAllNotificationsAsRead,
   useMarkNotificationAsRead,
 } from "../hooks/notificationQueries";
+import { getNotificationLink } from "../utils/notificationLink";
+import { FriendRequestActions } from "./FriendRequestActions";
 
 import bellStyles from "./NotificationBell.module.css";
 
@@ -21,10 +28,18 @@ export default function NotificationBell(): React.JSX.Element {
   const { data: unreadData } = useGetUnreadNotificationCount();
   const { data: notificationsData } = useGetNotifications();
   const { mutate: markAsRead } = useMarkNotificationAsRead();
+  const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
+  const { confirm, confirmModal } = useConfirm();
 
   const unreadCount = unreadData?.unread_count ?? 0;
   const notifications = notificationsData?.results ?? [];
   const unreadNotifications = notifications.filter((n: Notification) => n.unread);
+
+  const handleMarkAllRead = async () => {
+    if (await confirm({ title: t("page.markAllRead"), message: t("page.confirmMarkAll") })) {
+      markAllAsRead();
+    }
+  };
 
   const handleNotificationClick = (notification: Notification) => {
     if (notification.unread) {
@@ -33,187 +48,193 @@ export default function NotificationBell(): React.JSX.Element {
   };
 
   return (
-    <Popover width={384} position="bottom-end" shadow="xl" withArrow>
-      <Popover.Target>
-        <UnstyledButton className={bellStyles.topbarIconBtn}>
-          <Box style={{ position: "relative" }}>
-            <IconBell style={{ width: 24, height: 24, color: "var(--mantine-color-primary-2)" }} />
-            {unreadCount > 0 && (
-              <Text
-                component="span"
-                style={{
-                  position: "absolute",
-                  top: "-4px",
-                  right: "-4px",
-                  display: "flex",
-                  width: "16px",
-                  height: "16px",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "9999px",
-                  background: "var(--color-error-500)",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  color: "white",
-                  outline: "2px solid var(--mantine-color-primary-9)",
-                }}
-              >
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </Text>
-            )}
-          </Box>
-        </UnstyledButton>
-      </Popover.Target>
+    <>
+      {confirmModal}
+      <Popover width={384} position="bottom-end" shadow="xl" withArrow>
+        <Popover.Target>
+          <UnstyledButton
+            className={bellStyles.topbarIconBtn}
+            aria-label={unreadCount > 0 ? t("bell.ariaLabel", { count: unreadCount }) : t("bell.ariaLabelNone")}
+          >
+            <Box style={{ position: "relative" }}>
+              <IconBell style={{ width: 24, height: 24, color: "var(--mantine-color-primary-2)" }} />
+              {unreadCount > 0 && (
+                <Text
+                  component="span"
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    right: "-4px",
+                    display: "flex",
+                    width: "16px",
+                    height: "16px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "9999px",
+                    background: "var(--color-error-700)",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: "white",
+                    outline: "2px solid var(--mantine-color-primary-9)",
+                  }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </Text>
+              )}
+            </Box>
+          </UnstyledButton>
+        </Popover.Target>
 
-      <Popover.Dropdown
-        style={{ padding: 0, borderRadius: "16px", overflow: "hidden", background: "var(--color-background-100)" }}
-      >
-        <Group
-          justify="space-between"
-          align="center"
-          p={16}
-          style={{
-            borderBottom: "1px solid var(--color-background-100)",
-            background: "rgba(var(--color-veil-rgb), 0.5)",
-          }}
+        <Popover.Dropdown
+          style={{ padding: 0, borderRadius: "16px", overflow: "hidden", background: "var(--color-background-100)" }}
         >
-          <Text fw={700} c="var(--color-text-900)">
-            {t("bell.title")}
-          </Text>
-          {unreadCount > 0 && (
-            <Text
-              component="span"
-              style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                padding: "2px 8px",
-                background: "var(--color-primary-tint-bg)",
-                color: "var(--color-primary-tint-text)",
-                borderRadius: "9999px",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
-              {unreadCount} {t("bell.new")}
+          <Group
+            justify="space-between"
+            align="center"
+            p={16}
+            style={{
+              borderBottom: "1px solid var(--color-background-100)",
+              background: "rgba(var(--color-veil-rgb), 0.5)",
+            }}
+          >
+            <Text fw={700} c="var(--color-text-900)">
+              {t("bell.title")}
             </Text>
-          )}
-        </Group>
+            {unreadCount > 0 && (
+              <Button size="sm" variant="ghost" onClick={() => handleMarkAllRead()}>
+                {t("bell.markAllRead")}
+              </Button>
+            )}
+            {unreadCount > 0 && (
+              <TagChip>
+                {unreadCount} {t("bell.new")}
+              </TagChip>
+            )}
+          </Group>
 
-        <ScrollArea
-          component="ul"
-          style={{ maxHeight: "400px", display: "flex", flexDirection: "column" }}
-          scrollbars="y"
-          viewportProps={{
-            style: {
-              flex: 1,
-              height: "auto",
-              minHeight: 0,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              padding: 8,
-            },
-          }}
-        >
-          {unreadNotifications.length === 0 ? (
-            <Stack
-              component="li"
-              align="center"
-              justify="center"
-              style={{ paddingBlock: "48px", paddingInline: "16px", textAlign: "center" }}
-            >
-              <IconBell style={{ width: 40, height: 40, color: "var(--color-background-300)", marginBottom: 8 }} />
-              <Text size="sm" c="var(--color-text-500)" fw={500}>
-                {t("bell.empty")}
-              </Text>
-            </Stack>
-          ) : (
-            unreadNotifications.map((notification: Notification) => {
-              const actor = notification.actor;
-              const target = notification.target;
+          <ScrollArea
+            component="ul"
+            style={{ maxHeight: "400px", display: "flex", flexDirection: "column" }}
+            scrollbars="y"
+            viewportProps={{
+              style: {
+                flex: 1,
+                height: "auto",
+                minHeight: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                padding: 8,
+              },
+            }}
+          >
+            {unreadNotifications.length === 0 ? (
+              <Stack
+                component="li"
+                align="center"
+                justify="center"
+                style={{ paddingBlock: "48px", paddingInline: "16px", textAlign: "center" }}
+              >
+                <IconBell style={{ width: 40, height: 40, color: "var(--color-background-300)", marginBottom: 8 }} />
+                <Text size="sm" c="var(--color-text-500)" fw={500}>
+                  {t("bell.empty")}
+                </Text>
+              </Stack>
+            ) : (
+              unreadNotifications.map((notification: Notification) => {
+                const actor = notification.actor;
+                const target = notification.target;
 
-              let displayEntity;
-              if (actor?.type === "user") {
-                displayEntity = actor;
-              } else if (target?.type === "user") {
-                displayEntity = target;
-              }
+                let displayEntity;
+                if (actor?.type === "user") {
+                  displayEntity = actor;
+                } else if (target?.type === "user") {
+                  displayEntity = target;
+                }
 
-              return (
-                <Box component="li" key={notification.id} className={bellStyles.notificationCard}>
-                  <Link
-                    to={displayEntity?.type === "user" ? "/profile/$id/$slug" : "/notifications"}
-                    params={{ id: displayEntity?.id.toString() || "", slug: displayEntity?.slug || "" }}
-                    onClick={() => handleNotificationClick(notification)}
-                    className={bellStyles.notificationItemLink}
-                  >
-                    <Box style={{ flexShrink: 0, position: "relative" }}>
-                      <SafeImage
-                        containerStyle={{ width: "40px", height: "40px", borderRadius: "9999px" }}
-                        src={displayEntity?.gravatar_url || undefined}
-                        alt={t("bell.actorAvatarAlt")}
-                      />
-                    </Box>
+                const link = getNotificationLink(notification);
 
-                    <Stack gap={0} style={{ minWidth: 0, flex: 1 }}>
-                      <Group justify="space-between" align="flex-start" gap={8}>
-                        <Text
-                          component="span"
-                          fw={700}
-                          fz="sm"
-                          c="var(--color-text-900)"
-                          style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                        >
-                          {displayEntity?.str || "Someone"}
-                        </Text>
-                        <Text
-                          component="span"
+                return (
+                  <Box component="li" key={notification.id} className={bellStyles.notificationCard}>
+                    <Link
+                      to={link.to}
+                      params={link.params as never}
+                      onClick={() => handleNotificationClick(notification)}
+                      className={bellStyles.notificationItemLink}
+                    >
+                      <Box style={{ flexShrink: 0, position: "relative" }}>
+                        <SafeImage
+                          containerStyle={{ width: "40px", height: "40px", borderRadius: "9999px" }}
+                          src={displayEntity?.gravatar_url || undefined}
+                          alt={t("bell.actorAvatarAlt")}
+                        />
+                      </Box>
+
+                      <Stack gap={0} style={{ minWidth: 0, flex: 1 }}>
+                        <Group justify="space-between" align="flex-start" gap={8}>
+                          <TruncatedText
+                            span
+                            fw={700}
+                            fz="sm"
+                            c="var(--color-text-900)"
+                            style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                          >
+                            {displayEntity?.str || t("page.someone")}
+                          </TruncatedText>
+                          <Text
+                            component="span"
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: 500,
+                              color: "var(--color-text-400)",
+                              whiteSpace: "nowrap",
+                              paddingTop: "2px",
+                            }}
+                          >
+                            {formatDisplayDate(notification.timestamp)}
+                          </Text>
+                        </Group>
+                        <TruncatedText
+                          size="xs"
+                          c="var(--color-text-600)"
                           style={{
-                            fontSize: "10px",
-                            fontWeight: 500,
-                            color: "var(--color-text-400)",
-                            whiteSpace: "nowrap",
-                            paddingTop: "2px",
+                            lineHeight: 1.4,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            marginTop: "2px",
+                            fontStyle: "italic",
                           }}
                         >
-                          {formatDisplayDate(notification.timestamp)}
-                        </Text>
-                      </Group>
-                      <Text
-                        size="xs"
-                        c="var(--color-text-600)"
-                        style={{
-                          lineHeight: 1.4,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          marginTop: "2px",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        {notification.verb}
-                      </Text>
-                    </Stack>
-                  </Link>
-                </Box>
-              );
-            })
-          )}
-        </ScrollArea>
+                          {notification.verb}
+                        </TruncatedText>
+                      </Stack>
+                    </Link>
+                    {displayEntity?.type === "user" && (
+                      <Box px={12} pb={12}>
+                        <FriendRequestActions senderId={displayEntity.id} />
+                      </Box>
+                    )}
+                  </Box>
+                );
+              })
+            )}
+          </ScrollArea>
 
-        <Box
-          style={{
-            padding: 12,
-            background: "rgba(var(--color-veil-rgb), 0.8)",
-            borderTop: "1px solid var(--color-background-100)",
-          }}
-        >
-          <Link to="/notifications" className={bellStyles.notificationsAllLink}>
-            {t("bell.viewAll")}
-          </Link>
-        </Box>
-      </Popover.Dropdown>
-    </Popover>
+          <Box
+            style={{
+              padding: 12,
+              background: "rgba(var(--color-veil-rgb), 0.8)",
+              borderTop: "1px solid var(--color-background-100)",
+            }}
+          >
+            <Link to="/notifications" className={bellStyles.notificationsAllLink}>
+              {t("bell.viewAll")}
+            </Link>
+          </Box>
+        </Popover.Dropdown>
+      </Popover>
+    </>
   );
 }

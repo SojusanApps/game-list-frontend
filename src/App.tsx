@@ -7,6 +7,7 @@ import React from "react";
 import "./index.css";
 import { PageMeta } from "./components/ui/PageMeta";
 import { useAuth, SessionGate, LoginRequiredModal } from "./features/auth";
+import { RouteError } from "./features/misc";
 import { useLanguageStore } from "./lib/languageStore";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -19,6 +20,7 @@ export const router = createRouter({
     auth: undefined!,
   },
   defaultPreload: "intent",
+  defaultErrorComponent: RouteError,
 });
 
 // Register the router instance for type safety
@@ -42,6 +44,9 @@ function InnerApp() {
 
 function App(): React.JSX.Element {
   const { language } = useLanguageStore();
+  React.useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
   return (
     <HelmetProvider>
       <DatesProvider settings={{ locale: language }}>

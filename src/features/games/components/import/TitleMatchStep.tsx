@@ -1,210 +1,255 @@
-import { Box, Stack, Text, Title, Group, Badge, Divider, Progress, Loader } from "@mantine/core";
-import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconRefresh } from "@tabler/icons-react";
+import { Box, Stack, Text, Title, Group, Badge, Grid, ActionIcon, UnstyledButton } from "@mantine/core";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconX,
+} from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { TitleImportResult, TitleImportMatch } from "@/client";
+import { GameSimpleList } from "@/client";
 import { Button } from "@/components/ui/Button";
-import ItemOverlay from "@/components/ui/ItemOverlay";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { cn } from "@/utils/cn";
 
-import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
-import { MatchDecision } from "./types";
+import { StoreRef } from "../../utils/titleImport";
+import { GameCatalogueSearch } from "../GameCatalogueSearch";
+import { StoreRefList } from "./StoreRefList";
+import { ImportedGame, TitleResolution } from "./types";
 
 import styles from "./TitleMatchStep.module.css";
 
-interface CandidateCardProps {
-  candidate: TitleImportMatch;
-  decision?: MatchDecision;
-  onToggle: () => void;
-}
-
-const CandidateCard = ({ candidate, decision, onToggle }: CandidateCardProps) => {
-  const { t } = useTranslation("games");
-  const isChosen = decision?.kind === "game" && decision.game.id === candidate.id;
-  const isDimmed = decision !== undefined && !isChosen;
-
-  return (
-    <div
-      className={cn(styles.overlayPick, {
-        [styles.overlayPickChosen]: isChosen,
-        [styles.overlayPickDimmed]: isDimmed && !candidate.already_in_list,
-        [styles.overlayPickDisabled]: candidate.already_in_list,
-      })}
-    >
-      {candidate.already_in_list && (
-        <Badge variant="filled" color="gray" size="sm" w="max-content" className={styles.inListBadge}>
-          {t("import.alreadyInList")}
-        </Badge>
-      )}
-      <ItemOverlay
-        name={candidate.title}
-        itemCoverUrl={
-          candidate.cover_image_id ? getIGDBImageURL(candidate.cover_image_id, IGDBImageSize.COVER_BIG_264_374) : null
-        }
-        releaseDate={candidate.release_date}
-        onClick={candidate.already_in_list ? undefined : onToggle}
-      />
-    </div>
-  );
-};
-
-interface TitleMatchSectionProps {
+export interface MatchTitle {
+  titleIndex: number;
   title: string;
-  result: TitleImportResult;
-  decision?: MatchDecision;
-  onDecide: (decision: MatchDecision | null) => void;
+  storeRefs: StoreRef[];
 }
-
-const TitleMatchSection = ({ title, result, decision, onDecide }: TitleMatchSectionProps) => {
-  const { t } = useTranslation("games");
-
-  const toggleCandidate = (candidate: TitleImportMatch) => {
-    const isChosen = decision?.kind === "game" && decision.game.id === candidate.id;
-    onDecide(isChosen ? null : { kind: "game", game: candidate });
-  };
-
-  const toggleNone = () => {
-    onDecide(decision?.kind === "none" ? null : { kind: "none" });
-  };
-
-  return (
-    <Stack gap={12} py={16}>
-      <Text fw={700} fz="md" c="var(--color-text-900)">
-        {title}
-      </Text>
-      {result.matches.length === 0 ? (
-        <Text fz="sm" c="dimmed">
-          {t("import.noMatchesFound")}
-        </Text>
-      ) : (
-        <div className={styles.candidateGrid}>
-          {result.matches.map(candidate => (
-            <CandidateCard
-              key={candidate.id}
-              candidate={candidate}
-              decision={decision}
-              onToggle={() => toggleCandidate(candidate)}
-            />
-          ))}
-          <button
-            type="button"
-            className={cn(styles.noneCard, {
-              [styles.noneCardChosen]: decision?.kind === "none",
-              [styles.noneCardDimmed]: decision !== undefined && decision.kind !== "none",
-            })}
-            onClick={toggleNone}
-            aria-pressed={decision?.kind === "none"}
-          >
-            <Text fz="sm" fw={600} c="var(--color-text-700)" ta="center">
-              {t("import.noneOfThese")}
-            </Text>
-          </button>
-        </div>
-      )}
-    </Stack>
-  );
-};
 
 interface TitleMatchStepProps {
-  batchIndex: number;
-  batchCount: number;
-  batchTitles: string[];
-  batchOffset: number;
-  results?: TitleImportResult[];
-  isLoading: boolean;
-  isError: boolean;
-  onRetry: () => void;
-  decisions: Record<number, MatchDecision>;
-  onDecide: (titleIndex: number, decision: MatchDecision | null) => void;
+  titles: MatchTitle[];
+  resolutions: Record<number, TitleResolution>;
+  isListed: (game: ImportedGame) => boolean;
+  onPick: (titleIndex: number, game: GameSimpleList) => void;
+  onClear: (titleIndex: number) => void;
+  onToggleNotAGame: (titleIndex: number) => void;
   onBack: () => void;
-  onNext: () => void;
-  isLastBatch: boolean;
+  onContinue: () => void;
 }
 
-/** One page of the paged matching step: a batch of up to 10 titles with their candidates. */
+/**
+ * Matches every imported title to a catalogue game: the user activates a title
+ * (which pre-fills the catalogue search with its text, with no filters) and
+ * clicks the right search result. Titles left unresolved are skipped.
+ */
 export const TitleMatchStep = ({
-  batchIndex,
-  batchCount,
-  batchTitles,
-  batchOffset,
-  results,
-  isLoading,
-  isError,
-  onRetry,
-  decisions,
-  onDecide,
+  titles,
+  resolutions,
+  isListed,
+  onPick,
+  onClear,
+  onToggleNotAGame,
   onBack,
-  onNext,
-  isLastBatch,
+  onContinue,
 }: TitleMatchStepProps) => {
   const { t } = useTranslation("games");
-  const { t: tCommon } = useTranslation("common");
 
-  const allResolved = results !== undefined && batchTitles.every((_, i) => decisions[batchOffset + i] !== undefined);
+  const firstOpen = titles.find(item => !resolutions[item.titleIndex]) ?? titles[0];
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(firstOpen?.titleIndex ?? null);
+  const [search, setSearch] = React.useState(firstOpen?.title ?? "");
+  const [filters, setFilters] = React.useState<Record<string, unknown>>({});
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+
+  const resolvedCount = titles.filter(item => resolutions[item.titleIndex]).length;
+
+  const activate = (item: MatchTitle) => {
+    setActiveIndex(item.titleIndex);
+    setSearch(item.title);
+    setFilters({});
+  };
+
+  /** Move on to the next title still without a resolution, if there is one. */
+  const advance = (from: number, resolved: number[]) => {
+    const start = titles.findIndex(item => item.titleIndex === from);
+    const next = [...titles.slice(start + 1), ...titles.slice(0, start)].find(
+      item => !resolutions[item.titleIndex] && !resolved.includes(item.titleIndex),
+    );
+    if (next) {
+      activate(next);
+    } else {
+      setActiveIndex(null);
+      setSearch("");
+      setFilters({});
+    }
+  };
+
+  const handlePick = (game: GameSimpleList) => {
+    if (activeIndex === null) {
+      return;
+    }
+    onPick(activeIndex, game);
+    advance(activeIndex, [activeIndex]);
+  };
+
+  const handleToggleNotAGame = (item: MatchTitle) => {
+    const isMarked = resolutions[item.titleIndex]?.kind === "not-a-game";
+    onToggleNotAGame(item.titleIndex);
+    if (!isMarked && activeIndex === item.titleIndex) {
+      advance(item.titleIndex, [item.titleIndex]);
+    }
+  };
+
+  const renderStatus = (resolution: TitleResolution | undefined) => {
+    if (resolution?.kind === "game") {
+      return (
+        <TruncatedText label={resolution.game.title} fz="xs" c="var(--mantine-color-green-6)" truncate>
+          <IconArrowRight size={12} stroke={1.5} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+          {resolution.game.title}
+        </TruncatedText>
+      );
+    }
+    const isNotAGame = resolution?.kind === "not-a-game";
+    return (
+      <Text fz="xs" c={isNotAGame ? "var(--mantine-color-green-6)" : "dimmed"}>
+        {isNotAGame ? t("import.matchNotAGameMarked") : t("import.matchSkipped")}
+      </Text>
+    );
+  };
 
   return (
     <Stack gap={24}>
-      <div className={styles.statsBox}>
-        <Stack gap={8} style={{ flex: 1 }}>
-          <Text fw={600} c="var(--color-text-900)">
-            {t("import.batchProgress", { current: batchIndex + 1, total: batchCount })}
-          </Text>
-          <Progress value={((batchIndex + 1) / batchCount) * 100} color="var(--mantine-color-primary-6)" />
-        </Stack>
-      </div>
-
       <Box className={styles.card}>
-        <Stack gap={8} mb={16}>
-          <Title order={3} fz={20} fw={700} c="var(--color-text-900)">
-            {t("import.matchIntroTitle")}
-          </Title>
-          <Text fz="sm" c="dimmed">
-            {t("import.matchIntroDescription")}
-          </Text>
-        </Stack>
-        <Divider />
-
-        {isLoading && (
-          <Group justify="center" py={48}>
-            <Loader size="sm" />
-            <Text c="dimmed">{tCommon("searching")}</Text>
+        <Stack gap={16}>
+          <Group justify="space-between" align="center">
+            <Title order={2} fz={20} fw={700} c="var(--color-text-900)">
+              {t("import.matchTitle")}
+            </Title>
+            <Group gap={8}>
+              <Badge
+                size="lg"
+                style={{
+                  background: "var(--color-secondary-tint-bg)",
+                  color: "var(--color-secondary-tint-text)",
+                  border: "1px solid var(--color-secondary-tint-border)",
+                }}
+              >
+                {t("import.matchProgress", { done: resolvedCount, total: titles.length })}
+              </Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                leftSection={
+                  isCollapsed ? <IconLayoutSidebarLeftExpand size={16} /> : <IconLayoutSidebarLeftCollapse size={16} />
+                }
+                onClick={() => setIsCollapsed(prev => !prev)}
+              >
+                {isCollapsed ? t("import.matchShowTitles") : t("import.matchHideTitles")}
+              </Button>
+            </Group>
           </Group>
-        )}
+          <Text fz="sm" c="dimmed">
+            {t("import.matchDescription")}
+          </Text>
 
-        {isError && !isLoading && (
-          <Stack align="center" gap={16} py={32}>
-            <IconAlertTriangle size={32} color="var(--mantine-color-orange-6)" />
-            <Text c="dimmed">{t("import.batchError")}</Text>
-            <Button onClick={onRetry} leftSection={<IconRefresh size={16} />}>
-              {t("import.retryButton")}
-            </Button>
-          </Stack>
-        )}
+          <Grid gap={24}>
+            {/* Titles to match */}
+            <Grid.Col span={{ base: 12, md: 5 }} display={isCollapsed ? "none" : undefined}>
+              <Stack gap={8} className={styles.titleList}>
+                {titles.map(item => {
+                  const resolution = resolutions[item.titleIndex];
+                  return (
+                    <Box
+                      key={item.titleIndex}
+                      className={cn(styles.titleItem, {
+                        [styles.titleItemActive]: activeIndex === item.titleIndex,
+                        [styles.titleItemResolved]: resolution !== undefined,
+                      })}
+                    >
+                      <UnstyledButton
+                        type="button"
+                        className={styles.titleItemMain}
+                        aria-current={activeIndex === item.titleIndex ? "true" : undefined}
+                        onClick={() => activate(item)}
+                      >
+                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                          <TruncatedText fz="sm" fw={600} c="var(--color-text-900)" truncate>
+                            {item.title}
+                          </TruncatedText>
+                          <StoreRefList refs={item.storeRefs} />
+                          {renderStatus(resolution)}
+                        </Stack>
+                      </UnstyledButton>
+                      {resolution?.kind === "game" ? (
+                        <ActionIcon
+                          type="button"
+                          variant="subtle"
+                          color="gray"
+                          size="md"
+                          aria-label={t("import.removePick")}
+                          onClick={() => onClear(item.titleIndex)}
+                        >
+                          <IconX size={14} />
+                        </ActionIcon>
+                      ) : (
+                        <Badge
+                          component="button"
+                          type="button"
+                          aria-pressed={resolution?.kind === "not-a-game"}
+                          variant={resolution?.kind === "not-a-game" ? "filled" : "outline"}
+                          color="gray"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleToggleNotAGame(item)}
+                        >
+                          {t("import.notAGameButton")}
+                        </Badge>
+                      )}
+                    </Box>
+                  );
+                })}
+              </Stack>
+            </Grid.Col>
 
-        {results && !isLoading && !isError && (
-          <Stack gap={0}>
-            {batchTitles.map((title, i) => (
-              <React.Fragment key={title}>
-                {i > 0 && <Divider />}
-                <TitleMatchSection
-                  title={title}
-                  result={results[i]}
-                  decision={decisions[batchOffset + i]}
-                  onDecide={decision => onDecide(batchOffset + i, decision)}
+            {/* Catalogue search */}
+            <Grid.Col span={{ base: 12, md: isCollapsed ? 12 : 7 }}>
+              <Stack gap={24}>
+                {isCollapsed && activeIndex !== null && (
+                  <TruncatedText fz="sm" fw={600} c="var(--color-text-900)" truncate>
+                    {t("import.matchActiveTitle", {
+                      title: titles.find(item => item.titleIndex === activeIndex)?.title,
+                    })}
+                  </TruncatedText>
+                )}
+                <GameCatalogueSearch
+                  search={search}
+                  onSearchChange={setSearch}
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  onSelect={handlePick}
+                  isListed={isListed}
+                  disabled={activeIndex === null}
+                  idleMessage={
+                    titles.length > 0 && resolvedCount === titles.length
+                      ? t("import.matchAllHandled")
+                      : t("import.matchSelectTitleFirst")
+                  }
+                  placeholder={
+                    activeIndex === null ? t("import.matchSelectTitleFirst") : t("import.matchSearchPlaceholder")
+                  }
+                  columnCount={isCollapsed ? 5 : 3}
                 />
-              </React.Fragment>
-            ))}
-          </Stack>
-        )}
+              </Stack>
+            </Grid.Col>
+          </Grid>
+        </Stack>
       </Box>
 
       <Group justify="space-between">
         <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
           {t("import.backStepButton")}
         </Button>
-        <Button onClick={onNext} disabled={!allResolved} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
-          {isLastBatch ? t("import.continueButton") : t("import.nextButton")}
+        <Button onClick={onContinue} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
+          {t("import.continueButton")}
         </Button>
       </Group>
     </Stack>

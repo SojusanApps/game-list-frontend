@@ -5,76 +5,27 @@ import {
   Text,
   UnstyledButton,
   Burger,
+  ActionIcon,
+  Modal,
   Drawer,
   Stack,
-  SegmentedControl,
-  useMantineColorScheme,
   useComputedColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  IconChevronDown,
-  IconUserCircle,
-  IconSettings,
-  IconLogout,
-  IconShield,
-  IconSun,
-  IconMoon,
-} from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { IconChevronDown, IconUserCircle, IconSettings, IconLogout, IconShield, IconSearch } from "@tabler/icons-react";
+import { Link, useRouterState } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { LanguageAndThemeSwitchers } from "@/components/layout/LanguageAndThemeSwitchers";
 import AppLogo from "@/components/ui/AppLogo";
 import { Button } from "@/components/ui/Button";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuth, useCurrentUser } from "@/features/auth";
 import SearchBar from "@/features/games/components/SearchBar";
 import NotificationBell from "@/features/notifications/components/NotificationBell";
-import i18n from "@/lib/i18n";
-import { useLanguageStore, type Language } from "@/lib/languageStore";
 
 import styles from "./TopBar.module.css";
-
-function LanguageAndThemeSwitchers(): React.JSX.Element {
-  const { language, setLanguage } = useLanguageStore();
-  const { setColorScheme } = useMantineColorScheme();
-  const colorScheme = useComputedColorScheme("light");
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-
-  const handleLanguageChange = (value: string) => {
-    const lang = value as Language;
-    setLanguage(lang);
-    void i18n.changeLanguage(lang);
-    queryClient.invalidateQueries().catch(() => {});
-  };
-
-  return (
-    <Group gap={12}>
-      <SegmentedControl
-        value={language}
-        onChange={handleLanguageChange}
-        size="xs"
-        data={[
-          { label: "EN", value: "en" },
-          { label: "PL", value: "pl" },
-        ]}
-      />
-      <SegmentedControl
-        value={colorScheme}
-        onChange={value => setColorScheme(value as "light" | "dark")}
-        size="xs"
-        aria-label={t("nav.colorScheme")}
-        data={[
-          { value: "light", label: <IconSun size={14} stroke={1.75} aria-label={t("nav.lightMode")} /> },
-          { value: "dark", label: <IconMoon size={14} stroke={1.75} aria-label={t("nav.darkMode")} /> },
-        ]}
-      />
-    </Group>
-  );
-}
 
 function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.Element {
   const { data: currentUser } = useCurrentUser();
@@ -126,7 +77,7 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
             </>
           )}
           <Menu.Divider />
-          <Menu.Item color="red" onClick={logout} leftSection={<IconLogout size={16} />}>
+          <Menu.Item color="error" onClick={logout} leftSection={<IconLogout size={16} />}>
             {t("nav.logout")}
           </Menu.Item>
         </Menu.Dropdown>
@@ -153,6 +104,11 @@ function TopBar(): React.JSX.Element {
   const currentUserId = currentUser?.id;
   const userSlug = currentUser?.slug || currentUserId?.toString() || "";
   const [opened, { toggle, close }] = useDisclosure();
+  const [searchOpened, { open: openSearch, close: closeSearch }] = useDisclosure();
+  const pathname = useRouterState({ select: state => state.location.pathname });
+  React.useEffect(() => {
+    closeSearch();
+  }, [pathname, closeSearch]);
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light");
 
@@ -165,25 +121,32 @@ function TopBar(): React.JSX.Element {
         zIndex: 50,
         width: "100%",
         borderBottom: "1px solid rgba(255,255,255,0.1)",
-        background: colorScheme === "dark" ? "#000000" : "var(--color-primary-950)",
+        background: colorScheme === "dark" ? "var(--color-background-200)" : "var(--color-primary-950)",
         boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
       }}
     >
       <Group justify="space-between" align="center" maw={1280} mx="auto" p={12}>
         <Group gap={32}>
-          <Burger opened={opened} onClick={toggle} hiddenFrom="lg" size="sm" color="var(--color-primary-100)" />
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            hiddenFrom="lg"
+            size="sm"
+            color="var(--color-primary-100)"
+            aria-label={t("nav.openMenu")}
+          />
           <Link to="/" className={styles.logoLink} aria-label={t("nav.gameListLogo")}>
             <AppLogo size="md" onDark />
           </Link>
 
           <Group component="ul" gap={32} visibleFrom="lg">
             <Box component="li" className={styles.navItem}>
-              <Link to="/search" className={styles.navLink}>
+              <Link to="/search" className={styles.navLink} activeProps={{ className: styles.navLinkActive }}>
                 {t("nav.searchEngine")}
               </Link>
             </Box>
             <Box component="li" className={styles.navItem}>
-              <Link to="/release-calendar" className={styles.navLink}>
+              <Link to="/release-calendar" className={styles.navLink} activeProps={{ className: styles.navLinkActive }}>
                 {t("nav.releaseCalendar")}
               </Link>
             </Box>
@@ -195,6 +158,7 @@ function TopBar(): React.JSX.Element {
                     to={"/game-list/$id/$slug"}
                     params={{ id: currentUserId.toString(), slug: userSlug }}
                     className={styles.navLink}
+                    activeProps={{ className: styles.navLinkActive }}
                   >
                     {t("nav.gameList")}
                   </Link>
@@ -204,6 +168,7 @@ function TopBar(): React.JSX.Element {
                     to={"/profile/$id/$slug/collections"}
                     params={{ id: currentUserId.toString(), slug: userSlug }}
                     className={styles.navLink}
+                    activeProps={{ className: styles.navLinkActive }}
                   >
                     {t("nav.collections")}
                   </Link>
@@ -218,12 +183,33 @@ function TopBar(): React.JSX.Element {
         </Box>
 
         <Group gap={16}>
+          <ActionIcon
+            hiddenFrom="md"
+            variant="subtle"
+            size="lg"
+            color="var(--color-primary-100)"
+            aria-label={t("nav.search")}
+            onClick={openSearch}
+          >
+            <IconSearch size={22} />
+          </ActionIcon>
           <Box visibleFrom="lg">
             <LanguageAndThemeSwitchers />
           </Box>
           {isAuthenticated ? <LoggedInView logout={logout} /> : <NotLoggedInView />}
         </Group>
       </Group>
+
+      <Modal
+        opened={searchOpened}
+        onClose={closeSearch}
+        fullScreen
+        title={t("nav.search")}
+        zIndex={1_000_000}
+        transitionProps={{ transition: "fade" }}
+      >
+        <SearchBar variant="light" />
+      </Modal>
 
       <Drawer
         opened={opened}
@@ -246,13 +232,34 @@ function TopBar(): React.JSX.Element {
             <SearchBar variant="light" />
           </Box>
           <Box component="li">
-            <Link to="/search" className={styles.mobileNavLink} onClick={close}>
+            <Link
+              to="/search"
+              className={styles.mobileNavLink}
+              activeProps={{ className: styles.mobileNavLinkActive }}
+              onClick={close}
+            >
               {t("nav.searchEngine")}
             </Link>
           </Box>
           <Box component="li">
-            <Link to="/release-calendar" className={styles.mobileNavLink} onClick={close}>
+            <Link
+              to="/release-calendar"
+              className={styles.mobileNavLink}
+              activeProps={{ className: styles.mobileNavLinkActive }}
+              onClick={close}
+            >
               {t("nav.releaseCalendar")}
+            </Link>
+          </Box>
+
+          <Box component="li">
+            <Link
+              to="/faq"
+              className={styles.mobileNavLink}
+              activeProps={{ className: styles.mobileNavLinkActive }}
+              onClick={close}
+            >
+              {t("nav.faq")}
             </Link>
           </Box>
 
@@ -260,9 +267,42 @@ function TopBar(): React.JSX.Element {
             <>
               <Box component="li">
                 <Link
+                  to="/notifications"
+                  className={styles.mobileNavLink}
+                  activeProps={{ className: styles.mobileNavLinkActive }}
+                  onClick={close}
+                >
+                  {t("nav.notifications")}
+                </Link>
+              </Box>
+              <Box component="li">
+                <Link
+                  to={"/profile/$id/$slug"}
+                  params={{ id: currentUserId.toString(), slug: userSlug }}
+                  activeOptions={{ exact: true }}
+                  className={styles.mobileNavLink}
+                  activeProps={{ className: styles.mobileNavLinkActive }}
+                  onClick={close}
+                >
+                  {t("nav.profile")}
+                </Link>
+              </Box>
+              <Box component="li">
+                <Link
+                  to="/settings"
+                  className={styles.mobileNavLink}
+                  activeProps={{ className: styles.mobileNavLinkActive }}
+                  onClick={close}
+                >
+                  {t("nav.accountSettings")}
+                </Link>
+              </Box>
+              <Box component="li">
+                <Link
                   to={"/game-list/$id/$slug"}
                   params={{ id: currentUserId.toString(), slug: userSlug }}
                   className={styles.mobileNavLink}
+                  activeProps={{ className: styles.mobileNavLinkActive }}
                   onClick={close}
                 >
                   {t("nav.gameList")}
@@ -273,6 +313,7 @@ function TopBar(): React.JSX.Element {
                   to={"/profile/$id/$slug/collections"}
                   params={{ id: currentUserId.toString(), slug: userSlug }}
                   className={styles.mobileNavLink}
+                  activeProps={{ className: styles.mobileNavLinkActive }}
                   onClick={close}
                 >
                   {t("nav.collections")}

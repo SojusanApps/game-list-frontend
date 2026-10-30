@@ -1,4 +1,4 @@
-import { Box, Group, Tooltip } from "@mantine/core";
+import { Box, Group, Tooltip, VisuallyHidden } from "@mantine/core";
 import * as React from "react";
 
 import { RecommendationEnum } from "@/client";
@@ -58,11 +58,12 @@ export default function RecommendationSummaryBar({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "white",
+                color: recommendation === RecommendationEnum.UNDECIDED ? "var(--color-rating-mid-text)" : "white",
                 fontSize: 12,
                 fontWeight: 700,
               }}
             >
+              <VisuallyHidden>{config?.label}: </VisuallyHidden>
               {count}
             </Box>
           </Tooltip>

@@ -1,9 +1,10 @@
-import { Box, Skeleton, Stack, Title } from "@mantine/core";
+import { Skeleton, Stack, Title } from "@mantine/core";
 import { getRouteApi } from "@tanstack/react-router";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
 
 import { CompareUserChip } from "../components/CompareUserChip";
@@ -36,9 +37,9 @@ export default function GameListComparePage(): React.JSX.Element {
   const sections = compareData ? buildCompareSections(compareData) : [];
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
+    <PageShell width="wide">
       <PageMeta title={pageTitle} noindex />
-      <Stack gap={40} maw={1280} mx="auto" px={16}>
+      <Stack gap={40}>
         <Title
           order={1}
           fz={{ base: 30, md: 36 }}
@@ -79,6 +80,6 @@ export default function GameListComparePage(): React.JSX.Element {
           </Stack>
         )}
       </Stack>
-    </Box>
+    </PageShell>
   );
 }

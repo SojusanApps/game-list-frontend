@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { FieldEnum, TranslationSuggestion, TranslationSuggestionStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
@@ -94,78 +95,82 @@ export default function AdminTranslationSuggestionsPage(): React.JSX.Element {
   };
 
   return (
-    <Stack gap={24} maw={1024} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("translationSuggestions.title")} noindex />
-      <Stack gap={8}>
-        <Title order={2}>{t("translationSuggestions.title")}</Title>
-        <Text c="dimmed">{t("translationSuggestions.subtitle")}</Text>
-      </Stack>
-
-      <Group gap={16} align="flex-end" wrap="wrap">
-        <Select
-          label={t("translationSuggestions.statusFilterLabel")}
-          value={status}
-          onChange={value => {
-            setStatus((value as TranslationSuggestionStatusEnum | "all" | null) ?? "all");
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("translationSuggestions.statusAll") },
-            ...STATUS_OPTIONS.map(option => ({
-              value: option,
-              label: t(`translationSuggestions.status.${option}`),
-            })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 200 }}
-        />
-        <NumberInput
-          label={t("translationSuggestions.gameFilterLabel")}
-          value={game}
-          onChange={value => {
-            setGame(typeof value === "number" ? value : undefined);
-            setPage(1);
-          }}
-          min={1}
-          style={{ width: 160 }}
-        />
-        <NumberInput
-          label={t("translationSuggestions.submittedByFilterLabel")}
-          value={submittedBy}
-          onChange={value => {
-            setSubmittedBy(typeof value === "number" ? value : undefined);
-            setPage(1);
-          }}
-          min={1}
-          style={{ width: 160 }}
-        />
-        {isFiltered && (
-          <Button variant="ghost" onClick={clearFilters}>
-            {t("translationSuggestions.clearFilters")}
-          </Button>
-        )}
-      </Group>
-
-      {isLoading ? (
-        <Skeleton h={200} radius="md" />
-      ) : (
-        <Stack gap={16}>
-          {isFetching && (
-            <Text c="dimmed" fz="xs">
-              {t("translationSuggestions.loading")}
-            </Text>
-          )}
-          {suggestions.length === 0 ? (
-            <Text c="dimmed" fs="italic">
-              {t("translationSuggestions.empty")}
-            </Text>
-          ) : (
-            suggestions.map(suggestion => <GameSuggestionCard key={suggestion.id} suggestion={suggestion} />)
-          )}
+    <PageShell width="default">
+      <Stack gap={24}>
+        <PageMeta title={t("translationSuggestions.title")} noindex />
+        <Stack gap={8}>
+          <Title order={1} size="h2">
+            {t("translationSuggestions.title")}
+          </Title>
+          <Text c="dimmed">{t("translationSuggestions.subtitle")}</Text>
         </Stack>
-      )}
 
-      <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
-    </Stack>
+        <Group gap={16} align="flex-end" wrap="wrap">
+          <Select
+            label={t("translationSuggestions.statusFilterLabel")}
+            value={status}
+            onChange={value => {
+              setStatus((value as TranslationSuggestionStatusEnum | "all" | null) ?? "all");
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("translationSuggestions.statusAll") },
+              ...STATUS_OPTIONS.map(option => ({
+                value: option,
+                label: t(`translationSuggestions.status.${option}`),
+              })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 200 }}
+          />
+          <NumberInput
+            label={t("translationSuggestions.gameFilterLabel")}
+            value={game}
+            onChange={value => {
+              setGame(typeof value === "number" ? value : undefined);
+              setPage(1);
+            }}
+            min={1}
+            style={{ width: 160 }}
+          />
+          <NumberInput
+            label={t("translationSuggestions.submittedByFilterLabel")}
+            value={submittedBy}
+            onChange={value => {
+              setSubmittedBy(typeof value === "number" ? value : undefined);
+              setPage(1);
+            }}
+            min={1}
+            style={{ width: 160 }}
+          />
+          {isFiltered && (
+            <Button variant="ghost" onClick={clearFilters}>
+              {t("translationSuggestions.clearFilters")}
+            </Button>
+          )}
+        </Group>
+
+        {isLoading ? (
+          <Skeleton h={200} radius="md" />
+        ) : (
+          <Stack gap={16}>
+            {isFetching && (
+              <Text c="dimmed" fz="xs">
+                {t("translationSuggestions.loading")}
+              </Text>
+            )}
+            {suggestions.length === 0 ? (
+              <Text c="dimmed" fs="italic">
+                {t("translationSuggestions.empty")}
+              </Text>
+            ) : (
+              suggestions.map(suggestion => <GameSuggestionCard key={suggestion.id} suggestion={suggestion} />)
+            )}
+          </Stack>
+        )}
+
+        <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+      </Stack>
+    </PageShell>
   );
 }

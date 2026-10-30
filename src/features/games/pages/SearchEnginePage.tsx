@@ -1,5 +1,6 @@
-import { Box, Group, Skeleton, Stack, Text, Title, UnstyledButton, TextInput, Drawer } from "@mantine/core";
-import { IconSearch, IconFilter } from "@tabler/icons-react";
+import { Box, Group, SegmentedControl, Skeleton, Stack, Text, Title, TextInput, Drawer } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconSearch, IconSearchOff, IconFilter } from "@tabler/icons-react";
 import { InfiniteData } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import * as React from "react";
@@ -14,17 +15,23 @@ import {
   PaginatedUserList,
 } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
+import { Panel } from "@/components/ui/Panel";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { ActiveFilterChips } from "@/features/games/components/ActiveFilterChips";
 import GameSearchFilter, {
   ValidationSchema as GameSearchFilterValidationSchema,
 } from "@/features/games/components/GameSearchFilter";
 import { useSearchInfiniteQuery, useSearchQuery, SearchCategory } from "@/features/games/hooks/useSearchQueries";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
+import { cleanGameFilters } from "@/features/games/utils/searchFilters";
 import { useListViewStore } from "@/lib/listViewStore";
 import { Route } from "@/routes/search";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
@@ -110,8 +117,9 @@ function DisplaySearchResults({
     }
   };
 
-  const columnCount = selectedCategory === "companies" ? 5 : 7;
-  const rowHeight = selectedCategory === "companies" ? 220 : 300;
+  const columnCount = 5;
+  // Poster cards size their rows from the measured card; only the 3:2 company logos need a fixed height.
+  const rowHeight = selectedCategory === "companies" ? 220 : undefined;
 
   return (
     <VirtualGridList
@@ -161,23 +169,33 @@ export default function SearchEnginePage(): React.JSX.Element {
     filters[queryKey] = q.trim();
   }
 
+  const { category: _category, ordering: _ordering, igdb_id: _igdbId, ...chipFilters } = otherFilters;
+  const hasActiveGameFilters = Object.keys(chipFilters).length > 0;
+
   const hasSearched = Boolean(q?.trim()) || Object.keys(otherFilters).length > 0;
+
+  // With nothing searched yet, the Games category shows a browsable grid instead of an empty prompt.
+  const isBrowsing = !hasSearched && selectedCategory === "games";
+  const queryEnabled = hasSearched || isBrowsing;
+  const queryFilters = isBrowsing ? { ordering: "rank_position" } : filters;
 
   const {
     data: searchResults,
     error: errorFetchingData,
+    refetch,
     isLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useSearchInfiniteQuery(selectedCategory, filters, { enabled: hasSearched && viewMode === "infinite" });
+  } = useSearchInfiniteQuery(selectedCategory, queryFilters, { enabled: queryEnabled && viewMode === "infinite" });
 
   const {
     data: pagedData,
     error: pagedError,
+    refetch: refetchPaged,
     isLoading: isPagedLoading,
     isFetching: isPagedFetching,
-  } = useSearchQuery(selectedCategory, filters, page, { enabled: hasSearched && viewMode === "table" });
+  } = useSearchQuery(selectedCategory, queryFilters, page, { enabled: queryEnabled && viewMode === "table" });
 
   const gameColumns = React.useMemo(() => createGameColumns(t), [t]);
   const companyColumns = React.useMemo(() => createCompanyColumns(t), [t]);
@@ -209,22 +227,18 @@ export default function SearchEnginePage(): React.JSX.Element {
   };
 
   const handleCategoryChange = (catId: SearchCategory) => {
+    // Filters only exist for games, so leaving the category drops them; say so instead of doing it silently.
+    if (catId !== selectedCategory && hasActiveGameFilters) {
+      notifications.show({ message: t("search.filtersCleared") });
+    }
     navigate({
-      search: { category: catId },
+      search: prev => ({ q: prev.q, category: catId }),
       replace: true,
     });
-    setSearchInput("");
   };
 
   const prepareFiltersForRequest = (data: SearchFilterValidatorsType) => {
-    const filterData: Record<string, unknown> = {};
-
-    for (const [key, value] of Object.entries(data)) {
-      if (value === "" || value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
-        continue;
-      }
-      Object.assign(filterData, { [key]: value instanceof Date ? value.toISOString().split("T")[0] : value });
-    }
+    const filterData = cleanGameFilters(data);
 
     navigate({
       search: prev => ({
@@ -308,39 +322,16 @@ export default function SearchEnginePage(): React.JSX.Element {
   };
 
   const renderSearchContent = () => {
-    if (!hasSearched) {
+    if (displayError) {
+      return <ErrorState onRetry={() => (viewMode === "table" ? refetchPaged() : refetch())} />;
+    }
+    if (!hasSearched && !isBrowsing) {
       return (
-        <Stack
-          align="center"
-          justify="center"
-          gap={24}
-          style={{
-            paddingBlock: "80px",
-            textAlign: "center",
-          }}
-        >
-          <Box
-            style={{
-              width: "80px",
-              height: "80px",
-              background: "var(--color-primary-tint-bg)",
-              borderRadius: "9999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconSearch style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
-          </Box>
-          <Stack gap={8}>
-            <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
-              {t("search.readyToExplore")}
-            </Title>
-            <Text c="var(--color-text-500)" maw={384} mx="auto">
-              {t(descKeys[selectedCategory])}
-            </Text>
-          </Stack>
-        </Stack>
+        <EmptyState
+          icon={<IconSearch size={40} />}
+          title={t("search.readyToExplore")}
+          description={t(descKeys[selectedCategory])}
+        />
       );
     }
 
@@ -350,7 +341,7 @@ export default function SearchEnginePage(): React.JSX.Element {
 
     if (isLoading && !isFetchingNextPage) {
       return (
-        <GridList columnCount={selectedCategory === "companies" ? 5 : 7}>
+        <GridList columnCount={5}>
           {Array.from({ length: 21 }).map((_, i) => {
             const skeletonKey = `search-skeleton-${i}`;
             return (
@@ -380,58 +371,33 @@ export default function SearchEnginePage(): React.JSX.Element {
       );
     }
 
-    return (
-      <Stack align="center" justify="center" c="var(--color-text-400)" style={{ paddingBlock: "80px" }}>
-        <Text size="lg" fw={500}>
-          {t("search.noResultsFound")}
-        </Text>
-      </Stack>
-    );
+    return <EmptyState icon={<IconSearchOff size={40} />} title={t("search.noResultsFound")} />;
   };
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
+    <PageShell width="wide">
       <PageMeta title={t("search.title")} />
-      <Stack gap={40} maw={1280} mx="auto" px={16}>
+      <Stack gap={40}>
         <Stack align="center" gap={24}>
           <Title fz={36} fw={700} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
             {t("search.title")}
           </Title>
 
-          <Group
-            gap={4}
-            p={4}
-            wrap="nowrap"
+          <SegmentedControl
+            size="md"
+            radius="md"
+            aria-label={t("search.categoryLabel")}
             className={styles.categoryTabs}
-            style={{ background: "var(--color-background-300)", borderRadius: "12px" }}
-          >
-            {categories.map(cat => (
-              <UnstyledButton
-                key={cat.id}
-                onClick={() => handleCategoryChange(cat.id)}
-                className={styles.categoryTabButton}
-                style={{
-                  fontWeight: 600,
-                  borderRadius: "8px",
-                  transition: "all 200ms",
-                  ...(selectedCategory === cat.id
-                    ? {
-                        background: "var(--color-background-100)",
-                        color: "var(--mantine-color-primary-6)",
-                        boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                      }
-                    : { background: "transparent", color: "var(--color-text-600)" }),
-                }}
-              >
-                {cat.label}
-              </UnstyledButton>
-            ))}
-          </Group>
+            value={selectedCategory}
+            onChange={value => handleCategoryChange(value as SearchCategory)}
+            data={categories.map(cat => ({ value: cat.id, label: cat.label }))}
+          />
 
           <Box component="form" onSubmit={handleHeroSearch} className={styles.heroSearchForm}>
             <TextInput
               size="lg"
               placeholder={t(placeholderKeys[selectedCategory])}
+              aria-label={t(placeholderKeys[selectedCategory])}
               value={searchInput}
               onChange={e => setSearchInput(e.currentTarget.value)}
               leftSection={<IconSearch size={20} color="var(--color-text-400)" />}
@@ -446,20 +412,32 @@ export default function SearchEnginePage(): React.JSX.Element {
               }}
             />
             {selectedCategory === "games" && (
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => setDrawerOpen(true)}
-                style={{ borderRadius: "12px", padding: "0 16px", background: "var(--color-background-100)" }}
-                leftSection={<IconFilter size={20} />}
-              >
-                {t("search.filtersButton")}
-              </Button>
+              <Box hiddenFrom="lg">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setDrawerOpen(true)}
+                  style={{ borderRadius: "12px", padding: "0 16px", background: "var(--color-background-100)" }}
+                  leftSection={<IconFilter size={20} />}
+                >
+                  {t("search.filtersButton")}
+                </Button>
+              </Box>
             )}
             <Button type="submit" size="lg" style={{ borderRadius: "12px", padding: "0 20px" }}>
               {t("search.searchButton")}
             </Button>
           </Box>
+
+          {selectedCategory === "games" && hasActiveGameFilters && (
+            <ActiveFilterChips
+              filters={chipFilters}
+              onRemove={key =>
+                navigate({ search: prev => ({ ...prev, [key]: undefined, page: undefined }), replace: true })
+              }
+              onClearAll={() => navigate({ search: prev => ({ q: prev.q, category: prev.category }), replace: true })}
+            />
+          )}
         </Stack>
 
         <Drawer
@@ -477,47 +455,44 @@ export default function SearchEnginePage(): React.JSX.Element {
         >
           {selectedCategory === "games" && (
             <GameSearchFilter
+              showIgdbId
               initialFilters={otherFilters}
               onSubmitHandlerCallback={data => prepareFiltersForRequest(data)}
             />
           )}
         </Drawer>
 
-        <Stack gap={16}>
-          <Group justify="flex-end">
-            <ListViewModeToggle />
-          </Group>
+        <Group align="flex-start" gap={24} wrap="nowrap">
+          {selectedCategory === "games" && (
+            <Panel visibleFrom="lg" w={320} style={{ flexShrink: 0 }}>
+              <Text fw={700} fz="lg" c="var(--color-text-900)" mb={16}>
+                {t("search.filtersButton")}
+              </Text>
+              <GameSearchFilter
+                key={JSON.stringify(otherFilters)}
+                showIgdbId
+                initialFilters={otherFilters}
+                onSubmitHandlerCallback={data => prepareFiltersForRequest(data)}
+              />
+            </Panel>
+          )}
+          <Stack gap={16} style={{ flex: 1, minWidth: 0 }}>
+            <Group justify="flex-end">
+              <ListViewModeToggle />
+            </Group>
 
-          <Box
-            style={{
-              background: "var(--color-background-100)",
-              borderRadius: "16px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              border: "1px solid var(--color-background-200)",
-              padding: "32px",
-              ...GRID_BOX_STYLE,
-              position: "relative",
-            }}
-          >
-            {renderSearchContent()}
-            {displayError && (
-              <Box
-                style={{
-                  background: "var(--color-error-50)",
-                  border: "1px solid var(--color-error-200)",
-                  borderRadius: "12px",
-                  padding: "16px",
-                  marginTop: "16px",
-                }}
-              >
-                <Text ta="center" fw={500} c="var(--color-error-600)">
-                  {t("search.fetchError", { message: displayError.message })}
-                </Text>
-              </Box>
-            )}
-          </Box>
-        </Stack>
+            <Panel
+              p={"32px"}
+              style={{
+                ...GRID_BOX_STYLE,
+                position: "relative",
+              }}
+            >
+              {renderSearchContent()}
+            </Panel>
+          </Stack>
+        </Group>
       </Stack>
-    </Box>
+    </PageShell>
   );
 }

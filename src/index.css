@@ -22,8 +22,9 @@ body {
 :root[data-mantine-color-scheme="dark"] body {
   /* Unlike the light-mode variant, this SVG carries its own opaque black
      fill instead of being blended with a gradient here — dark mode's
-     chrome (topbar/footer) is pure black, so the background image reads as
-     "dark background, neon objects" on its own. */
+     chrome (topbar/footer) is a slightly lifted near-black (background-200) so it reads as a
+     raised surface over the pure-black page, which itself reads as
+     "dark background, neon objects". */
   background-image: url("./assets/gaming-background-dark.svg");
 }
 
@@ -31,17 +32,4 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-/* Animations */
-@keyframes shimmer {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-.animate-shimmer {
-  animation: shimmer 2s infinite;
 }

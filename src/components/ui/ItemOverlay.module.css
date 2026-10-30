@@ -4,17 +4,43 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: 10px;
-  transition: all 0.4s;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   background: var(--color-background-900);
   outline: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 1;
 }
 
-.card:hover {
-  border-radius: 15px;
+.card:hover,
+.card:focus-within {
   cursor: pointer;
-  transform: scale(1.2);
   z-index: 10;
+}
+
+/* The ring sits on the wrapper: the inner link is clipped by overflow: hidden. */
+.card:has(:focus-visible) {
+  outline: 2px solid var(--mantine-color-primary-filled);
+  outline-offset: 2px;
+}
+
+.card a:focus-visible,
+.card button:focus-visible {
+  outline: none;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card:hover,
+  .card:focus-within {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 
 .statusRibbon {
@@ -25,7 +51,7 @@
   text-align: center;
   transform: rotate(45deg);
   padding: 6px 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -49,15 +75,56 @@
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.scoreBadge {
+/* The score tab fills the top-left corner. Rounding the card there would clip the tab and the cover along the
+   same arc, and their anti-aliased edges blend into a thin ring of cover color around the tab. */
+.hasScore {
+  border-top-left-radius: 0;
+}
+
+/* More specific than ScoreBadge's own size rules, so the corner tab keeps its shape. */
+.card .scoreBadge {
   position: absolute;
   top: 0;
   left: 0;
+  height: auto;
+  min-width: 0;
   padding: 6px 10px;
   font-size: 12px;
   font-weight: 900;
-  border-bottom-right-radius: 12px;
+  border-radius: 0 0 12px 0;
   z-index: 20;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
   pointer-events: none;
+}
+
+/* Overlay layer for controls that appear on hover/focus. Clicks pass through except on the controls. */
+.revealedActions {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.revealedActions > * {
+  pointer-events: auto;
+}
+
+.card:hover .revealedActions,
+.card:focus-within .revealedActions,
+.revealedActions:has([aria-expanded="true"]) {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .revealedActions {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealedActions {
+    transition: none;
+  }
 }

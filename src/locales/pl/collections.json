@@ -28,7 +28,12 @@
       "visibility": "Widoczność",
       "mode": "Tryb",
       "updated": "Aktualizacja"
-    }
+    },
+    "filterShow": "Pokaż",
+    "clearAll": "Wyczyść wszystko",
+    "removeFilter": "Usuń filtr: {{name}}",
+    "activeName": "Nazwa: {{value}}",
+    "activeFilters": "Aktywne filtry"
   },
   "visibility": {
     "public": "Publiczna",
@@ -98,7 +103,16 @@
     "updateSuccess": "Kolekcja zaktualizowana pomyślnie",
     "updateFailed": "Nie udało się zaktualizować kolekcji",
     "successTitle": "Sukces",
-    "errorTitle": "Błąd"
+    "errorTitle": "Błąd",
+    "removeCollaborator": "Usuń współpracownika {{name}}",
+    "deleteButton": "Usuń kolekcję",
+    "deleteConfirmTitle": "Usunąć tę kolekcję?",
+    "deleteConfirmMessage_one": "Kolekcja „{{name}}” oraz jej {{count}} gra zostaną trwale usunięte. Tej operacji nie można cofnąć.",
+    "deleteConfirmMessage_other": "Kolekcja „{{name}}” oraz jej {{count}} gry zostaną trwale usunięte. Tej operacji nie można cofnąć.",
+    "deleteConfirmMessage_few": "Kolekcja „{{name}}” oraz jej {{count}} gry zostaną trwale usunięte. Tej operacji nie można cofnąć.",
+    "deleteConfirmMessage_many": "Kolekcja „{{name}}” oraz jej {{count}} gier zostaną trwale usunięte. Tej operacji nie można cofnąć.",
+    "deleteSuccess": "Kolekcja została usunięta",
+    "deleteError": "Nie udało się usunąć kolekcji. Spróbuj ponownie."
   },
   "addModal": {
     "title": "Dodaj do kolekcji",
@@ -170,7 +184,10 @@
   },
   "card": {
     "game": "Gra",
-    "games": "Gry"
+    "games": "Gry",
+    "empty": "Pusta",
+    "by": "autor:",
+    "gameAlt": "Gra {{index}}"
   },
   "rankingRow": {
     "viewDetails": "Szczegóły",
@@ -178,7 +195,10 @@
     "addNote": "Dodaj notatkę",
     "addNotePrompt": "+ Dodaj notatkę",
     "removeGame": "Usuń grę",
-    "clickToEditRank": "Kliknij, aby edytować pozycję"
+    "clickToEditRank": "Kliknij, aby edytować pozycję",
+    "moveUp": "Przesuń w górę",
+    "moveDown": "Przesuń w dół",
+    "moreActions": "Więcej akcji"
   },
   "tierList": {
     "totalGames": "Łącznie",
@@ -200,6 +220,8 @@
     "itemReordered": "Zmieniono kolejność",
     "failedToReorder": "Nie udało się zmienić kolejności",
     "descriptionUpdated": "Zaktualizowano opis",
-    "failedToUpdateDescription": "Nie udało się zaktualizować opisu"
+    "failedToUpdateDescription": "Nie udało się zaktualizować opisu",
+    "moreActions": "Więcej akcji",
+    "viewNote": "Zobacz notatkę"
   }
 }

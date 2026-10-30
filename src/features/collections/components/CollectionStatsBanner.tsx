@@ -56,12 +56,7 @@ export function CollectionStatsBanner({
           <Text fw={900} fz={24} c={textColor} style={{ lineHeight: 1 }}>
             {count}
           </Text>
-          <Text
-            size="xs"
-            fw={600}
-            c="var(--color-text-700)"
-            style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 2 }}
-          >
+          <Text size="xs" fw={600} c="var(--color-text-700)" style={{ marginTop: 2 }}>
             {label}
           </Text>
         </Box>
@@ -69,7 +64,7 @@ export function CollectionStatsBanner({
 
       <Box style={{ flex: 1, textAlign: "center" }}>
         {typeLabel && (
-          <Text fw={800} fz={13} c={textColor} tt="uppercase" style={{ letterSpacing: "0.08em", opacity: 0.85 }}>
+          <Text fw={800} fz={13} c={textColor} style={{ opacity: 0.85 }}>
             {typeLabel}
           </Text>
         )}
