@@ -1,9 +1,10 @@
-import { Box, Paper, SimpleGrid, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { Paper, SimpleGrid, UnstyledButton } from "@mantine/core";
 import { IconPhotoOff } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Game } from "@/client";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
@@ -40,35 +41,17 @@ export default function GameDetailsScreenshotsTab({
               <SafeImage
                 className={styles.image}
                 src={getIGDBImageURL(screenshot, IGDBImageSize.SCREENSHOT_MED_569_320)}
-                alt={`${gameDetails.title} screenshot ${index + 1}`}
+                alt={t("screenshot.alt", { title: gameDetails.title, index: index + 1 })}
               />
             </UnstyledButton>
           ))}
         </SimpleGrid>
       ) : (
-        <Stack align="center" justify="center" gap={24} style={{ paddingBlock: "80px", textAlign: "center" }}>
-          <Box
-            style={{
-              width: "80px",
-              height: "80px",
-              background: "var(--color-primary-tint-bg)",
-              borderRadius: "9999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconPhotoOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
-          </Box>
-          <Stack gap={8}>
-            <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
-              {t("screenshot.noScreenshots")}
-            </Title>
-            <Text c="var(--color-text-500)" maw={384} mx="auto">
-              {t("screenshot.noScreenshotsDescription")}
-            </Text>
-          </Stack>
-        </Stack>
+        <EmptyState
+          icon={<IconPhotoOff size={40} />}
+          title={t("screenshot.noScreenshots")}
+          description={t("screenshot.noScreenshotsDescription")}
+        />
       )}
     </Paper>
   );

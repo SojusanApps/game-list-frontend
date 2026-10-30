@@ -10,7 +10,8 @@
     "gameListButton": "Game List",
     "collectionsButton": "Collections",
     "compareButton": "Compare",
-    "noLastUpdates": "No game updates yet."
+    "noLastUpdates": "No game updates yet.",
+    "gameCoverAlt": "Cover of {{title}}"
   },
   "friends": {
     "loading": "Loading Friends...",
@@ -27,7 +28,8 @@
       "username": "Username",
       "lastActive": "Last active",
       "since": "Friends since"
-    }
+    },
+    "avatarAlt": "Avatar of {{name}}"
   },
   "settings": {
     "title": "Settings",

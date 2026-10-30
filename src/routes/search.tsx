@@ -28,6 +28,7 @@ const searchSchema = z.object({
   game_status: z.string().array().optional(),
   game_type: z.string().array().optional(),
   player_perspectives: z.string().array().optional(),
+  igdb_id: z.preprocess(val => (typeof val === "number" ? String(val) : val), z.string().regex(/^\d+$/).optional()),
   ordering: z.enum(ORDERING_OPTIONS).optional().or(z.literal("")),
   // Present only while the results are shown as a paginated table; dropped in infinite-scroll mode.
   // oxlint-disable-next-line unicorn/prefer-top-level-await -- Zod's `.catch()` fallback, not a Promise.

@@ -1,9 +1,10 @@
-import { Box, Title } from "@mantine/core";
+import { Box } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell, PageTitle } from "@/components/ui/PageShell";
 
 import styles from "./LegalDocument.module.css";
 
@@ -18,16 +19,14 @@ export function LegalDocument({ title, contentEn, contentPl }: Readonly<LegalDoc
   const content = i18n.language === "pl" ? contentPl : contentEn;
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Box maw={720} mx="auto" px={16}>
+    <PageShell width="narrow">
+      <Box>
         <PageMeta title={title} />
-        <Title order={1} fz={28} fw={700} c="var(--color-text-900)" mb={32}>
-          {title}
-        </Title>
+        <PageTitle mb={32}>{title}</PageTitle>
         <Box className={styles.prose}>
           <ReactMarkdown>{content}</ReactMarkdown>
         </Box>
       </Box>
-    </Box>
+    </PageShell>
   );
 }

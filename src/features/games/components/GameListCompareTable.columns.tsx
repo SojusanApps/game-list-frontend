@@ -13,12 +13,13 @@ import type { TFunction } from "i18next";
 
 import { GameListCompareRow, UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { getStatusConfig } from "../utils/statusConfig";
 import { StatusIcon } from "../utils/StatusIcon";
 import { CompareUserChip } from "./CompareUserChip";
+import { ScoreBadge } from "./ScoreBadge";
 
 import styles from "./GameListCompareTable.module.css";
 
@@ -54,15 +55,7 @@ function ScoreCell({ score }: Readonly<{ score: number | null }>) {
   if (score === null || score === undefined) {
     return <Text c="var(--color-text-400)">—</Text>;
   }
-
-  return (
-    <Box
-      className={styles.scoreBadge}
-      style={{ backgroundColor: getRatingColor(score), color: getRatingTextColor(score) }}
-    >
-      {score}
-    </Box>
-  );
+  return <ScoreBadge score={score} />;
 }
 
 function GameCell({ row }: Readonly<{ row: GameListCompareRow }>) {
@@ -77,13 +70,13 @@ function GameCell({ row }: Readonly<{ row: GameListCompareRow }>) {
       <Box className={styles.coverWrapper}>
         <SafeImage src={coverUrl} alt={row.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </Box>
-      <Text
+      <TruncatedText
         fw={600}
         c="var(--color-text-900)"
         style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}
       >
         {row.title}
-      </Text>
+      </TruncatedText>
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Select, Text, Group, Textarea, NumberInput, ComboboxItem } from "@mantine/core";
+import { Group, Select, SimpleGrid, Textarea, NumberInput, ComboboxItem } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { IconSearch, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import * as React from "react";
@@ -7,12 +7,15 @@ import { useTranslation } from "react-i18next";
 import { GameListStatusEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import i18n from "@/lib/i18n";
-import { getRatingColor, getRatingTextColor } from "@/utils/ratingUtils";
 
 import { useGetGameMediasInfiniteQuery } from "../../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
 import { StatusIcon } from "../../utils/StatusIcon";
+import { StoreRef } from "../../utils/titleImport";
+import { ScoreBadge } from "../ScoreBadge";
+import { StoreRefList } from "./StoreRefList";
 import { GameRow } from "./types";
 
 import styles from "./GameRowItem.module.css";
@@ -30,19 +33,7 @@ const renderStatusOption = ({ option }: { option: ComboboxItem }) => (
 );
 
 const renderScoreOption = ({ option }: { option: ComboboxItem }) => (
-  <Box
-    style={{
-      background: getRatingColor(Number(option.value)),
-      color: getRatingTextColor(Number(option.value)),
-      fontSize: "12px",
-      fontWeight: 900,
-      padding: "2px 8px",
-      borderRadius: "6px",
-      display: "inline-block",
-    }}
-  >
-    {option.label}
-  </Box>
+  <ScoreBadge score={Number(option.value)} size="xs" />
 );
 
 const OWNED_ON_COMBOBOX_PROPS = { withinPortal: true } as const;
@@ -54,6 +45,8 @@ export interface StatusOption {
 
 interface GameRowItemProps {
   row: GameRow;
+  /** The store games this game was picked for; shown under the title. */
+  storeRefs?: readonly StoreRef[];
   index: number;
   statusData: StatusOption[];
   expanded: boolean;
@@ -65,6 +58,7 @@ interface GameRowItemProps {
 
 const GameRowItemComponent = ({
   row,
+  storeRefs,
   index,
   statusData,
   expanded,
@@ -86,9 +80,10 @@ const GameRowItemComponent = ({
             <IconSearch size={18} color="var(--color-text-400)" />
           </div>
         )}
-        <Text className={styles.gameTitle} title={row.game.title}>
-          {row.game.title}
-        </Text>
+        <div className={styles.gameInfo}>
+          <TruncatedText className={styles.gameTitle}>{row.game.title}</TruncatedText>
+          {storeRefs && <StoreRefList refs={storeRefs} />}
+        </div>
         <div className={styles.fieldGroup}>
           <Select
             size="xs"
@@ -110,11 +105,7 @@ const GameRowItemComponent = ({
             value={row.score === null ? null : row.score.toString()}
             onChange={val => onScoreChange(index, val ? Number(val) : null)}
             aria-label={t("import.score")}
-            leftSection={
-              row.score === null ? null : (
-                <Box style={{ background: getRatingColor(row.score), width: 10, height: 10, borderRadius: "50%" }} />
-              )
-            }
+            leftSection={row.score === null ? null : <ScoreBadge score={row.score} size="xs" />}
           />
           <Button
             type="button"
@@ -143,7 +134,7 @@ const GameRowItemComponent = ({
             onChange={val => onFieldChange(index, "owned_on", val)}
             comboboxProps={OWNED_ON_COMBOBOX_PROPS}
           />
-          <Group grow align="flex-start">
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={12}>
             <DateInput
               size="xs"
               label={t("modal.startedAt")}
@@ -174,7 +165,7 @@ const GameRowItemComponent = ({
               value={row.playtime ?? ""}
               onChange={val => onFieldChange(index, "playtime", val === "" ? null : Number(val))}
             />
-          </Group>
+          </SimpleGrid>
           <Textarea
             size="xs"
             label={t("modal.noteLabel")}

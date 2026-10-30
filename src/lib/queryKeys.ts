@@ -106,6 +106,12 @@ export const translationSuggestionKeys = {
   list: (query: object | undefined) => [...translationSuggestionKeys.lists(), query] as const,
 };
 
+export const storeMappingKeys = {
+  all: ["store-mappings"] as const,
+  lists: () => [...storeMappingKeys.all, "list"] as const,
+  list: (query: object | undefined) => [...storeMappingKeys.lists(), query] as const,
+};
+
 export const reportKeys = {
   all: ["reports"] as const,
   lists: () => [...reportKeys.all, "list"] as const,

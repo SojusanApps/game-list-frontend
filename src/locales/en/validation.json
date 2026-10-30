@@ -3,9 +3,12 @@
   "scoreMax": "The maximum score is 10",
   "noteMax": "Maximum 200 characters",
   "playtimeMin": "Playtime cannot be negative",
-  "dateRangeInvalid": "The before date cannot be earlier than the after date.",
+  "dateRangeInvalid": "The end year can't be earlier than the start year.",
   "nameRequired": "Name is required",
   "selectAtLeastOne": "Select at least one collection",
   "descriptionMax": "Description must be 500 characters or less",
-  "titlesRequired": "At least one game title is required"
+  "storePlatformRequired": "Select a store",
+  "storeIdRequired": "Store id is required",
+  "storeGameRequired": "Select a game",
+  "completedBeforeStarted": "Completion date can't be before the start date"
 }

@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
+import { Panel } from "@/components/ui/Panel";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useCurrentUserId } from "@/features/auth";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
@@ -37,8 +39,8 @@ export default function UserProfilePage(): React.JSX.Element {
   const isOwnProfile = Number(currentUserId) === Number(validUserId);
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Grid gap={24} maw={1152} mx="auto" px={16}>
+    <PageShell width="default">
+      <Grid gap={24}>
         <PageMeta title={pageTitle} type="profile" />
 
         {isUserDetailsLoading ? (
@@ -93,14 +95,20 @@ export default function UserProfilePage(): React.JSX.Element {
                   </Group>
                 </Box>
 
-                {!isOwnProfile && <FriendshipButtons currentUserId={currentUserId} userId={validUserId} />}
+                {!isOwnProfile && (
+                  <FriendshipButtons
+                    currentUserId={currentUserId}
+                    userId={validUserId}
+                    username={userDetails?.username}
+                  />
+                )}
 
                 <Link
                   to={"/game-list/$id/$slug"}
                   params={{ id, slug }}
                   style={{ width: "100%", textDecoration: "none" }}
                 >
-                  <Button fullWidth variant="default">
+                  <Button component="span" fullWidth variant="default">
                     {t("profile.gameListButton")}
                   </Button>
                 </Link>
@@ -110,7 +118,7 @@ export default function UserProfilePage(): React.JSX.Element {
                   params={{ id, slug }}
                   style={{ width: "100%", textDecoration: "none" }}
                 >
-                  <Button fullWidth variant="outline">
+                  <Button component="span" fullWidth variant="outline">
                     {t("profile.collectionsButton")}
                   </Button>
                 </Link>
@@ -126,7 +134,7 @@ export default function UserProfilePage(): React.JSX.Element {
                     }}
                     style={{ width: "100%", textDecoration: "none" }}
                   >
-                    <Button fullWidth variant="outline">
+                    <Button component="span" fullWidth variant="outline">
                       {t("profile.compareButton")}
                     </Button>
                   </Link>
@@ -158,32 +166,14 @@ export default function UserProfilePage(): React.JSX.Element {
                   />
                 </Group>
 
-                <Box
-                  component="section"
-                  style={{
-                    background: "var(--color-background-100)",
-                    borderRadius: 12,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                    border: "1px solid var(--color-background-200)",
-                    padding: 24,
-                  }}
-                >
+                <Panel component="section">
                   <Title order={2} fz={18} fw={700} c="var(--color-text-900)" mb={16}>
                     {t("profile.statistics")}
                   </Title>
                   <UserStatistics userDetails={userDetails} />
-                </Box>
+                </Panel>
 
-                <Box
-                  component="section"
-                  style={{
-                    background: "var(--color-background-100)",
-                    borderRadius: 12,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                    border: "1px solid var(--color-background-200)",
-                    padding: 24,
-                  }}
-                >
+                <Panel component="section">
                   <Group
                     justify="space-between"
                     align="center"
@@ -214,12 +204,12 @@ export default function UserProfilePage(): React.JSX.Element {
                       ))
                     )}
                   </Stack>
-                </Box>
+                </Panel>
               </Stack>
             </Grid.Col>
           </>
         )}
       </Grid>
-    </Box>
+    </PageShell>
   );
 }

@@ -6,87 +6,36 @@
   padding: 32px;
 }
 
-.statsBox {
-  background: var(--color-primary-tint-bg);
-  border: 1px solid var(--color-primary-tint-border);
-  border-radius: 12px;
-  padding: 20px 24px;
+.titleList {
+  max-height: 780px;
+  overflow-y: auto;
+}
+
+.titleItem {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.candidateGrid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 12px;
-}
-
-.overlayPick {
-  position: relative;
-  width: 150px;
-  border: 3px solid transparent;
-  border-radius: 14px;
-  padding: 2px;
-  transition:
-    border-color 150ms,
-    opacity 150ms,
-    filter 150ms;
-}
-
-.overlayPickChosen {
-  border-color: var(--mantine-color-green-6);
-}
-
-.overlayPickDimmed {
-  opacity: 0.45;
-  filter: grayscale(0.6);
-}
-
-.overlayPickDisabled {
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.inListBadge {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: calc(100% - 8px);
-  z-index: 30;
-  pointer-events: none;
-}
-
-.noneCard {
-  width: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  border: 2px dashed var(--color-background-300);
-  border-radius: 14px;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid transparent;
+  border-radius: 10px;
   background: var(--color-background-100);
   cursor: pointer;
-  font: inherit;
-  color: inherit;
-  appearance: none;
-  transition:
-    border-color 150ms,
-    opacity 150ms;
+  text-align: left;
+  transition: border-color 150ms;
 }
 
-.noneCard:hover {
+.titleItemMain {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.titleItemActive {
   border-color: var(--mantine-color-primary-6);
 }
 
-.noneCardChosen,
-.noneCardChosen:hover {
-  border-style: solid;
+.titleItemResolved {
   border-color: var(--mantine-color-green-6);
-}
-
-.noneCardDimmed {
-  opacity: 0.45;
 }

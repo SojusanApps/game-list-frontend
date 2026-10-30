@@ -6,8 +6,11 @@ import { useTranslation, Trans } from "react-i18next";
 
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
+import { TagChip } from "@/components/ui/TagChip";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { useUrlState } from "@/hooks/useUrlState";
 import { useListViewStore } from "@/lib/listViewStore";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
 
@@ -25,7 +28,9 @@ export default function UserFriendsPage(): React.JSX.Element {
   const { data: userDetails, isLoading: isUserLoading } = useGetUserDetails(userId);
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
-  const [page, setPage] = React.useState(1);
+  const { search, update } = useUrlState();
+  const page = typeof search.page === "number" ? search.page : 1;
+  const setPage = (next: number) => update({ page: next === 1 ? undefined : next }, { keepPage: true });
 
   const {
     data,
@@ -114,9 +119,9 @@ export default function UserFriendsPage(): React.JSX.Element {
   };
 
   return (
-    <Box py={48} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <PageShell width="wide">
       <PageMeta title={pageTitle} />
-      <Stack gap={40} maw={1280} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
+      <Stack gap={40}>
         <Stack align="center" gap={32}>
           <Stack align="center">
             <Title
@@ -139,22 +144,7 @@ export default function UserFriendsPage(): React.JSX.Element {
               )}
             </Title>
             {!isFriendsLoading && (
-              <Box
-                style={{
-                  fontSize: "10px",
-                  fontWeight: 900,
-                  color: "var(--color-primary-tint-text)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  marginTop: "8px",
-                  padding: "4px 12px",
-                  background: "var(--color-primary-tint-bg)",
-                  borderRadius: "9999px",
-                  border: "1px solid var(--color-primary-tint-border)",
-                }}
-              >
-                {t("friends.friendCount", { count: totalFriends })}
-              </Box>
+              <TagChip style={{ marginTop: 8 }}>{t("friends.friendCount", { count: totalFriends })}</TagChip>
             )}
           </Stack>
         </Stack>
@@ -165,6 +155,6 @@ export default function UserFriendsPage(): React.JSX.Element {
 
         <Box style={{ flexGrow: 1, ...GRID_BOX_STYLE }}>{renderFriendsContent()}</Box>
       </Stack>
-    </Box>
+    </PageShell>
   );
 }

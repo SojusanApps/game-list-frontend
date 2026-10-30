@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import igdbLogoDark from "@/assets/igdb-logo-dark.svg";
 import igdbLogo from "@/assets/igdb-logo.svg";
+import { LanguageAndThemeSwitchers } from "@/components/layout/LanguageAndThemeSwitchers";
 import AppLogo from "@/components/ui/AppLogo";
 
 import styles from "./Footer.module.css";
@@ -19,7 +20,7 @@ const Footer = (): React.JSX.Element => {
     <Box
       component="footer"
       style={{
-        background: colorScheme === "dark" ? "#000000" : "var(--color-background-100)",
+        background: colorScheme === "dark" ? "var(--color-background-200)" : "var(--color-background-100)",
         borderTop: "1px solid var(--color-background-400)",
         paddingBlock: "24px",
         marginTop: "auto",
@@ -82,6 +83,7 @@ const Footer = (): React.JSX.Element => {
               </li>
             </ul>
           </nav>
+          <LanguageAndThemeSwitchers />
         </div>
       </div>
     </Box>

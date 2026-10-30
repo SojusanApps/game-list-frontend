@@ -13,7 +13,18 @@
     "menu": "Menu",
     "colorScheme": "Color scheme",
     "lightMode": "Light mode",
-    "darkMode": "Dark mode"
+    "darkMode": "Dark mode",
+    "search": "Search",
+    "home": "Home",
+    "mobileTabs": "Main navigation",
+    "openMenu": "Open menu",
+    "language": "Language",
+    "themeSystem": "System theme",
+    "notifications": "Notifications",
+    "faq": "FAQ",
+    "signIn": "Sign in",
+    "languageEn": "English",
+    "languagePl": "Polish"
   },
   "footer": {
     "copyright": "© {{year}} Sojusan GameList",
@@ -72,6 +83,7 @@
   "noResultsDescription": "Try adjusting your search or filters",
   "searching": "Searching...",
   "scrollToTop": "Scroll to top",
+  "skipToContent": "Skip to content",
   "apiError": {
     "errorTitle": "Error",
     "network": "Couldn't reach the server. Check your connection and try again.",
@@ -81,5 +93,22 @@
     "tooManyRequests": "Too many requests. Wait a moment and try again.",
     "server": "Something went wrong on the server. Try again later.",
     "generic": "Something went wrong. Try again."
-  }
+  },
+  "error": {
+    "title": "Couldn't load this page",
+    "message": "Something went wrong on our side or the connection dropped. Check your connection and try again.",
+    "retry": "Try again",
+    "goHome": "Go home",
+    "listTitle": "Couldn't load the results"
+  },
+  "filters": {
+    "active": "Active filters",
+    "remove": "Remove filter: {{name}}",
+    "clearAll": "Clear all"
+  },
+  "image": {
+    "noImage": "No image"
+  },
+  "userAvatarAltNamed": "{{name}}'s avatar",
+  "defaultDescription": "Keep track of your gaming progress and discover new titles."
 }

@@ -36,7 +36,7 @@ export function FavoriteButton({ collectionId, isFavorite, iconSize = 20 }: Read
           // The button can sit inside a link or a clickable row; toggling must not navigate.
           e.preventDefault();
           e.stopPropagation();
-          requireAuth(() => setFavorite({ id: collectionId, favorite: !isFavorite }));
+          requireAuth(() => setFavorite({ id: collectionId, favorite: !isFavorite }), "favorite");
         }}
       >
         <Icon

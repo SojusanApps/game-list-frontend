@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { UserDetail } from "@/client";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+import { ariaSort } from "@/utils/tableUtils";
 
 import { CompareSection } from "../utils/gameListCompare";
 import { createGameListCompareColumns, gameListCompareTableFeatures } from "./GameListCompareTable.columns";
@@ -122,7 +123,11 @@ export function GameListCompareTable({
               {table.getHeaderGroups().map(headerGroup => (
                 <Table.Tr key={headerGroup.id}>
                   {headerGroup.headers.map(header => (
-                    <Table.Th key={header.id} className={styles.stickyHeaderCell}>
+                    <Table.Th
+                      key={header.id}
+                      className={styles.stickyHeaderCell}
+                      aria-sort={ariaSort(header.column.getIsSorted())}
+                    >
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </Table.Th>
                   ))}

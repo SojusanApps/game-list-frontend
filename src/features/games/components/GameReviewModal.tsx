@@ -8,6 +8,7 @@ import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import { useCurrentUserId } from "@/features/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 import { useModalDraft } from "@/hooks/useModalDraft";
 import { useResettableState } from "@/hooks/useResettableState";
 
@@ -43,6 +44,7 @@ export function GameReviewModal({
   onClose,
 }: Readonly<GameReviewModalProps>) {
   const { t } = useTranslation("games");
+  const { confirm, confirmModal } = useConfirm();
   const currentUserId = useCurrentUserId();
   const isEditing = !!existingReviewId;
 
@@ -135,6 +137,15 @@ export function GameReviewModal({
     if (!existingReviewId) {
       return;
     }
+    const confirmed = await confirm({
+      title: t("reviewModal.deleteConfirmTitle"),
+      message: t("reviewModal.deleteConfirmMessage"),
+      confirmLabel: t("reviewModal.removeButton"),
+      isDestructive: true,
+    });
+    if (!confirmed) {
+      return;
+    }
     try {
       await deleteReview(existingReviewId);
       notifications.show({
@@ -157,145 +168,156 @@ export function GameReviewModal({
   const isOverLimit = charCount > MAX_REVIEW_LENGTH;
 
   return (
-    <AppModal
-      opened={opened}
-      onClose={onClose}
-      title={isEditing ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
-      footer={
-        <Group justify="space-between" gap={8}>
-          {isEditing && (
-            <Button variant="outline" color="red" onClick={handleDelete} isLoading={isDeleting} disabled={isPending}>
-              {t("reviewModal.removeButton")}
-            </Button>
-          )}
-          <Group gap={8} ml="auto">
-            <Button variant="outline" onClick={onClose} disabled={isPending}>
-              {t("reviewModal.cancelButton")}
-            </Button>
-            {!isLanguageStep && (
+    <>
+      <AppModal
+        fullScreenOnMobile
+        opened={opened}
+        onClose={onClose}
+        title={isEditing ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
+        footer={
+          <Group justify="space-between" gap={8}>
+            {isEditing && (
               <Button
-                type="submit"
-                form="game-review-form"
-                isLoading={isCreating || isUpdating}
-                disabled={isOverLimit || isPending}
+                variant="outline"
+                color="error"
+                onClick={() => handleDelete()}
+                isLoading={isDeleting}
+                disabled={isPending}
               >
-                {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
+                {t("reviewModal.removeButton")}
               </Button>
             )}
-          </Group>
-        </Group>
-      }
-    >
-      <form id="game-review-form" onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack gap={16}>
-          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-          {isLanguageStep ? (
-            <Stack gap={12}>
-              <Text fw={600}>{t("reviewModal.languageQuestion")}</Text>
-              <Text fz="sm" c="dimmed">
-                {t("reviewModal.languageHint")}
-              </Text>
-              <SimpleGrid cols={2} spacing={12}>
-                {REVIEW_LANGUAGE_ORDER.map(option => (
-                  <UnstyledButton
-                    key={option}
-                    type="button"
-                    onClick={() => {
-                      form.setFieldValue("language", option);
-                      setIsChangingLanguage(false);
-                    }}
-                    aria-pressed={language === option}
-                    style={{
-                      padding: "24px 16px",
-                      borderRadius: 12,
-                      textAlign: "center",
-                      fontWeight: 700,
-                      fontSize: 18,
-                      border:
-                        language === option
-                          ? "2px solid var(--color-primary-600)"
-                          : "1px solid var(--color-background-200)",
-                    }}
-                  >
-                    {t(`reviewLanguage.${option}`)}
-                  </UnstyledButton>
-                ))}
-              </SimpleGrid>
-              {form.errors.language && (
-                <Text fz="xs" c="red">
-                  {form.errors.language}
-                </Text>
-              )}
-            </Stack>
-          ) : (
-            <>
-              <Group gap={8} align="center">
-                <Text fz="sm" c="dimmed">
-                  {t("reviewModal.languageLabel")}
-                </Text>
-                <UnstyledButton
-                  type="button"
-                  onClick={() => setIsChangingLanguage(true)}
-                  aria-label={t("reviewModal.changeLanguage")}
-                  style={{
-                    padding: "2px 10px",
-                    borderRadius: 9999,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    border: "1px solid var(--color-primary-600)",
-                    color: "var(--color-primary-600)",
-                  }}
+            <Group gap={8} ml="auto">
+              <Button variant="outline" onClick={onClose} disabled={isPending}>
+                {t("reviewModal.cancelButton")}
+              </Button>
+              {!isLanguageStep && (
+                <Button
+                  type="submit"
+                  form="game-review-form"
+                  isLoading={isCreating || isUpdating}
+                  disabled={isOverLimit || isPending}
                 >
-                  {language ? t(`reviewLanguage.${language}`) : ""}
-                </UnstyledButton>
-              </Group>
-              <Select
-                label={t("reviewModal.recommendationLabel")}
-                placeholder={t("reviewModal.recommendationPlaceholder")}
-                data={RECOMMENDATION_ORDER.map(value => ({
-                  value,
-                  label: getRecommendationConfig(value)?.label ?? value,
-                }))}
-                renderOption={({ option }) => (
-                  <Box
+                  {isEditing ? t("reviewModal.saveButton") : t("reviewModal.submitButton")}
+                </Button>
+              )}
+            </Group>
+          </Group>
+        }
+      >
+        <form id="game-review-form" onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack gap={16}>
+            {hasDraft && <DraftNotice onDiscard={discardDraft} />}
+            {isLanguageStep ? (
+              <Stack gap={12}>
+                <Text fw={600}>{t("reviewModal.languageQuestion")}</Text>
+                <Text fz="sm" c="dimmed">
+                  {t("reviewModal.languageHint")}
+                </Text>
+                <SimpleGrid cols={2} spacing={12}>
+                  {REVIEW_LANGUAGE_ORDER.map(option => (
+                    <UnstyledButton
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        form.setFieldValue("language", option);
+                        setIsChangingLanguage(false);
+                      }}
+                      aria-pressed={language === option}
+                      style={{
+                        padding: "24px 16px",
+                        borderRadius: 12,
+                        textAlign: "center",
+                        fontWeight: 700,
+                        fontSize: 18,
+                        border:
+                          language === option
+                            ? "2px solid var(--color-primary-600)"
+                            : "1px solid var(--color-background-200)",
+                      }}
+                    >
+                      {t(`reviewLanguage.${option}`)}
+                    </UnstyledButton>
+                  ))}
+                </SimpleGrid>
+                {form.errors.language && (
+                  <Text fz="xs" c="red">
+                    {form.errors.language}
+                  </Text>
+                )}
+              </Stack>
+            ) : (
+              <>
+                <Group gap={8} align="center">
+                  <Text fz="sm" c="dimmed">
+                    {t("reviewModal.languageLabel")}
+                  </Text>
+                  <UnstyledButton
+                    type="button"
+                    onClick={() => setIsChangingLanguage(true)}
+                    aria-label={t("reviewModal.changeLanguage")}
                     style={{
-                      ...getRecommendationConfig(option.value as RecommendationEnum)?.badgeStyle,
-                      fontSize: "12px",
+                      padding: "2px 10px",
+                      borderRadius: 9999,
+                      fontSize: 12,
                       fontWeight: 700,
-                      padding: "2px 8px",
-                      borderRadius: "6px",
-                      display: "inline-block",
+                      border: "1px solid var(--color-primary-600)",
+                      color: "var(--color-primary-600)",
                     }}
                   >
-                    {option.label}
-                  </Box>
-                )}
-                styles={{
-                  input: {
-                    ...getRecommendationConfig(form.values.recommendation ?? undefined)?.badgeStyle,
-                    fontWeight: 700,
-                  },
-                }}
-                {...form.getInputProps("recommendation")}
-              />
-              <Stack gap={4}>
-                <Textarea
-                  {...form.getInputProps("review")}
-                  placeholder={t("reviewModal.reviewPlaceholder")}
-                  minRows={6}
-                  autosize
-                  maxRows={16}
-                />
-                <Group justify="flex-end">
-                  <Text fz="xs" c={isOverLimit ? "red" : "dimmed"}>
-                    {charCount} / {MAX_REVIEW_LENGTH}
-                  </Text>
+                    {language ? t(`reviewLanguage.${language}`) : ""}
+                  </UnstyledButton>
                 </Group>
-              </Stack>
-            </>
-          )}
-        </Stack>
-      </form>
-    </AppModal>
+                <Select
+                  label={t("reviewModal.recommendationLabel")}
+                  placeholder={t("reviewModal.recommendationPlaceholder")}
+                  data={RECOMMENDATION_ORDER.map(value => ({
+                    value,
+                    label: getRecommendationConfig(value)?.label ?? value,
+                  }))}
+                  renderOption={({ option }) => (
+                    <Box
+                      style={{
+                        ...getRecommendationConfig(option.value as RecommendationEnum)?.badgeStyle,
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: "6px",
+                        display: "inline-block",
+                      }}
+                    >
+                      {option.label}
+                    </Box>
+                  )}
+                  styles={{
+                    input: {
+                      ...getRecommendationConfig(form.values.recommendation ?? undefined)?.badgeStyle,
+                      fontWeight: 700,
+                    },
+                  }}
+                  {...form.getInputProps("recommendation")}
+                />
+                <Stack gap={4}>
+                  <Textarea
+                    {...form.getInputProps("review")}
+                    label={t("reviewModal.reviewLabel")}
+                    description={
+                      <Text component="span" fz="xs" c={isOverLimit ? "error" : "dimmed"}>
+                        {charCount} / {MAX_REVIEW_LENGTH}
+                      </Text>
+                    }
+                    placeholder={t("reviewModal.reviewPlaceholder")}
+                    minRows={6}
+                    autosize
+                    maxRows={16}
+                  />
+                </Stack>
+              </>
+            )}
+          </Stack>
+        </form>
+      </AppModal>
+      {confirmModal}
+    </>
   );
 }

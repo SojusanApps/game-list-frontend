@@ -1,0 +1,36 @@
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2000;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+}
+
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--color-primary-500);
+  animation: routeProgress 1s ease-in-out infinite;
+}
+
+@keyframes routeProgress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar::after {
+    width: 100%;
+    animation: none;
+  }
+}

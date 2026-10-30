@@ -35,7 +35,9 @@ export const SuccessStep = ({ importedCount }: SuccessStepProps) => {
         </Text>
         {currentUserId && userSlug && (
           <Link to="/game-list/$id/$slug" params={{ id: currentUserId.toString(), slug: userSlug }}>
-            <Button leftSection={<IconCheck size={16} />}>{t("import.backButton")}</Button>
+            <Button component="span" leftSection={<IconCheck size={16} />}>
+              {t("import.backButton")}
+            </Button>
           </Link>
         )}
       </Stack>

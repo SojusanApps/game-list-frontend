@@ -3,7 +3,11 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { UserDetail, GameListStatusEnum } from "@/client";
+import { StatCard } from "@/components/ui/StatCard";
 import { StatusIcon } from "@/features/games/utils/StatusIcon";
+import { formatMeanScore } from "@/utils/ratingUtils";
+
+import styles from "./UserStatistics.module.css";
 
 interface UserStatisticsProps {
   userDetails?: UserDetail;
@@ -16,8 +20,8 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
       <SimpleGrid cols={{ base: 1, md: 4 }} spacing={16}>
         {/* Status Breakdown Card */}
         <Box
+          className={styles.breakdown}
           style={{
-            gridColumn: "span 2",
             padding: 20,
             background: "var(--color-background-100)",
             borderRadius: 16,
@@ -75,60 +79,17 @@ export default function UserStatistics({ userDetails }: Readonly<UserStatisticsP
         </Box>
 
         {/* Total Entries Card */}
-        <Stack
-          align="center"
-          justify="center"
-          style={{
-            padding: 24,
-            background: "var(--color-success-tint-bg)",
-            borderRadius: 16,
-            border: "1px solid var(--color-success-tint-border)",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "var(--color-success-tint-text)",
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              marginBottom: 8,
-            }}
-          >
-            {t("stats.totalEntries")}
-          </Text>
-          <Text fz={36} fw={900} c="var(--color-success-tint-text)">
-            {userDetails?.game_list_statistics.total}
-          </Text>
-        </Stack>
+        <StatCard label={t("stats.totalEntries")} value={userDetails?.game_list_statistics.total} tone="success" />
 
-        {/* Mean Score Card */}
-        <Stack
-          align="center"
-          justify="center"
-          style={{
-            padding: 24,
-            background: "var(--color-primary-tint-bg)",
-            borderRadius: 16,
-            border: "1px solid var(--color-primary-tint-border)",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "var(--color-primary-tint-text)",
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              marginBottom: 8,
-            }}
-          >
-            {t("stats.meanScore")}
-          </Text>
-          <Text fz={36} fw={900} c="var(--color-primary-tint-text)">
-            {userDetails?.game_list_statistics.mean_score?.toFixed(2) || "0.00"}
-          </Text>
-        </Stack>
+        <StatCard
+          label={t("stats.meanScore")}
+          value={
+            userDetails?.game_list_statistics.mean_score
+              ? formatMeanScore(userDetails.game_list_statistics.mean_score)
+              : "0.0"
+          }
+          tone="primary"
+        />
       </SimpleGrid>
     </Stack>
   );

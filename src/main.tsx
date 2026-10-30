@@ -19,7 +19,7 @@ import ReactDOM from "react-dom/client";
 
 import App, { router } from "./App";
 import clientSetup from "./clientSetup";
-import { theme } from "./theme/theme";
+import { cssVariablesResolver, theme } from "./theme/theme";
 import { ApiError } from "./utils/apiUtils";
 
 clientSetup();
@@ -50,7 +50,12 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="auto" colorSchemeManager={colorSchemeManager}>
+    <MantineProvider
+      theme={theme}
+      cssVariablesResolver={cssVariablesResolver}
+      defaultColorScheme="auto"
+      colorSchemeManager={colorSchemeManager}
+    >
       <Notifications position="bottom-right" autoClose={4000} />
       <QueryClientProvider client={queryClient}>
         <App />

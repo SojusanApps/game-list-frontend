@@ -10,6 +10,7 @@ type MessageTarget = Pick<Window, "postMessage" | "addEventListener" | "removeEv
 
 interface ExtensionEnvelope {
   source: "gamelist-extension";
+  version?: number;
   type: string;
   requestId?: string;
   result?: SyncResult;
@@ -59,10 +60,28 @@ function request<T>(
   });
 }
 
-/** True when the extension answers a PING (or has already announced itself) within the timeout. */
-export async function isExtensionInstalled(target: MessageTarget = globalThis.window): Promise<boolean> {
-  const reply = await request(target, { type: "PING" }, r => (r.type === "READY" ? true : null), PING_TIMEOUT_MS);
-  return reply === true;
+export type ExtensionStatus = "missing" | "outdated" | "ready";
+
+/**
+ * Whether the extension answers a PING within the timeout, and if so whether it speaks this contract version.
+ * An older extension returns titles instead of entries, so it has to be updated before it can be used.
+ */
+export async function detectExtension(target: MessageTarget = globalThis.window): Promise<ExtensionStatus> {
+  const version = await request(
+    target,
+    { type: "PING" },
+    r => {
+      if (r.type !== "READY") {
+        return null;
+      }
+      return typeof r.version === "number" ? r.version : 0;
+    },
+    PING_TIMEOUT_MS,
+  );
+  if (version === null) {
+    return "missing";
+  }
+  return version >= EXTENSION_CONTRACT_VERSION ? "ready" : "outdated";
 }
 
 /** Runs one Platform Sync. Resolves with an `error` result if the extension never answers. */
@@ -78,5 +97,5 @@ export async function requestPlatformSync(
     r => (r.type === "SYNC_RESULT" && r.requestId === requestId && r.result ? r.result : null),
     timeoutMs,
   );
-  return result ?? { platform, status: "error", titles: [], count: 0, error: "timeout" };
+  return result ?? { platform, status: "error", entries: [], count: 0, error: "timeout" };
 }

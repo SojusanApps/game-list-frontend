@@ -67,6 +67,7 @@ export default function EditDescriptionModal({
 
   return (
     <AppModal
+      fullScreenOnMobile
       opened={true}
       onClose={onClose}
       title={t("descriptionModal.rankingTitle")}
@@ -75,7 +76,7 @@ export default function EditDescriptionModal({
       closeButtonLabel={t("descriptionModal.closeAria")}
       footer={
         <Group justify="flex-end" gap={12}>
-          <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving} style={{ paddingInline: 24 }}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={isSaving} style={{ paddingInline: 24 }}>
             {t("descriptionModal.cancelButton")}
           </Button>
           <Button

@@ -1,12 +1,19 @@
 import { Button as MantineButton } from "@mantine/core";
 import React from "react";
 
-type ButtonVariant = "default" | "secondary" | "destructive" | "success" | "outline" | "ghost" | "link";
+type ButtonVariant = "default" | "secondary" | "destructive" | "success" | "outline" | "ghost" | "link" | "light";
 type ButtonSize = "default" | "sm" | "lg" | "icon" | "xl";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  /**
+   * Render as another element: `"span"` when the button sits inside a link (so an `<a>` never contains a
+   * `<button>`), or a router `Link` (with `to`) to make the button itself the link.
+   */
+  component?: "span" | React.ElementType;
+  /** Destination when `component` is a router `Link`. */
+  to?: string;
   fullWidth?: boolean;
   uppercase?: boolean;
   isLoading?: boolean;
@@ -21,6 +28,7 @@ const variantMap: Record<ButtonVariant, { variant: string; color?: string }> = {
   success: { variant: "filled", color: "success" },
   outline: { variant: "outline" },
   ghost: { variant: "subtle" },
+  light: { variant: "light" },
   link: { variant: "transparent" },
 };
 
@@ -38,6 +46,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       variant = "default",
       size = "default",
+      component,
       fullWidth,
       uppercase,
       isLoading,
@@ -55,6 +64,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <MantineButton
         ref={ref}
+        component={component as "button"}
         variant={mapped.variant}
         color={mapped.color}
         size={mantineSize}

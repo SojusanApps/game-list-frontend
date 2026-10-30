@@ -58,3 +58,16 @@
   border-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }
+
+.navLinkActive {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.mobileNavLinkActive {
+  background-color: var(--color-primary-800);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}

@@ -1,6 +1,7 @@
 import { Box, Stack, Text } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import AppLogo from "./AppLogo";
 
@@ -11,6 +12,7 @@ interface ImageFallbackProps {
 const REFERENCE_SIZE = 200;
 
 export function ImageFallback({ className }: Readonly<ImageFallbackProps>) {
+  const { t } = useTranslation();
   const { ref, width } = useElementSize();
   const scale = width > 0 ? width / REFERENCE_SIZE : 1;
 
@@ -30,7 +32,7 @@ export function ImageFallback({ className }: Readonly<ImageFallbackProps>) {
         <Stack align="center" gap={4} p={8}>
           <AppLogo size="sm" />
           <Text component="span" fz="lg" fw={500} tt="uppercase" style={{ letterSpacing: "0.1em", opacity: 0.7 }}>
-            No Image
+            {t("image.noImage")}
           </Text>
         </Stack>
       </Box>

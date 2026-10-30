@@ -250,22 +250,16 @@ export const RankingListView = React.memo(function RankingListViewInner({
         const currentPages = itemsResults?.pages.length || 0;
         const pagesToFetch = pagesNeeded - currentPages;
 
-        let latestQueryResult = itemsResults;
-        for (let i = 0; i < pagesToFetch && hasNextPage; i++) {
+        // Pages must load one after another (each fetch continues from the previous), so recurse
+        // instead of awaiting inside a loop.
+        const fetchRemaining = async (remaining: number, latest: typeof itemsResults): Promise<typeof itemsResults> => {
+          if (remaining <= 0 || !hasNextPage) return latest;
           const result = await fetchNextPage();
-          if (result.data) {
-            latestQueryResult = result.data;
-          }
-        }
+          return fetchRemaining(remaining - 1, result.data ?? latest);
+        };
+        const latestQueryResult = await fetchRemaining(pagesToFetch, itemsResults);
 
-        notifications.update({
-          id: loadingId,
-          title: t("rankingList.successTitle"),
-          message: t("rankingList.itemsLoaded"),
-          color: "green",
-          loading: false,
-          autoClose: 3000,
-        });
+        notifications.hide(loadingId);
         return latestQueryResult;
       } catch (error) {
         notifications.update({

@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Sojusan GameList API",
-        "version": "6.0.0",
+        "version": "6.1.0",
         "description": "Application to manage game lists."
     },
     "paths": {
@@ -2179,7 +2179,7 @@
         "/api/game/game-lists/bulk-create/": {
             "post": {
                 "operationId": "game_game_lists_bulk_create_create",
-                "description": "Bulk-create game-list entries for the authenticated user. Accepts a list of objects each containing a game ID and play status. Returns the list of created game-list entries. This endpoint is useful for bulk-adding games to the user's list.",
+                "description": "Bulk-create game-list entries for the authenticated user. Accepts a list of objects each containing a game ID and play status. An item that came from store libraries may also carry `store_refs` (each with platform, store_id and store_title); the picked game is then recorded as a pending Store Mapping for the user for every one of them. Returns the list of created game-list entries. This endpoint is useful for bulk-adding games to the user's list.",
                 "tags": [
                     "game"
                 ],
@@ -2189,7 +2189,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/GameListCreate"
+                                    "$ref": "#/components/schemas/GameListBulkCreateItem"
                                 }
                             }
                         },
@@ -2197,7 +2197,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/GameListCreate"
+                                    "$ref": "#/components/schemas/GameListBulkCreateItem"
                                 }
                             }
                         },
@@ -2205,7 +2205,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/GameListCreate"
+                                    "$ref": "#/components/schemas/GameListBulkCreateItem"
                                 }
                             }
                         }
@@ -2291,10 +2291,10 @@
                 }
             }
         },
-        "/api/game/game-lists/title-import/": {
+        "/api/game/game-lists/store-import/": {
             "post": {
-                "operationId": "game_game_lists_title_import_create",
-                "description": "Match a pasted list of game titles against the catalogue (Title Import, step 1). For each input title, in input order, returns up to three candidate games ranked best match first; a title whose candidates all fall below the matching threshold gets an empty matches list. Candidates already on the authenticated user's game list are flagged with already_in_list. Stores nothing; submit the picked games to the bulk-create endpoint to add them to the game list.",
+                "operationId": "game_game_lists_store_import_create",
+                "description": "Import a store library read by the browser extension (Platform Sync). Each entry is matched by its store id: first against IGDB's external games, then against accepted Store Mappings, then against the user's own pending ones; an id that points at more than one game counts as unmatched. Matched games that are not on the authenticated user's game list are added as Plan to Play, unscored, with `owned_on` set to the store only for owned (not wishlisted) games. For a matched game already on the list nothing changes except that an owned game's store is appended to `owned_on`. Unmatched entries are returned so the client can run the title match step on them. Entries a Store Mapping marks as not a game are skipped and returned as `skipped`.",
                 "tags": [
                     "game"
                 ],
@@ -2302,17 +2302,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TitleImportRequest"
+                                "$ref": "#/components/schemas/StoreImportRequest"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/TitleImportRequest"
+                                "$ref": "#/components/schemas/StoreImportRequest"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/TitleImportRequest"
+                                "$ref": "#/components/schemas/StoreImportRequest"
                             }
                         }
                     },
@@ -2328,11 +2328,89 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TitleImportResponse"
+                                    "$ref": "#/components/schemas/StoreImportResponse"
                                 }
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/game/game-lists/store-link/": {
+            "post": {
+                "operationId": "game_game_lists_store_link_create",
+                "description": "Match store entries by hand to games that are already on the authenticated user's game list. Each match is recorded as a pending Store Mapping of the user, and for an owned (not wishlisted) entry the store is appended to `owned_on`. Nothing else of the game list entry changes; a game that is not on the list is ignored.",
+                "tags": [
+                    "game"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreLinkRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreLinkRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreLinkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/game/game-lists/store-not-a-game/": {
+            "post": {
+                "operationId": "game_game_lists_store_not_a_game_create",
+                "description": "Propose store items as not a game (a soundtrack, for example). Each becomes a pending Store Mapping of the authenticated user: for them the store import skips the item at once, and for everyone once an admin accepts it. Items an accepted mapping already covers are ignored.",
+                "tags": [
+                    "game"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreNotAGameRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreNotAGameRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreNotAGameRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -2738,6 +2816,14 @@
                             ]
                         },
                         "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ordering",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Order results by field. Accepted values: created_at, -created_at, score, -score. Use `-created_at` for newest first and `-score` for the reviewer's highest score first. Reviews whose author has not scored the game always come last when ordering by score. Prefix with '-' for descending."
                     },
                     {
                         "name": "page",
@@ -3282,6 +3368,14 @@
                     },
                     {
                         "in": "query",
+                        "name": "igdb_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by the game's IGDB identifier."
+                    },
+                    {
+                        "in": "query",
                         "name": "ordering",
                         "schema": {
                             "type": "string"
@@ -3745,6 +3839,273 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PlayerPerspective"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/game/store-mappings/": {
+            "get": {
+                "operationId": "game_store_mappings_list",
+                "description": "List store mappings (admin only), pending ones for review as well as accepted and rejected ones. Filter by status, platform, store id, game or submitter.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "game",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by the ID of the game the store id is mapped to."
+                    },
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by exact store mapping ID."
+                    },
+                    {
+                        "in": "query",
+                        "name": "not_a_game",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter mappings that mark a store item as not a game (true) or map it to a game (false)."
+                    },
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "platform",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by store. Accepted values: steam, epic, gog, playstation, nintendo."
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by lifecycle status. Accepted values: pending, accepted, rejected."
+                    },
+                    {
+                        "in": "query",
+                        "name": "store_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by the store's own identifier of the game."
+                    },
+                    {
+                        "in": "query",
+                        "name": "submitted_by",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter by the ID of the user who submitted the mapping."
+                    }
+                ],
+                "tags": [
+                    "game"
+                ],
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedStoreMappingList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "game_store_mappings_create",
+                "description": "Create a store mapping by hand (admin only), to a game or marked `not_a_game` (a soundtrack, for example) so imports skip the store item. It is accepted at once and supersedes the store id's previous accepted mapping; other pending mappings for the same store id are rejected.",
+                "tags": [
+                    "game"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingCreate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingCreate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StoreMapping"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/game/store-mappings/{id}/": {
+            "get": {
+                "operationId": "game_store_mappings_retrieve",
+                "description": "Retrieve a single store mapping (admin only).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this store mapping.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "game"
+                ],
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StoreMapping"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/game/store-mappings/{id}/accept/": {
+            "post": {
+                "operationId": "game_store_mappings_accept_create",
+                "description": "Accept a pending store mapping, making it global. It supersedes the store id's previous accepted mapping and rejects the other pending mappings for the same store id. Game lists that already exist are not changed.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this store mapping.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "game"
+                ],
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StoreMapping"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/game/store-mappings/{id}/reject/": {
+            "post": {
+                "operationId": "game_store_mappings_reject_create",
+                "description": "Reject a pending store mapping, optionally with a reason. The mapping stops applying to its submitter. Game lists that already exist are not changed.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this store mapping.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "game"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingReject"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingReject"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMappingReject"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "keycloakAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StoreMapping"
                                 }
                             }
                         },
@@ -6319,6 +6680,92 @@
                     "user"
                 ]
             },
+            "GameListBulkCreateItem": {
+                "type": "object",
+                "description": "The schema of one item of the bulk-create request: a game-list entry plus optional store references.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/GameListStatusEnum"
+                            }
+                        ],
+                        "description": "The user's current play status (Completed, Plan to Play, Playing, Dropped, On Hold, Not Planned).\n\n* `C` - Completed\n* `PTP` - Plan to play\n* `P` - Playing\n* `D` - Dropped\n* `OH` - On hold\n* `NP` - Not planned"
+                    },
+                    "score": {
+                        "type": "integer",
+                        "maximum": 10,
+                        "minimum": 1,
+                        "nullable": true,
+                        "description": "The user's score for this game, between 1 and 10."
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Optional personal notes about this game.",
+                        "maxLength": 200
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true,
+                        "description": "The date the user completed this game."
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true,
+                        "description": "The date the user started playing this game."
+                    },
+                    "playtime": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "nullable": true,
+                        "description": "The number of minutes played."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "title": "Creation time"
+                    },
+                    "last_modified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "title": "Last modified"
+                    },
+                    "game": {
+                        "type": "integer",
+                        "description": "The game this list entry refers to."
+                    },
+                    "owned_on": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "store_refs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreMappingRef"
+                        },
+                        "description": "Store ids this game was picked for; each is recorded as a pending Store Mapping for the user."
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "game",
+                    "id",
+                    "last_modified_at",
+                    "owned_on",
+                    "status"
+                ]
+            },
             "GameListCompareResponse": {
                 "type": "object",
                 "description": "A serializer for the GameList compare endpoint response.",
@@ -7701,6 +8148,37 @@
                     }
                 }
             },
+            "PaginatedStoreMappingList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreMapping"
+                        }
+                    }
+                }
+            },
             "PaginatedTranslationSuggestionList": {
                 "type": "object",
                 "required": [
@@ -8054,6 +8532,17 @@
                     "igdb_updated_at",
                     "name"
                 ]
+            },
+            "PlatformEnum": {
+                "enum": [
+                    "steam",
+                    "epic",
+                    "gog",
+                    "playstation",
+                    "nintendo"
+                ],
+                "type": "string",
+                "description": "* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
             },
             "PlayerPerspective": {
                 "type": "object",
@@ -8420,6 +8909,388 @@
                 "type": "string",
                 "description": "* `user_submitted` - User submitted\n* `admin_direct` - Admin direct"
             },
+            "StoreEntry": {
+                "type": "object",
+                "description": "A serializer for one game of a store library, as sent by the browser extension.",
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformEnum"
+                            }
+                        ],
+                        "description": "The store the game is listed on.\n\n* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "description": "The store's own identifier of the game.",
+                        "maxLength": 255
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The game's title on the store.",
+                        "maxLength": 255
+                    },
+                    "wishlisted": {
+                        "type": "boolean",
+                        "description": "Whether the game is only on the store wishlist; false when the user owns it."
+                    }
+                },
+                "required": [
+                    "platform",
+                    "store_id",
+                    "title",
+                    "wishlisted"
+                ]
+            },
+            "StoreImportRequest": {
+                "type": "object",
+                "description": "A serializer for the store import endpoint request body.",
+                "properties": {
+                    "entries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreEntry"
+                        },
+                        "description": "Store library entries to import, at most 5000 per request."
+                    }
+                },
+                "required": [
+                    "entries"
+                ]
+            },
+            "StoreImportResponse": {
+                "type": "object",
+                "description": "A serializer for the store import endpoint response.",
+                "properties": {
+                    "imported": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreImportedGame"
+                        },
+                        "description": "Entries matched and added to the game list now."
+                    },
+                    "already_added": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreImportedGame"
+                        },
+                        "description": "Entries matched to a game that was already on the game list."
+                    },
+                    "unmatched": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreEntry"
+                        },
+                        "description": "Entries that could not be matched and need the title match step."
+                    },
+                    "skipped": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreEntry"
+                        },
+                        "description": "Entries a Store Mapping marks as not a game; they are not imported."
+                    }
+                },
+                "required": [
+                    "already_added",
+                    "imported",
+                    "skipped",
+                    "unmatched"
+                ]
+            },
+            "StoreImportedGame": {
+                "type": "object",
+                "description": "A serializer for a store entry that matched a game.",
+                "properties": {
+                    "platform": {
+                        "type": "string",
+                        "description": "The store the game is listed on."
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "description": "The store's own identifier of the game."
+                    },
+                    "game": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/GameReference"
+                            }
+                        ],
+                        "description": "The game the entry was matched to."
+                    }
+                },
+                "required": [
+                    "game",
+                    "platform",
+                    "store_id"
+                ]
+            },
+            "StoreLinkItem": {
+                "type": "object",
+                "description": "A store entry matched by hand to a game that is already on the user's game list.",
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformEnum"
+                            }
+                        ],
+                        "description": "The store the game is listed on.\n\n* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "description": "The store's own identifier of the game.",
+                        "maxLength": 255
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The game's title on the store.",
+                        "maxLength": 255
+                    },
+                    "wishlisted": {
+                        "type": "boolean",
+                        "description": "Whether the game is only on the store wishlist; false when the user owns it."
+                    },
+                    "game": {
+                        "type": "integer",
+                        "description": "The game on the user's list the entry was matched to."
+                    }
+                },
+                "required": [
+                    "game",
+                    "platform",
+                    "store_id",
+                    "title",
+                    "wishlisted"
+                ]
+            },
+            "StoreLinkRequest": {
+                "type": "object",
+                "description": "A serializer for the store link endpoint request body.",
+                "properties": {
+                    "entries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreLinkItem"
+                        },
+                        "description": "Matches to apply."
+                    }
+                },
+                "required": [
+                    "entries"
+                ]
+            },
+            "StoreMapping": {
+                "type": "object",
+                "description": "A serializer for reading store mappings.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformEnum"
+                            }
+                        ],
+                        "readOnly": true,
+                        "description": "The store the game is listed on.\n\n* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "readOnly": true,
+                        "description": "The store's own identifier of the game."
+                    },
+                    "store_title": {
+                        "type": "string",
+                        "readOnly": true,
+                        "description": "A snapshot of the game's title on the store, as sent by the browser extension."
+                    },
+                    "game": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/GameReference"
+                            }
+                        ],
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "not_a_game": {
+                        "type": "boolean",
+                        "readOnly": true,
+                        "description": "Marks the store item as not a game (a soundtrack, for example) so imports skip it."
+                    },
+                    "submitted_by": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UserSimple"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ReportStatusEnum"
+                            }
+                        ],
+                        "readOnly": true,
+                        "default": "pending",
+                        "description": "The current lifecycle state of this mapping.\n\n* `pending` - Pending\n* `accepted` - Accepted\n* `rejected` - Rejected"
+                    },
+                    "submitted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "reviewed_by": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UserSimple"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "reviewed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true,
+                        "description": "The time this mapping was accepted or rejected."
+                    },
+                    "rejection_reason": {
+                        "type": "string",
+                        "readOnly": true,
+                        "description": "Optional reason given when this mapping was rejected or superseded."
+                    }
+                },
+                "required": [
+                    "game",
+                    "id",
+                    "not_a_game",
+                    "platform",
+                    "rejection_reason",
+                    "reviewed_at",
+                    "reviewed_by",
+                    "status",
+                    "store_id",
+                    "store_title",
+                    "submitted_at",
+                    "submitted_by"
+                ]
+            },
+            "StoreMappingCreate": {
+                "type": "object",
+                "description": "A serializer for an admin creating an already accepted store mapping by hand.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformEnum"
+                            }
+                        ],
+                        "description": "The store the game is listed on.\n\n* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "description": "The store's own identifier of the game.",
+                        "maxLength": 255
+                    },
+                    "store_title": {
+                        "type": "string",
+                        "description": "A snapshot of the game's title on the store, as sent by the browser extension.",
+                        "maxLength": 255
+                    },
+                    "game": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "The game this store id is mapped to; empty when the store item is marked as not a game."
+                    },
+                    "not_a_game": {
+                        "type": "boolean",
+                        "description": "Marks the store item as not a game (a soundtrack, for example) so imports skip it."
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ReportStatusEnum"
+                            }
+                        ],
+                        "readOnly": true,
+                        "default": "pending",
+                        "description": "The current lifecycle state of this mapping.\n\n* `pending` - Pending\n* `accepted` - Accepted\n* `rejected` - Rejected"
+                    }
+                },
+                "required": [
+                    "id",
+                    "platform",
+                    "status",
+                    "store_id"
+                ]
+            },
+            "StoreMappingRef": {
+                "type": "object",
+                "description": "The store reference an item of the bulk-create request may carry to propose a Store Mapping.",
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformEnum"
+                            }
+                        ],
+                        "description": "The store the game is listed on.\n\n* `steam` - Steam\n* `epic` - Epic Games Store\n* `gog` - GOG\n* `playstation` - PlayStation Store\n* `nintendo` - Nintendo eShop"
+                    },
+                    "store_id": {
+                        "type": "string",
+                        "description": "The store's own identifier of the game.",
+                        "maxLength": 255
+                    },
+                    "store_title": {
+                        "type": "string",
+                        "default": "",
+                        "description": "The game's title on the store.",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "platform",
+                    "store_id"
+                ]
+            },
+            "StoreMappingReject": {
+                "type": "object",
+                "description": "A serializer for the optional reason an admin gives when rejecting a store mapping.",
+                "properties": {
+                    "rejection_reason": {
+                        "type": "string",
+                        "default": "",
+                        "description": "Optional reason for the rejection.",
+                        "maxLength": 500
+                    }
+                }
+            },
+            "StoreNotAGameRequest": {
+                "type": "object",
+                "description": "A serializer for the request proposing store items as not a game.",
+                "properties": {
+                    "entries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreMappingRef"
+                        },
+                        "description": "Store items the user marks as not a game (a soundtrack, for example)."
+                    }
+                },
+                "required": [
+                    "entries"
+                ]
+            },
             "TargetTypeEnum": {
                 "enum": [
                     "avatar",
@@ -8445,98 +9316,6 @@
                 ],
                 "type": "string",
                 "description": "* `S` - S Tier\n* `A` - A Tier\n* `B` - B Tier\n* `C` - C Tier\n* `D` - D Tier\n* `E` - E Tier\n* `F` - F Tier"
-            },
-            "TitleImportMatch": {
-                "type": "object",
-                "description": "A serializer for a single candidate game matched to an imported title.",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "description": "The ID of the matched game."
-                    },
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the matched game."
-                    },
-                    "cover_image_id": {
-                        "type": "string",
-                        "description": "The IGDB cover image ID of the matched game."
-                    },
-                    "already_in_list": {
-                        "type": "boolean",
-                        "description": "Whether the matched game is already on the requesting user's game list."
-                    },
-                    "release_date": {
-                        "type": "string",
-                        "format": "date",
-                        "nullable": true,
-                        "description": "The worldwide release date of the game."
-                    }
-                },
-                "required": [
-                    "already_in_list",
-                    "cover_image_id",
-                    "id",
-                    "release_date",
-                    "title"
-                ]
-            },
-            "TitleImportRequest": {
-                "type": "object",
-                "description": "A serializer for the title import endpoint request body.",
-                "properties": {
-                    "titles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "description": "A game title to match.",
-                            "maxLength": 255
-                        },
-                        "description": "Game titles to match against the catalogue, at most 10 per request.",
-                        "maxItems": 10,
-                        "minItems": 1
-                    }
-                },
-                "required": [
-                    "titles"
-                ]
-            },
-            "TitleImportResponse": {
-                "type": "object",
-                "description": "A serializer for the title import endpoint response.",
-                "properties": {
-                    "results": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TitleImportResult"
-                        },
-                        "description": "One entry per input title, in input order."
-                    }
-                },
-                "required": [
-                    "results"
-                ]
-            },
-            "TitleImportResult": {
-                "type": "object",
-                "description": "A serializer for the match candidates of a single imported title.",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The input title, echoed back verbatim."
-                    },
-                    "matches": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TitleImportMatch"
-                        },
-                        "description": "Up to three candidate games, best match first; empty when nothing matched well enough."
-                    }
-                },
-                "required": [
-                    "matches",
-                    "title"
-                ]
             },
             "TranslationSuggestion": {
                 "type": "object",

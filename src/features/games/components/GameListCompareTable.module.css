@@ -26,7 +26,20 @@
 .compareTable {
   table-layout: fixed;
   width: 100%;
-  min-width: 560px;
+  min-width: 640px;
+}
+
+/* On phones the table scrolls sideways; keep the game column pinned so rows stay identifiable. */
+.compareTable th:first-child,
+.compareTable td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--color-background-100);
+}
+
+.compareTable th:first-child {
+  z-index: 3;
 }
 
 /* Sticky on each th, not thead/tr — thead/tr sticky support is inconsistent across browsers. */

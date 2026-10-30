@@ -1,10 +1,9 @@
 import {
   Box,
-  Button,
-  Divider,
   Drawer,
   Group,
   Indicator,
+  Menu,
   Select,
   Skeleton,
   Stack,
@@ -12,92 +11,129 @@ import {
   TextInput,
   Title,
   ActionIcon,
+  Tooltip,
 } from "@mantine/core";
-import { IconEdit, IconFilter, IconDownload, IconInfinity, IconSearch, IconUpload } from "@tabler/icons-react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import {
+  IconDice5,
+  IconDots,
+  IconDownload,
+  IconEdit,
+  IconFilter,
+  IconSearch,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
 
 import { GameList, GameListStatusEnum } from "@/client";
+import { Button } from "@/components/ui/Button";
+import { ErrorState } from "@/components/ui/ErrorState";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
+import { Panel } from "@/components/ui/Panel";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useIsOwner } from "@/features/auth";
 import { useGetUserDetails } from "@/features/users/hooks/userQueries";
-import { useResettableState } from "@/hooks/useResettableState";
+import { useUrlState } from "@/hooks/useUrlState";
 import { useListViewStore } from "@/lib/listViewStore";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
+import { formatMeanScore } from "@/utils/ratingUtils";
 
 import { exportGameList } from "../api/game";
+import { ActiveFilterChips } from "../components/ActiveFilterChips";
 import { createGameListColumns } from "../components/gameListColumns";
 import { GameListModal } from "../components/GameListModal";
+import { GameListNote } from "../components/GameListNote";
+import { GameListStatusTabs } from "../components/GameListStatusTabs";
 import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
-import { useGetGameListsList } from "../hooks/gameQueries";
-import { useGameListInfiniteQuery, useRandomPtpGame, GameListGameFilters } from "../hooks/useGameListQueries";
+import { RandomPtpModal } from "../components/RandomPtpModal";
+import { useGetGameListsList, usePartialUpdateGameList } from "../hooks/gameQueries";
+import { useGameListInfiniteQuery, GameListGameFilters } from "../hooks/useGameListQueries";
 import {
   buildGameListFilters,
   countActiveGameListFilters,
   DEFAULT_GAME_LIST_ORDERING,
+  isGameListOrdering,
 } from "../utils/gameListOrdering";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { STATUS_CONFIG } from "../utils/statusConfig";
 import { StatusIcon } from "../utils/StatusIcon";
 
-const ALL_STATUS_VALUE = "all";
+const STATUS_VALUES = Object.values(GameListStatusEnum) as GameListStatusEnum[];
 
 interface GameListItemProps {
   gameListItem: GameList;
   isOwner: boolean;
+  ownerUsername?: string;
   onEdit: (gameId: number) => void;
 }
 
-interface EditActionProps {
-  gameId: number;
+interface QuickActionsProps {
+  gameListItem: GameList;
   onEdit: (gameId: number) => void;
 }
 
-function EditAction({ gameId, onEdit }: Readonly<EditActionProps>) {
+/** Quick status change plus the full edit modal, so the common case doesn't need the modal. */
+function QuickActions({ gameListItem, onEdit }: Readonly<QuickActionsProps>) {
+  const { t } = useTranslation("games");
+  const { mutate: updateEntry } = usePartialUpdateGameList();
+
   return (
-    <ActionIcon
-      variant="filled"
-      color="var(--mantine-color-primary-6)"
-      size="md"
-      radius="xl"
-      onClick={e => {
-        e.preventDefault();
-        e.stopPropagation();
-        onEdit(gameId);
-      }}
-      style={{
-        position: "absolute",
-        bottom: "16px",
-        right: "16px",
-        zIndex: 20,
-        boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
-      }}
-    >
-      <IconEdit size={16} />
-    </ActionIcon>
+    <Menu position="top-end" withinPortal shadow="md" width={220}>
+      <Menu.Target>
+        <ActionIcon
+          variant="filled"
+          color="var(--mantine-color-primary-6)"
+          size="md"
+          radius="xl"
+          aria-label={t("modal.editTitle")}
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          style={{
+            position: "absolute",
+            bottom: "16px",
+            right: "16px",
+            zIndex: 20,
+            boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+          }}
+        >
+          <IconEdit size={16} />
+        </ActionIcon>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Label>{t("gameList.quick.changeStatus")}</Menu.Label>
+        {STATUS_VALUES.map(status => (
+          <Menu.Item
+            key={status}
+            disabled={status === gameListItem.status_code}
+            leftSection={<StatusIcon status={status} size={16} neon />}
+            onClick={() => updateEntry({ id: gameListItem.id, body: { status }, title: gameListItem.title })}
+          >
+            {STATUS_CONFIG[status].label}
+          </Menu.Item>
+        ))}
+        <Menu.Divider />
+        <Menu.Item leftSection={<IconEdit size={16} />} onClick={() => onEdit(gameListItem.game_id)}>
+          {t("gameList.quick.editDetails")}
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
 
-function renderEditActionSlot(hovered: boolean, gameId: number, onEdit: (id: number) => void) {
-  return hovered ? <EditAction gameId={gameId} onEdit={onEdit} /> : null;
-}
-
-/** Status filter's "All" option has no GameListStatusEnum value, so it renders its own neutral icon. */
-function renderStatusIcon(status: GameListStatusEnum | null, size = 16) {
-  if (!status) {
-    return <IconInfinity size={size} stroke={1.5} color="var(--color-text-400)" />;
-  }
-  return <StatusIcon status={status} size={size} neon />;
-}
-
-const GameListGridItem = React.memo(({ gameListItem, isOwner, onEdit }: GameListItemProps) => {
+const GameListGridItem = React.memo(({ gameListItem, isOwner, ownerUsername, onEdit }: GameListItemProps) => {
   return (
     <ItemOverlay
       name={gameListItem.title}
@@ -105,7 +141,14 @@ const GameListGridItem = React.memo(({ gameListItem, isOwner, onEdit }: GameList
       itemCoverUrl={getIGDBImageURL(gameListItem.game_cover_image, IGDBImageSize.COVER_BIG_264_374)}
       status={gameListItem.status_code}
       rating={gameListItem.score}
-      actionSlot={isOwner ? hovered => renderEditActionSlot(hovered, gameListItem.game_id, onEdit) : undefined}
+      actionSlot={
+        gameListItem.description ? (
+          <Box style={{ position: "absolute", bottom: 16, left: 16, zIndex: 20 }}>
+            <GameListNote gameListItem={gameListItem} isOwner={isOwner} ownerUsername={ownerUsername} />
+          </Box>
+        ) : undefined
+      }
+      revealedActionSlot={isOwner ? <QuickActions gameListItem={gameListItem} onEdit={onEdit} /> : undefined}
     />
   );
 });
@@ -113,61 +156,120 @@ GameListGridItem.displayName = "GameListGridItem";
 
 const routeApi = getRouteApi("/game-list/$id/$slug");
 
+const FILTER_KEYS = [
+  "developer",
+  "publisher",
+  "platforms",
+  "genres",
+  "game_engines",
+  "game_modes",
+  "game_status",
+  "game_type",
+  "player_perspectives",
+  "release_date_after",
+  "release_date_before",
+] as const;
+
 export default function GameListPage(): React.JSX.Element {
   const { id } = routeApi.useParams();
   const userId = Number(id);
   const isOwner = useIsOwner(userId);
 
   const { data: userDetails, isLoading: isUserLoading } = useGetUserDetails(userId);
-  const [selectedGameStatus, setSelectedGameStatus] = React.useState<GameListStatusEnum | null>(null);
+  const { search, update } = useUrlState();
+  const selectedGameStatus = (search.status as GameListStatusEnum | undefined) ?? null;
+  const setSelectedGameStatus = (status: GameListStatusEnum | null) => update({ status: status ?? undefined });
   const { t } = useTranslation("games");
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
-  const [gameFilters, setGameFilters] = React.useState<GameListGameFilters>({
-    ordering: DEFAULT_GAME_LIST_ORDERING,
-  });
-  const [titleInput, setTitleInput] = React.useState("");
-  // Any status or filter change restarts pagination.
-  const [page, setPage] = useResettableState(1, [selectedGameStatus, gameFilters]);
+  const searchSnapshot = JSON.stringify(search);
+  const gameFilters = React.useMemo<GameListGameFilters>(() => {
+    const current = JSON.parse(searchSnapshot) as Record<string, unknown>;
+    const filters: Record<string, unknown> = {};
+    for (const key of FILTER_KEYS) {
+      if (current[key] !== undefined) filters[key] = current[key];
+    }
+    filters.ordering = isGameListOrdering(current.ordering) ? current.ordering : DEFAULT_GAME_LIST_ORDERING;
+    return filters as GameListGameFilters;
+  }, [searchSnapshot]);
+  // Replaces every filter at once (the drawer applies them together); `undefined` clears a key from the URL.
+  const setGameFilters = (next: GameListGameFilters) =>
+    update({
+      ...Object.fromEntries(FILTER_KEYS.map(key => [key, undefined])),
+      ...next,
+      ordering: next.ordering === DEFAULT_GAME_LIST_ORDERING ? undefined : next.ordering,
+    });
+  const [titleInput, setTitleInput] = React.useState(typeof search.q === "string" ? search.q : "");
+  const [debouncedTitle] = useDebouncedValue(titleInput, 300);
+  React.useEffect(() => {
+    const next = debouncedTitle.trim() || undefined;
+    if (next !== (search.q as string | undefined)) update({ q: next });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only the debounced input should drive the URL
+  }, [debouncedTitle]);
+  const queryFilters = React.useMemo(
+    () => ({ ...gameFilters, title: debouncedTitle.trim() || undefined }),
+    [gameFilters, debouncedTitle],
+  );
+  // Status, filter and title changes drop `page` from the URL, which restarts pagination.
+  const page = typeof search.page === "number" ? search.page : 1;
+  const setPage = (next: number) => update({ page: next === 1 ? undefined : next }, { keepPage: true });
 
   const {
     data: gameListResults,
     error: errorFetchingData,
+    refetch,
     isLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useGameListInfiniteQuery(userId, selectedGameStatus, gameFilters, { enabled: renderMode === "infinite" });
+  } = useGameListInfiniteQuery(userId, selectedGameStatus, queryFilters, { enabled: renderMode === "infinite" });
 
   const tableQuery = useGetGameListsList(
-    { user: String(userId), status: selectedGameStatus ?? undefined, ...gameFilters, page },
+    { user: String(userId), status: selectedGameStatus ?? undefined, ...queryFilters, page },
     { enabled: renderMode === "table" && !!userId, placeholderData: keepPreviousData },
   );
 
   const activeFilterCount = countActiveGameListFilters(gameFilters);
+  const isNarrowed = activeFilterCount > 0 || !!selectedGameStatus || !!queryFilters.title;
+  const resultCount = renderMode === "table" ? tableQuery.data?.count : gameListResults?.pages[0]?.count;
 
   const handleApplyFilters = (data: GameSearchFilterSchema) => {
     setGameFilters(buildGameListFilters(data));
     setFilterDrawerOpen(false);
   };
 
-  const [shouldFetchRandomPtp, setShouldFetchRandomPtp] = React.useState(false);
-  const [editingGameId, setEditingGameId] = React.useState<number | null>(null);
+  const clearFilters = () => {
+    update({ ...Object.fromEntries(FILTER_KEYS.map(key => [key, undefined])), status: undefined, q: undefined });
+    setTitleInput("");
+  };
 
-  const {
-    data: randomPtpGame,
-    isLoading: isRandomPtpLoading,
-    refetch: refetchRandomPtpGame,
-  } = useRandomPtpGame(userId, shouldFetchRandomPtp);
+  const removeFilter = (key: keyof GameListGameFilters) => {
+    update({ [key]: undefined });
+  };
 
-  const handlePickRandomPtp = () => {
-    if (shouldFetchRandomPtp) {
-      refetchRandomPtpGame();
-    } else {
-      setShouldFetchRandomPtp(true);
+  const [isExporting, setIsExporting] = React.useState(false);
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const data = await exportGameList();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "game-list.json";
+      link.click();
+      URL.revokeObjectURL(url);
+      notifications.show({ message: t("export.success"), color: "green" });
+    } catch {
+      notifications.show({ message: t("export.failed"), color: "red" });
+    } finally {
+      setIsExporting(false);
     }
   };
+
+  const [randomModalOpen, setRandomModalOpen] = React.useState(false);
+  const [editingGameId, setEditingGameId] = React.useState<number | null>(null);
 
   const pageTitle = isUserLoading
     ? t("gameList.loading")
@@ -176,8 +278,8 @@ export default function GameListPage(): React.JSX.Element {
   const allItems = gameListResults?.pages.flatMap(resultPage => resultPage.results) || [];
 
   const listColumns = React.useMemo(
-    () => createGameListColumns({ t, isOwner, onEdit: setEditingGameId }),
-    [t, isOwner],
+    () => createGameListColumns({ t, isOwner, ownerUsername: userDetails?.username, onEdit: setEditingGameId }),
+    [t, isOwner, userDetails?.username],
   );
 
   const displayError = renderMode === "table" ? tableQuery.error : errorFetchingData;
@@ -189,15 +291,45 @@ export default function GameListPage(): React.JSX.Element {
     { value: "score", label: t("filter.scoreAsc") },
   ];
 
-  const statuses: { value: string; label: string }[] = [
-    { value: ALL_STATUS_VALUE, label: t("gameList.all") },
-    { value: GameListStatusEnum.P, label: STATUS_CONFIG[GameListStatusEnum.P].label },
-    { value: GameListStatusEnum.C, label: STATUS_CONFIG[GameListStatusEnum.C].label },
-    { value: GameListStatusEnum.PTP, label: STATUS_CONFIG[GameListStatusEnum.PTP].label },
-    { value: GameListStatusEnum.OH, label: STATUS_CONFIG[GameListStatusEnum.OH].label },
-    { value: GameListStatusEnum.D, label: STATUS_CONFIG[GameListStatusEnum.D].label },
-    { value: GameListStatusEnum.NP, label: STATUS_CONFIG[GameListStatusEnum.NP].label },
-  ];
+  const renderEmptyState = () => {
+    if (isNarrowed) {
+      return (
+        <Stack align="center" gap={16} py={64}>
+          <Text fw={600} fz="lg" c="var(--color-text-900)">
+            {t("gameList.noMatch.title")}
+          </Text>
+          <Button variant="light" onClick={clearFilters}>
+            {t("gameList.noMatch.clear")}
+          </Button>
+        </Stack>
+      );
+    }
+    if (!isOwner) {
+      return (
+        <Text ta="center" c="dimmed" py={64}>
+          {t("gameList.empty.otherUser")}
+        </Text>
+      );
+    }
+    return (
+      <Stack align="center" gap={16} py={64}>
+        <Text fw={700} fz="xl" c="var(--color-text-900)">
+          {t("gameList.empty.title")}
+        </Text>
+        <Text c="dimmed" ta="center" maw={420}>
+          {t("gameList.empty.description")}
+        </Text>
+        <Group>
+          <Button component={Link} to="/search">
+            {t("gameList.empty.browse")}
+          </Button>
+          <Button component={Link} to="/import" variant="light">
+            {t("gameList.empty.import")}
+          </Button>
+        </Group>
+      </Stack>
+    );
+  };
 
   const renderContent = () => {
     if (renderMode === "table") {
@@ -232,6 +364,10 @@ export default function GameListPage(): React.JSX.Element {
       );
     }
 
+    if (allItems.length === 0 && !displayError) {
+      return renderEmptyState();
+    }
+
     return (
       <VirtualGridList
         items={allItems}
@@ -243,6 +379,7 @@ export default function GameListPage(): React.JSX.Element {
             key={gameListItem.id}
             gameListItem={gameListItem}
             isOwner={isOwner}
+            ownerUsername={userDetails?.username}
             onEdit={setEditingGameId}
           />
         )}
@@ -251,10 +388,10 @@ export default function GameListPage(): React.JSX.Element {
   };
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
+    <PageShell width="wide">
       <PageMeta title={pageTitle} />
-      <Stack gap={40} maw={1280} mx="auto" px={16}>
-        <Stack align="center" gap={24}>
+      <Stack gap={32}>
+        <Stack align="center" gap={20}>
           <Title
             order={1}
             fz={{ base: 30, md: 36 }}
@@ -271,199 +408,159 @@ export default function GameListPage(): React.JSX.Element {
             />
           </Title>
 
-          <Box
-            component="form"
-            w="100%"
-            maw={480}
-            onSubmit={e => {
-              e.preventDefault();
-              setGameFilters(prev => ({ ...prev, title: titleInput.trim() || undefined }));
-            }}
-          >
+          {userDetails && (
+            <Group gap={12} justify="center">
+              <SafeImage
+                src={userDetails.gravatar_url || undefined}
+                alt={t("gameList.stats.avatarAlt", { username: userDetails.username })}
+                style={{ width: 40, height: 40, borderRadius: 9999 }}
+              />
+              <Text size="sm" c="dimmed">
+                {t("gameList.resultCount", { count: userDetails.game_list_statistics.total })}
+                {userDetails.game_list_statistics.mean_score > 0 &&
+                  ` · ${t("gameList.stats.mean", { score: formatMeanScore(userDetails.game_list_statistics.mean_score) })}`}
+              </Text>
+            </Group>
+          )}
+
+          <GameListStatusTabs
+            value={selectedGameStatus}
+            onChange={setSelectedGameStatus}
+            statistics={userDetails?.game_list_statistics}
+          />
+
+          <Group w="100%" gap={12} align="center" wrap="wrap">
             <TextInput
+              style={{ flex: "1 1 240px" }}
               placeholder={t("filter.titlePlaceholder")}
+              aria-label={t("filter.titlePlaceholder")}
               value={titleInput}
               onChange={e => setTitleInput(e.currentTarget.value)}
-              onBlur={() => setGameFilters(prev => ({ ...prev, title: titleInput.trim() || undefined }))}
               leftSection={<IconSearch size={18} color="var(--color-text-400)" />}
-              styles={{
-                input: {
-                  background: "var(--color-background-100)",
-                  border: "1px solid var(--color-background-300)",
-                  borderRadius: "12px",
-                },
-              }}
-            />
-          </Box>
-
-          <Box
-            w="100%"
-            pos="relative"
-            display={{ base: "flex", sm: "block" }}
-            style={{ flexDirection: "column", alignItems: "center" }}
-            pr={{ sm: isOwner ? 210 : 90 }}
-          >
-            <Select
-              aria-label={t("gameList.table.status")}
-              value={selectedGameStatus ?? ALL_STATUS_VALUE}
-              onChange={value =>
-                setSelectedGameStatus(value && value !== ALL_STATUS_VALUE ? (value as GameListStatusEnum) : null)
-              }
-              data={statuses}
-              allowDeselect={false}
-              leftSection={renderStatusIcon(selectedGameStatus)}
-              renderOption={({ option }) => (
-                <Group gap={8} wrap="nowrap">
-                  {renderStatusIcon(option.value === ALL_STATUS_VALUE ? null : (option.value as GameListStatusEnum))}
-                  {option.label}
-                </Group>
-              )}
-              w={220}
-              styles={{
-                input: {
-                  background: "var(--color-background-100)",
-                  border: "1px solid var(--color-background-300)",
-                  borderRadius: "12px",
-                },
-              }}
-            />
-
-            <Group
-              gap={8}
-              mt={{ base: 16, sm: 0 }}
-              pos={{ base: "static", sm: "absolute" }}
-              right={{ sm: 0 }}
-              top={{ sm: "50%" }}
-              style={{ transform: "translateY(var(--y-translate, 0))" }}
-              className="view-toggle-group"
-            >
-              <style>{`
-                @media (min-width: 48em) {
-                  .view-toggle-group {
-                    --y-translate: -50%;
-                  }
-                }
-              `}</style>
-              {isOwner && (
-                <>
+              rightSection={
+                titleInput ? (
                   <ActionIcon
-                    variant="light"
+                    variant="subtle"
                     color="gray"
-                    size="lg"
-                    radius="md"
-                    title={t("export.title")}
-                    onClick={async () => {
-                      const data = await exportGameList();
-                      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                      const url = URL.createObjectURL(blob);
-                      window.open(url, "_blank");
-                    }}
+                    size="sm"
+                    aria-label={t("searchBar.clear")}
+                    onClick={() => setTitleInput("")}
                   >
-                    <IconDownload size={20} />
+                    <IconX size={16} />
                   </ActionIcon>
-                  <Link to="/import">
-                    <ActionIcon variant="light" color="gray" size="lg" radius="md" title={t("import.title")}>
-                      <IconUpload size={20} />
-                    </ActionIcon>
-                  </Link>
-                  <Divider orientation="vertical" />
-                </>
-              )}
+                ) : null
+              }
+              styles={{
+                input: {
+                  background: "var(--color-background-100)",
+                  border: "1px solid var(--color-background-300)",
+                  borderRadius: "12px",
+                },
+              }}
+            />
+            <Select
+              aria-label={t("gameList.sortLabel")}
+              value={gameFilters.ordering ?? DEFAULT_GAME_LIST_ORDERING}
+              onChange={value =>
+                update({
+                  ordering: isGameListOrdering(value) && value !== DEFAULT_GAME_LIST_ORDERING ? value : undefined,
+                })
+              }
+              data={orderingOptions}
+              allowDeselect={false}
+              w={{ base: "100%", sm: 220 }}
+              styles={{
+                input: {
+                  background: "var(--color-background-100)",
+                  border: "1px solid var(--color-background-300)",
+                  borderRadius: "12px",
+                },
+              }}
+            />
+            <Group gap={8} wrap="nowrap">
               <Indicator
                 label={activeFilterCount}
                 size={16}
                 disabled={activeFilterCount === 0}
                 color="var(--mantine-color-primary-6)"
               >
-                <ActionIcon
-                  variant={activeFilterCount > 0 ? "filled" : "light"}
-                  color={activeFilterCount > 0 ? "indigo" : "gray"}
-                  size="lg"
-                  radius="md"
-                  title={t("search.filtersButton")}
-                  onClick={() => setFilterDrawerOpen(true)}
-                >
-                  <IconFilter size={20} />
-                </ActionIcon>
+                <Tooltip label={t("search.filtersButton")} withArrow>
+                  <ActionIcon
+                    variant={activeFilterCount > 0 ? "filled" : "light"}
+                    color={activeFilterCount > 0 ? "indigo" : "gray"}
+                    size="lg"
+                    radius="md"
+                    aria-label={t("search.filtersButton")}
+                    onClick={() => setFilterDrawerOpen(true)}
+                  >
+                    <IconFilter size={20} />
+                  </ActionIcon>
+                </Tooltip>
               </Indicator>
-              <Divider orientation="vertical" />
               <ListViewModeToggle />
+              {isOwner && (
+                <>
+                  <Tooltip label={t("gameList.pickRandom")} withArrow>
+                    <ActionIcon
+                      variant="light"
+                      color="gray"
+                      size="lg"
+                      radius="md"
+                      aria-label={t("gameList.pickRandom")}
+                      onClick={() => setRandomModalOpen(true)}
+                    >
+                      <IconDice5 size={20} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Menu position="bottom-end" shadow="md">
+                    <Menu.Target>
+                      <Tooltip label={t("gameList.moreActions")} withArrow>
+                        <ActionIcon
+                          variant="light"
+                          color="gray"
+                          size="lg"
+                          radius="md"
+                          loading={isExporting}
+                          aria-label={t("gameList.moreActions")}
+                        >
+                          <IconDots size={20} />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item component={Link} to="/import" leftSection={<IconUpload size={16} />}>
+                        {t("import.title")}
+                      </Menu.Item>
+                      <Menu.Item leftSection={<IconDownload size={16} />} onClick={handleExport}>
+                        {t("export.title")}
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </>
+              )}
             </Group>
-          </Box>
+          </Group>
+
+          <ActiveFilterChips filters={gameFilters} onRemove={removeFilter} onClearAll={clearFilters} />
+
+          {resultCount !== undefined && (
+            <Text size="sm" c="dimmed" aria-live="polite">
+              {t("gameList.resultCount", { count: resultCount })}
+            </Text>
+          )}
         </Stack>
 
-        {isOwner && selectedGameStatus === GameListStatusEnum.PTP && (
-          <Box
-            style={{
-              background: "var(--color-ptp-callout-bg)",
-              borderRadius: "16px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              border: "1px solid var(--color-ptp-callout-border)",
-              padding: "24px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "16px",
-            }}
-          >
-            <Text fw={600} fz="lg" c="var(--color-text-900)" ta="center">
-              {t("gameList.randomPtp")}
-            </Text>
-            <Button
-              onClick={handlePickRandomPtp}
-              loading={isRandomPtpLoading}
-              variant="filled"
-              color="indigo"
-              size="md"
-            >
-              {t("gameList.pickRandom")}
-            </Button>
-            {shouldFetchRandomPtp && randomPtpGame && (
-              <Box style={{ width: "264px", marginTop: "16px" }}>
-                <ItemOverlay
-                  name={randomPtpGame.title}
-                  itemPageUrl={`/game/${randomPtpGame.game_id}/${randomPtpGame.game_slug}`}
-                  itemCoverUrl={getIGDBImageURL(randomPtpGame.game_cover_image, IGDBImageSize.COVER_BIG_264_374)}
-                  status={randomPtpGame.status_code}
-                  rating={randomPtpGame.score}
-                />
-              </Box>
-            )}
-            {shouldFetchRandomPtp && !isRandomPtpLoading && !randomPtpGame && (
-              <Text c="red" fw={500} ta="center">
-                {t("gameList.noRandomPtp")}
-              </Text>
-            )}
-          </Box>
-        )}
-
-        <Box
+        <Panel
           style={{
-            background: "var(--color-background-100)",
-            borderRadius: "16px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            border: "1px solid var(--color-background-200)",
-            padding: "24px",
             ...GRID_BOX_STYLE,
           }}
         >
-          {renderContent()}
-          {displayError && (
-            <Box
-              style={{
-                background: "var(--color-error-50)",
-                border: "1px solid var(--color-error-200)",
-                borderRadius: "12px",
-                padding: "16px",
-                marginTop: "16px",
-              }}
-            >
-              <Text ta="center" fw={500} c="var(--color-error-600)">
-                {t("gameList.fetchError", { message: displayError.message })}
-              </Text>
-            </Box>
+          {displayError ? (
+            <ErrorState onRetry={() => (renderMode === "table" ? tableQuery.refetch() : refetch())} />
+          ) : (
+            renderContent()
           )}
-        </Box>
+        </Panel>
       </Stack>
 
       <Drawer
@@ -488,7 +585,9 @@ export default function GameListPage(): React.JSX.Element {
         />
       </Drawer>
 
+      {isOwner && <RandomPtpModal userId={userId} opened={randomModalOpen} onClose={() => setRandomModalOpen(false)} />}
+
       {editingGameId && <GameListModal gameId={editingGameId} opened={true} onClose={() => setEditingGameId(null)} />}
-    </Box>
+    </PageShell>
   );
 }

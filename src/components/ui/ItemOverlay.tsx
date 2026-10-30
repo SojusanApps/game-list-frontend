@@ -1,16 +1,17 @@
-import { Group, Stack, Title, Box, UnstyledButton, Tooltip } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
+import { Group, Stack, Box, UnstyledButton, Tooltip, VisuallyHidden } from "@mantine/core";
 import { IconUserOff } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { ScoreBadge } from "@/features/games/components/ScoreBadge";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { cn } from "@/utils/cn";
 import { formatDisplayDate } from "@/utils/dateUtils";
-import { getRatingColor, getRatingTextColor, hasScore } from "@/utils/ratingUtils";
+import { hasScore } from "@/utils/ratingUtils";
 
 import { SafeImage } from "./SafeImage";
+import { TruncatedText } from "./TruncatedText";
 
 import styles from "./ItemOverlay.module.css";
 
@@ -29,7 +30,10 @@ type ItemOverlayProps = {
   rating?: number | null;
   status?: string | null;
   showFullReleaseDate?: boolean;
-  actionSlot?: React.ReactNode | ((hovered: boolean) => React.ReactNode);
+  /** Always-visible overlay content (badges). */
+  actionSlot?: React.ReactNode;
+  /** Controls revealed on hover and keyboard focus (always visible on touch) — e.g. quick actions. */
+  revealedActionSlot?: React.ReactNode;
   isInactive?: boolean;
 };
 
@@ -47,11 +51,11 @@ function ItemOverlay({
   status,
   showFullReleaseDate = false,
   actionSlot,
+  revealedActionSlot,
   isInactive = false,
 }: Readonly<ItemOverlayProps>): React.JSX.Element {
   const { t } = useTranslation("common"); // also subscribes to language changes so status ribbon label re-renders
   const isLogo = variant === "logo";
-  const { hovered, ref } = useHover<HTMLDivElement>();
 
   const releaseDisplay = React.useMemo(() => {
     if (!releaseDate) {
@@ -67,9 +71,6 @@ function ItemOverlay({
       return null;
     }
   }, [releaseDate, showFullReleaseDate]);
-
-  const ratingBg = React.useMemo(() => getRatingColor(rating), [rating]);
-  const ratingText = React.useMemo(() => getRatingTextColor(rating), [rating]);
 
   const innerStyle: React.CSSProperties = {
     display: "block",
@@ -98,17 +99,7 @@ function ItemOverlay({
       </Box>
 
       {/* Top Badges (Floating Chips) & Right Ribbon */}
-      {hasScore(rating) && (
-        <Box
-          className={styles.scoreBadge}
-          style={{
-            background: ratingBg,
-            color: ratingText,
-          }}
-        >
-          {rating.toFixed(1)}
-        </Box>
-      )}
+      {hasScore(rating) && <ScoreBadge score={rating} className={styles.scoreBadge} />}
 
       {status && getStatusConfig(status) && (
         <Box
@@ -126,7 +117,8 @@ function ItemOverlay({
       {isInactive && (
         <Tooltip label={t("inactiveUser")} withArrow>
           <Box className={styles.inactiveBadge}>
-            <IconUserOff size={14} />
+            <IconUserOff size={14} aria-hidden />
+            <VisuallyHidden>{t("inactiveUser")}</VisuallyHidden>
           </Box>
         </Tooltip>
       )}
@@ -149,14 +141,12 @@ function ItemOverlay({
             <Box
               component="span"
               style={{
-                background: "rgba(79,70,229,0.9)",
-                color: "white",
-                fontSize: "8px",
+                background: "var(--mantine-color-primary-filled)",
+                color: "var(--mantine-color-primary-contrast)",
+                fontSize: "12px",
                 padding: "2px 8px",
                 borderRadius: "6px",
-                textTransform: "uppercase",
-                fontWeight: 900,
-                letterSpacing: "-0.05em",
+                fontWeight: 800,
                 border: "1px solid rgba(255,255,255,0.1)",
                 width: "fit-content",
                 marginBottom: "2px",
@@ -165,11 +155,11 @@ function ItemOverlay({
               {gameType}
             </Box>
           )}
-          <Title
-            order={2}
-            lineClamp={hovered ? undefined : 2}
+          <TruncatedText
+            span
+            lineClamp={2}
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               fontWeight: 700,
               lineHeight: 1.2,
               color: "white",
@@ -178,16 +168,16 @@ function ItemOverlay({
             }}
           >
             {name}
-          </Title>
+          </TruncatedText>
 
           <Group gap={8}>
             {releaseDisplay && (
               <Box
                 component="span"
                 style={{
-                  fontSize: "9px",
+                  fontSize: "12px",
                   fontWeight: 900,
-                  color: "rgba(255,255,255,0.4)",
+                  color: "rgba(255,255,255,0.75)",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                 }}
@@ -220,12 +210,11 @@ function ItemOverlay({
 
   return (
     <Box
-      ref={ref}
       style={{
         aspectRatio: isLogo ? "3/2" : "264/374",
         ...style,
       }}
-      className={cn(styles.card, className)}
+      className={cn(styles.card, hasScore(rating) && styles.hasScore, className)}
     >
       {itemPageUrl ? (
         <Link to={itemPageUrl} style={innerStyle}>
@@ -236,7 +225,8 @@ function ItemOverlay({
           {content}
         </UnstyledButton>
       )}
-      {typeof actionSlot === "function" ? actionSlot(hovered) : actionSlot}
+      {actionSlot}
+      {revealedActionSlot && <Box className={styles.revealedActions}>{revealedActionSlot}</Box>}
     </Box>
   );
 }

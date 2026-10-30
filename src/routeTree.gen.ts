@@ -21,6 +21,7 @@ import { Route as SearchRouteImport } from "./routes/search";
 import { Route as SettingsRouteImport } from "./routes/settings";
 import { Route as TermsRouteImport } from "./routes/terms";
 import { Route as AdminReportsRouteImport } from "./routes/admin_.reports";
+import { Route as AdminStoreMappingsRouteImport } from "./routes/admin_.store-mappings";
 import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
 import { Route as CollectionIdSlugRouteImport } from "./routes/collection.$id.$slug";
 import { Route as CompanyIdSlugRouteImport } from "./routes/company.$id.$slug";
@@ -92,6 +93,11 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: "/admin/reports",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AdminStoreMappingsRoute = AdminStoreMappingsRouteImport.update({
+  id: "/admin_/store-mappings",
+  path: "/admin/store-mappings",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const AdminTranslationSuggestionsRoute =
   AdminTranslationSuggestionsRouteImport.update({
     id: "/admin_/translation-suggestions",
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
   "/admin/reports": typeof AdminReportsRoute;
+  "/admin/store-mappings": typeof AdminStoreMappingsRoute;
   "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
   "/admin/reports": typeof AdminReportsRoute;
+  "/admin/store-mappings": typeof AdminStoreMappingsRoute;
   "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
   "/admin_/reports": typeof AdminReportsRoute;
+  "/admin_/store-mappings": typeof AdminStoreMappingsRoute;
   "/admin_/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/terms"
     | "/admin/reports"
+    | "/admin/store-mappings"
     | "/admin/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/terms"
     | "/admin/reports"
+    | "/admin/store-mappings"
     | "/admin/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/terms"
     | "/admin_/reports"
+    | "/admin_/store-mappings"
     | "/admin_/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
@@ -309,6 +321,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute;
   TermsRoute: typeof TermsRoute;
   AdminReportsRoute: typeof AdminReportsRoute;
+  AdminStoreMappingsRoute: typeof AdminStoreMappingsRoute;
   AdminTranslationSuggestionsRoute: typeof AdminTranslationSuggestionsRoute;
   CollectionIdSlugRoute: typeof CollectionIdSlugRoute;
   CompanyIdSlugRoute: typeof CompanyIdSlugRoute;
@@ -407,6 +420,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AdminReportsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/admin_/store-mappings": {
+      id: "/admin_/store-mappings";
+      path: "/admin/store-mappings";
+      fullPath: "/admin/store-mappings";
+      preLoaderRoute: typeof AdminStoreMappingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/admin_/translation-suggestions": {
       id: "/admin_/translation-suggestions";
       path: "/admin/translation-suggestions";
@@ -493,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminStoreMappingsRoute: AdminStoreMappingsRoute,
   AdminTranslationSuggestionsRoute: AdminTranslationSuggestionsRoute,
   CollectionIdSlugRoute: CollectionIdSlugRoute,
   CompanyIdSlugRoute: CompanyIdSlugRoute,

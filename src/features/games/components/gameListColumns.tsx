@@ -1,14 +1,16 @@
-import { ActionIcon, Badge, Text } from "@mantine/core";
+import { ActionIcon, Badge, Group, Text } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 
-import { GameList } from "@/client";
+import { GameList, TargetTypeEnum } from "@/client";
 import { type PaginatedTableFeatures } from "@/components/ui/PaginatedTable";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { getStatusConfig } from "@/features/games/utils/statusConfig";
 import { StatusIcon } from "@/features/games/utils/StatusIcon";
+import { ReportButton } from "@/features/moderation/components/ReportButton";
 
 import { CoverThumb } from "./CoverThumb";
 import { ScoreBadge } from "./ScoreBadge";
@@ -22,12 +24,14 @@ const columnHelper = createColumnHelper<PaginatedTableFeatures, GameList>();
 interface CreateGameListColumnsArgs {
   t: TFunction<"games">;
   isOwner: boolean;
+  ownerUsername?: string;
   onEdit: (gameId: number) => void;
 }
 
 export function createGameListColumns({
   t,
   isOwner,
+  ownerUsername,
   onEdit,
 }: CreateGameListColumnsArgs): ColumnDef<PaginatedTableFeatures, GameList, any>[] {
   const columns: ColumnDef<PaginatedTableFeatures, GameList, any>[] = [
@@ -84,6 +88,28 @@ export function createGameListColumns({
       id: "score",
       header: t("gameList.table.score"),
       cell: info => <ScoreBadge score={info.getValue()} />,
+    }),
+    columnHelper.display({
+      id: "note",
+      header: t("gameList.table.note"),
+      cell: ({ row }) =>
+        row.original.description ? (
+          <Group gap={4} wrap="nowrap">
+            <TruncatedText fz="sm" maw={240} c="var(--color-text-700)">
+              {row.original.description}
+            </TruncatedText>
+            {!isOwner && (
+              <ReportButton
+                targetType={TargetTypeEnum.GAME_LIST_NOTE}
+                targetId={row.original.id}
+                ownerId={row.original.user}
+                ownerUsername={ownerUsername ?? ""}
+              />
+            )}
+          </Group>
+        ) : (
+          <Text fz="sm">{EMPTY}</Text>
+        ),
     }),
   ];
 

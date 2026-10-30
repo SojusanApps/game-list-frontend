@@ -13,7 +13,18 @@
     "menu": "Menu",
     "colorScheme": "Motyw kolorystyczny",
     "lightMode": "Tryb jasny",
-    "darkMode": "Tryb ciemny"
+    "darkMode": "Tryb ciemny",
+    "search": "Szukaj",
+    "home": "Strona główna",
+    "mobileTabs": "Nawigacja główna",
+    "openMenu": "Otwórz menu",
+    "language": "Język",
+    "themeSystem": "Motyw systemowy",
+    "notifications": "Powiadomienia",
+    "faq": "FAQ",
+    "signIn": "Zaloguj się",
+    "languageEn": "Angielski",
+    "languagePl": "Polski"
   },
   "footer": {
     "copyright": "© {{year}} Sojusan GameList",
@@ -81,6 +92,7 @@
   "noResults": "Brak wyników",
   "noResultsDescription": "Spróbuj zmienić wyszukiwanie lub filtry",
   "searching": "Wyszukiwanie...",
+  "skipToContent": "Przejdź do treści",
   "scrollToTop": "Przewiń na górę strony",
   "apiError": {
     "errorTitle": "Błąd",
@@ -91,5 +103,22 @@
     "tooManyRequests": "Zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
     "server": "Wystąpił błąd serwera. Spróbuj ponownie później.",
     "generic": "Coś poszło nie tak. Spróbuj ponownie."
-  }
+  },
+  "error": {
+    "title": "Nie udało się wczytać strony",
+    "message": "Coś poszło nie tak po naszej stronie lub połączenie zostało przerwane. Sprawdź połączenie i spróbuj ponownie.",
+    "retry": "Spróbuj ponownie",
+    "goHome": "Wróć na stronę główną",
+    "listTitle": "Nie udało się wczytać wyników"
+  },
+  "filters": {
+    "active": "Aktywne filtry",
+    "remove": "Usuń filtr: {{name}}",
+    "clearAll": "Wyczyść wszystko"
+  },
+  "image": {
+    "noImage": "Brak obrazu"
+  },
+  "userAvatarAltNamed": "Awatar użytkownika {{name}}",
+  "defaultDescription": "Śledź swoje postępy w grach i odkrywaj nowe tytuły."
 }

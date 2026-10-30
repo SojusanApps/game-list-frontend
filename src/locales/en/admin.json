@@ -12,6 +12,10 @@
     "reports": {
       "label": "Reports",
       "description": "Review pending reports filed against user content and profile fields."
+    },
+    "storeMappings": {
+      "label": "Store Mappings",
+      "description": "Review how users matched store games to the catalogue, and add mappings by hand."
     }
   },
   "reports": {
@@ -74,5 +78,51 @@
   },
   "versions": "Versions",
   "apiVersion": "API Version",
-  "uiVersion": "UI Version"
+  "uiVersion": "UI Version",
+  "storeMappings": {
+    "title": "Store Mappings",
+    "subtitle": "Review matches between games on a store and games in the catalogue. Accepting makes a mapping global.",
+    "addTitle": "Add a mapping",
+    "addDescription": "A mapping you add is accepted at once and replaces the store id's current accepted mapping.",
+    "platformLabel": "Store",
+    "storeIdField": "Store id",
+    "storeTitleField": "Title on the store (optional)",
+    "gameField": "Game",
+    "gamePlaceholder": "Click to choose a game",
+    "pickGameTitle": "Choose a game",
+    "clearGame": "Clear the chosen game",
+    "addButton": "Add mapping",
+    "statusFilterLabel": "Status",
+    "platformFilterLabel": "Store",
+    "storeIdFilterLabel": "Store id",
+    "filterAll": "All",
+    "clearFilters": "Clear filters",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "platform": {
+      "steam": "Steam",
+      "epic": "Epic Games Store",
+      "gog": "GOG",
+      "playstation": "PlayStation Store",
+      "nintendo": "Nintendo eShop"
+    },
+    "storeIdLabel": "Store id: {{id}}",
+    "mappedToLabel": "Mapped to",
+    "submittedByLabel": "Submitted by",
+    "submittedOn": "on {{date}}",
+    "rejectionReason": "Reason: {{reason}}",
+    "acceptButton": "Accept",
+    "rejectButton": "Reject",
+    "confirmRejectButton": "Reject mapping",
+    "cancelButton": "Cancel",
+    "rejectReasonPlaceholder": "Reason (optional)",
+    "loading": "Loading...",
+    "empty": "No store mappings to review.",
+    "notAGame": "Not a game",
+    "notAGameField": "Not a game (e.g. a soundtrack)",
+    "notAGameHint": "Skipped by the import instead of being added to game lists."
+  }
 }

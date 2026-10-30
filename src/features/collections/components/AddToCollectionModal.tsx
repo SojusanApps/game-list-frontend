@@ -9,6 +9,7 @@ import { AppModal } from "@/components/ui/AppModal";
 import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { useCurrentUserId } from "@/features/auth";
 import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
@@ -54,9 +55,9 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
     return (
       <Stack gap={2}>
         <Text span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <Text span truncate="end">
+          <TruncatedText span truncate="end">
             {collection.name}
-          </Text>
+          </TruncatedText>
           <Text span style={{ ...COLLECTION_BADGE_STYLE, ...getModeBadgeStyle(ModeEnum.C), whiteSpace: "nowrap" }}>
             {t("addModal.shared")}
           </Text>
@@ -89,6 +90,7 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
 
   return (
     <AppModal
+      fullScreenOnMobile
       opened={true}
       onClose={onClose}
       title={t("addModal.title")}

@@ -1,4 +1,5 @@
-import { Loader, Group, Box, Title, SegmentedControl, Select } from "@mantine/core";
+import { Loader, Group, SegmentedControl, Select } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconTrash, IconCheck } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,8 +7,10 @@ import { useTranslation } from "react-i18next";
 import { Notification } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell, PageTitle } from "@/components/ui/PageShell";
 import { LIST_PAGE_SIZE, PaginatedTable } from "@/components/ui/PaginatedTable";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useUrlState } from "@/hooks/useUrlState";
 
 import {
   useGetNotifications,
@@ -16,14 +19,20 @@ import {
   useDeleteNotification,
   useDeleteAllReadNotifications,
 } from "../hooks/notificationQueries";
+import { NotificationList } from "./NotificationList";
 import { createNotificationColumns } from "./NotificationsPage.columns";
 
 export default function NotificationsPage(): React.JSX.Element {
   const { t } = useTranslation("notifications");
-  const [page, setPage] = React.useState(1);
-  const [unreadFilter, setUnreadFilter] = React.useState<string>("all");
-  const [categoryFilter, setCategoryFilter] = React.useState<string | null>(null);
-  const [levelFilter, setLevelFilter] = React.useState<string | null>(null);
+  const { search, update } = useUrlState();
+  const page = typeof search.page === "number" ? search.page : 1;
+  const setPage = (next: number) => update({ page: next === 1 ? undefined : next }, { keepPage: true });
+  const unreadFilter = search.unread === "unread" || search.unread === "read" ? search.unread : "all";
+  const setUnreadFilter = (value: string) => update({ unread: value === "all" ? undefined : value });
+  const categoryFilter = typeof search.category === "string" ? search.category : null;
+  const setCategoryFilter = (value: string | null) => update({ category: value ?? undefined });
+  const levelFilter = typeof search.level === "string" ? search.level : null;
+  const setLevelFilter = (value: string | null) => update({ level: value ?? undefined });
 
   const queryParams: Record<string, boolean | string | undefined | number> = { page };
   if (unreadFilter === "unread") {
@@ -39,6 +48,7 @@ export default function NotificationsPage(): React.JSX.Element {
     queryParams.level = levelFilter;
   }
 
+  const isMobile = useMediaQuery("(max-width: 48em)");
   const { confirm, confirmModal } = useConfirm();
   const { data: notificationsData, isLoading, isFetching } = useGetNotifications(queryParams);
   const { mutate: markAsRead } = useMarkNotificationAsRead();
@@ -81,20 +91,16 @@ export default function NotificationsPage(): React.JSX.Element {
     [t, handleMarkAsRead, handleDeleteOne],
   );
 
-  const resetToFirstPage = () => setPage(1);
-
   const hasUnread = notifications.some((n: Notification) => n.unread);
   const hasRead = notifications.some((n: Notification) => !n.unread);
 
   return (
-    <Box maw={1024} mx="auto" p={16}>
+    <PageShell width="default">
       {confirmModal}
       <PageMeta title={t("page.title")} noindex />
       <Group justify="space-between" align="center" mb={24} gap={16} wrap="wrap">
         <Group gap={8}>
-          <Title order={1} fz={24} fw={700}>
-            {t("page.title")}
-          </Title>
+          <PageTitle>{t("page.title")}</PageTitle>
           {isFetching && <Loader size="sm" />}
         </Group>
         <Group gap="sm">
@@ -118,7 +124,6 @@ export default function NotificationsPage(): React.JSX.Element {
           value={unreadFilter}
           onChange={val => {
             setUnreadFilter(val);
-            resetToFirstPage();
           }}
           data={[
             { label: t("page.filterAll"), value: "all" },
@@ -128,10 +133,10 @@ export default function NotificationsPage(): React.JSX.Element {
         />
         <Select
           placeholder={t("page.filterCategory")}
+          aria-label={t("page.filterCategory")}
           value={categoryFilter}
           onChange={val => {
             setCategoryFilter(val);
-            resetToFirstPage();
           }}
           data={[
             { label: t("page.categorySystem"), value: "system" },
@@ -144,10 +149,10 @@ export default function NotificationsPage(): React.JSX.Element {
         />
         <Select
           placeholder={t("page.filterLevel")}
+          aria-label={t("page.filterLevel")}
           value={levelFilter}
           onChange={val => {
             setLevelFilter(val);
-            resetToFirstPage();
           }}
           data={[
             { label: t("page.levelInfo"), value: "info" },
@@ -162,10 +167,7 @@ export default function NotificationsPage(): React.JSX.Element {
           <Button
             variant="ghost"
             onClick={() => {
-              setUnreadFilter("all");
-              setCategoryFilter(null);
-              setLevelFilter(null);
-              resetToFirstPage();
+              update({ unread: undefined, category: undefined, level: undefined });
             }}
           >
             {t("page.clearFilters")}
@@ -173,23 +175,35 @@ export default function NotificationsPage(): React.JSX.Element {
         )}
       </Group>
 
-      <PaginatedTable
-        columns={columns}
-        data={notifications}
-        count={notificationsData?.count ?? 0}
-        page={page}
-        onPageChange={setPage}
-        pageSize={LIST_PAGE_SIZE}
-        getRowId={(row: Notification) => row.id.toString()}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        emptyLabel={t("page.noNotifications")}
-        rowStyle={(row: Notification) =>
-          row.unread
-            ? { background: "var(--color-row-highlight-bg)", color: "var(--color-row-highlight-text)" }
-            : undefined
-        }
-      />
-    </Box>
+      {isMobile ? (
+        <NotificationList
+          notifications={notifications}
+          count={notificationsData?.count ?? 0}
+          page={page}
+          onPageChange={setPage}
+          isLoading={isLoading}
+          onMarkAsRead={handleMarkAsRead}
+          onDelete={handleDeleteOne}
+        />
+      ) : (
+        <PaginatedTable
+          columns={columns}
+          data={notifications}
+          count={notificationsData?.count ?? 0}
+          page={page}
+          onPageChange={setPage}
+          pageSize={LIST_PAGE_SIZE}
+          getRowId={(row: Notification) => row.id.toString()}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          emptyLabel={t("page.noNotifications")}
+          rowStyle={(row: Notification) =>
+            row.unread
+              ? { background: "var(--color-row-highlight-bg)", color: "var(--color-row-highlight-text)" }
+              : undefined
+          }
+        />
+      )}
+    </PageShell>
   );
 }

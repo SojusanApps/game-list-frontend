@@ -1,46 +1,23 @@
-import { Box, Group, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, Group, Stack, Text, UnstyledButton, Tooltip } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 
 import { GameReview as GameReviewType, TargetTypeEnum } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { TruncatedText } from "@/components/ui/TruncatedText";
 import { ReportButton } from "@/features/moderation/components/ReportButton";
 import { WarnAndRemoveButton } from "@/features/moderation/components/WarnAndRemoveButton";
 import { formatDisplayDate } from "@/utils/dateUtils";
 
 import { getRecommendationConfig } from "../utils/recommendationConfig";
+import { ScoreBadge } from "./ScoreBadge";
 
 type GameReviewProps = {
   gameReview: GameReviewType;
 };
-
-function getScoreStyles(score: number): React.CSSProperties {
-  if (score >= 8)
-    return {
-      background: "var(--color-success-tint-bg)",
-      color: "var(--color-success-tint-text)",
-      border: "1px solid var(--color-success-tint-border)",
-    };
-  if (score >= 5)
-    return {
-      background: "var(--color-secondary-tint-bg)",
-      color: "var(--color-secondary-tint-text)",
-      border: "1px solid var(--color-secondary-tint-border)",
-    };
-  return {
-    background: "var(--color-error-tint-bg)",
-    color: "var(--color-error-tint-text)",
-    border: "1px solid var(--color-error-tint-border)",
-  };
-}
-
-function getScoreLabelColor(score: number): string {
-  if (score >= 8) return "var(--color-success-tint-text)";
-  if (score >= 5) return "var(--color-secondary-tint-text)";
-  return "var(--color-error-tint-text)";
-}
 
 function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Element {
   const { t } = useTranslation("games");
@@ -73,52 +50,58 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
       }}
     >
       <Group justify="space-between" align="center" gap={16}>
-        <Group align="center" gap={12}>
-          <Box
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: "9999px",
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-              flexShrink: 0,
-            }}
+        <Group align="center" gap={12} wrap="nowrap" style={{ minWidth: 0 }}>
+          {/* One link around avatar and name: a single tab stop to the reviewer's profile. */}
+          <Link
+            to="/profile/$id/$slug"
+            params={{ id: String(gameReview.user.id), slug: gameReview.user.slug ?? "" }}
+            style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, textDecoration: "none" }}
           >
-            <SafeImage
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              src={gameReview?.user.gravatar_url || undefined}
-              alt={gameReview?.user.username}
-            />
-          </Box>
-          <Stack gap={0} style={{ minWidth: 0 }}>
-            <Text
+            <Box
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: "9999px",
+                overflow: "hidden",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                flexShrink: 0,
+              }}
+            >
+              <SafeImage
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                src={gameReview?.user.gravatar_url || undefined}
+                alt=""
+              />
+            </Box>
+            <TruncatedText
               fw={700}
               c="var(--color-text-900)"
               style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
             >
               {gameReview?.user.username}
-            </Text>
-            <Text fz="xs" c="var(--color-text-500)" fw={500} fs="italic">
-              {createdAt}
-            </Text>
-          </Stack>
+            </TruncatedText>
+          </Link>
+          <Text fz="xs" c="var(--color-text-500)" fw={500} fs="italic">
+            {createdAt}
+          </Text>
         </Group>
 
         <Group gap={8} align="center">
-          <Box
-            title={t(`reviewLanguage.${gameReview.language}`)}
-            style={{
-              padding: "4px 8px",
-              borderRadius: "8px",
-              fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.05em",
-              border: "1px solid var(--color-background-200)",
-              color: "var(--color-text-500)",
-            }}
-          >
-            {gameReview.language.toUpperCase()}
-          </Box>
+          <Tooltip label={t(`reviewLanguage.${gameReview.language}`)} withArrow>
+            <Box
+              style={{
+                padding: "4px 8px",
+                borderRadius: "8px",
+                fontSize: "12px",
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+                border: "1px solid var(--color-background-200)",
+                color: "var(--color-text-500)",
+              }}
+            >
+              {gameReview.language.toUpperCase()}
+            </Box>
+          </Tooltip>
           {gameReview?.recommendation && (
             <Box
               style={{
@@ -135,34 +118,11 @@ function GameReview({ gameReview }: Readonly<GameReviewProps>): React.JSX.Elemen
           )}
 
           {gameReview?.score && (
-            <Stack
-              align="center"
-              justify="center"
-              style={{
-                padding: "4px 16px",
-                borderRadius: "12px",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                transition: "colors 300ms",
-                ...getScoreStyles(gameReview.score),
-              }}
-            >
-              <Text
-                component="span"
-                fz={10}
-                fw={700}
-                tt="uppercase"
-                style={{
-                  letterSpacing: "0.1em",
-                  lineHeight: 1,
-                  marginBottom: "2px",
-                  color: getScoreLabelColor(gameReview.score),
-                }}
-              >
+            <Stack align="center" justify="center" gap={2}>
+              <Text component="span" fz="xs" fw={700} c="dimmed" style={{ lineHeight: 1 }}>
                 {t("review.score")}
               </Text>
-              <Text component="span" fz="xl" fw={900} style={{ lineHeight: 1 }}>
-                {gameReview.score}
-              </Text>
+              <ScoreBadge score={gameReview.score} size="lg" withLabel />
             </Stack>
           )}
 

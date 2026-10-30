@@ -1,4 +1,4 @@
-import { Box, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Group, Select, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
@@ -6,8 +6,11 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { useCurrentUserId, useRequireAuth } from "@/features/auth";
+import { useUrlState } from "@/hooks/useUrlState";
+import { fireAndForget } from "@/utils/promiseUtils";
 
 import GameReview from "../components/GameReview";
 import { GameReviewModal } from "../components/GameReviewModal";
@@ -26,14 +29,16 @@ const routeApi = getRouteApi("/game_/$id/$slug/reviews");
 export default function GameReviewsPage(): React.JSX.Element {
   const { t, i18n } = useTranslation("games");
   const { id, slug } = routeApi.useParams();
-  const { language: languageParam } = routeApi.useSearch();
+  const { language: languageParam, ordering } = routeApi.useSearch();
   const navigate = useNavigate();
   const languageFilter = isReviewLanguageFilter(languageParam)
     ? languageParam
     : getDefaultReviewLanguageFilter(i18n.language);
   const gameId = Number(id);
 
-  const [page, setPage] = React.useState(1);
+  const { search: urlSearch, update: updateUrl } = useUrlState();
+  const page = typeof urlSearch.page === "number" ? urlSearch.page : 1;
+  const setPage = (next: number) => updateUrl({ page: next === 1 ? undefined : next }, { keepPage: true });
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
 
   const requireAuth = useRequireAuth();
@@ -41,7 +46,7 @@ export default function GameReviewsPage(): React.JSX.Element {
 
   const { data: gameDetails } = useGetGamesDetails(gameId);
   const { data: gameReviewItems, isLoading } = useGetGameReviewsList(
-    { game: String(gameId), page, ...reviewLanguageQuery(languageFilter) },
+    { game: String(gameId), page, ordering, ...reviewLanguageQuery(languageFilter) },
     { enabled: !!gameId },
   );
   const { data: userReviewData } = useGetGameReviewsList(
@@ -56,15 +61,31 @@ export default function GameReviewsPage(): React.JSX.Element {
   );
 
   const handleLanguageFilterChange = (next: ReviewLanguageFilterValue) => {
-    setPage(1);
-    void navigate({ to: ".", search: prev => ({ ...prev, language: next }), replace: true });
+    fireAndForget(navigate({ to: ".", search: prev => ({ ...prev, language: next, page: undefined }), replace: true }));
   };
+
+  const handleOrderingChange = (next: string | null) => {
+    fireAndForget(
+      navigate({
+        to: ".",
+        search: prev => ({ ...prev, ordering: (next as typeof ordering) ?? undefined, page: undefined }),
+        replace: true,
+      }),
+    );
+  };
+
+  const orderingOptions = [
+    { value: "-created_at", label: t("reviewOrdering.newest") },
+    { value: "created_at", label: t("reviewOrdering.oldest") },
+    { value: "-score", label: t("reviewOrdering.scoreDesc") },
+    { value: "score", label: t("reviewOrdering.scoreAsc") },
+  ];
 
   const totalPages = derivePageCount({ count: gameReviewItems?.count, pageSize: LIST_PAGE_SIZE, page });
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
-      <Stack maw={800} mx="auto" px={16} gap={24}>
+    <PageShell width="narrow">
+      <Stack gap={24}>
         <PageMeta title={t("reviewsPage.pageTitle", { game: gameDetails?.title ?? "" })} />
 
         <Group justify="space-between" align="center">
@@ -86,7 +107,7 @@ export default function GameReviewsPage(): React.JSX.Element {
               {gameDetails?.title ?? t("reviewsPage.backToGame")}
             </Link>
           </Group>
-          <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true))}>
+          <Button size="sm" onClick={() => requireAuth(() => setIsReviewModalOpen(true), "review")}>
             {userReview ? t("reviewModal.editTitle") : t("reviewModal.addTitle")}
           </Button>
         </Group>
@@ -101,7 +122,19 @@ export default function GameReviewsPage(): React.JSX.Element {
           )}
         </Title>
 
-        <ReviewLanguageFilter value={languageFilter} onChange={handleLanguageFilterChange} />
+        <Group justify="space-between" align="center">
+          <ReviewLanguageFilter value={languageFilter} onChange={handleLanguageFilterChange} />
+          <Select
+            aria-label={t("reviewOrdering.label")}
+            placeholder={t("reviewOrdering.default")}
+            data={orderingOptions}
+            value={ordering ?? null}
+            onChange={handleOrderingChange}
+            clearable
+            size="sm"
+            w={{ base: "100%", sm: 260 }}
+          />
+        </Group>
 
         <RecommendationSummaryBar counts={gameReviewItems?.recommendation_counts} />
 
@@ -136,6 +169,6 @@ export default function GameReviewsPage(): React.JSX.Element {
           onClose={() => setIsReviewModalOpen(false)}
         />
       )}
-    </Box>
+    </PageShell>
   );
 }

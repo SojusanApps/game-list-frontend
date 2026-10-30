@@ -1,4 +1,4 @@
-import { Box, Stack, Text, Group } from "@mantine/core";
+import { Box, Stack, Text, Title, Group } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight, IconCheck, IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,13 +6,15 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 
 import IGDBImageSize, { getIGDBImageURL } from "../../utils/IGDBIntegration";
-import { DuplicateGroup } from "../../utils/titleImport";
+import { DuplicateGroup, StoreRefsByTitle, storeRefsForTitle } from "../../utils/titleImport";
+import { StoreRefList } from "./StoreRefList";
 import { ImportedGame } from "./types";
 
 import styles from "./TitleMergeStep.module.css";
 
 interface TitleMergeStepProps {
   groups: Array<DuplicateGroup<ImportedGame>>;
+  storeRefs: StoreRefsByTitle;
   onBack: () => void;
   onConfirm: () => void;
 }
@@ -21,16 +23,16 @@ interface TitleMergeStepProps {
  * Confirm-only step shown when several titles resolved to the same game:
  * each duplicated game will be imported once.
  */
-export const TitleMergeStep = ({ groups, onBack, onConfirm }: TitleMergeStepProps) => {
+export const TitleMergeStep = ({ groups, storeRefs, onBack, onConfirm }: TitleMergeStepProps) => {
   const { t } = useTranslation("games");
 
   return (
     <Stack gap={24}>
       <Box className={styles.card}>
         <Stack gap={16}>
-          <Text fz={20} fw={700} c="var(--color-text-900)">
+          <Title order={2} fz={20} fw={700} c="var(--color-text-900)">
             {t("import.duplicatesTitle")}
-          </Text>
+          </Title>
           <Text fz="sm" c="dimmed">
             {t("import.duplicatesDescription")}
           </Text>
@@ -52,8 +54,16 @@ export const TitleMergeStep = ({ groups, onBack, onConfirm }: TitleMergeStepProp
                       {group.game.title}
                     </Text>
                     <Text fz="sm" c="dimmed">
-                      {t("import.duplicatesChosenFor", { titles: group.titles.join(", ") })}
+                      {t("import.duplicatesChosenFor")}
                     </Text>
+                    {group.titles.map(title => (
+                      <Stack key={title} gap={2}>
+                        <Text fz="sm" fw={500} c="var(--color-text-700)">
+                          {title}
+                        </Text>
+                        <StoreRefList refs={storeRefsForTitle(storeRefs, title)} />
+                      </Stack>
+                    ))}
                   </Stack>
                 </div>
               );

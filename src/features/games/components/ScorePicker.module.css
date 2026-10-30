@@ -1,0 +1,37 @@
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+  border: 2px solid transparent;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Once a score is chosen, the others recede so the choice stands out. */
+.hasSelection .option:not(.selected) {
+  opacity: 0.45;
+}
+
+.hasSelection .option:not(.selected):hover {
+  opacity: 0.85;
+}
+
+.option:not(.selected):hover {
+  transform: translateY(-1px);
+}
+
+.selected {
+  transform: scale(1.12);
+  border-color: var(--color-text-950);
+  box-shadow:
+    0 0 0 2px var(--color-background-100),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}

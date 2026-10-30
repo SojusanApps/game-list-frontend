@@ -6,10 +6,8 @@ import { ModeEnum, TypeEnum, VisibilityEnum } from "@/client";
 export const COLLECTION_BADGE_STYLE: React.CSSProperties = {
   padding: "2px 10px",
   borderRadius: "9999px",
-  fontSize: "10px",
+  fontSize: "12px",
   fontWeight: 900,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
 };
 
 export function getVisibilityBadgeStyle(visibility: VisibilityEnum | string | undefined): React.CSSProperties {

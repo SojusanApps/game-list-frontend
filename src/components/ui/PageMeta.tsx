@@ -1,5 +1,6 @@
 import { Helmet } from "@dr.pogodin/react-helmet";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/config/site";
 
@@ -31,8 +32,9 @@ export function PageMeta({
   noindex,
   jsonLd,
 }: Readonly<PageMetaProps>) {
+  const { t } = useTranslation();
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
-  const defaultDescription = "Keep track of your gaming progress and discover new titles.";
+  const defaultDescription = t("defaultDescription");
   const desc = description || defaultDescription;
   const currentPath = path ?? (typeof globalThis.window === "object" ? globalThis.location.pathname : "/");
   const canonicalUrl = `${SITE_URL}${currentPath === "/" ? "/" : currentPath.replace(/\/+$/, "")}`;

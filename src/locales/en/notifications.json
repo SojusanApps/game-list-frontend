@@ -33,13 +33,24 @@
     "levelWarning": "Warning",
     "levelError": "Error",
     "userAvatarAlt": "User avatar",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "someone": "Someone"
   },
   "bell": {
     "title": "Notifications",
     "actorAvatarAlt": "Actor avatar",
     "empty": "No unread notifications",
     "viewAll": "View all notifications",
-    "new": "New"
+    "new": "New",
+    "ariaLabel_one": "Notifications, {{count}} unread",
+    "ariaLabel_other": "Notifications, {{count}} unread",
+    "ariaLabelNone": "Notifications",
+    "markAllRead": "Mark all as read"
+  },
+  "friendRequest": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "Accepted",
+    "declined": "Declined"
   }
 }

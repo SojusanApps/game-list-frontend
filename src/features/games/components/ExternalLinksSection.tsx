@@ -71,6 +71,10 @@ export function ExternalLinksSection({ externalGames }: Readonly<{ externalGames
   const displayedExternalGames = showAllExternalLinks ? externalGames : externalGames.slice(0, 4);
   const hasMoreExternalGames = externalGames.length > 4;
 
+  if (externalGames.length === 0) {
+    return null;
+  }
+
   return (
     <Stack gap={4}>
       <Text size="sm" fw={500} c="var(--color-text-600)">
@@ -137,7 +141,6 @@ export function ExternalLinksSection({ externalGames }: Readonly<{ externalGames
                   cursor: "pointer",
                   textDecoration: "underline",
                   display: "inline-block",
-                  outline: "none",
                 }}
               >
                 {showAllExternalLinks
@@ -146,11 +149,7 @@ export function ExternalLinksSection({ externalGames }: Readonly<{ externalGames
               </Text>
             )}
           </>
-        ) : (
-          <Text size="sm" c="var(--color-text-900)">
-            ---
-          </Text>
-        )}
+        ) : null}
       </Group>
     </Stack>
   );

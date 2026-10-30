@@ -1,10 +1,12 @@
-import { Box, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text, Tooltip, VisuallyHidden } from "@mantine/core";
 import { IconInfoCircle, IconGenderMale, IconGenderFemale, IconMinus } from "@tabler/icons-react";
 import { TFunction } from "i18next";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { UserDetail } from "@/client";
+import { Panel } from "@/components/ui/Panel";
+import { PanelHeader } from "@/components/ui/PanelHeader";
 import { formatDisplayDate, timeAgo } from "@/utils/dateUtils";
 
 const WARNING_LIMIT = 3;
@@ -43,26 +45,13 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
   const { t } = useTranslation("users");
   const genderDisplay = getGenderDisplay(userDetails?.gender, t);
   return (
-    <Box
+    <Panel
+      p={0}
       style={{
-        background: "var(--color-background-100)",
-        borderRadius: "12px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        border: "1px solid var(--color-background-200)",
         overflow: "hidden",
       }}
     >
-      <Box
-        style={{
-          background: "var(--color-background-50)",
-          padding: "12px 16px",
-          borderBottom: "1px solid var(--color-background-200)",
-        }}
-      >
-        <Text fw={600} c="var(--color-text-900)">
-          {t("info.title")}
-        </Text>
-      </Box>
+      <PanelHeader title={t("info.title")} />
       <Stack gap={12} p={16}>
         <Group justify="space-between" fz="sm">
           <Text fw={500} c="var(--color-text-600)">
@@ -77,6 +66,7 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
           <Tooltip label={genderDisplay.label} withArrow>
             <Box component="span" style={{ display: "inline-flex" }}>
               {genderDisplay.icon}
+              <VisuallyHidden>{genderDisplay.label}</VisuallyHidden>
             </Box>
           </Tooltip>
         </Group>
@@ -93,7 +83,14 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
                 {t("info.warnings")}
               </Text>
               <Tooltip label={t("info.warningsExplanation", { max: WARNING_LIMIT })} multiline w={280} withArrow>
-                <IconInfoCircle size={14} style={{ color: "var(--color-text-400)", cursor: "help" }} />
+                <ActionIcon
+                  variant="transparent"
+                  size="sm"
+                  aria-label={t("info.warningsExplanation", { max: WARNING_LIMIT })}
+                  style={{ color: "var(--color-text-500)", cursor: "help" }}
+                >
+                  <IconInfoCircle size={14} />
+                </ActionIcon>
               </Tooltip>
             </Group>
             <Text c="var(--color-text-900)">
@@ -102,6 +99,6 @@ export default function UserProfileInformation({ userDetails }: Readonly<UserPro
           </Group>
         )}
       </Stack>
-    </Box>
+    </Panel>
   );
 }
