@@ -1,4 +1,4 @@
-import { Box, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, ScrollArea, Stack, Text, Title, Tooltip, VisuallyHidden } from "@mantine/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -94,13 +94,16 @@ export const PairwiseRankingResults = React.memo(function ({
                 <Box className={styles.rankBadge}>#{index + 1}</Box>
 
                 {/* Confidence dot */}
-                <Box
-                  w={10}
-                  h={10}
-                  bg={CONFIDENCE_COLORS[confidence]}
-                  style={{ borderRadius: "9999px", flexShrink: 0 }}
-                  title={t(`results.${confidence}Confidence`)}
-                />
+                <Tooltip label={t(`results.${confidence}Confidence`)} withArrow>
+                  <Box
+                    w={10}
+                    h={10}
+                    bg={CONFIDENCE_COLORS[confidence]}
+                    style={{ borderRadius: "9999px", flexShrink: 0 }}
+                  >
+                    <VisuallyHidden>{t(`results.${confidence}Confidence`)}</VisuallyHidden>
+                  </Box>
+                </Tooltip>
 
                 {/* Cover */}
                 <Box className={styles.coverImage}>

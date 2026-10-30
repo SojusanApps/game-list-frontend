@@ -1,4 +1,4 @@
-import { Center, Loader, Text, Group, Stack } from "@mantine/core";
+import { Center, Loader, Group, Stack } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -6,6 +6,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { GameSimpleList } from "@/client/types.gen";
+import { ErrorState } from "@/components/ui/ErrorState";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
@@ -29,7 +30,7 @@ export default function ListView(): React.JSX.Element {
   // Any change to the date range restarts pagination.
   const [page, setPage] = useResettableState(1, [dateAfter, dateBefore]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useGetGamesInfinite(
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = useGetGamesInfinite(
     {
       // @ts-expect-error generated type doesn't support comma-separated sort values, but API requires them
       ordering: ["release_date,-popularity"],
@@ -56,11 +57,7 @@ export default function ListView(): React.JSX.Element {
   const renderContent = () => {
     if (renderMode === "table") {
       if (tableQuery.isError) {
-        return (
-          <Center py="xl">
-            <Text c="red">{t("calendar.listLoadError")}</Text>
-          </Center>
-        );
+        return <ErrorState message={t("calendar.listLoadError")} onRetry={() => tableQuery.refetch()} />;
       }
 
       return (
@@ -87,11 +84,7 @@ export default function ListView(): React.JSX.Element {
     }
 
     if (isError) {
-      return (
-        <Center py="xl">
-          <Text c="red">{t("calendar.listLoadError")}</Text>
-        </Center>
-      );
+      return <ErrorState message={t("calendar.listLoadError")} onRetry={() => refetch()} />;
     }
 
     return (

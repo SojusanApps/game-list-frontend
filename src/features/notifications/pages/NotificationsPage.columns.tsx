@@ -3,81 +3,19 @@ import { IconTrash, IconCheck } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
-import type React from "react";
 
 import { Notification } from "@/client";
 import { type PaginatedTableFeatures } from "@/components/ui/PaginatedTable";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { formatDisplayDateTime } from "@/utils/dateUtils";
 
+import { FriendRequestActions } from "../components/FriendRequestActions";
+import { formatText, getCategoryStyle, getLevelColor } from "../utils/notificationBadges";
+import { getNotificationLink } from "../utils/notificationLink";
+
 import pageStyles from "./NotificationsPage.module.css";
 
 type NotificationTableFeatures = PaginatedTableFeatures;
-
-function getLevelColor(level?: string) {
-  switch (level?.toLowerCase()) {
-    case "info":
-    case "informacja": {
-      return "blue";
-    }
-    case "warning":
-    case "ostrzeżenie": {
-      return "yellow";
-    }
-    case "success":
-    case "sukces": {
-      return "green";
-    }
-    case "error":
-    case "błąd": {
-      return "red";
-    }
-    default: {
-      return "gray";
-    }
-  }
-}
-
-function getCategoryStyle(category?: string): React.CSSProperties {
-  const hue = (() => {
-    switch (category?.toLowerCase()) {
-      case "system": {
-        return "system";
-      }
-      case "friendship":
-      case "znajomość": {
-        return "friendship";
-      }
-      case "game release":
-      case "premiera gry": {
-        return "gamerelease";
-      }
-      case "translation":
-      case "tłumaczenie": {
-        return "translation";
-      }
-      default: {
-        return "default";
-      }
-    }
-  })();
-
-  return {
-    background: `var(--color-category-${hue}-bg)`,
-    color: `var(--color-category-${hue}-text)`,
-    borderColor: `var(--color-category-${hue}-border)`,
-  };
-}
-
-function formatText(t: TFunction<"notifications">, text?: string) {
-  if (!text) {
-    return t("page.unknown");
-  }
-  return text
-    .split("_")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 const columnHelper = createColumnHelper<NotificationTableFeatures, Notification>();
 
@@ -98,7 +36,7 @@ export function createNotificationColumns({
       header: t("page.tableStatus"),
       cell: info =>
         info.getValue() ? (
-          <Badge size="sm" color="blue">
+          <Badge size="sm" color="primary">
             {t("page.badgeNew")}
           </Badge>
         ) : (
@@ -137,7 +75,7 @@ export function createNotificationColumns({
                 }}
                 className={pageStyles.tableUserLink}
               >
-                {displayEntity?.str || "Someone"}
+                {displayEntity?.str || t("page.someone")}
               </Link>
             )}
           </Group>
@@ -147,7 +85,17 @@ export function createNotificationColumns({
     columnHelper.accessor("verb", {
       id: "action",
       header: t("page.tableAction"),
-      cell: info => info.getValue(),
+      cell: ({ row, getValue }) => {
+        const link = getNotificationLink(row.original);
+        // Release notifications go to the game; the rest already show their user in the previous column.
+        return link.to === "/game/$id/$slug" ? (
+          <Link to={link.to} params={link.params} className={pageStyles.tableUserLink}>
+            {getValue()}
+          </Link>
+        ) : (
+          getValue()
+        );
+      },
     }),
     columnHelper.accessor("category", {
       id: "category",
@@ -181,18 +129,32 @@ export function createNotificationColumns({
       header: t("page.tableActions"),
       cell: ({ row }) => {
         const notification = row.original;
+        const requester = [notification.actor, notification.target].find(entity => entity?.type === "user");
         return (
           <Group gap="xs">
+            {requester && <FriendRequestActions senderId={requester.id} />}
             {notification.unread && (
               <Tooltip label={t("page.tooltipMarkRead")}>
-                <ActionIcon variant="subtle" color="blue" size="sm" onClick={() => onMarkAsRead(notification.id)}>
+                <ActionIcon
+                  variant="subtle"
+                  color="primary"
+                  size="md"
+                  aria-label={t("page.tooltipMarkRead")}
+                  onClick={() => onMarkAsRead(notification.id)}
+                >
                   <IconCheck style={{ width: 16, height: 16 }} />
                 </ActionIcon>
               </Tooltip>
             )}
             {!notification.unread && (
               <Tooltip label={t("page.tooltipDelete")}>
-                <ActionIcon variant="subtle" color="red" size="sm" onClick={() => onDelete(notification.id)}>
+                <ActionIcon
+                  variant="subtle"
+                  color="error"
+                  size="md"
+                  aria-label={t("page.tooltipDelete")}
+                  onClick={() => onDelete(notification.id)}
+                >
                   <IconTrash style={{ width: 16, height: 16 }} />
                 </ActionIcon>
               </Tooltip>

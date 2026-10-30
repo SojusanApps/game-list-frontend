@@ -41,7 +41,7 @@ A user with `is_staff` set, who can moderate Reports, use Warn & Remove, and Ban
 _Avoid_: Admin, moderator (the UI/backend consistently say "staff")
 
 **Game List Entry**:
-One user's record of one game on their list. Carries a Game List Status, an optional Score, and an optional note. The user's Game List is the collection of their entries.
+One user's record of one game on their list. Carries a Game List Status, an optional Score, and an optional note. The note is visible to other users (masked when moderated or its author is banned) and can be reported. The user's Game List is the collection of their entries.
 _Avoid_: List item, library item; do not conflate with a Collection item (a game placed in a user-curated Collection)
 
 **Score**:
@@ -63,6 +63,10 @@ _Avoid_: Sort mode, filter (ordering does not narrow the list)
 **Review Language**:
 The language a Review's text is written in — English (`en`) or Polish (`pl`). Chosen explicitly by the author for every Review, with no default. Independent of the interface language the author or reader happens to use. Readers can narrow a game's Reviews to one Review Language. A user still has at most one Review per game; Review Language is an attribute of it, not a second Review.
 _Avoid_: Locale, translation (a translation suggestion is a separate concept)
+
+**Review Ordering**:
+The sort a reader applies to a game's Reviews on the full reviews page: by date written (newest first or oldest first) or by the reviewer's own Score for that game (high to low or low to high). Reviews whose author did not score the game always come last when ordering by score, in either direction. Narrows nothing, unlike **Review Language**, and is independent of it.
+_Avoid_: Helpfulness, rating (Reviews carry no votes); do not conflate with **Game List Ordering**, which sorts a user's own list
 
 **Collection**:
 A user-curated, named set of games with a visibility and a mode. Distinct from a Game List (a user's per-game tracking record); a game in a Collection is a "collection item", not a Game List Entry.

@@ -2,7 +2,7 @@
   "status": {
     "playing": "Gram",
     "completed": "Ukończone",
-    "planToPlay": "Planuję zagrać",
+    "planToPlay": "Planowane",
     "onHold": "Wstrzymane",
     "dropped": "Porzucone",
     "notPlanned": "Nieplanowane"
@@ -16,7 +16,9 @@
     "addToCollection": "Dodaj do kolekcji",
     "tabMain": "Informacje",
     "tabRelated": "Powiązane gry",
-    "tabScreenshots": "Zrzuty ekranu"
+    "tabScreenshots": "Zrzuty ekranu",
+    "addedToList": "Dodano do Twojej listy jako: {{status}}",
+    "setStatus": "Ustaw status"
   },
   "info": {
     "title": "Informacje",
@@ -39,7 +41,8 @@
     "ratings": "ocen",
     "ranked": "Ranking",
     "popularity": "Popularność",
-    "members": "Gracze"
+    "members": "Gracze",
+    "notAvailable": "Brak"
   },
   "review": {
     "score": "Ocena",
@@ -57,7 +60,10 @@
     "statistics": "Statystyki",
     "summary": "Opis",
     "reviews": "Recenzje",
-    "viewMoreReviews": "Zobacz wszystkie recenzje"
+    "viewMoreReviews": "Zobacz wszystkie recenzje",
+    "showMore": "Pokaż więcej",
+    "showLess": "Pokaż mniej",
+    "reviewCta": "Grałeś w tę grę? Podziel się opinią."
   },
   "reviewModal": {
     "addTitle": "Dodaj recenzję",
@@ -82,7 +88,10 @@
     "languageHint": "Wybierz język, w którym będziesz pisać. Czytelnicy mogą filtrować recenzje według języka.",
     "languageLabel": "Język",
     "changeLanguage": "Zmień język recenzji",
-    "validationLanguageRequired": "Język recenzji jest wymagany"
+    "validationLanguageRequired": "Język recenzji jest wymagany",
+    "reviewLabel": "Recenzja",
+    "deleteConfirmTitle": "Usunąć recenzję?",
+    "deleteConfirmMessage": "Twoja recenzja zostanie trwale usunięta. Tej operacji nie można cofnąć."
   },
   "translationSuggestionModal": {
     "buttonLabel": "Zaproponuj tłumaczenie",
@@ -162,7 +171,12 @@
     "errorOccurred": "Wystąpił błąd",
     "successTitle": "Sukces",
     "errorTitle": "Błąd",
-    "errorMessage": "Wystąpił błąd"
+    "errorMessage": "Wystąpił błąd",
+    "removedToast": "Usunięto „{{title}}” z listy",
+    "today": "Dzisiaj",
+    "removeConfirmTitle": "Usunąć z listy?",
+    "removeConfirmMessage": "Pozycja „{{title}}” oraz jej status, ocena, daty, czas gry i notatka zostaną usunięte z listy. Tej operacji nie można cofnąć.",
+    "noteVisibleHint": "Inni użytkownicy mogą zobaczyć tę notatkę."
   },
   "filter": {
     "sortBy": "Sortuj wyniki według",
@@ -178,8 +192,8 @@
     "titleDesc": "Tytuł (Z-A)",
     "scoreDesc": "Ocena (malejąco)",
     "scoreAsc": "Ocena (rosnąco)",
-    "releaseAfter": "Wydane po",
-    "releaseBefore": "Wydane przed",
+    "releaseAfter": "Wydane od (rok)",
+    "releaseBefore": "Wydane do (rok)",
     "yearPlaceholder": "Rok...",
     "developer": "Deweloper",
     "developerPlaceholder": "Szukaj dewelopera...",
@@ -209,7 +223,9 @@
     "perspectivesPlaceholder": "Szukaj perspektyw...",
     "title": "Tytuł",
     "titlePlaceholder": "Szukaj po tytule...",
-    "applyFilters": "Zastosuj filtry"
+    "applyFilters": "Zastosuj filtry",
+    "removeFilter": "Usuń filtr: {{name}}",
+    "reset": "Resetuj"
   },
   "home": {
     "title": "Śledź, oceniaj i odkrywaj gry",
@@ -218,7 +234,16 @@
     "metaDescription": "Śledź postępy w grach, oceniaj i recenzuj tytuły, twórz kolekcje i odkrywaj nowe gry w Sojusan GameList.",
     "highestRated": "Najwyżej oceniane gry",
     "mostPopular": "Najpopularniejsze gry",
-    "recentlyAdded": "Ostatnio dodane gry"
+    "recentlyAdded": "Ostatnio dodane gry",
+    "signIn": "Zaloguj się i zacznij śledzić gry",
+    "browse": "Przeglądaj gry",
+    "highestRatedSub": "Według ocen społeczności",
+    "mostPopularSub": "Najczęściej dodawane przez graczy",
+    "recentlyAddedSub": "Świeżo dodane do katalogu",
+    "releasingSoon": "Premiery w tym tygodniu",
+    "releasingSoonSub": "Gry, które pojawią się w ciągu 7 dni",
+    "carouselPrevious": "Poprzedni slajd",
+    "carouselNext": "Następny slajd"
   },
   "search": {
     "title": "Wyszukiwarka",
@@ -253,7 +278,9 @@
       "accountStatus": "Status",
       "active": "Aktywne",
       "inactive": "Nieaktywne"
-    }
+    },
+    "categoryLabel": "Kategoria wyszukiwania",
+    "filtersCleared": "Filtry gier zostały wyczyszczone, ponieważ dotyczą tylko gier."
   },
   "calendar": {
     "title": "Kalendarz premier",
@@ -279,8 +306,15 @@
     "dayNoReleases": "Brak premier w tym dniu.",
     "releasesFor": "Premiery dnia",
     "pickDate": "Wybierz datę",
-    "moreGames": "+ więcej",
-    "seeAll": "Pokaż wszystkie"
+    "seeAll": "Pokaż wszystkie",
+    "previousPeriod": "Poprzedni okres",
+    "nextPeriod": "Następny okres",
+    "agendaSeeAll_one": "Zobacz wszystkie ({{count}})",
+    "agendaSeeAll_other": "Zobacz wszystkie ({{count}})",
+    "agendaSeeAll_few": "Zobacz wszystkie ({{count}})",
+    "agendaSeeAll_many": "Zobacz wszystkie ({{count}})",
+    "agendaEmpty": "Brak premier w tym okresie.",
+    "moreGames": "+ więcej"
   },
   "company": {
     "loading": "Wczytywanie firmy...",
@@ -311,9 +345,9 @@
     "all": "WSZYSTKIE",
     "title": "Lista gier <0>{{username}}</0>",
     "pageTitle": "Lista gier {{username}}",
-    "randomPtp": "Nie wiesz w co zagrać? Wylosuj grę ze swojej listy \"Planuję zagrać\"!",
+    "randomPtp": "Nie wiesz w co zagrać? Wylosuj grę ze swojej listy \"Planowane\"!",
     "pickRandom": "Losuj grę",
-    "noRandomPtp": "Musisz najpierw dodać gry do listy \"Planuję zagrać\".",
+    "noRandomPtp": "Musisz najpierw dodać gry do listy \"Planowane\".",
     "fetchError": "Błąd: {{message}}",
     "table": {
       "title": "Tytuł",
@@ -321,8 +355,42 @@
       "score": "Ocena",
       "actions": "Akcje",
       "edit": "Edytuj pozycję",
-      "empty": "Brak gier na tej liście"
-    }
+      "empty": "Brak gier na tej liście",
+      "note": "Notatka"
+    },
+    "resultCount_one": "{{count}} gra",
+    "resultCount_other": "{{count}} gier",
+    "resultCount_few": "{{count}} gry",
+    "resultCount_many": "{{count}} gier",
+    "statusTabs": "Filtruj wg statusu",
+    "sortLabel": "Sortuj wg",
+    "moreActions": "Więcej akcji",
+    "empty": {
+      "title": "Twoja lista jest pusta",
+      "description": "Dodaj gry z katalogu lub zaimportuj istniejącą listę.",
+      "browse": "Przeglądaj gry",
+      "import": "Zaimportuj listę",
+      "otherUser": "Ta lista nie zawiera jeszcze gier"
+    },
+    "noMatch": {
+      "title": "Brak gier pasujących do filtrów",
+      "clear": "Wyczyść filtry"
+    },
+    "quick": {
+      "changeStatus": "Zmień status",
+      "editDetails": "Edytuj szczegóły"
+    },
+    "random": {
+      "title": "Twoja następna gra",
+      "reroll": "Wylosuj inną",
+      "startPlaying": "Zacznij grać",
+      "empty": "Najpierw dodaj gry do listy „Planowane”."
+    },
+    "stats": {
+      "mean": "Średnia ocena {{score}}",
+      "avatarAlt": "Awatar użytkownika {{username}}"
+    },
+    "noteLabel": "Pokaż notatkę"
   },
   "screenshot": {
     "closeAria": "Zamknij zrzut ekranu",
@@ -330,13 +398,20 @@
     "nextAria": "Następny zrzut ekranu",
     "noScreenshots": "Brak dostępnych zrzutów ekranu.",
     "noScreenshotsDescription": "Ta gra nie ma jeszcze żadnych zrzutów ekranu.",
-    "enlargedAlt": "Powiększony zrzut ekranu"
+    "enlargedAlt": "Powiększony zrzut ekranu",
+    "position": "{{current}} / {{total}}",
+    "alt": "{{title}}, zrzut ekranu {{index}}"
   },
   "searchBar": {
-    "placeholder": "Szukaj gry...",
+    "placeholder": "Szukaj gry... (naciśnij /)",
     "searching": "Wyszukiwanie...",
     "noResults": "Brak wyników",
-    "advancedSearch": "Zaawansowane wyszukiwanie"
+    "advancedSearch": "Zaawansowane wyszukiwanie",
+    "clear": "Wyczyść wyszukiwanie",
+    "resultsCount_one": "Znaleziono {{count}} grę",
+    "resultsCount_other": "Znaleziono {{count}} gry",
+    "resultsCount_few": "Znaleziono {{count}} gry",
+    "resultsCount_many": "Znaleziono {{count}} gier"
   },
   "import": {
     "title": "Importuj gry",
@@ -414,10 +489,18 @@
     "descending": "malejąco",
     "bulkStatusLabel": "Ustaw status dla wszystkich gier",
     "bulkStatusPlaceholder": "Wybierz status",
-    "bulkStatusApply": "Zastosuj do wszystkich"
+    "bulkStatusApply": "Zastosuj do wszystkich",
+    "leaveTitle": "Opuścić import?",
+    "leaveMessage": "Dopasowane tytuły i ustawienia zostaną utracone. Tej operacji nie można cofnąć.",
+    "leaveConfirm": "Opuść",
+    "stay": "Zostań",
+    "userNotIdentified": "Nie rozpoznano użytkownika.",
+    "errorTitle": "Błąd"
   },
   "export": {
-    "title": "Eksportuj listę gier"
+    "title": "Eksportuj listę gier",
+    "success": "Wyeksportowano listę gier",
+    "failed": "Nie udało się wyeksportować listy gier. Spróbuj ponownie."
   },
   "compare": {
     "pageTitle": "Porównanie {{firstUsername}} vs {{secondUsername}}",
@@ -435,5 +518,13 @@
     "filterLabel": "Filtruj recenzje według języka",
     "en": "Angielski",
     "pl": "Polski"
+  },
+  "reviewOrdering": {
+    "label": "Sortuj recenzje",
+    "default": "Domyślna kolejność",
+    "newest": "Od najnowszych",
+    "oldest": "Od najstarszych",
+    "scoreDesc": "Ocena autora: od najwyższej",
+    "scoreAsc": "Ocena autora: od najniższej"
   }
 }

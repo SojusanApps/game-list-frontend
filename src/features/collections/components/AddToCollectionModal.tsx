@@ -90,6 +90,7 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
 
   return (
     <AppModal
+      fullScreenOnMobile
       opened={true}
       onClose={onClose}
       title={t("addModal.title")}

@@ -1,4 +1,4 @@
-import { Skeleton, Stack, Group, Box, Title, Text } from "@mantine/core";
+import { Skeleton, Stack, Group, Box, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconDeviceGamepad2 } from "@tabler/icons-react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
@@ -7,19 +7,24 @@ import { useTranslation } from "react-i18next";
 
 import { CollectionItem, ModeEnum, TypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
 import { GridList } from "@/components/ui/GridList";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { PaginatedTable } from "@/components/ui/PaginatedTable";
+import { Panel } from "@/components/ui/Panel";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useCurrentUserId, useIsOwner } from "@/features/auth";
 import IGDBImageSize, { getIGDBImageURL } from "@/features/games/utils/IGDBIntegration";
 import { PairwiseRankingModal } from "@/features/ranking";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useUrlState } from "@/hooks/useUrlState";
 import { useListViewStore } from "@/lib/listViewStore";
-import { cn } from "@/utils/cn";
 import { GRID_BOX_STYLE } from "@/utils/gridLayout";
+import { fireAndForget } from "@/utils/promiseUtils";
 
 import AddGameToCollectionModal from "../components/AddGameToCollectionModal";
 import { CollectionHeader } from "../components/CollectionHeader";
@@ -39,6 +44,10 @@ import pageStyles from "./CollectionPage.module.css";
 
 const routeApi = getRouteApi("/collection/$id/$slug");
 
+function ContentSurface({ surfaced, children }: Readonly<{ surfaced: boolean; children: React.ReactNode }>) {
+  return surfaced ? <Panel style={GRID_BOX_STYLE}>{children}</Panel> : <Box style={GRID_BOX_STYLE}>{children}</Box>;
+}
+
 export default function CollectionPage(): React.JSX.Element {
   const { id } = routeApi.useParams();
   const collectionId = Number(id);
@@ -49,12 +58,15 @@ export default function CollectionPage(): React.JSX.Element {
 
   const renderMode = useListViewStore(state => state.mode);
   const navigate = useNavigate();
-  const [page, setPage] = React.useState(1);
+  const { search, update } = useUrlState();
+  const page = typeof search.page === "number" ? search.page : 1;
+  const setPage = (next: number) => update({ page: next === 1 ? undefined : next }, { keepPage: true });
 
   const {
     data: collection,
     isLoading: isCollectionLoading,
     error: collectionError,
+    refetch: refetchCollection,
   } = useCollectionDetail(collectionId);
 
   const isNormalCollection = collection?.type === TypeEnum.NOR;
@@ -62,6 +74,7 @@ export default function CollectionPage(): React.JSX.Element {
   const {
     data: itemsResults,
     error: itemsError,
+    refetch: refetchItems,
     isLoading: isItemsLoading,
     fetchNextPage,
     hasNextPage,
@@ -233,14 +246,12 @@ export default function CollectionPage(): React.JSX.Element {
                         <Text
                           span
                           style={{
-                            background: "rgba(79,70,229,0.8)",
+                            background: "rgba(0,0,0,0.75)",
                             color: "white",
-                            fontSize: "8px",
+                            fontSize: "12px",
                             padding: "4px 8px",
                             borderRadius: "6px",
-                            textTransform: "uppercase",
-                            fontWeight: 900,
-                            letterSpacing: "0.05em",
+                            fontWeight: 700,
                             backdropFilter: "blur(8px)",
                             boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
                             border: "1px solid rgba(255,255,255,0.1)",
@@ -269,10 +280,11 @@ export default function CollectionPage(): React.JSX.Element {
                             borderRadius: "9999px",
                             boxShadow: "0 4px 6px -1px rgba(0,0,0,0.3)",
                           }}
+                          aria-label={t("rankingRow.removeGame")}
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            handleDeleteItem(item.id, item.game.title);
+                            fireAndForget(handleDeleteItem(item.id, item.game.title));
                           }}
                         >
                           <IconTrash style={{ width: 16, height: 16 }} />
@@ -291,21 +303,16 @@ export default function CollectionPage(): React.JSX.Element {
 
   if (collectionError) {
     return (
-      <Group justify="center" style={{ paddingBlock: "80px" }}>
-        <Stack align="center" gap={8}>
-          <Title order={1} fz={24} fw={700} c="var(--color-error-600)">
-            {t("detail.loadError")}
-          </Title>
-          <Text c="var(--color-text-600)">{collectionError.message}</Text>
-        </Stack>
-      </Group>
+      <Box p="xl" maw={560} mx="auto">
+        <ErrorState title={t("detail.loadError")} onRetry={() => refetchCollection()} />
+      </Box>
     );
   }
 
   return (
-    <Box py={48} style={{ minHeight: "100vh" }}>
+    <PageShell width="wide">
       <PageMeta title={collection?.name ?? t("detail.pageTitle")} />
-      <Stack gap={40} maw={1280} mx="auto" px={16}>
+      <Stack gap={40}>
         {isCollectionLoading ? (
           <Stack gap={16}>
             <Skeleton style={{ height: "24px", width: "256px", borderRadius: "9999px" }} />
@@ -329,57 +336,26 @@ export default function CollectionPage(): React.JSX.Element {
           </Group>
         )}
 
-        <Box
-          className={cn(
-            "rounded-2xl transition-all outline-hidden",
-            collection?.type === TypeEnum.NOR || !collection?.type
-              ? "bg-white shadow-sm border border-background-200 p-6 md:p-8"
-              : "",
-          )}
-          style={GRID_BOX_STYLE}
-        >
-          {renderView()}
-
-          {renderMode === "infinite" && !isItemsLoading && isNormalCollection && allItems.length === 0 && (
-            <Stack align="center" justify="center" gap={16} style={{ paddingBlock: "80px", textAlign: "center" }}>
-              <Box
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  background: "var(--color-background-50)",
-                  borderRadius: "9999px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <IconDeviceGamepad2 size={36} stroke={1.5} style={{ color: "var(--color-text-400)" }} />
-              </Box>
-              <Title order={3} fz="lg" fw={700} c="var(--color-text-900)">
-                {t("detail.noGames")}
-              </Title>
-              <Text c="var(--color-text-500)" maw={320}>
-                {t("detail.noGamesDesc")}
-              </Text>
-            </Stack>
+        {/* Normal collections sit on the standard Panel surface; tier lists and rankings draw their own. */}
+        <ContentSurface surfaced={collection?.type === TypeEnum.NOR || !collection?.type}>
+          {displayItemsError ? (
+            <ErrorState onRetry={() => (renderMode === "table" ? tableQuery.refetch() : refetchItems())} />
+          ) : (
+            renderView()
           )}
 
-          {displayItemsError && (
-            <Box
-              style={{
-                background: "var(--color-error-50)",
-                border: "1px solid var(--color-error-200)",
-                borderRadius: "12px",
-                padding: "16px",
-                marginTop: "16px",
-              }}
-            >
-              <Text c="var(--color-error-600)" ta="center" fw={500}>
-                {t("detail.itemsLoadError", { message: displayItemsError.message })}
-              </Text>
-            </Box>
-          )}
-        </Box>
+          {renderMode === "infinite" &&
+            !isItemsLoading &&
+            !displayItemsError &&
+            isNormalCollection &&
+            allItems.length === 0 && (
+              <EmptyState
+                icon={<IconDeviceGamepad2 size={40} />}
+                title={t("detail.noGames")}
+                description={t("detail.noGamesDesc")}
+              />
+            )}
+        </ContentSurface>
       </Stack>
 
       {isModalOpen && collection && (
@@ -399,6 +375,6 @@ export default function CollectionPage(): React.JSX.Element {
       )}
 
       {confirmModal}
-    </Box>
+    </PageShell>
   );
 }

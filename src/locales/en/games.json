@@ -16,7 +16,9 @@
     "addToCollection": "Add to Collection",
     "tabMain": "Information",
     "tabRelated": "Related Games",
-    "tabScreenshots": "Screenshots"
+    "tabScreenshots": "Screenshots",
+    "addedToList": "Added to your list as {{status}}",
+    "setStatus": "Set status"
   },
   "info": {
     "title": "Information",
@@ -39,7 +41,8 @@
     "ratings": "ratings",
     "ranked": "Ranked",
     "popularity": "Popularity",
-    "members": "Members"
+    "members": "Members",
+    "notAvailable": "N/A"
   },
   "review": {
     "score": "Score",
@@ -57,7 +60,10 @@
     "statistics": "Statistics",
     "summary": "Summary",
     "reviews": "Reviews",
-    "viewMoreReviews": "View all reviews"
+    "viewMoreReviews": "View all reviews",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "reviewCta": "Played this game? Share what you think."
   },
   "reviewModal": {
     "addTitle": "Add Review",
@@ -82,7 +88,10 @@
     "languageHint": "Pick the language you will write in. Readers can filter reviews by language.",
     "languageLabel": "Language",
     "changeLanguage": "Change review language",
-    "validationLanguageRequired": "Review language is required"
+    "validationLanguageRequired": "Review language is required",
+    "reviewLabel": "Review",
+    "deleteConfirmTitle": "Delete your review?",
+    "deleteConfirmMessage": "Your review will be permanently deleted. This can't be undone."
   },
   "translationSuggestionModal": {
     "buttonLabel": "Suggest Translation",
@@ -162,7 +171,12 @@
     "errorOccurred": "An error occurred",
     "successTitle": "Success",
     "errorTitle": "Error",
-    "errorMessage": "An error occurred"
+    "errorMessage": "An error occurred",
+    "removedToast": "{{title}} removed from your list",
+    "today": "Today",
+    "removeConfirmTitle": "Remove from your list?",
+    "removeConfirmMessage": "\"{{title}}\" and its status, score, dates, playtime and note will be removed from your list. This can't be undone.",
+    "noteVisibleHint": "Other users can see this note."
   },
   "filter": {
     "sortBy": "Sort Results By",
@@ -178,8 +192,8 @@
     "titleDesc": "Title (Z-A)",
     "scoreDesc": "Score (High to Low)",
     "scoreAsc": "Score (Low to High)",
-    "releaseAfter": "Release After",
-    "releaseBefore": "Release Before",
+    "releaseAfter": "Released from (year)",
+    "releaseBefore": "Released until (year)",
     "yearPlaceholder": "Year...",
     "developer": "Developer",
     "developerPlaceholder": "Search developer...",
@@ -209,7 +223,9 @@
     "perspectivesPlaceholder": "Search perspectives...",
     "title": "Title",
     "titlePlaceholder": "Search by title...",
-    "applyFilters": "Apply Filters"
+    "applyFilters": "Apply Filters",
+    "removeFilter": "Remove filter: {{name}}",
+    "reset": "Reset"
   },
   "home": {
     "title": "Track, rate and discover games",
@@ -218,7 +234,16 @@
     "metaDescription": "Track your gaming progress, rate and review games, build collections and discover new titles with Sojusan GameList.",
     "highestRated": "Highest Rated Games",
     "mostPopular": "Most Popular Games",
-    "recentlyAdded": "Recently Added Games"
+    "recentlyAdded": "Recently Added Games",
+    "signIn": "Sign in to start tracking",
+    "browse": "Browse games",
+    "highestRatedSub": "Ranked by community score",
+    "mostPopularSub": "What players are adding most",
+    "recentlyAddedSub": "Newly added to the catalogue",
+    "releasingSoon": "Releasing this week",
+    "releasingSoonSub": "Games coming out in the next 7 days",
+    "carouselPrevious": "Previous slide",
+    "carouselNext": "Next slide"
   },
   "search": {
     "title": "Search Engine",
@@ -253,7 +278,9 @@
       "accountStatus": "Status",
       "active": "Active",
       "inactive": "Inactive"
-    }
+    },
+    "categoryLabel": "Search category",
+    "filtersCleared": "Game filters were cleared because they only apply to games."
   },
   "calendar": {
     "title": "Release Calendar",
@@ -279,8 +306,13 @@
     "dayNoReleases": "No releases for this day.",
     "releasesFor": "Releases for",
     "pickDate": "Pick a date",
-    "moreGames": "+ more",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "previousPeriod": "Previous period",
+    "nextPeriod": "Next period",
+    "agendaSeeAll_one": "See all {{count}} game",
+    "agendaSeeAll_other": "See all {{count}} games",
+    "agendaEmpty": "No releases in this period.",
+    "moreGames": "+ more"
   },
   "company": {
     "loading": "Loading Company...",
@@ -305,8 +337,42 @@
       "score": "Score",
       "actions": "Actions",
       "edit": "Edit entry",
-      "empty": "No games in this list"
-    }
+      "empty": "No games in this list",
+      "note": "Note"
+    },
+    "resultCount_one": "{{count}} game",
+    "resultCount_other": "{{count}} games",
+    "resultCount_few": "{{count}} games",
+    "resultCount_many": "{{count}} games",
+    "statusTabs": "Filter by status",
+    "sortLabel": "Sort by",
+    "moreActions": "More actions",
+    "empty": {
+      "title": "Your list is empty",
+      "description": "Add games from the catalogue or import an existing list.",
+      "browse": "Browse games",
+      "import": "Import a list",
+      "otherUser": "No games on this list yet"
+    },
+    "noMatch": {
+      "title": "No games match your filters",
+      "clear": "Clear all filters"
+    },
+    "quick": {
+      "changeStatus": "Change status",
+      "editDetails": "Edit details"
+    },
+    "random": {
+      "title": "Your next game",
+      "reroll": "Pick another",
+      "startPlaying": "Start playing",
+      "empty": "Add games to your Plan to play list first."
+    },
+    "stats": {
+      "mean": "Mean score {{score}}",
+      "avatarAlt": "{{username}}'s avatar"
+    },
+    "noteLabel": "Show note"
   },
   "externalLinks": {
     "header": "External Links:",
@@ -330,13 +396,20 @@
     "nextAria": "Next screenshot",
     "noScreenshots": "No screenshots available.",
     "noScreenshotsDescription": "This game doesn't have any screenshots yet.",
-    "enlargedAlt": "Enlarged screenshot"
+    "enlargedAlt": "Enlarged screenshot",
+    "position": "{{current}} / {{total}}",
+    "alt": "{{title}}, screenshot {{index}}"
   },
   "searchBar": {
-    "placeholder": "Search for a game...",
+    "placeholder": "Search for a game... (press /)",
     "searching": "Searching...",
     "noResults": "No results found",
-    "advancedSearch": "Advanced Search"
+    "advancedSearch": "Advanced Search",
+    "clear": "Clear search",
+    "resultsCount_one": "{{count}} game found",
+    "resultsCount_other": "{{count}} games found",
+    "resultsCount_few": "{{count}} games found",
+    "resultsCount_many": "{{count}} games found"
   },
   "import": {
     "title": "Import Games",
@@ -408,10 +481,18 @@
     "descending": "descending",
     "bulkStatusLabel": "Set status for all games",
     "bulkStatusPlaceholder": "Choose a status",
-    "bulkStatusApply": "Apply to All"
+    "bulkStatusApply": "Apply to All",
+    "leaveTitle": "Leave the import?",
+    "leaveMessage": "Your matched titles and settings will be lost. This can't be undone.",
+    "leaveConfirm": "Leave",
+    "stay": "Stay",
+    "userNotIdentified": "User not identified.",
+    "errorTitle": "Error"
   },
   "export": {
-    "title": "Export Game List"
+    "title": "Export Game List",
+    "success": "Game list exported",
+    "failed": "Could not export your game list. Please try again."
   },
   "compare": {
     "pageTitle": "Compare {{firstUsername}} vs {{secondUsername}}",
@@ -429,5 +510,13 @@
     "filterLabel": "Filter reviews by language",
     "en": "English",
     "pl": "Polish"
+  },
+  "reviewOrdering": {
+    "label": "Sort reviews",
+    "default": "Default order",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+    "scoreDesc": "Reviewer score: high to low",
+    "scoreAsc": "Reviewer score: low to high"
   }
 }

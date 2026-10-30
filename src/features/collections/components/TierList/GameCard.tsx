@@ -1,4 +1,4 @@
-import { Box, Text, Tooltip, Menu, ActionIcon, Group } from "@mantine/core";
+import { Box, Text, Menu, ActionIcon, Group, Popover } from "@mantine/core";
 import {
   IconPencil,
   IconX,
@@ -90,8 +90,6 @@ export const GameCard = (props: GameCardProps) => {
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
                 lineHeight: 1.1,
-                textTransform: "uppercase",
-                letterSpacing: "-0.02em",
                 textShadow: "0 2px 4px rgba(0,0,0,0.8)",
               }}
             >
@@ -103,24 +101,22 @@ export const GameCard = (props: GameCardProps) => {
         {/* Description Icon - Top Left */}
         {description && (
           <Box style={{ position: "absolute", top: 8, left: 8, zIndex: 30 }}>
-            <Tooltip label={description} position="right" multiline w={250}>
-              <Box
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "var(--mantine-color-blue-6)",
-                  color: "white",
-                  boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
-                  cursor: "help",
-                }}
-              >
-                <IconQuestionMark style={{ width: 14, height: 14 }} stroke={3} />
-              </Box>
-            </Tooltip>
+            <Popover position="right" width={250} withArrow shadow="md">
+              <Popover.Target>
+                <ActionIcon
+                  variant="filled"
+                  radius="xl"
+                  size="md"
+                  aria-label={t("tierList.viewNote")}
+                  style={{ boxShadow: "0 4px 6px rgba(0,0,0,0.3)" }}
+                >
+                  <IconQuestionMark style={{ width: 14, height: 14 }} stroke={3} />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size="sm">{description}</Text>
+              </Popover.Dropdown>
+            </Popover>
           </Box>
         )}
 
@@ -133,6 +129,7 @@ export const GameCard = (props: GameCardProps) => {
                 color="dark"
                 radius="xl"
                 size="md"
+                aria-label={t("tierList.moreActions")}
                 style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)" }}
               >
                 <IconDotsVertical size={16} />
@@ -190,7 +187,7 @@ export const GameCard = (props: GameCardProps) => {
                 <>
                   <Menu.Divider />
                   <Menu.Item
-                    color="red"
+                    color="error"
                     leftSection={<IconX size={14} />}
                     onClick={e => {
                       e.preventDefault();

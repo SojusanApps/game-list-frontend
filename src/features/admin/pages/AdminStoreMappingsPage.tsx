@@ -23,6 +23,7 @@ import { z } from "zod";
 import { PlatformEnum, ReportStatusEnum, StoreMapping } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { UserChip } from "@/components/ui/UserChip";
 import { GamePickerModal } from "@/features/games/components/GamePickerModal";
@@ -132,7 +133,7 @@ function MappingCard({ mapping }: Readonly<{ mapping: StoreMapping }>): React.JS
           <Group gap={8} justify="flex-end">
             <Popover opened={rejectOpened} onChange={setRejectOpened} withArrow>
               <Popover.Target>
-                <Button variant="outline" color="red" size="sm" onClick={() => setRejectOpened(o => !o)}>
+                <Button variant="outline" color="error" size="sm" onClick={() => setRejectOpened(o => !o)}>
                   {t("storeMappings.rejectButton")}
                 </Button>
               </Popover.Target>
@@ -149,7 +150,7 @@ function MappingCard({ mapping }: Readonly<{ mapping: StoreMapping }>): React.JS
                     <Button variant="outline" size="sm" onClick={() => setRejectOpened(false)}>
                       {t("storeMappings.cancelButton")}
                     </Button>
-                    <Button size="sm" color="red" onClick={handleReject} isLoading={isRejecting}>
+                    <Button size="sm" color="error" onClick={handleReject} isLoading={isRejecting}>
                       {t("storeMappings.confirmRejectButton")}
                     </Button>
                   </Group>
@@ -227,7 +228,9 @@ function AddMappingForm(): React.JSX.Element {
   return (
     <Paper withBorder p={16} radius="md" component="form" onSubmit={form.onSubmit(handleSubmit)}>
       <Stack gap={12}>
-        <Title order={4}>{t("storeMappings.addTitle")}</Title>
+        <Title order={2} size="h4">
+          {t("storeMappings.addTitle")}
+        </Title>
         <Text fz="sm" c="dimmed">
           {t("storeMappings.addDescription")}
         </Text>
@@ -323,80 +326,84 @@ export default function AdminStoreMappingsPage(): React.JSX.Element {
   };
 
   return (
-    <Stack gap={24} maw={1024} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("storeMappings.title")} noindex />
-      <Stack gap={8}>
-        <Title order={2}>{t("storeMappings.title")}</Title>
-        <Text c="dimmed">{t("storeMappings.subtitle")}</Text>
-      </Stack>
-
-      <AddMappingForm />
-
-      <Group gap={16} align="flex-end" wrap="wrap">
-        <Select
-          label={t("storeMappings.statusFilterLabel")}
-          value={status}
-          onChange={value => {
-            setStatus((value as StoreMappingStatusEnum | "all" | null) ?? "all");
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("storeMappings.filterAll") },
-            ...STATUS_OPTIONS.map(option => ({ value: option, label: t(`storeMappings.status.${option}`) })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 180 }}
-        />
-        <Select
-          label={t("storeMappings.platformFilterLabel")}
-          value={platform}
-          onChange={value => {
-            setPlatform((value as PlatformEnum | "all" | null) ?? "all");
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("storeMappings.filterAll") },
-            ...PLATFORM_OPTIONS.map(option => ({ value: option, label: t(`storeMappings.platform.${option}`) })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 180 }}
-        />
-        <TextInput
-          label={t("storeMappings.storeIdFilterLabel")}
-          value={storeId}
-          onChange={event => {
-            setStoreId(event.currentTarget.value);
-            setPage(1);
-          }}
-          style={{ width: 200 }}
-        />
-        {isFiltered && (
-          <Button variant="ghost" onClick={clearFilters}>
-            {t("storeMappings.clearFilters")}
-          </Button>
-        )}
-      </Group>
-
-      {isLoading ? (
-        <Skeleton h={200} radius="md" />
-      ) : (
-        <Stack gap={16}>
-          {isFetching && (
-            <Text c="dimmed" fz="xs">
-              {t("storeMappings.loading")}
-            </Text>
-          )}
-          {mappings.length === 0 ? (
-            <Text c="dimmed" fs="italic">
-              {t("storeMappings.empty")}
-            </Text>
-          ) : (
-            mappings.map(mapping => <MappingCard key={mapping.id} mapping={mapping} />)
-          )}
+    <PageShell width="default">
+      <Stack gap={24}>
+        <PageMeta title={t("storeMappings.title")} noindex />
+        <Stack gap={8}>
+          <Title order={1} size="h2">
+            {t("storeMappings.title")}
+          </Title>
+          <Text c="dimmed">{t("storeMappings.subtitle")}</Text>
         </Stack>
-      )}
 
-      <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
-    </Stack>
+        <AddMappingForm />
+
+        <Group gap={16} align="flex-end" wrap="wrap">
+          <Select
+            label={t("storeMappings.statusFilterLabel")}
+            value={status}
+            onChange={value => {
+              setStatus((value as StoreMappingStatusEnum | "all" | null) ?? "all");
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("storeMappings.filterAll") },
+              ...STATUS_OPTIONS.map(option => ({ value: option, label: t(`storeMappings.status.${option}`) })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 180 }}
+          />
+          <Select
+            label={t("storeMappings.platformFilterLabel")}
+            value={platform}
+            onChange={value => {
+              setPlatform((value as PlatformEnum | "all" | null) ?? "all");
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("storeMappings.filterAll") },
+              ...PLATFORM_OPTIONS.map(option => ({ value: option, label: t(`storeMappings.platform.${option}`) })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 180 }}
+          />
+          <TextInput
+            label={t("storeMappings.storeIdFilterLabel")}
+            value={storeId}
+            onChange={event => {
+              setStoreId(event.currentTarget.value);
+              setPage(1);
+            }}
+            style={{ width: 200 }}
+          />
+          {isFiltered && (
+            <Button variant="ghost" onClick={clearFilters}>
+              {t("storeMappings.clearFilters")}
+            </Button>
+          )}
+        </Group>
+
+        {isLoading ? (
+          <Skeleton h={200} radius="md" />
+        ) : (
+          <Stack gap={16}>
+            {isFetching && (
+              <Text c="dimmed" fz="xs">
+                {t("storeMappings.loading")}
+              </Text>
+            )}
+            {mappings.length === 0 ? (
+              <Text c="dimmed" fs="italic">
+                {t("storeMappings.empty")}
+              </Text>
+            ) : (
+              mappings.map(mapping => <MappingCard key={mapping.id} mapping={mapping} />)
+            )}
+          </Stack>
+        )}
+
+        <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+      </Stack>
+    </PageShell>
   );
 }

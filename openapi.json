@@ -2818,6 +2818,14 @@
                         "description": "The language the review text is written in (English, Polish).\n\n* `en` - English\n* `pl` - Polish"
                     },
                     {
+                        "in": "query",
+                        "name": "ordering",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Order results by field. Accepted values: created_at, -created_at, score, -score. Use `-created_at` for newest first and `-score` for the reviewer's highest score first. Reviews whose author has not scored the game always come last when ordering by score. Prefix with '-' for descending."
+                    },
+                    {
                         "name": "page",
                         "required": false,
                         "in": "query",
@@ -3362,8 +3370,9 @@
                         "in": "query",
                         "name": "igdb_id",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "string"
+                        },
+                        "description": "Filter by the game's IGDB identifier."
                     },
                     {
                         "in": "query",

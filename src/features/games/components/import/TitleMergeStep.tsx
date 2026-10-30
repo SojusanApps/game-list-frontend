@@ -1,4 +1,4 @@
-import { Box, Stack, Text, Group } from "@mantine/core";
+import { Box, Stack, Text, Title, Group } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight, IconCheck, IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -30,9 +30,9 @@ export const TitleMergeStep = ({ groups, storeRefs, onBack, onConfirm }: TitleMe
     <Stack gap={24}>
       <Box className={styles.card}>
         <Stack gap={16}>
-          <Text fz={20} fw={700} c="var(--color-text-900)">
+          <Title order={2} fz={20} fw={700} c="var(--color-text-900)">
             {t("import.duplicatesTitle")}
-          </Text>
+          </Title>
           <Text fz="sm" c="dimmed">
             {t("import.duplicatesDescription")}
           </Text>

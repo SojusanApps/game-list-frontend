@@ -1,4 +1,4 @@
-import { Box, Stack, Text, Group, Badge, Grid, ActionIcon, UnstyledButton } from "@mantine/core";
+import { Box, Stack, Text, Title, Group, Badge, Grid, ActionIcon, UnstyledButton } from "@mantine/core";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -122,9 +122,9 @@ export const TitleMatchStep = ({
       <Box className={styles.card}>
         <Stack gap={16}>
           <Group justify="space-between" align="center">
-            <Text fz={20} fw={700} c="var(--color-text-900)">
+            <Title order={2} fz={20} fw={700} c="var(--color-text-900)">
               {t("import.matchTitle")}
-            </Text>
+            </Title>
             <Group gap={8}>
               <Badge
                 size="lg"
@@ -159,50 +159,52 @@ export const TitleMatchStep = ({
                 {titles.map(item => {
                   const resolution = resolutions[item.titleIndex];
                   return (
-                    <UnstyledButton
+                    <Box
                       key={item.titleIndex}
                       className={cn(styles.titleItem, {
                         [styles.titleItemActive]: activeIndex === item.titleIndex,
                         [styles.titleItemResolved]: resolution !== undefined,
                       })}
-                      onClick={() => activate(item)}
                     >
-                      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                        <TruncatedText fz="sm" fw={600} c="var(--color-text-900)" truncate>
-                          {item.title}
-                        </TruncatedText>
-                        <StoreRefList refs={item.storeRefs} />
-                        {renderStatus(resolution)}
-                      </Stack>
+                      <UnstyledButton
+                        type="button"
+                        className={styles.titleItemMain}
+                        aria-current={activeIndex === item.titleIndex ? "true" : undefined}
+                        onClick={() => activate(item)}
+                      >
+                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                          <TruncatedText fz="sm" fw={600} c="var(--color-text-900)" truncate>
+                            {item.title}
+                          </TruncatedText>
+                          <StoreRefList refs={item.storeRefs} />
+                          {renderStatus(resolution)}
+                        </Stack>
+                      </UnstyledButton>
                       {resolution?.kind === "game" ? (
                         <ActionIcon
-                          component="div"
+                          type="button"
                           variant="subtle"
                           color="gray"
-                          size="sm"
+                          size="md"
                           aria-label={t("import.removePick")}
-                          onClick={event => {
-                            event.stopPropagation();
-                            onClear(item.titleIndex);
-                          }}
+                          onClick={() => onClear(item.titleIndex)}
                         >
                           <IconX size={14} />
                         </ActionIcon>
                       ) : (
                         <Badge
-                          component="div"
+                          component="button"
+                          type="button"
+                          aria-pressed={resolution?.kind === "not-a-game"}
                           variant={resolution?.kind === "not-a-game" ? "filled" : "outline"}
                           color="gray"
                           style={{ cursor: "pointer" }}
-                          onClick={event => {
-                            event.stopPropagation();
-                            handleToggleNotAGame(item);
-                          }}
+                          onClick={() => handleToggleNotAGame(item)}
                         >
                           {t("import.notAGameButton")}
                         </Badge>
                       )}
-                    </UnstyledButton>
+                    </Box>
                   );
                 })}
               </Stack>

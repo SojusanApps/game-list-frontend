@@ -39,7 +39,7 @@ const ExtensionStoreButton = ({ logo, storeName, url }: ExtensionStoreButtonProp
       style={{ height: "auto", paddingBlock: 8 }}
     >
       <Stack gap={0} align="flex-start">
-        <Text fz={11} lh={1.2} fw={400}>
+        <Text fz={12} lh={1.2} fw={400}>
           {t("import.platformSync.getItOn")}
         </Text>
         <Text fz="md" lh={1.2} fw={500}>
@@ -155,7 +155,7 @@ export const PlatformSyncButtons = ({ onUnmatched }: PlatformSyncButtonsProps) =
             disabled={extension !== "ready" || (syncing !== null && syncing !== platform)}
             isLoading={syncing === platform}
             leftSection={<PlatformLogo platform={platform} />}
-            onClick={() => void handleSync(platform)}
+            onClick={() => handleSync(platform)}
           >
             {PLATFORM_LABELS[platform]}
           </Button>

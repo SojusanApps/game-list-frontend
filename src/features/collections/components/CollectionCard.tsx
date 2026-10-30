@@ -81,8 +81,8 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
               boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
             }}
           >
-            <Text span fz={10} fw={900} c="var(--color-text-400)" tt="uppercase" style={{ letterSpacing: "0.1em" }}>
-              Empty
+            <Text span fz={12} fw={900} c="var(--color-text-400)" tt="uppercase" style={{ letterSpacing: "0.1em" }}>
+              {t("card.empty")}
             </Text>
           </Box>
         ) : (
@@ -109,7 +109,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
                 >
                   <SafeImage
                     src={getIGDBImageURL(hash ?? "", IGDBImageSize.COVER_BIG_264_374)}
-                    alt={`Game ${pos + 1}`}
+                    alt={t("card.gameAlt", { index: pos + 1 })}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 </Box>
@@ -182,7 +182,7 @@ export default function CollectionCard({ collection }: Readonly<CollectionCardPr
 
           <Stack align="center" justify="center" gap={8}>
             <Text size="xs" fw={500} c="var(--color-text-500)">
-              by{" "}
+              {t("card.by")}{" "}
               <Link
                 to={"/profile/$id/$slug"}
                 params={{ id: collection.user.id.toString(), slug: collection.user.slug || "" }}

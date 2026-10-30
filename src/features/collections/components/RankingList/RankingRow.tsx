@@ -1,4 +1,5 @@
 import { Box, Group, NumberInput, Stack, Text, UnstyledButton, ActionIcon, Tooltip, Menu } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   IconGripVertical,
   IconChevronUp,
@@ -65,19 +66,28 @@ function RankControls({
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 }>) {
+  const { t } = useTranslation("collections");
+  const isTouch = useMediaQuery("(hover: none)");
   if (!isOwner) return null;
+  const arrowSize = isTouch ? "lg" : "md";
   return (
     <Group gap={4} className={rowStyles.rankingRowControls} wrap="nowrap">
-      <ActionIcon className={rowStyles.rankingRowDrag} variant="transparent" color="gray" style={{ cursor: "grab" }}>
+      {/* Decorative: the up/down buttons and the rank input already cover keyboard reordering. */}
+      <Box
+        className={rowStyles.rankingRowDrag}
+        aria-hidden
+        style={{ cursor: "grab", display: "flex", color: "var(--color-text-500)" }}
+      >
         <IconGripVertical size={18} stroke={1.5} />
-      </ActionIcon>
-      <Stack gap={0} justify="center">
+      </Box>
+      <Stack gap={isTouch ? 4 : 2} justify="center">
         <ActionIcon
           variant="transparent"
           color="gray"
           onClick={onMoveUp}
           disabled={rank === 1}
-          size="sm"
+          size={arrowSize}
+          aria-label={t("rankingRow.moveUp")}
           className={rowStyles.rankingRowArrow}
         >
           <IconChevronUp size={16} stroke={2} />
@@ -87,7 +97,8 @@ function RankControls({
           color="gray"
           onClick={onMoveDown}
           disabled={rank === totalItems}
-          size="sm"
+          size={arrowSize}
+          aria-label={t("rankingRow.moveDown")}
           className={rowStyles.rankingRowArrow}
         >
           <IconChevronDown size={16} stroke={2} />
@@ -126,9 +137,10 @@ function ActionButtons({
             component={Link}
             to={`/game/${gameId}/${gameSlug}`}
             variant="light"
-            color="indigo"
+            color="primary"
             size="lg"
             radius="md"
+            aria-label={t("rankingRow.viewDetails")}
           >
             <IconExternalLink size={18} stroke={1.5} />
           </ActionIcon>
@@ -142,6 +154,7 @@ function ActionButtons({
             size="lg"
             radius="md"
             display={isOwner ? "inline-flex" : "none"}
+            aria-label={hasDescription ? t("rankingRow.editNote") : t("rankingRow.addNote")}
             className={hasDescription ? undefined : rowStyles.rankingRowAddNoteBtn}
           >
             {hasDescription ? <IconNote size={18} stroke={1.5} /> : <IconNoteOff size={18} stroke={1.5} />}
@@ -152,7 +165,7 @@ function ActionButtons({
           <Tooltip label={t("rankingRow.removeGame")} withArrow position="top">
             <ActionIcon
               variant="light"
-              color="red"
+              color="error"
               onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -161,6 +174,7 @@ function ActionButtons({
               size="lg"
               radius="md"
               display={isOwner ? "inline-flex" : "none"}
+              aria-label={t("rankingRow.removeGame")}
               className={rowStyles.rankingRowRemove}
             >
               <IconTrash size={18} stroke={1.5} />
@@ -189,13 +203,13 @@ function ActionButtons({
       <Box hiddenFrom="sm" className={rowStyles.rankingRowActionsMobile}>
         <Menu position="bottom-end" withArrow shadow="md">
           <Menu.Target>
-            <ActionIcon variant="subtle" color="gray" size="lg" radius="md">
+            <ActionIcon variant="subtle" color="gray" size="lg" radius="md" aria-label={t("rankingRow.moreActions")}>
               <IconDotsVertical size={18} stroke={1.5} />
             </ActionIcon>
           </Menu.Target>
 
           <Menu.Dropdown>
-            <Menu.Item component={Link} to={`/game/${gameId}`} leftSection={<IconExternalLink size={16} />}>
+            <Menu.Item component={Link} to={`/game/${gameId}/${gameSlug}`} leftSection={<IconExternalLink size={16} />}>
               {t("rankingRow.viewDetails")}
             </Menu.Item>
 
@@ -210,7 +224,7 @@ function ActionButtons({
 
             {isOwner && onRemove && (
               <Menu.Item
-                color="red"
+                color="error"
                 leftSection={<IconTrash size={16} />}
                 onClick={e => {
                   e.preventDefault();
@@ -353,29 +367,30 @@ export const RankingRow = React.memo(
                 }}
               />
             ) : (
-              <UnstyledButton
-                onClick={() => isOwner && setIsEditingPosition(true)}
-                disabled={!isOwner}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 48,
-                  height: 36,
-                  borderRadius: 12,
-                  background: isOwner ? "var(--color-background-50)" : "transparent",
-                  fontSize: 16,
-                  fontWeight: 900,
-                  color: "var(--color-text-900)",
-                  flexShrink: 0,
-                  transition: "background 0.2s",
-                  cursor: isOwner ? "pointer" : "default",
-                }}
-                className={isOwner ? rowStyles.rankingRowRankHover : ""}
-                title={isOwner ? t("rankingRow.clickToEditRank") : undefined}
-              >
-                #{rank}
-              </UnstyledButton>
+              <Tooltip label={t("rankingRow.clickToEditRank")} disabled={!isOwner} withArrow>
+                <UnstyledButton
+                  onClick={() => isOwner && setIsEditingPosition(true)}
+                  disabled={!isOwner}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 48,
+                    height: 36,
+                    borderRadius: 12,
+                    background: isOwner ? "var(--color-background-50)" : "transparent",
+                    fontSize: 16,
+                    fontWeight: 900,
+                    color: "var(--color-text-900)",
+                    flexShrink: 0,
+                    transition: "background 0.2s",
+                    cursor: isOwner ? "pointer" : "default",
+                  }}
+                  className={isOwner ? rowStyles.rankingRowRankHover : ""}
+                >
+                  #{rank}
+                </UnstyledButton>
+              </Tooltip>
             )}
           </div>
 

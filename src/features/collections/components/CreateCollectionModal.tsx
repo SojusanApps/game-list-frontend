@@ -2,6 +2,7 @@ import { TextInput, Select, ActionIcon, Stack, Group, Box, Text } from "@mantine
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
+import { useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -12,10 +13,17 @@ import { Button } from "@/components/ui/Button";
 import { DraftNotice } from "@/components/ui/DraftNotice";
 import AsyncMultiSelectAutocomplete from "@/components/ui/Form/AsyncMultiSelectAutocomplete";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useConfirm } from "@/hooks/useConfirm";
 import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
+import { fireAndForget } from "@/utils/promiseUtils";
 
-import { useCreateCollection, useFriendSearch, useUpdateCollection } from "../hooks/useCollectionQueries";
+import {
+  useCreateCollection,
+  useDeleteCollection,
+  useFriendSearch,
+  useUpdateCollection,
+} from "../hooks/useCollectionQueries";
 import { buildCollectionPayload } from "../utils/collectionPayload";
 
 const validationSchema = z.object({
@@ -52,7 +60,11 @@ export default function CreateCollectionModal({
   const { mutate: createCollection, isPending: isCreatePending } = useCreateCollection();
   const { mutate: updateCollection, isPending: isUpdatePending } = useUpdateCollection();
 
-  const isPending = isCreatePending || isUpdatePending;
+  const { mutate: deleteCollection, isPending: isDeletePending } = useDeleteCollection();
+  const { confirm, confirmModal } = useConfirm();
+  const navigate = useNavigate();
+
+  const isPending = isCreatePending || isUpdatePending || isDeletePending;
 
   const { form, hasDraft, discardDraft, clearDraft } = useModalDraft<CollectionFormValues>({
     draftKey: mode === "edit" && initialData ? `collection:${initialData.id}` : "collection:new",
@@ -68,6 +80,41 @@ export default function CreateCollectionModal({
     },
     formOptions: { validate: schemaResolver(validationSchema) },
   });
+
+  const handleDelete = async () => {
+    if (!initialData) return;
+    const confirmed = await confirm({
+      title: t("createModal.deleteConfirmTitle"),
+      message: t("createModal.deleteConfirmMessage", { name: initialData.name, count: initialData.items_count }),
+      confirmLabel: t("createModal.deleteButton"),
+      isDestructive: true,
+    });
+    if (!confirmed) return;
+    deleteCollection(initialData.id, {
+      onSuccess: () => {
+        notifications.show({
+          title: t("createModal.successTitle"),
+          message: t("createModal.deleteSuccess"),
+          color: "green",
+        });
+        clearDraft();
+        onClose();
+        fireAndForget(
+          navigate({
+            to: "/profile/$id/$slug/collections",
+            params: { id: String(initialData.user.id), slug: initialData.user.slug ?? "" },
+          }),
+        );
+      },
+      onError: () => {
+        notifications.show({
+          title: t("createModal.errorTitle"),
+          message: t("createModal.deleteError"),
+          color: "red",
+        });
+      },
+    });
+  };
 
   const selectedMode = form.values.mode;
   const selectedCollaboratorObjects = form.values.collaboratorObjects;
@@ -151,202 +198,221 @@ export default function CreateCollectionModal({
   };
 
   return (
-    <AppModal
-      opened={true}
-      onClose={onClose}
-      scrollable
-      title={
-        <>
-          {mode === "create" ? t("createModal.createTitle") : t("createModal.editTitle")}{" "}
-          <Text span inherit c="var(--color-primary-600)">
-            {t("createModal.collection")}
-          </Text>
-        </>
-      }
-      footer={
-        <Group gap={12}>
-          <Button
-            type="button"
-            variant="outline"
-            fullWidth
-            onClick={onClose}
-            style={{ fontWeight: 700, paddingBlock: 12 }}
-          >
-            {t("createModal.cancelButton")}
-          </Button>
-          <Button
-            form="create-collection-form"
-            type="submit"
-            fullWidth
-            isLoading={isPending}
-            style={{ fontWeight: 900, paddingBlock: 12 }}
-          >
-            {mode === "create" ? t("createModal.createButton") : t("createModal.saveButton")}
-          </Button>
-        </Group>
-      }
-    >
-      <form id="create-collection-form" onSubmit={form.onSubmit(onSubmit)}>
-        <Stack gap="lg">
-          {hasDraft && <DraftNotice onDiscard={discardDraft} />}
-          <TextInput
-            id="name-input"
-            label={t("createModal.nameLabel")}
-            name="name"
-            placeholder={t("createModal.namePlaceholder")}
-            required
-            {...form.getInputProps("name")}
-          />
-
-          <TextInput
-            id="description-input"
-            label={t("createModal.descriptionLabel")}
-            name="description"
-            placeholder={t("createModal.descriptionPlaceholder")}
-            {...form.getInputProps("description")}
-          />
-
-          <Box style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <Select
-              id="visibility-select"
-              label={t("createModal.visibilityLabel")}
-              name="visibility"
-              placeholder={t("createModal.visibilityPlaceholder")}
-              searchable
-              clearable
-              data={[
-                { value: VisibilityEnum.PUB, label: t("visibility.public") },
-                { value: VisibilityEnum.FRI, label: t("visibility.friendsOnly") },
-                { value: VisibilityEnum.PRI, label: t("visibility.private") },
-              ]}
-              {...form.getInputProps("visibility")}
+    <>
+      <AppModal
+        fullScreenOnMobile
+        opened={true}
+        onClose={onClose}
+        scrollable
+        title={
+          <>
+            {mode === "create" ? t("createModal.createTitle") : t("createModal.editTitle")}{" "}
+            <Text span inherit c="var(--color-primary-600)">
+              {t("createModal.collection")}
+            </Text>
+          </>
+        }
+        footer={
+          <Stack gap={12}>
+            <Group gap={12}>
+              <Button
+                type="button"
+                variant="outline"
+                fullWidth
+                onClick={onClose}
+                style={{ fontWeight: 700, paddingBlock: 12 }}
+              >
+                {t("createModal.cancelButton")}
+              </Button>
+              <Button
+                form="create-collection-form"
+                type="submit"
+                fullWidth
+                isLoading={isPending}
+                style={{ fontWeight: 900, paddingBlock: 12 }}
+              >
+                {mode === "create" ? t("createModal.createButton") : t("createModal.saveButton")}
+              </Button>
+            </Group>
+            {mode === "edit" && initialData && (
+              <Button
+                type="button"
+                variant="destructive"
+                fullWidth
+                isLoading={isDeletePending}
+                disabled={isCreatePending || isUpdatePending}
+                onClick={() => handleDelete()}
+              >
+                {t("createModal.deleteButton")}
+              </Button>
+            )}
+          </Stack>
+        }
+      >
+        <form id="create-collection-form" onSubmit={form.onSubmit(onSubmit)}>
+          <Stack gap="lg">
+            {hasDraft && <DraftNotice onDiscard={discardDraft} />}
+            <TextInput
+              id="name-input"
+              label={t("createModal.nameLabel")}
+              name="name"
+              placeholder={t("createModal.namePlaceholder")}
+              required
+              {...form.getInputProps("name")}
             />
-            <Select
-              id="mode-select"
-              label={t("createModal.modeLabel")}
-              name="mode"
-              placeholder={t("createModal.modePlaceholder")}
-              searchable
-              clearable
-              data={[
-                { value: ModeEnum.S, label: t("mode.solo") },
-                { value: ModeEnum.C, label: t("mode.collaborative") },
-              ]}
-              {...form.getInputProps("mode")}
+
+            <TextInput
+              id="description-input"
+              label={t("createModal.descriptionLabel")}
+              name="description"
+              placeholder={t("createModal.descriptionPlaceholder")}
+              {...form.getInputProps("description")}
             />
-          </Box>
 
-          <Select
-            id="type-select"
-            label={t("createModal.typeLabel")}
-            name="type"
-            placeholder={t("createModal.typePlaceholder")}
-            searchable
-            clearable
-            data={[
-              { value: TypeEnum.NOR, label: t("type.normal") },
-              { value: TypeEnum.RNK, label: t("type.ranking") },
-              { value: TypeEnum.TIE, label: t("type.tierList") },
-            ]}
-            {...form.getInputProps("type")}
-          />
-
-          {selectedMode === ModeEnum.C && (
-            <Stack gap="md">
-              <AsyncMultiSelectAutocomplete<Friendship>
-                id="collaborators"
-                name="collaborators"
-                label={t("createModal.collaboratorsLabel")}
-                placeholder={t("createModal.collaboratorsPlaceholder")}
-                useInfiniteQueryHook={useFriendSearch}
-                getOptionLabel={item => item.friend.username}
-                getOptionValue={item => item.friend.id}
-                hideTags
-                onAdd={handleAddCollaborator}
-                onRemove={handleRemoveCollaborator}
-                selectedItems={selectedCollaboratorObjects}
-                // The modal body scrolls and has a sticky footer, so the dropdown
-                // must portal out (and be allowed to flip) or it hides behind the buttons.
-                comboboxProps={{ withinPortal: true, middlewares: { flip: true, shift: true } }}
-                renderOption={item => (
-                  <Group gap={12}>
-                    <Box style={{ width: 24, height: 24, borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
-                      <SafeImage src={item.friend.gravatar_url} alt={item.friend.username} />
-                    </Box>
-                    <Text span fw={500}>
-                      {item.friend.username}
-                    </Text>
-                  </Group>
-                )}
-                {...form.getInputProps("collaborators")}
+            <Box style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Select
+                id="visibility-select"
+                label={t("createModal.visibilityLabel")}
+                name="visibility"
+                placeholder={t("createModal.visibilityPlaceholder")}
+                searchable
+                clearable
+                data={[
+                  { value: VisibilityEnum.PUB, label: t("visibility.public") },
+                  { value: VisibilityEnum.FRI, label: t("visibility.friendsOnly") },
+                  { value: VisibilityEnum.PRI, label: t("visibility.private") },
+                ]}
+                {...form.getInputProps("visibility")}
               />
+              <Select
+                id="mode-select"
+                label={t("createModal.modeLabel")}
+                name="mode"
+                placeholder={t("createModal.modePlaceholder")}
+                searchable
+                clearable
+                data={[
+                  { value: ModeEnum.S, label: t("mode.solo") },
+                  { value: ModeEnum.C, label: t("mode.collaborative") },
+                ]}
+                {...form.getInputProps("mode")}
+              />
+            </Box>
 
-              {/* Selected Collaborators Special Area */}
-              {selectedCollaboratorObjects.length > 0 && (
-                <Stack
-                  gap="xs"
-                  style={{
-                    padding: 16,
-                    borderRadius: 16,
-                    background: "var(--color-background-50)",
-                    border: "1px solid var(--color-background-100)",
-                  }}
-                >
-                  <Text
-                    fz={10}
-                    fw={700}
-                    c="var(--color-text-400)"
-                    style={{ textTransform: "uppercase", letterSpacing: "0.1em", paddingInline: 4 }}
+            <Select
+              id="type-select"
+              label={t("createModal.typeLabel")}
+              name="type"
+              placeholder={t("createModal.typePlaceholder")}
+              searchable
+              clearable
+              data={[
+                { value: TypeEnum.NOR, label: t("type.normal") },
+                { value: TypeEnum.RNK, label: t("type.ranking") },
+                { value: TypeEnum.TIE, label: t("type.tierList") },
+              ]}
+              {...form.getInputProps("type")}
+            />
+
+            {selectedMode === ModeEnum.C && (
+              <Stack gap="md">
+                <AsyncMultiSelectAutocomplete<Friendship>
+                  id="collaborators"
+                  name="collaborators"
+                  label={t("createModal.collaboratorsLabel")}
+                  placeholder={t("createModal.collaboratorsPlaceholder")}
+                  useInfiniteQueryHook={useFriendSearch}
+                  getOptionLabel={item => item.friend.username}
+                  getOptionValue={item => item.friend.id}
+                  hideTags
+                  onAdd={handleAddCollaborator}
+                  onRemove={handleRemoveCollaborator}
+                  selectedItems={selectedCollaboratorObjects}
+                  // The modal body scrolls and has a sticky footer, so the dropdown
+                  // must portal out (and be allowed to flip) or it hides behind the buttons.
+                  comboboxProps={{ withinPortal: true, middlewares: { flip: true, shift: true } }}
+                  renderOption={item => (
+                    <Group gap={12}>
+                      <Box style={{ width: 24, height: 24, borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
+                        <SafeImage src={item.friend.gravatar_url} alt={item.friend.username} />
+                      </Box>
+                      <Text span fw={500}>
+                        {item.friend.username}
+                      </Text>
+                    </Group>
+                  )}
+                  {...form.getInputProps("collaborators")}
+                />
+
+                {/* Selected Collaborators Special Area */}
+                {selectedCollaboratorObjects.length > 0 && (
+                  <Stack
+                    gap="xs"
+                    style={{
+                      padding: 16,
+                      borderRadius: 16,
+                      background: "var(--color-background-50)",
+                      border: "1px solid var(--color-background-100)",
+                    }}
                   >
-                    {t("createModal.selectedCollaborators")}
-                  </Text>
-                  <Group wrap="wrap" gap={8}>
-                    {selectedCollaboratorObjects.map(f => (
-                      <Group
-                        key={f.friend.id}
-                        gap={8}
-                        style={{
-                          paddingLeft: 6,
-                          paddingRight: 10,
-                          paddingBlock: 6,
-                          background: "var(--color-background-100)",
-                          borderRadius: "9999px",
-                          border: "1px solid var(--color-background-200)",
-                        }}
-                      >
-                        <Box
+                    <Text
+                      fz={12}
+                      fw={700}
+                      c="var(--color-text-400)"
+                      style={{ textTransform: "uppercase", letterSpacing: "0.1em", paddingInline: 4 }}
+                    >
+                      {t("createModal.selectedCollaborators")}
+                    </Text>
+                    <Group wrap="wrap" gap={8}>
+                      {selectedCollaboratorObjects.map(f => (
+                        <Group
+                          key={f.friend.id}
+                          gap={8}
                           style={{
-                            width: 24,
-                            height: 24,
+                            paddingLeft: 6,
+                            paddingRight: 10,
+                            paddingBlock: 6,
+                            background: "var(--color-background-100)",
                             borderRadius: "9999px",
-                            overflow: "hidden",
-                            flexShrink: 0,
-                            boxShadow: "0 0 0 1px var(--color-background-100)",
+                            border: "1px solid var(--color-background-200)",
                           }}
                         >
-                          <SafeImage src={f.friend.gravatar_url} alt={f.friend.username} />
-                        </Box>
-                        <Text span fz="xs" fw={700} c="var(--color-text-700)">
-                          {f.friend.username}
-                        </Text>
-                        <ActionIcon
-                          type="button"
-                          onClick={() => removeCollaborator(f.friend.id)}
-                          variant="subtle"
-                          size="xs"
-                          style={{ borderRadius: "9999px", color: "var(--color-text-400)" }}
-                        >
-                          <IconX style={{ width: 14, height: 14 }} />
-                        </ActionIcon>
-                      </Group>
-                    ))}
-                  </Group>
-                </Stack>
-              )}
-            </Stack>
-          )}
-        </Stack>
-      </form>
-    </AppModal>
+                          <Box
+                            style={{
+                              width: 24,
+                              height: 24,
+                              borderRadius: "9999px",
+                              overflow: "hidden",
+                              flexShrink: 0,
+                              boxShadow: "0 0 0 1px var(--color-background-100)",
+                            }}
+                          >
+                            <SafeImage src={f.friend.gravatar_url} alt={f.friend.username} />
+                          </Box>
+                          <Text span fz="xs" fw={700} c="var(--color-text-700)">
+                            {f.friend.username}
+                          </Text>
+                          <ActionIcon
+                            type="button"
+                            onClick={() => removeCollaborator(f.friend.id)}
+                            aria-label={t("createModal.removeCollaborator", { name: f.friend.username })}
+                            variant="subtle"
+                            size="md"
+                            style={{ borderRadius: "9999px", color: "var(--color-text-400)" }}
+                          >
+                            <IconX style={{ width: 14, height: 14 }} />
+                          </ActionIcon>
+                        </Group>
+                      ))}
+                    </Group>
+                  </Stack>
+                )}
+              </Stack>
+            )}
+          </Stack>
+        </form>
+      </AppModal>
+      {confirmModal}
+    </>
   );
 }

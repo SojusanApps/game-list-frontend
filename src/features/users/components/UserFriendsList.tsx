@@ -4,6 +4,8 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { UserDetail } from "@/client";
+import { Panel } from "@/components/ui/Panel";
+import { PanelHeader } from "@/components/ui/PanelHeader";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 interface UserFriendsListProps {
@@ -13,35 +15,24 @@ interface UserFriendsListProps {
 export default function UserFriendsList({ userDetails }: Readonly<UserFriendsListProps>) {
   const { t } = useTranslation("users");
   return (
-    <Box
+    <Panel
+      p={0}
       style={{
-        background: "var(--color-background-100)",
-        borderRadius: 12,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        border: "1px solid var(--color-background-200)",
         overflow: "hidden",
       }}
     >
-      <Group
-        justify="space-between"
-        align="center"
-        style={{
-          background: "var(--color-background-50)",
-          padding: "12px 16px",
-          borderBottom: "1px solid var(--color-background-200)",
-        }}
-      >
-        <Text fw={600} c="var(--color-text-900)">
-          {t("friends.title")}
-        </Text>
-        <Link
-          to={"/profile/$id/$slug/friends"}
-          params={{ id: userDetails?.id?.toString() || "", slug: userDetails?.slug || "" }}
-          style={{ fontSize: 12, fontWeight: 500, color: "var(--mantine-color-primary-6)" }}
-        >
-          {t("friends.viewAll")}
-        </Link>
-      </Group>
+      <PanelHeader
+        title={t("friends.title")}
+        action={
+          <Link
+            to={"/profile/$id/$slug/friends"}
+            params={{ id: userDetails?.id?.toString() || "", slug: userDetails?.slug || "" }}
+            style={{ fontSize: 12, fontWeight: 500, color: "var(--mantine-color-primary-6)" }}
+          >
+            {t("friends.viewAll")}
+          </Link>
+        }
+      />
       <Box p={16}>
         {userDetails?.friends && userDetails.friends.length > 0 ? (
           <Group gap={12} wrap="wrap">
@@ -60,7 +51,7 @@ export default function UserFriendsList({ userDetails }: Readonly<UserFriendsLis
                     <SafeImage
                       style={{ width: "100%", height: "100%" }}
                       src={friend.gravatar_url || undefined}
-                      alt={`friend avatar ${friend.username}`}
+                      alt={t("friends.avatarAlt", { name: friend.username })}
                     />
                   </Box>
                 </Link>
@@ -73,6 +64,6 @@ export default function UserFriendsList({ userDetails }: Readonly<UserFriendsLis
           </Text>
         )}
       </Box>
-    </Box>
+    </Panel>
   );
 }

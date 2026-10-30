@@ -65,3 +65,18 @@
   gap: 12px;
   padding: 12px 0 4px 64px;
 }
+
+@media (max-width: 48em) {
+  .matchedRowMain {
+    flex-wrap: wrap;
+  }
+
+  .fieldGroup {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .expandedFields {
+    padding-left: 0;
+  }
+}

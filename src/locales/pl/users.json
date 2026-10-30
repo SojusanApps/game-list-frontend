@@ -10,7 +10,8 @@
     "gameListButton": "Lista gier",
     "collectionsButton": "Kolekcje",
     "compareButton": "Porównaj",
-    "noLastUpdates": "Brak aktualizacji gier."
+    "noLastUpdates": "Brak aktualizacji gier.",
+    "gameCoverAlt": "Okładka gry {{title}}"
   },
   "friends": {
     "loading": "Wczytywanie znajomych...",
@@ -29,7 +30,8 @@
       "username": "Nazwa użytkownika",
       "lastActive": "Ostatnia aktywność",
       "since": "Znajomi od"
-    }
+    },
+    "avatarAlt": "Awatar użytkownika {{name}}"
   },
   "settings": {
     "title": "Ustawienia",
@@ -67,7 +69,7 @@
     "onHold": "Wstrzymane",
     "dropped": "Porzucone",
     "completed": "Ukończone",
-    "planToPlay": "Planuję zagrać",
+    "planToPlay": "Planowane",
     "notPlanned": "Nieplanowane",
     "totalEntries": "Łącznie wpisów",
     "meanScore": "Średnia ocena"

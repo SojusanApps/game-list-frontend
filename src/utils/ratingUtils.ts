@@ -20,3 +20,13 @@ export function getRatingTextColor(rating: number | null | undefined): string {
   if (rating === null || rating === undefined) return "inherit";
   return `var(--color-rating-${getRatingBucket(rating)}-text)`;
 }
+
+/** A score as shown to users: whole numbers stay whole, fractions (averages) get one decimal. */
+export function formatScore(score: number): string {
+  return Number.isInteger(score) ? String(score) : score.toFixed(1);
+}
+
+/** A mean of many scores, always one decimal so it reads the same on every page. */
+export function formatMeanScore(mean: number): string {
+  return mean.toFixed(1);
+}

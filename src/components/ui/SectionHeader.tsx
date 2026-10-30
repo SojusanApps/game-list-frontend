@@ -1,4 +1,4 @@
-import { Box, Group, Title } from "@mantine/core";
+import { Box, Group, Stack, Text, Title } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import { Link, LinkComponentProps } from "@tanstack/react-router";
 import React from "react";
@@ -8,11 +8,12 @@ import styles from "./SectionHeader.module.css";
 
 interface SectionHeaderProps {
   title: string;
+  subtitle?: string;
   viewMoreHref?: string | LinkComponentProps<"a">;
   className?: string;
 }
 
-export function SectionHeader({ title, viewMoreHref, className }: Readonly<SectionHeaderProps>) {
+export function SectionHeader({ title, subtitle, viewMoreHref, className }: Readonly<SectionHeaderProps>) {
   const { t } = useTranslation();
   const isObj = typeof viewMoreHref === "object" && viewMoreHref !== null;
   const linkProps = isObj ? viewMoreHref : { to: viewMoreHref };
@@ -35,9 +36,16 @@ export function SectionHeader({ title, viewMoreHref, className }: Readonly<Secti
             borderRadius: "9999px",
           }}
         />
-        <Title order={2} fz={24} fw={700} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
-          {title}
-        </Title>
+        <Stack gap={0}>
+          <Title order={2} fz={24} fw={700} c="var(--color-text-900)" style={{ letterSpacing: "-0.025em" }}>
+            {title}
+          </Title>
+          {subtitle && (
+            <Text size="sm" c="dimmed">
+              {subtitle}
+            </Text>
+          )}
+        </Stack>
       </Group>
       {viewMoreHref && (
         <Link

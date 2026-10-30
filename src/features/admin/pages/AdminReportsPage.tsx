@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { Report, ReportStatusEnum, SourceEnum, TargetTypeEnum } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 import { derivePageCount, LIST_PAGE_SIZE, PaginationControls } from "@/components/ui/PaginatedTable";
 import { UserChip } from "@/components/ui/UserChip";
 import { useIsStaff } from "@/features/auth";
@@ -165,14 +166,14 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
         </Group>
 
         <Stack gap={4}>
-          <Text fz="xs" fw={700} c="dimmed" tt="uppercase">
+          <Text fz="xs" fw={700} c="dimmed">
             {t("reports.reasonLabel")}
           </Text>
           <Text fz="sm">{report.reason}</Text>
         </Stack>
 
         <Stack gap={4}>
-          <Text fz="xs" fw={700} c="dimmed" tt="uppercase">
+          <Text fz="xs" fw={700} c="dimmed">
             {t("reports.snapshotLabel")}
           </Text>
           <Text
@@ -202,7 +203,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
           <Group justify="flex-end" gap={8} mt={4}>
             <Popover opened={rejectOpened} onChange={setRejectOpened} withArrow>
               <Popover.Target>
-                <Button variant="outline" color="red" size="sm" onClick={() => setRejectOpened(o => !o)}>
+                <Button variant="outline" color="error" size="sm" onClick={() => setRejectOpened(o => !o)}>
                   {t("reports.rejectButton")}
                 </Button>
               </Popover.Target>
@@ -219,7 +220,7 @@ function ReportRow({ report }: Readonly<{ report: Report }>) {
                     <Button variant="outline" size="sm" onClick={() => setRejectOpened(false)}>
                       {t("reports.cancelButton")}
                     </Button>
-                    <Button size="sm" color="red" onClick={handleReject} isLoading={isRejecting}>
+                    <Button size="sm" color="error" onClick={handleReject} isLoading={isRejecting}>
                       {t("reports.confirmRejectButton")}
                     </Button>
                   </Group>
@@ -285,93 +286,97 @@ export default function AdminReportsPage(): React.JSX.Element {
   };
 
   return (
-    <Stack gap={24} maw={1024} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("reports.title")} noindex />
-      <Stack gap={8}>
-        <Title order={2}>{t("reports.title")}</Title>
-        <Text c="dimmed">{t("reports.subtitle")}</Text>
-      </Stack>
-
-      <Group gap={16} align="flex-end" wrap="wrap">
-        <Select
-          label={t("reports.statusFilterLabel")}
-          value={status}
-          onChange={value => {
-            setStatus((value as ReportStatusEnum | "all" | null) ?? "all");
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("reports.statusAll") },
-            ...STATUS_OPTIONS.map(option => ({ value: option, label: t(`reports.status.${option}`) })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 200 }}
-        />
-        <Select
-          label={t("reports.targetTypeFilterLabel")}
-          value={targetType ?? "all"}
-          onChange={value => {
-            setTargetType(value === "all" || !value ? undefined : (value as TargetTypeEnum));
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("reports.targetTypeAll") },
-            ...TARGET_TYPE_OPTIONS.map(option => ({ value: option, label: tModeration(`targetType.${option}`) })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 220 }}
-        />
-        <Select
-          label={t("reports.sourceFilterLabel")}
-          value={source ?? "all"}
-          onChange={value => {
-            setSource(value === "all" || !value ? undefined : (value as SourceEnum));
-            setPage(1);
-          }}
-          data={[
-            { value: "all", label: t("reports.sourceAll") },
-            ...SOURCE_OPTIONS.map(option => ({ value: option, label: tModeration(`source.${option}`) })),
-          ]}
-          allowDeselect={false}
-          style={{ width: 180 }}
-        />
-        <NumberInput
-          label={t("reports.reportedUserFilterLabel")}
-          value={reportedUser}
-          onChange={value => {
-            setReportedUser(typeof value === "number" ? value : undefined);
-            setPage(1);
-          }}
-          min={1}
-          style={{ width: 180 }}
-        />
-        {isFiltered && (
-          <Button variant="ghost" onClick={clearFilters}>
-            {t("reports.clearFilters")}
-          </Button>
-        )}
-      </Group>
-
-      {isLoading ? (
-        <Skeleton h={200} radius="md" />
-      ) : (
-        <Stack gap={16}>
-          {isFetching && (
-            <Text c="dimmed" fz="xs">
-              {t("reports.loading")}
-            </Text>
-          )}
-          {reports.length === 0 ? (
-            <Text c="dimmed" fs="italic">
-              {t("reports.empty")}
-            </Text>
-          ) : (
-            reports.map(report => <ReportRow key={report.id} report={report} />)
-          )}
+    <PageShell width="default">
+      <Stack gap={24}>
+        <PageMeta title={t("reports.title")} noindex />
+        <Stack gap={8}>
+          <Title order={1} size="h2">
+            {t("reports.title")}
+          </Title>
+          <Text c="dimmed">{t("reports.subtitle")}</Text>
         </Stack>
-      )}
 
-      <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
-    </Stack>
+        <Group gap={16} align="flex-end" wrap="wrap">
+          <Select
+            label={t("reports.statusFilterLabel")}
+            value={status}
+            onChange={value => {
+              setStatus((value as ReportStatusEnum | "all" | null) ?? "all");
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("reports.statusAll") },
+              ...STATUS_OPTIONS.map(option => ({ value: option, label: t(`reports.status.${option}`) })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 200 }}
+          />
+          <Select
+            label={t("reports.targetTypeFilterLabel")}
+            value={targetType ?? "all"}
+            onChange={value => {
+              setTargetType(value === "all" || !value ? undefined : (value as TargetTypeEnum));
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("reports.targetTypeAll") },
+              ...TARGET_TYPE_OPTIONS.map(option => ({ value: option, label: tModeration(`targetType.${option}`) })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 220 }}
+          />
+          <Select
+            label={t("reports.sourceFilterLabel")}
+            value={source ?? "all"}
+            onChange={value => {
+              setSource(value === "all" || !value ? undefined : (value as SourceEnum));
+              setPage(1);
+            }}
+            data={[
+              { value: "all", label: t("reports.sourceAll") },
+              ...SOURCE_OPTIONS.map(option => ({ value: option, label: tModeration(`source.${option}`) })),
+            ]}
+            allowDeselect={false}
+            style={{ width: 180 }}
+          />
+          <NumberInput
+            label={t("reports.reportedUserFilterLabel")}
+            value={reportedUser}
+            onChange={value => {
+              setReportedUser(typeof value === "number" ? value : undefined);
+              setPage(1);
+            }}
+            min={1}
+            style={{ width: 180 }}
+          />
+          {isFiltered && (
+            <Button variant="ghost" onClick={clearFilters}>
+              {t("reports.clearFilters")}
+            </Button>
+          )}
+        </Group>
+
+        {isLoading ? (
+          <Skeleton h={200} radius="md" />
+        ) : (
+          <Stack gap={16}>
+            {isFetching && (
+              <Text c="dimmed" fz="xs">
+                {t("reports.loading")}
+              </Text>
+            )}
+            {reports.length === 0 ? (
+              <Text c="dimmed" fs="italic">
+                {t("reports.empty")}
+              </Text>
+            ) : (
+              reports.map(report => <ReportRow key={report.id} report={report} />)
+            )}
+          </Stack>
+        )}
+
+        <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+      </Stack>
+    </PageShell>
   );
 }

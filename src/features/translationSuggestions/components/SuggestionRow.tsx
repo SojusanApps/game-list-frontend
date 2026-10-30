@@ -238,7 +238,7 @@ export function SuggestionRow({ suggestion }: Readonly<SuggestionRowProps>) {
       {(showWithdraw || showModerate) && (
         <Group justify="flex-end" gap={8} mt={4}>
           {showWithdraw && (
-            <Button variant="outline" color="red" size="sm" onClick={handleWithdraw} isLoading={isWithdrawing}>
+            <Button variant="outline" color="error" size="sm" onClick={handleWithdraw} isLoading={isWithdrawing}>
               {t("translationSuggestionModal.withdrawButton")}
             </Button>
           )}
@@ -246,7 +246,7 @@ export function SuggestionRow({ suggestion }: Readonly<SuggestionRowProps>) {
             <>
               <Popover opened={rejectOpened} onChange={setRejectOpened} withArrow>
                 <Popover.Target>
-                  <Button variant="outline" color="red" size="sm" onClick={() => setRejectOpened(o => !o)}>
+                  <Button variant="outline" color="error" size="sm" onClick={() => setRejectOpened(o => !o)}>
                     {t("translationSuggestionModal.rejectButton")}
                   </Button>
                 </Popover.Target>
@@ -263,7 +263,7 @@ export function SuggestionRow({ suggestion }: Readonly<SuggestionRowProps>) {
                       <Button variant="outline" size="sm" onClick={() => setRejectOpened(false)}>
                         {t("translationSuggestionModal.cancelButton")}
                       </Button>
-                      <Button size="sm" color="red" onClick={handleReject} isLoading={isRejecting}>
+                      <Button size="sm" color="error" onClick={handleReject} isLoading={isRejecting}>
                         {t("translationSuggestionModal.confirmRejectButton")}
                       </Button>
                     </Group>

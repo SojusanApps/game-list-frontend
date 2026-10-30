@@ -1,0 +1,50 @@
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-background-300);
+  background: var(--color-background-100);
+  color: var(--color-text-700);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  min-height: 40px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tab:hover {
+  border-color: var(--color-primary-400);
+}
+
+.active {
+  background: var(--mantine-color-primary-filled);
+  border-color: var(--mantine-color-primary-filled);
+  color: var(--mantine-color-primary-contrast);
+}
+
+.count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  background: var(--color-background-300);
+  color: var(--color-text-700);
+}
+
+.active .count {
+  background: color-mix(in srgb, var(--mantine-color-primary-contrast) 20%, transparent);
+  color: var(--mantine-color-primary-contrast);
+}
+
+.scroller {
+  cursor: grab;
+  user-select: none;
+}
+
+.scroller:active {
+  cursor: grabbing;
+}

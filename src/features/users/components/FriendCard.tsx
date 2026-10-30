@@ -28,7 +28,7 @@ export default function FriendCard({ friendship }: Readonly<FriendCardProps>) {
             <SafeImage
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
               src={friend.gravatar_url || undefined}
-              alt={`${friend.username}'s avatar`}
+              alt={t("friends.avatarAlt", { name: friend.username })}
             />
           </Box>
         </Link>

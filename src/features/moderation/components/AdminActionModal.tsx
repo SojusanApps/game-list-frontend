@@ -58,7 +58,7 @@ export function AdminActionModal({
       closeButtonLabel={cancelLabel}
       footer={
         <Group justify="flex-end" gap={12}>
-          <Button variant="secondary" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
             {cancelLabel}
           </Button>
           <Button variant={isDestructive ? "destructive" : "default"} onClick={onConfirm} isLoading={isLoading}>

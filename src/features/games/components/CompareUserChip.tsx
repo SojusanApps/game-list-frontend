@@ -1,5 +1,6 @@
 import { Box, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 import { UserDetail } from "@/client";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -12,6 +13,7 @@ interface CompareUserChipProps {
 }
 
 export function CompareUserChip({ userDetails }: Readonly<CompareUserChipProps>) {
+  const { t } = useTranslation();
   return (
     <Link
       to={"/profile/$id/$slug"}
@@ -22,7 +24,7 @@ export function CompareUserChip({ userDetails }: Readonly<CompareUserChipProps>)
         <SafeImage
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
           src={userDetails.gravatar_url || undefined}
-          alt={`${userDetails.username}'s avatar`}
+          alt={t("userAvatarAltNamed", { name: userDetails.username })}
         />
       </Box>
       <TruncatedText className={styles.username}>{userDetails.username}</TruncatedText>

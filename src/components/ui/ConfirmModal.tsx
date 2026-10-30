@@ -11,7 +11,6 @@ export interface ConfirmModalProps {
   message: string | React.ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
-  confirmColor?: string;
   isDestructive?: boolean;
   isLoading?: boolean;
   onConfirm: () => void;
@@ -24,7 +23,6 @@ export function ConfirmModal({
   message,
   confirmLabel,
   cancelLabel,
-  confirmColor = "var(--color-primary-600)",
   isDestructive = false,
   isLoading = false,
   onConfirm,
@@ -44,16 +42,10 @@ export function ConfirmModal({
       centered
       footer={
         <Group justify="flex-end" gap={12}>
-          <Button variant="secondary" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
             {cancelLabel ?? t("cancel")}
           </Button>
-          <Button
-            onClick={handleConfirm}
-            isLoading={isLoading}
-            style={{
-              backgroundColor: isDestructive ? "var(--color-error-500)" : confirmColor,
-            }}
-          >
+          <Button variant={isDestructive ? "destructive" : "default"} onClick={handleConfirm} isLoading={isLoading}>
             {confirmLabel ?? t("confirm")}
           </Button>
         </Group>

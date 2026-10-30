@@ -4,6 +4,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { PageMeta } from "@/components/ui/PageMeta";
+import { PageShell } from "@/components/ui/PageShell";
 
 import { version as uiVersion } from "../../../../package.json";
 import { useGetApiVersion } from "../hooks/adminQueries";
@@ -15,7 +16,7 @@ function VersionCard({
 }: Readonly<{ label: string; value: string | undefined; isLoading?: boolean }>): React.JSX.Element {
   return (
     <Paper withBorder p="xl" radius="md">
-      <Text fz="sm" tt="uppercase" fw={700} c="dimmed" mb={4}>
+      <Text fz="sm" fw={700} c="dimmed" mb={4}>
         {label}
       </Text>
       <Skeleton visible={!!isLoading} width="auto">
@@ -67,27 +68,35 @@ export default function AdminPage(): React.JSX.Element {
   ];
 
   return (
-    <Stack gap={40} maw={1280} mx="auto" px={16} w="100%" style={{ flexGrow: 1 }}>
-      <PageMeta title={t("page.title")} noindex />
-      <Stack gap={8}>
-        <Title order={2}>{t("page.title")}</Title>
-        <Text c="dimmed">{t("page.subtitle")}</Text>
+    <PageShell width="wide">
+      <Stack gap={40}>
+        <PageMeta title={t("page.title")} noindex />
+        <Stack gap={8}>
+          <Title order={1} size="h2">
+            {t("page.title")}
+          </Title>
+          <Text c="dimmed">{t("page.subtitle")}</Text>
+        </Stack>
+        <Stack gap={16}>
+          <Title order={2} size="h4">
+            {t("actions.title")}
+          </Title>
+          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+            {adminActions.map(action => (
+              <AdminActionCard key={action.to} label={action.label} description={action.description} to={action.to} />
+            ))}
+          </SimpleGrid>
+        </Stack>
+        <Stack gap={16}>
+          <Title order={2} size="h4">
+            {t("versions")}
+          </Title>
+          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+            <VersionCard label={t("apiVersion")} value={apiVersionData?.version} isLoading={isLoading} />
+            <VersionCard label={t("uiVersion")} value={uiVersion} />
+          </SimpleGrid>
+        </Stack>
       </Stack>
-      <Stack gap={16}>
-        <Title order={4}>{t("actions.title")}</Title>
-        <SimpleGrid cols={{ base: 1, sm: 2 }}>
-          {adminActions.map(action => (
-            <AdminActionCard key={action.to} label={action.label} description={action.description} to={action.to} />
-          ))}
-        </SimpleGrid>
-      </Stack>
-      <Stack gap={16}>
-        <Title order={4}>{t("versions")}</Title>
-        <SimpleGrid cols={{ base: 1, sm: 2 }}>
-          <VersionCard label={t("apiVersion")} value={apiVersionData?.version} isLoading={isLoading} />
-          <VersionCard label={t("uiVersion")} value={uiVersion} />
-        </SimpleGrid>
-      </Stack>
-    </Stack>
+    </PageShell>
   );
 }

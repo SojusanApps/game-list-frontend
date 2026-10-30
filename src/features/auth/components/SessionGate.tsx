@@ -1,78 +1,58 @@
-import { Center, Loader, Paper, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { Alert } from "@mantine/core";
+import { IconAlertTriangle } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import AppLogo from "@/components/ui/AppLogo";
-import { Button } from "@/components/ui/Button";
-import i18n from "@/lib/i18n";
 import { initKeycloak } from "@/lib/keycloak";
-import { useLanguageStore, type Language } from "@/lib/languageStore";
+import { fireAndForget } from "@/utils/promiseUtils";
 
-type SessionState = "pending" | "ready" | "error";
+import { useAuthStore } from "../store/authStore";
 
-/** Blocks rendering `children` until the Keycloak session check resolves. Fails closed on error. */
+/**
+ * Renders the app immediately and checks the Keycloak session in the background, so the public catalogue
+ * doesn't depend on the identity provider being reachable. A failed check is treated as "signed out" and
+ * shown as a dismissible banner. Route guards await the check themselves (see `waitForSession`).
+ */
 export function SessionGate({ children }: Readonly<{ children: React.ReactNode }>): React.JSX.Element {
   const { t } = useTranslation("auth");
-  const { language, setLanguage } = useLanguageStore();
-  const [state, setState] = React.useState<SessionState>("pending");
-
-  const handleLanguageChange = (value: string) => {
-    const lang = value as Language;
-    setLanguage(lang);
-    void i18n.changeLanguage(lang);
-  };
+  const queryClient = useQueryClient();
+  const [failed, setFailed] = React.useState(false);
+  const [dismissed, setDismissed] = React.useState(false);
 
   React.useEffect(() => {
     let cancelled = false;
     initKeycloak()
       .then(() => {
-        if (!cancelled) setState("ready");
+        // Queries that ran before the session resolved were sent without a token; refetch what's on screen.
+        if (!cancelled && useAuthStore.getState().isAuthenticated) {
+          fireAndForget(queryClient.invalidateQueries({ refetchType: "active" }));
+        }
       })
       .catch(() => {
-        if (!cancelled) setState("error");
+        if (!cancelled) setFailed(true);
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [queryClient]);
 
-  if (state === "pending") {
-    return (
-      <Center style={{ minHeight: "100vh" }}>
-        <Loader />
-      </Center>
-    );
-  }
-
-  if (state === "error") {
-    return (
-      <Center style={{ minHeight: "100vh" }}>
-        <Paper p="xl" radius="md" style={{ textAlign: "center", maxWidth: 500 }} w="100%">
-          <Stack align="center" gap="md">
-            <AppLogo size="md" />
-            <Title order={1} c="var(--color-text-900)">
-              {t("sessionCheck.errorTitle")}
-            </Title>
-            <Text size="lg" c="var(--color-text-600)">
-              {t("sessionCheck.errorMessage")}
-            </Text>
-            <Button size="lg" onClick={() => globalThis.location.reload()}>
-              {t("sessionCheck.retry")}
-            </Button>
-            <SegmentedControl
-              value={language}
-              onChange={handleLanguageChange}
-              size="xs"
-              data={[
-                { label: "EN", value: "en" },
-                { label: "PL", value: "pl" },
-              ]}
-            />
-          </Stack>
-        </Paper>
-      </Center>
-    );
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      {failed && !dismissed && (
+        <Alert
+          color="error"
+          variant="light"
+          radius={0}
+          icon={<IconAlertTriangle size={18} />}
+          withCloseButton
+          closeButtonLabel={t("sessionCheck.dismiss")}
+          onClose={() => setDismissed(true)}
+        >
+          {t("sessionCheck.bannerMessage")}
+        </Alert>
+      )}
+      {children}
+    </>
+  );
 }

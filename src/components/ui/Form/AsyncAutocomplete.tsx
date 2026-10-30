@@ -104,7 +104,8 @@ export default function AsyncAutocomplete<T>({
       required={required}
       className={className}
       data={selectData}
-      value={value}
+      // An empty string is "nothing selected": passing it through would show the clear (X) button on an empty field.
+      value={value || null}
       onChange={onChange}
       error={error}
       searchable

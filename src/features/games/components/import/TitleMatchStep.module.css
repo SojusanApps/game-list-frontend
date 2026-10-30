@@ -25,6 +25,13 @@
   transition: border-color 150ms;
 }
 
+.titleItemMain {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
 .titleItemActive {
   border-color: var(--mantine-color-primary-6);
 }

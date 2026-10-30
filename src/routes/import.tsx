@@ -1,14 +1,9 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { resolveAuthGuardOutcome } from "@/features/auth/utils/authGuard";
+import { requireSignedIn } from "@/features/auth/utils/loginRedirect";
 import { ImportPage } from "@/features/games";
 
 export const Route = createFileRoute("/import")({
-  beforeLoad: ({ context }) => {
-    const outcome = resolveAuthGuardOutcome({ isAuthenticated: context.auth.isAuthenticated }, "authenticated");
-    if (outcome === "require-login") {
-      throw redirect({ to: "/" });
-    }
-  },
+  beforeLoad: ({ location }) => requireSignedIn(location),
   component: ImportPage,
 });

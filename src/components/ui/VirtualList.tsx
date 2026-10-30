@@ -1,8 +1,10 @@
-import { Box, Group, Loader, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, ScrollArea, Text } from "@mantine/core";
 import { IconCircleCheck, IconSearchOff } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface VirtualListProps<T> {
   items: T[];
@@ -135,29 +137,7 @@ export const VirtualList = React.forwardRef(function VirtualListComponent<T>(
         })}
       </Box>
       {items.length === 0 && !isFetchingNextPage && (
-        <Stack align="center" justify="center" gap={24} style={{ paddingBlock: "80px", textAlign: "center" }}>
-          <Box
-            style={{
-              width: "80px",
-              height: "80px",
-              background: "var(--color-primary-tint-bg)",
-              borderRadius: "9999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconSearchOff style={{ width: 40, height: 40, color: "var(--color-primary-tint-text)" }} />
-          </Box>
-          <Stack gap={8}>
-            <Title order={3} fz={24} fw={700} c="var(--color-text-900)">
-              {t("noResults")}
-            </Title>
-            <Text c="var(--color-text-500)" maw={384} mx="auto">
-              {t("noResultsDescription")}
-            </Text>
-          </Stack>
-        </Stack>
+        <EmptyState icon={<IconSearchOff size={40} />} title={t("noResults")} description={t("noResultsDescription")} />
       )}
     </ScrollArea>
   );

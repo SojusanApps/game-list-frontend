@@ -142,6 +142,7 @@ export const GameCatalogueSearch = ({
         <TextInput
           style={{ flex: 1 }}
           placeholder={placeholder ?? t("search.placeholderGames")}
+          aria-label={placeholder ?? t("search.placeholderGames")}
           leftSection={<IconSearch size={16} />}
           value={search}
           onChange={event => onSearchChange(event.currentTarget.value)}

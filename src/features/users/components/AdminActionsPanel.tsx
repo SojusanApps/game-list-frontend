@@ -99,7 +99,7 @@ export function AdminActionsPanel({ userId, isTargetStaff }: Readonly<AdminActio
       <Text fz="xs" c="dimmed" mb={12}>
         {t("adminActionsPanel.description")}
       </Text>
-      <Button variant="outline" color="red" fullWidth onClick={() => setOpened(true)}>
+      <Button variant="outline" color="error" fullWidth onClick={() => setOpened(true)}>
         {t("banButton.label")}
       </Button>
 

@@ -107,8 +107,9 @@ export const useDeleteCollection = () => {
   return useMutation({
     mutationFn: deleteCollection,
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: collectionKeys.lists() });
+      // The detail no longer exists — drop it instead of refetching a 404.
+      queryClient.removeQueries({ queryKey: collectionKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: collectionKeys.all });
     },
   });
 };

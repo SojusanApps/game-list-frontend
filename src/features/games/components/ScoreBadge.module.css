@@ -10,3 +10,32 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.xs {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 900;
+  border-radius: 6px;
+}
+
+.sm {
+  /* default size is the base .scoreBadge rule */
+}
+
+.lg {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  font-size: 20px;
+  font-weight: 900;
+  border-radius: 12px;
+}
+
+.label {
+  margin-left: 2px;
+  font-size: 0.65em;
+  font-weight: 600;
+  opacity: 0.8;
+}

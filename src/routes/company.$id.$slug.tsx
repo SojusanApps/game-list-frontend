@@ -4,6 +4,7 @@ import { CompanyDetailPage } from "@/features/games";
 import { getCompanyDetail } from "@/features/games/api/game";
 import { gameKeys } from "@/lib/queryKeys";
 import { slugSchema, idSchema } from "@/lib/validation";
+import { rethrowAsNotFound } from "@/utils/routeUtils";
 
 export const Route = createFileRoute("/company/$id/$slug")({
   beforeLoad: ({ params }) => {
@@ -15,12 +16,13 @@ export const Route = createFileRoute("/company/$id/$slug")({
   },
   loader: async ({ context: { queryClient }, params }) => {
     try {
-      await queryClient.ensureQueryData({
+      await queryClient.query({
+        staleTime: "static",
         queryKey: gameKeys.companyDetail(Number(params.id)),
         queryFn: () => getCompanyDetail(Number(params.id)),
       });
-    } catch {
-      throw notFound();
+    } catch (error) {
+      rethrowAsNotFound(error);
     }
   },
   component: CompanyDetailPage,

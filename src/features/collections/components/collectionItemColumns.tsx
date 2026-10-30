@@ -77,7 +77,7 @@ export function createCollectionItemColumns({
         cell: ({ row }) => (
           <ActionIcon
             variant="subtle"
-            color="red"
+            color="error"
             size="lg"
             aria-label={t("detail.table.remove")}
             onClick={event => {

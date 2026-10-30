@@ -150,7 +150,7 @@ export const ConfigureGameList = ({
     <Box className={styles.card}>
       <Stack gap={16}>
         <Group justify="space-between" align="center">
-          <Title order={3} fz={20} fw={700} c="var(--color-text-900)">
+          <Title order={2} fz={20} fw={700} c="var(--color-text-900)">
             {t("import.matchedTitle")}
           </Title>
           <Text fz="sm" c="dimmed">
@@ -195,7 +195,7 @@ export const ConfigureGameList = ({
           </Button>
         </Group>
 
-        <Group fz="sm" fw={600} c="dimmed" gap={16} style={{ paddingLeft: 64 }}>
+        <Group fz="sm" fw={600} c="dimmed" gap={16} visibleFrom="sm" style={{ paddingLeft: 64 }}>
           <SortableHeader
             column="title"
             label={t("import.gameTitle")}

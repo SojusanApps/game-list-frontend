@@ -1,4 +1,5 @@
 import { Box, Group, Stack } from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import { useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,11 +9,20 @@ import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { ListViewModeToggle } from "@/components/ui/ListViewModeToggle";
 import { ClientPaginatedTable } from "@/components/ui/PaginatedTable";
-import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { Panel } from "@/components/ui/Panel";
+import { resolveColumnCount, VirtualGridList } from "@/components/ui/VirtualGridList";
 import { useListViewStore } from "@/lib/listViewStore";
 
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { createCompanyGameColumns } from "./companyGameColumns";
+
+// Related games are browsed, not scanned, so the covers are large enough to read titles: at most five per row.
+const RELATED_COLUMNS = 5;
+// A row of covers is about 300px at these sizes; the grid adds its own padding around the rows.
+const ROW_HEIGHT_PX = 320;
+const GRID_PADDING_PX = 60;
+/** Rows shown before the list scrolls inside its section. */
+const MAX_VISIBLE_ROWS = 2;
 
 interface GameDetailsRelatedTabProps {
   gameDetails?: Game;
@@ -23,6 +33,14 @@ export default function GameDetailsRelatedTab({ gameDetails }: Readonly<GameDeta
   const navigate = useNavigate();
   const renderMode = useListViewStore(state => state.mode);
   const columns = React.useMemo(() => createCompanyGameColumns(), []);
+  const { width: viewportWidth } = useViewportSize();
+
+  // Fit the grid to its rows (up to two) so a short list isn't followed by empty space.
+  const gridHeight = (gameCount: number) => {
+    const columnCount = resolveColumnCount(viewportWidth, RELATED_COLUMNS);
+    const rows = Math.min(Math.ceil(gameCount / columnCount), MAX_VISIBLE_ROWS);
+    return `${rows * ROW_HEIGHT_PX + GRID_PADDING_PX}px`;
+  };
 
   const sections: { title: string; games: CompanyGame[] | undefined }[] = [
     { title: t("related.dlcs"), games: gameDetails?.dlcs },
@@ -57,7 +75,8 @@ export default function GameDetailsRelatedTab({ gameDetails }: Readonly<GameDeta
             hasNextPage={false}
             isFetchingNextPage={false}
             fetchNextPage={() => {}}
-            style={{ height: "400px" }}
+            columnCount={RELATED_COLUMNS}
+            style={{ height: gridHeight(games.length) }}
             renderItem={(game: CompanyGame) => (
               <ItemOverlay
                 itemPageUrl={`/game/${game.id}/${game.slug}`}
@@ -100,20 +119,16 @@ export default function GameDetailsRelatedTab({ gameDetails }: Readonly<GameDeta
       {sections.map(section => renderSection(section))}
 
       {!gameDetails?.parent_game && !hasAnyList && (
-        <Box
+        <Panel
+          p={"32px"}
           style={{
-            background: "var(--color-background-100)",
-            borderRadius: "12px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            border: "1px solid var(--color-background-200)",
-            padding: "32px",
             textAlign: "center",
             color: "var(--color-text-500)",
             fontStyle: "italic",
           }}
         >
           {t("related.noRelatedGames")}
-        </Box>
+        </Panel>
       )}
     </Stack>
   );

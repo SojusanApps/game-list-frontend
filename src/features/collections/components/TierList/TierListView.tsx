@@ -67,8 +67,6 @@ export const TierListView = React.memo(function TierListViewInner({
           tier: targetTier,
           oldTier: sourceTierId as TierEnum | "UNRANKED",
         });
-
-        notifications.show({ title: t("tierList.successTitle"), message: t("tierList.itemMoved"), color: "green" });
       } catch (error) {
         notifications.show({ title: t("tierList.errorTitle"), message: t("tierList.failedToMove"), color: "red" });
         console.error(error);
@@ -118,8 +116,6 @@ export const TierListView = React.memo(function TierListViewInner({
           position,
           oldTier: sourceTierId as TierEnum | "UNRANKED",
         });
-
-        notifications.show({ title: t("tierList.successTitle"), message: t("tierList.itemReordered"), color: "green" });
       } catch (error) {
         notifications.show({ title: t("tierList.errorTitle"), message: t("tierList.failedToReorder"), color: "red" });
         console.error(error);

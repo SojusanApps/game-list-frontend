@@ -19,9 +19,11 @@ import {
 interface FriendshipButtonsProps {
   currentUserId: number | null;
   userId: number;
+  /** The viewed user's username; lets the friendship be looked up directly instead of scanning the first page. */
+  username?: string;
 }
 
-export default function FriendshipButtons({ currentUserId, userId }: Readonly<FriendshipButtonsProps>) {
+export default function FriendshipButtons({ currentUserId, userId, username }: Readonly<FriendshipButtonsProps>) {
   const { t } = useTranslation("users");
   const requireAuth = useRequireAuth();
   const { confirm, confirmModal } = useConfirm();
@@ -30,9 +32,12 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
   const { mutate: rejectRequest } = useRejectFriendRequest();
   const { mutate: deleteFriendship } = useDeleteFriendship();
 
-  const { data: friendshipsData } = useGetFriendships(currentUserId ? { user: String(currentUserId) } : undefined, {
-    enabled: !!currentUserId,
-  });
+  // Ask for exactly this friendship: the unfiltered list is paginated, so a friend beyond page one looked
+  // like a stranger and offered "Add friend" again.
+  const { data: friendshipsData, isPending: isFriendshipsPending } = useGetFriendships(
+    currentUserId ? { user: String(currentUserId), ...(username ? { friend__username: username } : {}) } : undefined,
+    { enabled: !!currentUserId },
+  );
   const { data: sentRequestsData } = useGetFriendshipRequests({ receiver: String(userId) });
   // Fetch requests sent BY this user. We will check if any are sent TO us.
   const { data: incomingRequestsData } = useGetFriendshipRequests({ sender: String(userId) });
@@ -131,14 +136,19 @@ export default function FriendshipButtons({ currentUserId, userId }: Readonly<Fr
 
   if (isRequestSent) {
     return (
-      <Button type="button" disabled variant="secondary" fullWidth style={{ cursor: "default" }}>
+      <Button type="button" disabled variant="outline" fullWidth style={{ cursor: "default" }}>
         {isOutgoingRejected ? t("friendship.requestRejected") : t("friendship.requestSent")}
       </Button>
     );
   }
 
   return (
-    <Button type="button" onClick={() => requireAuth(handleAddFriend)} fullWidth>
+    <Button
+      type="button"
+      onClick={() => requireAuth(handleAddFriend, "friend")}
+      disabled={!!currentUserId && isFriendshipsPending}
+      fullWidth
+    >
       {t("friendship.addFriend")}
     </Button>
   );

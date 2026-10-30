@@ -33,13 +33,26 @@
     "levelWarning": "Ostrzeżenie",
     "levelError": "Błąd",
     "userAvatarAlt": "Awatar użytkownika",
-    "unknown": "Nieznany"
+    "unknown": "Nieznany",
+    "someone": "Ktoś"
   },
   "bell": {
     "title": "Powiadomienia",
     "actorAvatarAlt": "Awatar aktora",
     "empty": "Brak nieprzeczytanych powiadomień",
     "viewAll": "Zobacz wszystkie powiadomienia",
-    "new": "Nowe"
+    "new": "Nowe",
+    "ariaLabel_one": "Powiadomienia, {{count}} nieprzeczytane",
+    "ariaLabel_few": "Powiadomienia, {{count}} nieprzeczytane",
+    "ariaLabel_many": "Powiadomienia, {{count}} nieprzeczytanych",
+    "ariaLabel_other": "Powiadomienia, {{count}} nieprzeczytanych",
+    "ariaLabelNone": "Powiadomienia",
+    "markAllRead": "Oznacz wszystkie jako przeczytane"
+  },
+  "friendRequest": {
+    "accept": "Akceptuj",
+    "decline": "Odrzuć",
+    "accepted": "Zaakceptowano",
+    "declined": "Odrzucono"
   }
 }

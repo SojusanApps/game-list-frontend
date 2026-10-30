@@ -108,7 +108,7 @@ export const CollectionHeader = ({ collection, onEdit, onAddGame, onPairwiseRank
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 paddingInline: "24px",
-                boxShadow: "0 10px 15px -3px rgba(99,102,241,0.2)",
+                boxShadow: "var(--shadow-button-glow)",
               }}
             >
               {t("header.addGame")}

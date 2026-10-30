@@ -145,6 +145,7 @@ export function ReportButton({
       {renderTrigger ? renderTrigger({ onClick: openModal }) : <DefaultTrigger label={label} onClick={openModal} />}
 
       <AppModal
+        fullScreenOnMobile
         opened={opened}
         onClose={close}
         title={t("reportModal.title", { targetType: targetTypeLabel })}

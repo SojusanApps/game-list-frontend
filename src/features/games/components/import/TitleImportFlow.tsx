@@ -1,12 +1,14 @@
 import { Box, Stack, Text, Stepper, Group } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
+import { useBlocker } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { GameListBulkCreateItemWritable, GameSimpleList, StoreEntry } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 import { playtimeHoursToMinutes } from "@/utils/playtimeUtils";
 
 import { useBulkCreateGameList, useStoreLink, useStoreNotAGame, useGetExportedGameList } from "../../hooks/gameQueries";
@@ -52,6 +54,25 @@ export const TitleImportFlow = () => {
   const currentUserId = useCurrentUserId();
 
   const [activeStep, setActiveStep] = React.useState(STEP_INPUT);
+
+  // Matching dozens of store titles by hand is the slowest task in the app: ask before leaving it half-done
+  // (in-app navigation) and let the browser warn on refresh/close. Not persisted, in line with ADR 0006.
+  const { confirm, confirmModal } = useConfirm();
+  const isInProgress = activeStep > STEP_INPUT && activeStep < STEP_DONE;
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!isInProgress) return false;
+      const leave = await confirm({
+        title: t("import.leaveTitle"),
+        message: t("import.leaveMessage"),
+        confirmLabel: t("import.leaveConfirm"),
+        cancelLabel: t("import.stay"),
+        isDestructive: true,
+      });
+      return !leave;
+    },
+    enableBeforeUnload: () => isInProgress,
+  });
   const [titles, setTitles] = React.useState<string[]>([]);
   // Match-step result per title index; a title without one is skipped from the import.
   const [resolutions, setResolutions] = React.useState<Record<number, TitleResolution>>({});
@@ -191,7 +212,7 @@ export const TitleImportFlow = () => {
   // ── Final import ────────────────────────────────────────────────────────
   const handleImport = async () => {
     if (!currentUserId) {
-      notifications.show({ title: "Error", message: "User not identified.", color: "red" });
+      notifications.show({ title: t("import.errorTitle"), message: t("import.userNotIdentified"), color: "red" });
       return;
     }
     const body: GameListBulkCreateItemWritable[] = rows.map(row => ({
@@ -225,6 +246,7 @@ export const TitleImportFlow = () => {
 
   return (
     <>
+      {confirmModal}
       <Stepper active={activeStep} size="sm" className={styles.stepperWrapper}>
         <Stepper.Step label={t("import.stepTitles")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepMatch")} completedIcon={<IconCheck size={16} />} />
@@ -276,7 +298,7 @@ export const TitleImportFlow = () => {
           onClear={handleClear}
           onToggleNotAGame={handleToggleNotAGame}
           onBack={() => setActiveStep(STEP_INPUT)}
-          onContinue={() => void handleMatchContinue()}
+          onContinue={() => handleMatchContinue()}
         />
       )}
 

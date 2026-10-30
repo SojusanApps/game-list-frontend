@@ -10,12 +10,14 @@
   opacity: 0;
   transition: opacity 200ms;
 }
-.collectionItem:hover .collectionItemDelete {
+.collectionItem:hover .collectionItemDelete,
+.collectionItem:focus-within .collectionItemDelete,
+.collectionItem .collectionItemDelete:has([aria-expanded="true"]) {
   opacity: 1;
 }
 
-@media (max-width: 768px) {
-  .collectionItemDelete {
+@media (hover: none) {
+  .collectionItem .collectionItemDelete {
     opacity: 1;
   }
 }
