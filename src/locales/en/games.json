@@ -338,7 +338,8 @@
       "actions": "Actions",
       "edit": "Edit entry",
       "empty": "No games in this list",
-      "note": "Note"
+      "note": "Note",
+      "owned": "Owned"
     },
     "resultCount_one": "{{count}} game",
     "resultCount_other": "{{count}} games",

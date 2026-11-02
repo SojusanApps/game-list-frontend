@@ -356,7 +356,8 @@
       "actions": "Akcje",
       "edit": "Edytuj pozycję",
       "empty": "Brak gier na tej liście",
-      "note": "Notatka"
+      "note": "Notatka",
+      "owned": "Posiadana"
     },
     "resultCount_one": "{{count}} gra",
     "resultCount_other": "{{count}} gier",

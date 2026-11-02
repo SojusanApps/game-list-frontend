@@ -56,6 +56,7 @@ import { GameListModal } from "../components/GameListModal";
 import { GameListNote } from "../components/GameListNote";
 import { GameListStatusTabs } from "../components/GameListStatusTabs";
 import GameSearchFilter, { ValidationSchema as GameSearchFilterSchema } from "../components/GameSearchFilter";
+import { OwnedBadge } from "../components/OwnedBadge";
 import { RandomPtpModal } from "../components/RandomPtpModal";
 import { useGetGameListsList, usePartialUpdateGameList } from "../hooks/gameQueries";
 import { useGameListInfiniteQuery, GameListGameFilters } from "../hooks/useGameListQueries";
@@ -134,6 +135,7 @@ function QuickActions({ gameListItem, onEdit }: Readonly<QuickActionsProps>) {
 }
 
 const GameListGridItem = React.memo(({ gameListItem, isOwner, ownerUsername, onEdit }: GameListItemProps) => {
+  const isOwned = gameListItem.owned_on.length > 0;
   return (
     <ItemOverlay
       name={gameListItem.title}
@@ -142,11 +144,14 @@ const GameListGridItem = React.memo(({ gameListItem, isOwner, ownerUsername, onE
       status={gameListItem.status_code}
       rating={gameListItem.score}
       actionSlot={
-        gameListItem.description ? (
-          <Box style={{ position: "absolute", bottom: 16, left: 16, zIndex: 20 }}>
-            <GameListNote gameListItem={gameListItem} isOwner={isOwner} ownerUsername={ownerUsername} />
-          </Box>
-        ) : undefined
+        <>
+          {isOwned && <OwnedBadge score={gameListItem.score} />}
+          {gameListItem.description && (
+            <Box style={{ position: "absolute", bottom: 16, left: 16, zIndex: 20 }}>
+              <GameListNote gameListItem={gameListItem} isOwner={isOwner} ownerUsername={ownerUsername} />
+            </Box>
+          )}
+        </>
       }
       revealedActionSlot={isOwner ? <QuickActions gameListItem={gameListItem} onEdit={onEdit} /> : undefined}
     />
