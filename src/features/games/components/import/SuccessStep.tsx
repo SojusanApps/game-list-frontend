@@ -31,8 +31,13 @@ export const SuccessStep = ({ importedCount }: SuccessStepProps) => {
           {t("import.successTitle")}
         </Title>
         <Text ta="center" c="dimmed" fz="lg">
-          {t("import.successMessage", { count: importedCount })}
+          {importedCount > 0 ? t("import.successMessage", { count: importedCount }) : t("import.successNone")}
         </Text>
+        {importedCount > 0 && (
+          <Text ta="center" c="dimmed">
+            {t("import.successPtpNote")}
+          </Text>
+        )}
         {currentUserId && userSlug && (
           <Link to="/game-list/$id/$slug" params={{ id: currentUserId.toString(), slug: userSlug }}>
             <Button component="span" leftSection={<IconCheck size={16} />}>

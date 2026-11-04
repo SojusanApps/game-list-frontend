@@ -1,11 +1,11 @@
-import { Anchor, Group, Stack, Text } from "@mantine/core";
+import { Anchor, Group, Progress, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import chromeLogo from "@/assets/browsers/chrome.svg";
 import firefoxLogo from "@/assets/browsers/firefox.svg";
-import { PlatformEnum, StoreEntry } from "@/client";
+import { StoreEntry } from "@/client";
 import { Button } from "@/components/ui/Button";
 
 import {
@@ -15,6 +15,7 @@ import {
   PLATFORM_LOGIN_URLS,
   SYNC_PLATFORMS,
   type SyncPlatform,
+  type SyncProgress,
 } from "../../extension/contract";
 import { detectExtension, type ExtensionStatus, requestPlatformSync } from "../../extension/extensionClient";
 import { useStoreImport } from "../../hooks/gameQueries";
@@ -61,6 +62,7 @@ export const PlatformSyncButtons = ({ onUnmatched }: PlatformSyncButtonsProps) =
   const [extension, setExtension] = React.useState<ExtensionStatus | null>(null);
   const { mutateAsync: storeImport } = useStoreImport();
   const [syncing, setSyncing] = React.useState<SyncPlatform | null>(null);
+  const [progress, setProgress] = React.useState<SyncProgress | null>(null);
 
   React.useEffect(() => {
     let active = true;
@@ -77,8 +79,9 @@ export const PlatformSyncButtons = ({ onUnmatched }: PlatformSyncButtonsProps) =
   const handleSync = async (platform: SyncPlatform) => {
     const platformName = PLATFORM_LABELS[platform];
     setSyncing(platform);
+    setProgress(null);
     try {
-      const result = await requestPlatformSync(platform);
+      const result = await requestPlatformSync(platform, undefined, undefined, setProgress);
       if (result.status === "ok") {
         const platformEnum = PLATFORM_ENUMS[platform];
         const entries: StoreEntry[] = result.entries.map(entry => ({
@@ -137,8 +140,11 @@ export const PlatformSyncButtons = ({ onUnmatched }: PlatformSyncButtonsProps) =
       // The failed backend request already showed a toast (useAppMutation).
     } finally {
       setSyncing(null);
+      setProgress(null);
     }
   };
+
+  const hasTotal = progress?.total !== undefined && progress.total > 0 && progress.done !== undefined;
 
   return (
     <Stack gap={8}>
@@ -161,6 +167,21 @@ export const PlatformSyncButtons = ({ onUnmatched }: PlatformSyncButtonsProps) =
           </Button>
         ))}
       </Group>
+      {syncing !== null && (
+        <Stack gap={4} component="output" aria-live="polite">
+          <Text fz="sm">
+            {PLATFORM_LABELS[syncing]}: {t(`import.platformSync.stage.${progress?.stage ?? "starting"}`)}
+            {progress?.done !== undefined && (hasTotal ? ` ${progress.done}/${progress.total}` : ` ${progress.done}`)}
+          </Text>
+          {/* A full, animated bar when the extension cannot say how many items there will be. */}
+          <Progress
+            value={hasTotal ? Math.min(100, (progress.done! / progress.total!) * 100) : 100}
+            animated={!hasTotal}
+            size="sm"
+            aria-label={t("import.platformSync.progressLabel", { platform: PLATFORM_LABELS[syncing] })}
+          />
+        </Stack>
+      )}
       {(extension === "missing" || extension === "outdated") && (
         <Stack gap={8}>
           <Text fz="sm" c="var(--color-text-700)">

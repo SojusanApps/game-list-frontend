@@ -1,8 +1,10 @@
 /**
- * Message contract with the GameList browser extension (version 2).
+ * Message contract with the GameList browser extension (version 3).
  * Mirror of game-list-browser-extension/docs/frontend-contract.md.
  */
-export const EXTENSION_CONTRACT_VERSION = 2;
+export const EXTENSION_CONTRACT_VERSION = 3;
+/** Oldest extension contract version still usable. Version 3 only adds SYNC_PROGRESS, so version 2 works without it. */
+export const MIN_EXTENSION_CONTRACT_VERSION = 2;
 
 export const SYNC_PLATFORMS = ["steam", "epic", "playstation", "nintendo", "gog"] as const;
 export type SyncPlatform = (typeof SYNC_PLATFORMS)[number];
@@ -15,6 +17,18 @@ export interface LibraryEntry {
   title: string;
   /** True when the game is only on the store wishlist; false when the user owns it. */
   wishlisted: boolean;
+}
+
+/** What a running sync is busy with. A stage is a code; the wording is ours. */
+export const SYNC_PROGRESS_STAGES = ["starting", "collection", "wishlist", "resolving"] as const;
+export type SyncProgressStage = (typeof SYNC_PROGRESS_STAGES)[number];
+
+/** Progress of a running sync. `done` and `total` count the stage's items and are set only when the extension knows them. */
+export interface SyncProgress {
+  platform: SyncPlatform;
+  stage: SyncProgressStage;
+  done?: number;
+  total?: number;
 }
 
 export interface SyncResult {

@@ -1,4 +1,4 @@
-import { Select, Group, SimpleGrid, Stack, Textarea, NumberInput } from "@mantine/core";
+import { Select, Group, SimpleGrid, Stack, Text, Textarea, NumberInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { schemaResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -16,7 +16,7 @@ import { useConfirm } from "@/hooks/useConfirm";
 import { useModalDraft } from "@/hooks/useModalDraft";
 import i18n from "@/lib/i18n";
 import { idSchema } from "@/lib/validation";
-import { formatDate } from "@/utils/dateUtils";
+import { formatDate, formatDisplayDateTime } from "@/utils/dateUtils";
 import { playtimeHoursToMinutes, playtimeMinutesToHours } from "@/utils/playtimeUtils";
 
 import {
@@ -175,8 +175,17 @@ export function GameListModal({ gameId, gameTitle, opened, onClose }: Readonly<G
         opened={opened}
         onClose={onClose}
         title={isEditing ? t("modal.editTitle") : t("modal.addTitle")}
-        subtitle={resolvedGameTitle}
-        overflowVisible
+        subtitle={
+          <>
+            {resolvedGameTitle}
+            {isEditing && (
+              <Text component="span" display="block" size="xs" mt={4}>
+                {t("modal.createdAt")}: {formatDisplayDateTime(gameListDetails.created_at)} ·{" "}
+                {t("modal.lastModifiedAt")}: {formatDisplayDateTime(gameListDetails.last_modified_at)}
+              </Text>
+            )}
+          </>
+        }
         footer={
           <Group justify={isEditing ? "space-between" : "flex-end"}>
             {isEditing && (

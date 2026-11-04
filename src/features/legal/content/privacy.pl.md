@@ -1,4 +1,4 @@
-_Ostatnia aktualizacja: 24 sierpnia 2026_
+_Ostatnia aktualizacja: 4 listopada 2026_
 
 ## 1. Kto odpowiada za Twoje dane
 
@@ -29,12 +29,15 @@ Nigdy nie sprzedajemy Twoich danych osobowych. Udostępniamy dane wyłącznie po
 - **Gravatar** (Automattic) — jeśli korzystasz z awatara, Twój adres e-mail jest przesyłany bezpośrednio do Gravatara w celu zarządzania nim.
 - **Steam** — wyłącznie jeśli korzystasz z opcjonalnej funkcji importu biblioteki: wprowadzony przez Ciebie identyfikator profilu Steam jest przesyłany, za pośrednictwem naszego backendu, do API Steam w celu pobrania Twojej publicznej biblioteki.
 - **Sojusan Auth** — obsługuje Twoje dane logowania i sesję; patrz punkt 1.
+- **YouTube** (Google) — strony gier wyświetlają miniatury filmów ładowane z serwerów YouTube, co oznacza, że YouTube widzi Twój adres IP podczas ich wyświetlania. Same filmy są osadzane w trybie rozszerzonej prywatności YouTube (`youtube-nocookie.com`) i ładują się dopiero po kliknięciu; gdy film jest odtwarzany, YouTube może zapisywać własne pliki cookie lub dane w Twojej przeglądarce, zgodnie z własną polityką.
 
 Niektórzy z tych dostawców mogą przetwarzać dane poza EOG. W takim przypadku to oni odpowiadają za zapewnienie odpowiednich zabezpieczeń prawnych takiego transferu.
 
 ## 5. Pliki cookie
 
 Nie używamy plików cookie analitycznych ani śledzących. Jedynym używanym plikiem cookie jest niezbędny plik sesyjny ustawiany przez Sojusan Auth, aby utrzymać Twoje zalogowanie — jest on wymagany do działania Serwisu i nie służy do śledzenia.
+
+Serwis zapisuje również w pamięci lokalnej (local storage) Twojej przeglądarki kilka ściśle funkcjonalnych elementów — token logowania oraz preferowany motyw jasny/ciemny. Pozostają one na Twoim urządzeniu, są potrzebne do prawidłowego działania Serwisu i nie służą do śledzenia. Z tego powodu nie wyświetlamy banera zgody na pliki cookie. Wyjątkiem są osadzone filmy z YouTube, opisane w punkcie 4, które ładują się dopiero po tym, jak zdecydujesz się je odtworzyć.
 
 ## 6. Jak długo przechowujemy dane
 

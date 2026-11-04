@@ -11,6 +11,7 @@ import { formatDate } from "@/utils/dateUtils";
 import { usePartialUpdateGameList } from "../hooks/gameQueries";
 import { useRandomPtpGame } from "../hooks/useGameListQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
+import { OwnedBadge } from "./OwnedBadge";
 
 interface RandomPtpModalProps {
   userId: number;
@@ -63,6 +64,7 @@ export function RandomPtpModal({ userId, opened, onClose }: Readonly<RandomPtpMo
             itemCoverUrl={getIGDBImageURL(game.game_cover_image, IGDBImageSize.COVER_BIG_264_374)}
             status={game.status_code}
             rating={game.score}
+            actionSlot={game.owned_on.length > 0 ? <OwnedBadge score={game.score} /> : undefined}
           />
         ) : (
           !isFetching && <Text c="dimmed">{t("gameList.random.empty")}</Text>

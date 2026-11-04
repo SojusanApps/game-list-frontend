@@ -203,7 +203,6 @@ export default function CreateCollectionModal({
         fullScreenOnMobile
         opened={true}
         onClose={onClose}
-        scrollable
         title={
           <>
             {mode === "create" ? t("createModal.createTitle") : t("createModal.editTitle")}{" "}

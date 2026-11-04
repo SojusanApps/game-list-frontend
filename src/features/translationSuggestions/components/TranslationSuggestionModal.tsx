@@ -141,13 +141,7 @@ export function TranslationSuggestionModal({
   const isOverLimit = charCount > maxLength;
 
   return (
-    <AppModal
-      opened={opened}
-      onClose={onClose}
-      title={t("translationSuggestionModal.title")}
-      scrollable
-      fullScreenOnMobile
-    >
+    <AppModal opened={opened} onClose={onClose} title={t("translationSuggestionModal.title")} fullScreenOnMobile>
       <Stack gap={16}>
         {hasDraft && <DraftNotice onDiscard={discardDraft} />}
         <Select

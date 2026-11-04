@@ -1,15 +1,14 @@
 import { Box, Stack, Text, Stepper, Group } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconArrowLeft, IconCheck, IconDownload, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
+import { IconCheck, IconInfoCircle, IconListSearch } from "@tabler/icons-react";
 import { useBlocker } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { GameListBulkCreateItemWritable, GameSimpleList, StoreEntry } from "@/client";
+import { GameListBulkCreateItemWritable, GameListStatusEnum, GameSimpleList, StoreEntry } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUserId } from "@/features/auth";
 import { useConfirm } from "@/hooks/useConfirm";
-import { playtimeHoursToMinutes } from "@/utils/playtimeUtils";
 
 import { useBulkCreateGameList, useStoreLink, useStoreNotAGame, useGetExportedGameList } from "../../hooks/gameQueries";
 import {
@@ -26,28 +25,20 @@ import {
   StoreRef,
   StoreRefsByTitle,
 } from "../../utils/titleImport";
-import { ConfigureGameList } from "./ConfigureGameList";
 import { ImportEntryList } from "./ImportEntryList";
 import { PlatformSyncButtons } from "./PlatformSyncButtons";
 import { SuccessStep } from "./SuccessStep";
 import { MatchTitle, TitleMatchStep } from "./TitleMatchStep";
 import { TitleMergeStep } from "./TitleMergeStep";
-import { createGameRow, GameRow, ImportedGame, TitleResolution } from "./types";
-import { useGameRows } from "./useGameRows";
+import { ImportedGame, TitleResolution } from "./types";
 
 import styles from "./TitleImportFlow.module.css";
-
-/** Keep configuration already entered for games that are still picked. */
-function reconcileRows(games: ImportedGame[], prevRows: GameRow[]): GameRow[] {
-  return games.map(game => prevRows.find(row => row.game.id === game.id) ?? createGameRow(game));
-}
 
 // Stepper indices for the title flow.
 const STEP_INPUT = 0;
 const STEP_MATCH = 1;
 const STEP_MERGE = 2;
-const STEP_CONFIGURE = 3;
-const STEP_DONE = 4;
+const STEP_DONE = 3;
 
 export const TitleImportFlow = () => {
   const { t } = useTranslation("games");
@@ -83,7 +74,6 @@ export const TitleImportFlow = () => {
   // Store ids of the titles that came from a Platform Sync, so a pick can be recorded as a Store Mapping.
   const [storeRefs, setStoreRefs] = React.useState<StoreRefsByTitle>({});
 
-  const { rows, setRows, onStatusChange, onScoreChange, onFieldChange, onBulkStatusChange } = useGameRows();
   const { mutateAsync: linkListedGames } = useStoreLink();
   const { mutateAsync: submitNotAGame } = useStoreNotAGame();
   const { mutateAsync: runBulkCreate, isPending: isImporting } = useBulkCreateGameList();
@@ -110,11 +100,8 @@ export const TitleImportFlow = () => {
     [titles, resolutions],
   );
 
-  // The store games each picked game was chosen for, by game id; kept apart from `rows` so editing a row leaves it alone.
-  const listedCount = React.useMemo(
-    () => uniquePickedGames(gamePicks).filter(game => isListed(game)).length,
-    [gamePicks, isListed],
-  );
+  // Distinct picked games: those new to the list are created as plan to play, the listed ones only get the store link.
+  const pickedGames = React.useMemo(() => uniquePickedGames(gamePicks), [gamePicks]);
 
   const storeRefsByGameId = React.useMemo(() => {
     const byGameId: Record<number, StoreRef[]> = {};
@@ -135,28 +122,7 @@ export const TitleImportFlow = () => {
     setTitles(parsed);
     setStoreRefs(storeRefsFromEntries(pendingEntries));
     setResolutions({});
-    setRows([]);
     setActiveStep(STEP_MATCH);
-  };
-
-  const goToConfigure = () => {
-    const games = uniquePickedGames(gamePicks).filter(game => !isListed(game));
-    setRows(prev => reconcileRows(games, prev));
-    setActiveStep(STEP_CONFIGURE);
-  };
-
-  const goToMergeOrConfigure = () => {
-    const groups = findDuplicateGroups(gamePicks);
-    setDuplicateGroups(groups);
-    if (groups.length > 0) {
-      setActiveStep(STEP_MERGE);
-    } else {
-      goToConfigure();
-    }
-  };
-
-  const handleConfigureBack = () => {
-    setActiveStep(duplicateGroups.length > 0 ? STEP_MERGE : STEP_MATCH);
   };
 
   // ── Resolution handlers ─────────────────────────────────────────────────
@@ -181,23 +147,6 @@ export const TitleImportFlow = () => {
     });
   }, []);
 
-  // Titles marked as not a game are proposed to the backend before moving on; a failure only shows a toast.
-  const handleMatchContinue = async () => {
-    const markedTitles = matchTitles.filter(item => resolutions[item.titleIndex]?.kind === "not-a-game");
-    const refs = storeRefsForTitles(
-      storeRefs,
-      markedTitles.map(item => item.title),
-    );
-    if (refs.length > 0) {
-      try {
-        await submitNotAGame(refs);
-      } catch {
-        // toast shown by useAppMutation
-      }
-    }
-    goToMergeOrConfigure();
-  };
-
   // Entries the backend could not match by store id are listed to go through title matching.
   const handleUnmatchedFromStore = (entries: StoreEntry[]) => {
     setPendingEntries(prev => mergeStoreEntries(prev, entries));
@@ -215,17 +164,15 @@ export const TitleImportFlow = () => {
       notifications.show({ title: t("import.errorTitle"), message: t("import.userNotIdentified"), color: "red" });
       return;
     }
-    const body: GameListBulkCreateItemWritable[] = rows.map(row => ({
-      game: row.game.id,
-      store_refs: storeRefsByGameId[row.game.id] ?? [],
-      status: row.status,
-      score: row.score,
-      owned_on: row.owned_on.map(Number),
-      started_at: row.started_at || null,
-      completed_at: row.completed_at || null,
-      playtime: playtimeHoursToMinutes(row.playtime),
-      description: row.description || undefined,
-    }));
+    // A game new to the list is added as plan to play with the store it was picked for; the owned-on platforms are left for the user to set later.
+    const body: GameListBulkCreateItemWritable[] = pickedGames
+      .filter(game => !isListed(game))
+      .map(game => ({
+        game: game.id,
+        store_refs: storeRefsByGameId[game.id] ?? [],
+        status: GameListStatusEnum.PTP,
+        owned_on: [],
+      }));
     const links = storeLinksForPicks(
       pendingEntries,
       gamePicks.filter(pick => isListed(pick.game)),
@@ -237,10 +184,33 @@ export const TitleImportFlow = () => {
       if (links.length > 0) {
         await linkListedGames(links);
       }
-      setImportedCount(rows.length + listedCount);
+      setImportedCount(body.length);
       setActiveStep(STEP_DONE);
     } catch {
       // handled by useAppMutation
+    }
+  };
+
+  // Titles marked as not a game are proposed to the backend before moving on; a failure only shows a toast.
+  const handleMatchContinue = async () => {
+    const markedTitles = matchTitles.filter(item => resolutions[item.titleIndex]?.kind === "not-a-game");
+    const refs = storeRefsForTitles(
+      storeRefs,
+      markedTitles.map(item => item.title),
+    );
+    if (refs.length > 0) {
+      try {
+        await submitNotAGame(refs);
+      } catch {
+        // toast shown by useAppMutation
+      }
+    }
+    const groups = findDuplicateGroups(gamePicks);
+    setDuplicateGroups(groups);
+    if (groups.length > 0) {
+      setActiveStep(STEP_MERGE);
+    } else {
+      await handleImport();
     }
   };
 
@@ -251,7 +221,6 @@ export const TitleImportFlow = () => {
         <Stepper.Step label={t("import.stepTitles")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepMatch")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepDuplicates")} completedIcon={<IconCheck size={16} />} />
-        <Stepper.Step label={t("import.stepConfigure")} completedIcon={<IconCheck size={16} />} />
         <Stepper.Step label={t("import.stepDone")} completedIcon={<IconCheck size={16} />} />
       </Stepper>
 
@@ -294,6 +263,8 @@ export const TitleImportFlow = () => {
           titles={matchTitles}
           resolutions={resolutions}
           isListed={isListed}
+          importCount={pickedGames.length}
+          isImporting={isImporting}
           onPick={handlePick}
           onClear={handleClear}
           onToggleNotAGame={handleToggleNotAGame}
@@ -307,48 +278,14 @@ export const TitleImportFlow = () => {
         <TitleMergeStep
           groups={duplicateGroups}
           storeRefs={storeRefs}
+          importCount={pickedGames.length}
+          isImporting={isImporting}
           onBack={() => setActiveStep(STEP_MATCH)}
-          onConfirm={goToConfigure}
+          onConfirm={() => handleImport()}
         />
       )}
 
-      {/* ── Step 3: Configure ───────────────────────────── */}
-      {activeStep === STEP_CONFIGURE && (
-        <Stack gap={24}>
-          {listedCount > 0 && (
-            <Text fz="sm" c="dimmed">
-              {t("import.listedGamesNote", { count: listedCount })}
-            </Text>
-          )}
-          <ConfigureGameList
-            rows={rows}
-            storeRefsByGameId={storeRefsByGameId}
-            onStatusChange={onStatusChange}
-            onScoreChange={onScoreChange}
-            onFieldChange={onFieldChange}
-            onBulkStatusChange={onBulkStatusChange}
-          />
-          <Group justify="space-between">
-            <Button
-              variant="outline"
-              onClick={handleConfigureBack}
-              leftSection={<IconArrowLeft size={16} stroke={1.5} />}
-            >
-              {t("import.backStepButton")}
-            </Button>
-            <Button
-              onClick={handleImport}
-              isLoading={isImporting}
-              disabled={rows.length === 0 && listedCount === 0}
-              leftSection={<IconDownload size={16} />}
-            >
-              {t("import.importButton", { count: rows.length + listedCount })}
-            </Button>
-          </Group>
-        </Stack>
-      )}
-
-      {/* ── Step 4: Success ─────────────────────────────── */}
+      {/* ── Step 3: Success ─────────────────────────────── */}
       {activeStep === STEP_DONE && <SuccessStep importedCount={importedCount} />}
     </>
   );

@@ -9,7 +9,7 @@ The `Report` API response carries a bare target id per type (`target_review`, `t
 
 ## Decision
 
-The admin reports queue (`/admin/reports`) renders only what's already on the `Report` object: `reported_value`, `reason`, reporter/reported-user chips, and target type — no deep link to the original content's live location.
+The admin reports queue (`/admin-panel/reports`) renders only what's already on the `Report` object: `reported_value`, `reason`, reporter/reported-user chips, and target type — no deep link to the original content's live location.
 
 ## Consequences
 

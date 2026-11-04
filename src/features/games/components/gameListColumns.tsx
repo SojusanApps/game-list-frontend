@@ -1,5 +1,5 @@
 import { ActionIcon, Badge, Group, Text } from "@mantine/core";
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconDeviceGamepad2Filled } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
@@ -55,13 +55,25 @@ export function createGameListColumns({
       id: "title",
       header: t("gameList.table.title"),
       cell: info => (
-        <Link
-          to="/game/$id/$slug"
-          params={{ id: String(info.row.original.game_id), slug: info.row.original.game_slug }}
-          style={{ fontWeight: 600, color: "var(--mantine-color-primary-6)" }}
-        >
-          {info.getValue()}
-        </Link>
+        <Group gap="xs" wrap="wrap">
+          <Link
+            to="/game/$id/$slug"
+            params={{ id: String(info.row.original.game_id), slug: info.row.original.game_slug }}
+            style={{ fontWeight: 600, color: "var(--mantine-color-primary-6)" }}
+          >
+            {info.getValue()}
+          </Link>
+          {info.row.original.owned_on.length > 0 && (
+            <Badge
+              variant="light"
+              size="sm"
+              color="green"
+              leftSection={<IconDeviceGamepad2Filled size={12} aria-hidden />}
+            >
+              {t("gameList.table.owned")}
+            </Badge>
+          )}
+        </Group>
       ),
     }),
     columnHelper.accessor("status_code", {

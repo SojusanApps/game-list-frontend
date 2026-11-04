@@ -117,7 +117,7 @@ export default function AsyncAutocomplete<T>({
       rightSection={isLoading || isFetchingNextPage ? <Loader size="xs" /> : undefined}
       nothingFoundMessage={isLoading ? t("searching") : t("noResults")}
       comboboxProps={{
-        withinPortal: false,
+        withinPortal: true,
         position: "bottom",
         middlewares: { flip: false, shift: false },
         ...comboboxProps,

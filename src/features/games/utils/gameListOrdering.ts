@@ -1,7 +1,16 @@
 import type { GameListGameFilters } from "../hooks/useGameListQueries";
 import { formatISODate } from "./calendarUtils";
 
-export const GAME_LIST_ORDERING_VALUES = ["title", "-title", "-score", "score"] as const;
+export const GAME_LIST_ORDERING_VALUES = [
+  "title",
+  "-title",
+  "-score",
+  "score",
+  "-created_at",
+  "created_at",
+  "-last_modified_at",
+  "last_modified_at",
+] as const;
 
 export type GameListOrdering = (typeof GAME_LIST_ORDERING_VALUES)[number];
 

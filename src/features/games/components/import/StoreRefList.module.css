@@ -19,3 +19,8 @@
   max-width: 200px;
   font-variant-numeric: tabular-nums;
 }
+
+.selectableId {
+  user-select: all;
+  cursor: text;
+}

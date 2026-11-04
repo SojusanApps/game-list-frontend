@@ -10,7 +10,7 @@ import { rethrowAsNotFound } from "@/utils/routeUtils";
 const searchSchema = z.object({
   // Zod's `.catch()` fallback-value method, not a Promise; there is no actual await to hoist here.
   // oxlint-disable-next-line unicorn/prefer-top-level-await
-  tab: z.enum(["main", "related", "screenshots"]).optional().catch("main"), // NOSONAR
+  tab: z.enum(["main", "related", "screenshots", "videos"]).optional().catch("main"), // NOSONAR
 });
 
 export const Route = createFileRoute("/game/$id/$slug")({
