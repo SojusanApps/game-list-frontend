@@ -1,6 +1,6 @@
-import { Badge, Drawer, Group, Loader, Stack, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Badge, Drawer, Group, Loader, Stack, Text, TextInput } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconFilter, IconSearch } from "@tabler/icons-react";
+import { IconExternalLink, IconFilter, IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,12 +8,15 @@ import { GameSimpleList } from "@/client";
 import { Button } from "@/components/ui/Button";
 import ItemOverlay from "@/components/ui/ItemOverlay";
 import { VirtualGridList } from "@/components/ui/VirtualGridList";
+import { hasScore } from "@/utils/ratingUtils";
 
 import { GameGamesListDataQuery } from "../api/game";
 import { useGetGamesInfinite } from "../hooks/gameQueries";
 import IGDBImageSize, { getIGDBImageURL } from "../utils/IGDBIntegration";
 import { cleanGameFilters } from "../utils/searchFilters";
 import GameSearchFilter from "./GameSearchFilter";
+
+const gamePageUrl = (game: GameSimpleList) => `/game/${game.id}/${game.slug ?? game.id}`;
 
 interface GameCatalogueSearchProps {
   search: string;
@@ -118,6 +121,24 @@ export const GameCatalogueSearch = ({
             releaseDate={game.release_date}
             rating={game.average_score}
             onClick={() => onSelect(game)}
+            newTabUrl={gamePageUrl(game)}
+            revealedActionSlot={
+              <ActionIcon
+                component="a"
+                href={gamePageUrl(game)}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="filled"
+                color="dark"
+                size="sm"
+                aria-label={t("search.openGameInNewTab", { title: game.title })}
+                title={t("search.openGameInNewTab", { title: game.title })}
+                // Sits below the score tab, which fills the top-left corner of scored cards.
+                style={{ position: "absolute", top: hasScore(game.average_score) ? 40 : 8, left: 8 }}
+              >
+                <IconExternalLink size={14} stroke={1.5} />
+              </ActionIcon>
+            }
             actionSlot={
               isListed?.(game) ? (
                 <Badge

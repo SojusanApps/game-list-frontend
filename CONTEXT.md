@@ -8,6 +8,10 @@ A game-tracking and review platform. This context covers user-generated content 
 The state a user assigns to a game on their list — one of six: `P` playing, `C` completed, `PTP` plan to play, `OH` on hold, `D` dropped, `NP` not planned. `D` dropped means the user started the game then abandoned it (stopped playing with no intent to finish); it does not mean the list entry was deleted. `NP` not planned means the user owns the game but does not intend to play it — never started, and no future intent, which distinguishes it from both `D` dropped (implies it was started) and `PTP` plan to play (implies future intent). Backed by `GameListStatusEnum`.
 _Avoid_: progress, list state; do not conflate "dropped" with removing/deleting an entry; do not conflate "not planned" with "dropped" (never started vs. abandoned) or "plan to play" (no intent vs. future intent)
 
+**Video**:
+A YouTube video attached to a game (trailer, gameplay, etc.), identified by its YouTube id and labelled with a name. Shown in the game detail's Videos tab. Distinct from a **Screenshot**, which is a still image.
+_Avoid_: Trailer (a trailer is only one kind of Video)
+
 **Target**:
 A piece of user-generated content or a profile field that can be reported — one of: avatar, username, review, translation suggestion, game list note, collection, collection item note. Identified by a `target_type` plus the matching entity id (or the owning user's id, for avatar/username).
 _Avoid_: Reportable item, entity
@@ -31,6 +35,14 @@ _Avoid_: Suspend, deactivate, deactivation
 **Warning**:
 The consequence recorded against a user's account when a Report targeting them is accepted — whether via the normal queue (Accept) or via Warn & Remove. A user's `warning_count` is visible only to the account owner and to staff.
 _Avoid_: Strike, violation
+
+**Platform Sync**:
+Fetching a user's game library from a store through the browser extension, which starts an **Import**.
+_Avoid_: Scrape, store login
+
+**Import**:
+Bringing games from a store into the user's Game List. Every game new to the list is added as `PTP` plan to play — whether it was matched automatically by its store id or by the user by hand — and the user sets nothing else during the Import (score, note, dates and playtime are edited afterwards). A game already on the list keeps its status; the Import only records that it is owned on that store.
+_Avoid_: Sync (that is the **Platform Sync** that feeds it), bulk add
 
 **Store Mapping**:
 A link between a game on a store (a store's own id of it) and a game in the catalogue, proposed automatically when a user matches a title that came from a **Platform Sync** by hand during the import. It applies only to that user until a **Staff** member accepts it; staff can also add one by hand. Reviewed on the admin "Store Mappings" page.

@@ -294,6 +294,10 @@ export default function GameListPage(): React.JSX.Element {
     { value: "-title", label: t("filter.titleDesc") },
     { value: "-score", label: t("filter.scoreDesc") },
     { value: "score", label: t("filter.scoreAsc") },
+    { value: "-created_at", label: t("filter.addedDesc") },
+    { value: "created_at", label: t("filter.addedAsc") },
+    { value: "-last_modified_at", label: t("filter.modifiedDesc") },
+    { value: "last_modified_at", label: t("filter.modifiedAsc") },
   ];
 
   const renderEmptyState = () => {

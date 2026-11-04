@@ -265,7 +265,10 @@ export default function SearchBar({ variant = "dark" }: Readonly<SearchBarProps>
             position: "absolute",
             zIndex: 50,
             marginTop: "8px",
-            width: "100%",
+            // Topbar (dark) variant: the input is narrow, so the results get more room to be readable.
+            width: variant === "dark" ? "min(640px, calc(100vw - 32px))" : "100%",
+            left: "50%",
+            transform: "translateX(-50%)",
             background: "var(--color-background-100)",
             borderRadius: "12px",
             boxShadow: "0 25px 50px rgba(0,0,0,0.25)",

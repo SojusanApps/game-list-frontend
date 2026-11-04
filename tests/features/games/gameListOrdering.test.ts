@@ -15,11 +15,20 @@ describe("gameListOrdering", () => {
   });
 
   describe("isGameListOrdering", () => {
-    it.each(["title", "-title", "score", "-score"])("accepts %s", value => {
+    it.each([
+      "title",
+      "-title",
+      "score",
+      "-score",
+      "created_at",
+      "-created_at",
+      "last_modified_at",
+      "-last_modified_at",
+    ])("accepts %s", value => {
       expect(isGameListOrdering(value)).toBe(true);
     });
 
-    it.each(["", "popularity", "created_at", undefined, null])("rejects %s", value => {
+    it.each(["", "popularity", "modified", undefined, null])("rejects %s", value => {
       expect(isGameListOrdering(value)).toBe(false);
     });
   });

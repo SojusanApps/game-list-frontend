@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Modal, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Group, Modal, Stack, Text, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import * as React from "react";
@@ -15,18 +15,8 @@ interface AppModalProps {
   subtitle?: React.ReactNode;
   size?: ModalSize;
   centered?: boolean;
-  /**
-   * Constrain the modal to the viewport and scroll the body between a fixed
-   * header and footer. Use for long forms and lists.
-   */
-  scrollable?: boolean;
   /** Sticky bar at the bottom of the modal — usually the action buttons. */
   footer?: React.ReactNode;
-  /**
-   * Let content overflow the modal box (e.g. an autocomplete dropdown). Only
-   * has an effect when {@link scrollable} is false.
-   */
-  overflowVisible?: boolean;
   /**
    * Take over the whole screen on phones (with a fixed header and footer around a scrolling body).
    * For long forms; small confirm/login dialogs should stay centered.
@@ -45,7 +35,8 @@ const BORDER = "1px solid var(--color-background-100)";
 
 /**
  * The shared modal shell: a rounded dialog with a veiled header (title + close
- * button), a padded body, and an optional sticky footer. Every product modal
+ * button), a padded body that scrolls when the viewport is too short, and an
+ * optional sticky footer, so actions are always reachable. Every product modal
  * should build on this so their chrome stays identical.
  */
 export function AppModal({
@@ -55,9 +46,7 @@ export function AppModal({
   subtitle,
   size = "lg",
   centered = false,
-  scrollable = false,
   footer,
-  overflowVisible = false,
   fullScreenOnMobile = false,
   bodyPadding,
   closeButtonLabel,
@@ -66,7 +55,6 @@ export function AppModal({
   const { t } = useTranslation();
   const isMobile = useMediaQuery("(max-width: 36em)");
   const isFullScreen = fullScreenOnMobile && !!isMobile;
-  const useScrollingBody = scrollable || isFullScreen;
   const headerFooterPadding = isMobile ? HEADER_FOOTER_PADDING_MOBILE : HEADER_FOOTER_PADDING;
   const resolvedBodyPadding = bodyPadding ?? (isMobile ? 16 : 32);
 
@@ -114,33 +102,12 @@ export function AppModal({
       size={size}
       centered={centered}
       overlayProps={{ backgroundOpacity: 0.6 }}
-      styles={
-        overflowVisible && !useScrollingBody
-          ? { content: { overflow: "visible" }, body: { overflow: "visible" } }
-          : undefined
-      }
     >
-      <Stack
-        gap={0}
-        style={
-          useScrollingBody
-            ? { height: isFullScreen ? "100dvh" : "100%", maxHeight: isFullScreen ? undefined : "90vh" }
-            : undefined
-        }
-      >
+      <Stack gap={0} style={isFullScreen ? { height: "100dvh" } : { maxHeight: "calc(100dvh - 10dvh)" }}>
         {header}
-        {useScrollingBody ? (
-          <ScrollArea
-            style={{ flex: 1, height: 0, display: "flex", flexDirection: "column" }}
-            viewportProps={{ style: { flex: 1, height: "auto", minHeight: 0, padding: resolvedBodyPadding } }}
-          >
-            {children}
-          </ScrollArea>
-        ) : (
-          <Box style={{ padding: resolvedBodyPadding, overflow: overflowVisible ? "visible" : undefined }}>
-            {children}
-          </Box>
-        )}
+        <Box style={{ flex: "1 1 auto", minHeight: 0, overflowY: "auto", padding: resolvedBodyPadding }}>
+          {children}
+        </Box>
         {footerBar}
       </Stack>
     </Modal>

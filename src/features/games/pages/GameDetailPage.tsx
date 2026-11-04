@@ -5,7 +5,7 @@ import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { GameListStatusEnum } from "@/client";
+import { GameListStatusEnum, GameVideo } from "@/client";
 import { Button } from "@/components/ui/Button";
 import { PageMeta } from "@/components/ui/PageMeta";
 import { PageShell } from "@/components/ui/PageShell";
@@ -18,9 +18,11 @@ import AddToCollectionModal from "@/features/collections/components/AddToCollect
 import GameDetailsMainTab from "../components/GameDetailsMainTab";
 import GameDetailsRelatedTab from "../components/GameDetailsRelatedTab";
 import GameDetailsScreenshotsTab from "../components/GameDetailsScreenshotsTab";
+import GameDetailsVideosTab from "../components/GameDetailsVideosTab";
 import GameInformation from "../components/GameInformation";
 import { GameListModal } from "../components/GameListModal";
 import ScreenshotModal from "../components/ScreenshotModal";
+import VideoModal from "../components/VideoModal";
 import {
   useGetGameReviewsList,
   useGetGamesDetails,
@@ -225,6 +227,7 @@ export default function GameDetailPage(): React.JSX.Element {
   const navigate = useNavigate({ from: "/game/$id/$slug" });
   const activeTab = tab ?? "main";
   const [selectedScreenshot, setSelectedScreenshot] = React.useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = React.useState<GameVideo | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = React.useState(false);
   const [isListModalOpen, setIsListModalOpen] = React.useState(false);
   const { isAuthenticated } = useAuth();
@@ -331,6 +334,7 @@ export default function GameDetailPage(): React.JSX.Element {
                     <Tabs.Tab value="main">{t("detail.tabMain")}</Tabs.Tab>
                     <Tabs.Tab value="related">{t("detail.tabRelated")}</Tabs.Tab>
                     <Tabs.Tab value="screenshots">{t("detail.tabScreenshots")}</Tabs.Tab>
+                    <Tabs.Tab value="videos">{t("detail.tabVideos")}</Tabs.Tab>
                   </Tabs.List>
                   <Tabs.Panel value="main" pt="md">
                     <GameDetailsMainTab
@@ -350,10 +354,22 @@ export default function GameDetailPage(): React.JSX.Element {
                   <Tabs.Panel value="screenshots" pt="md">
                     <GameDetailsScreenshotsTab gameDetails={gameDetails} onScreenshotClick={setSelectedScreenshot} />
                   </Tabs.Panel>
+                  <Tabs.Panel value="videos" pt="md">
+                    <GameDetailsVideosTab gameDetails={gameDetails} onVideoClick={setSelectedVideo} />
+                  </Tabs.Panel>
                 </Tabs>
               </Stack>
             </Grid.Col>
           </>
+        )}
+
+        {selectedVideo && (
+          <VideoModal
+            videoId={selectedVideo.video_id}
+            name={selectedVideo.name}
+            gameTitle={gameDetails?.title}
+            onClose={() => setSelectedVideo(null)}
+          />
         )}
 
         {selectedScreenshot && gameDetails?.screenshots && (
