@@ -1,5 +1,5 @@
 import { Box, Stack, Text, Title, Group } from "@mantine/core";
-import { IconArrowLeft, IconArrowRight, IconCheck, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconDownload, IconSearch } from "@tabler/icons-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +15,8 @@ import styles from "./TitleMergeStep.module.css";
 interface TitleMergeStepProps {
   groups: Array<DuplicateGroup<ImportedGame>>;
   storeRefs: StoreRefsByTitle;
+  importCount: number;
+  isImporting: boolean;
   onBack: () => void;
   onConfirm: () => void;
 }
@@ -23,7 +25,14 @@ interface TitleMergeStepProps {
  * Confirm-only step shown when several titles resolved to the same game:
  * each duplicated game will be imported once.
  */
-export const TitleMergeStep = ({ groups, storeRefs, onBack, onConfirm }: TitleMergeStepProps) => {
+export const TitleMergeStep = ({
+  groups,
+  storeRefs,
+  importCount,
+  isImporting,
+  onBack,
+  onConfirm,
+}: TitleMergeStepProps) => {
   const { t } = useTranslation("games");
 
   return (
@@ -76,12 +85,8 @@ export const TitleMergeStep = ({ groups, storeRefs, onBack, onConfirm }: TitleMe
         <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
           {t("import.backStepButton")}
         </Button>
-        <Button
-          onClick={onConfirm}
-          leftSection={<IconCheck size={16} />}
-          rightSection={<IconArrowRight size={16} stroke={1.5} />}
-        >
-          {t("import.continueButton")}
+        <Button onClick={onConfirm} isLoading={isImporting} leftSection={<IconDownload size={16} />}>
+          {t("import.importButton", { count: importCount })}
         </Button>
       </Group>
     </Stack>

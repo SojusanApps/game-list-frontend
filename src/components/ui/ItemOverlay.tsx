@@ -22,6 +22,8 @@ type ItemOverlayProps = {
   itemPageUrl?: string;
   /** Click handler used when `itemPageUrl` is omitted (selection-style cards). */
   onClick?: () => void;
+  /** For selection-style cards: Ctrl/Cmd-click or middle-click opens this URL in a new tab instead of selecting. */
+  newTabUrl?: string;
   itemCoverUrl?: string | null;
   name: string;
   variant?: "cover" | "logo";
@@ -37,12 +39,15 @@ type ItemOverlayProps = {
   isInactive?: boolean;
 };
 
+const openInNewTab = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
+
 function ItemOverlay({
   className,
   style,
   name = "Name Placeholder",
   itemPageUrl,
   onClick,
+  newTabUrl,
   itemCoverUrl,
   variant = "cover",
   gameType,
@@ -221,7 +226,25 @@ function ItemOverlay({
           {content}
         </Link>
       ) : (
-        <UnstyledButton type="button" onClick={onClick} style={innerStyle}>
+        <UnstyledButton
+          type="button"
+          onClick={event => {
+            if (newTabUrl && (event.ctrlKey || event.metaKey)) {
+              openInNewTab(newTabUrl);
+              return;
+            }
+            onClick?.();
+          }}
+          // Stops the browser's middle-click autoscroll so the aux click can open the tab.
+          onMouseDown={event => newTabUrl && event.button === 1 && event.preventDefault()}
+          onAuxClick={event => {
+            if (newTabUrl && event.button === 1) {
+              event.preventDefault();
+              openInNewTab(newTabUrl);
+            }
+          }}
+          style={innerStyle}
+        >
           {content}
         </UnstyledButton>
       )}

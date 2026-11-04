@@ -94,7 +94,6 @@ export default function AddToCollectionModal({ onClose, gameId }: Readonly<AddTo
       opened={true}
       onClose={onClose}
       title={t("addModal.title")}
-      overflowVisible
       footer={
         <Button type="submit" form="add-to-collection-form" disabled={isPending} fullWidth>
           {isPending ? t("addModal.adding") : t("addModal.addButton")}

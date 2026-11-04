@@ -1,4 +1,4 @@
-_Last updated: August 24, 2026_
+_Last updated: November 4, 2026_
 
 ## 1. Who's responsible for your data
 
@@ -29,12 +29,15 @@ We don't sell your personal data, ever. We share data only with the services nee
 - **Gravatar** (Automattic) — if you use an avatar, your email address is sent directly to Gravatar to manage it.
 - **Steam** — only if you use the optional library-import feature: the Steam Profile ID you enter is sent, via our backend, to Steam's API to fetch your public library.
 - **Sojusan Auth** — handles your login credentials and session; see Section 1.
+- **YouTube** (Google) — game pages show video thumbnails loaded from YouTube's servers, which means your IP address is visible to YouTube when you view them. Videos themselves are embedded via YouTube's privacy-enhanced mode (`youtube-nocookie.com`) and only load after you click to open them; once a video is playing, YouTube may set its own cookies or store data in your browser under its own policy.
 
 Some of these providers may process data outside the EU/EEA. Where that's the case, they're responsible for their own legal safeguards for that transfer.
 
 ## 5. Cookies
 
 We don't use analytics or tracking cookies. The only cookie involved is the necessary session cookie set by Sojusan Auth to keep you signed in — it's required for the Service to work and isn't used for tracking.
+
+The Service also stores a few strictly functional items in your browser's local storage — your sign-in token and your light/dark theme preference. They stay on your device, are needed for the Service to work as you expect, and aren't used for tracking. Because of this, we don't show a cookie consent banner. The only exception is embedded YouTube videos, described in Section 4, which are loaded only after you choose to play them.
 
 ## 6. How long we keep it
 

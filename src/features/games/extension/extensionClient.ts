@@ -1,7 +1,16 @@
-import { EXTENSION_CONTRACT_VERSION, type SyncPlatform, type SyncResult } from "./contract";
+import {
+  EXTENSION_CONTRACT_VERSION,
+  MIN_EXTENSION_CONTRACT_VERSION,
+  type SyncPlatform,
+  type SyncProgress,
+  type SyncResult,
+} from "./contract";
 
 const PING_TIMEOUT_MS = 1000;
-/** Syncs can page through large libraries and open background tabs, so allow plenty of time. */
+/**
+ * How long a sync may stay silent before it is given up on. Syncs can page through large libraries and open background
+ * tabs, so allow plenty of time; every progress message from the extension starts the wait again.
+ */
 const SYNC_TIMEOUT_MS = 120_000;
 
 type MessageTarget = Pick<Window, "postMessage" | "addEventListener" | "removeEventListener"> & {
@@ -14,18 +23,23 @@ interface ExtensionEnvelope {
   type: string;
   requestId?: string;
   result?: SyncResult;
+  progress?: SyncProgress;
 }
 
 function isExtensionMessage(data: unknown): data is ExtensionEnvelope {
   return typeof data === "object" && data !== null && (data as { source?: unknown }).source === "gamelist-extension";
 }
 
-/** Posts `message` and resolves with the first extension reply `match` accepts, or `null` on timeout. */
+/**
+ * Posts `message` and resolves with the first extension reply `match` accepts, or `null` after `timeoutMs` without
+ * one. A reply `isActivity` accepts shows the extension is still working and restarts the wait.
+ */
 function request<T>(
   target: MessageTarget,
   message: Record<string, unknown>,
   match: (reply: ExtensionEnvelope) => T | null,
   timeoutMs: number,
+  isActivity: (reply: ExtensionEnvelope) => boolean = () => false,
 ): Promise<T | null> {
   return new Promise(resolve => {
     const cleanups: Array<() => void> = [];
@@ -34,6 +48,11 @@ function request<T>(
         cleanup();
       }
       resolve(value);
+    };
+    let timer: ReturnType<typeof setTimeout>;
+    const armTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => finish(null), timeoutMs);
     };
     const onMessage = (event: MessageEvent) => {
       if (event.source !== (target as unknown) || event.origin !== target.location.origin) {
@@ -45,9 +64,11 @@ function request<T>(
       const matched = match(event.data);
       if (matched !== null) {
         finish(matched);
+      } else if (isActivity(event.data)) {
+        armTimer();
       }
     };
-    const timer = setTimeout(() => finish(null), timeoutMs);
+    armTimer();
     cleanups.push(
       () => clearTimeout(timer),
       () => target.removeEventListener("message", onMessage as EventListener),
@@ -63,7 +84,7 @@ function request<T>(
 export type ExtensionStatus = "missing" | "outdated" | "ready";
 
 /**
- * Whether the extension answers a PING within the timeout, and if so whether it speaks this contract version.
+ * Whether the extension answers a PING within the timeout, and if so whether it speaks a usable contract version.
  * An older extension returns titles instead of entries, so it has to be updated before it can be used.
  */
 export async function detectExtension(target: MessageTarget = globalThis.window): Promise<ExtensionStatus> {
@@ -81,14 +102,18 @@ export async function detectExtension(target: MessageTarget = globalThis.window)
   if (version === null) {
     return "missing";
   }
-  return version >= EXTENSION_CONTRACT_VERSION ? "ready" : "outdated";
+  return version >= MIN_EXTENSION_CONTRACT_VERSION ? "ready" : "outdated";
 }
 
-/** Runs one Platform Sync. Resolves with an `error` result if the extension never answers. */
+/**
+ * Runs one Platform Sync, passing its progress to `onProgress` while it runs. Resolves with an `error` result if the
+ * extension goes quiet for `timeoutMs`.
+ */
 export async function requestPlatformSync(
   platform: SyncPlatform,
   target: MessageTarget = globalThis.window,
   timeoutMs: number = SYNC_TIMEOUT_MS,
+  onProgress?: (progress: SyncProgress) => void,
 ): Promise<SyncResult> {
   const requestId = crypto.randomUUID();
   const result = await request(
@@ -96,6 +121,13 @@ export async function requestPlatformSync(
     { type: "SYNC", requestId, platform },
     r => (r.type === "SYNC_RESULT" && r.requestId === requestId && r.result ? r.result : null),
     timeoutMs,
+    r => {
+      if (r.type !== "SYNC_PROGRESS" || r.requestId !== requestId || !r.progress) {
+        return false;
+      }
+      onProgress?.(r.progress);
+      return true;
+    },
   );
   return result ?? { platform, status: "error", entries: [], count: 0, error: "timeout" };
 }

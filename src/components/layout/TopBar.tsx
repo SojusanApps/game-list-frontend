@@ -71,7 +71,7 @@ function LoggedInView({ logout }: Readonly<{ logout: () => void }>): React.JSX.E
           {currentUser?.is_staff && (
             <>
               <Menu.Divider />
-              <Menu.Item component={Link} to="/admin" leftSection={<IconShield size={16} />}>
+              <Menu.Item component={Link} to="/admin-panel" leftSection={<IconShield size={16} />}>
                 {t("nav.adminPanel")}
               </Menu.Item>
             </>

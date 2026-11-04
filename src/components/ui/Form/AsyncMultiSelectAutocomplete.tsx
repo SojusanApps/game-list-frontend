@@ -177,7 +177,7 @@ export default function AsyncMultiSelectAutocomplete<T>({
           : undefined
       }
       comboboxProps={{
-        withinPortal: false,
+        withinPortal: true,
         position: "bottom",
         middlewares: { flip: false, shift: false },
         ...comboboxProps,

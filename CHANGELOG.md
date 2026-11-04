@@ -2,6 +2,22 @@
 
 > Date format is DD.MM.YYYY.
 
+## v. [1.4.0] - 04.11.2026
+
+**Compatible backend version: [6.2.0]**
+
+- Game import: the "Configure" step is gone. Once you have matched your titles (and confirmed any duplicates), the "Import N games" button adds every new game to your list as Plan to Play straight away, the same way games recognized automatically already were. Status, score, dates, playtime and notes can be changed afterwards from your game list. Games already on your list keep their status and only get the store added to "owned on". The finish screen says so.
+- Game import, store sync: while a store is being read, the page shows what the browser extension is doing (reading the library or wishlist, identifying games) with a progress bar, instead of only a spinning button. The wait for the extension no longer ends after two minutes of a sync that is still making progress. Needs extension version 3 for the progress; older extensions work as before.
+- Game import, match step: the list of titles on the left now has a search box that finds titles by their name or by their store id (the shop name is not searched). Titles that do not match are hidden, already matched and skipped titles can be found too, and the progress counter still counts all titles. After a pick, the next unmatched title opens within the filtered titles. A whole title row can now be clicked to open it, except for the store id, which no longer reacts to clicks, so that a single click selects it for copying.
+- Game search results (import match step and the game picker): each game has an external link icon in its top-left corner (below the score, when the game has one) that opens the game's page in a new tab, so editions are easy to compare. The icon shows on hover or focus, and always on touch screens. Ctrl/Cmd-click or middle-click on a game opens it in a new tab as well, instead of picking it.
+- Game list: games you own on a store now show an "Owned" marker, a green icon on the cover in the grid (below the score, when there is one) and a badge next to the title in the table. The random "Plan to Play" window shows it too.
+- Game details: new "Videos" tab with the game's YouTube videos. Each video shows a thumbnail, and clicking it opens the video in a window. The video is loaded from YouTube only after you click it, using YouTube's privacy-enhanced mode. The tab can be linked to directly with `?tab=videos`.
+- Game list: games can now also be sorted by the date they were added to your list or by the date they were last modified, newest or oldest first.
+- Privacy policy (English and Polish): added YouTube to the services that receive data (video thumbnails reveal your IP address to YouTube), and a note that the site only stores strictly functional items (sign-in token, theme) in your browser, so no cookie banner is needed.
+- Admin panel: the admin pages moved from `/admin` to `/admin-panel` (for example `/admin-panel/reports`), so they no longer clash with the backend's Django admin. `robots.txt` was updated to match.
+- Modals: on short screens (small laptop windows, zoomed pages, tablets) the content of a window now scrolls between its fixed title bar and button bar, so the action buttons can always be reached. Before, they could end up below the visible screen. The dropdown lists of the game and collection pickers inside windows are no longer cut off by this.
+- Top bar search: the list of results is now wider than the search field (up to 640px, never wider than the screen) and centered under it, so game titles are easier to read. The search field itself keeps its size, and the search in the mobile menu is unchanged.
+
 ## v. [1.3.0] - 30.10.2026
 
 **Compatible backend version: [6.1.0]**

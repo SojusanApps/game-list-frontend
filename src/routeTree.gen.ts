@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SplatRouteImport } from "./routes/$";
-import { Route as AdminRouteImport } from "./routes/admin";
+import { Route as AdminPanelRouteImport } from "./routes/admin-panel";
 import { Route as FaqRouteImport } from "./routes/faq";
 import { Route as ImportRouteImport } from "./routes/import";
 import { Route as NotificationsRouteImport } from "./routes/notifications";
@@ -20,9 +20,9 @@ import { Route as ReleaseCalendarRouteImport } from "./routes/release-calendar";
 import { Route as SearchRouteImport } from "./routes/search";
 import { Route as SettingsRouteImport } from "./routes/settings";
 import { Route as TermsRouteImport } from "./routes/terms";
-import { Route as AdminReportsRouteImport } from "./routes/admin_.reports";
-import { Route as AdminStoreMappingsRouteImport } from "./routes/admin_.store-mappings";
-import { Route as AdminTranslationSuggestionsRouteImport } from "./routes/admin_.translation-suggestions";
+import { Route as AdminPanelReportsRouteImport } from "./routes/admin-panel_.reports";
+import { Route as AdminPanelStoreMappingsRouteImport } from "./routes/admin-panel_.store-mappings";
+import { Route as AdminPanelTranslationSuggestionsRouteImport } from "./routes/admin-panel_.translation-suggestions";
 import { Route as CollectionIdSlugRouteImport } from "./routes/collection.$id.$slug";
 import { Route as CompanyIdSlugRouteImport } from "./routes/company.$id.$slug";
 import { Route as GameListIdSlugRouteImport } from "./routes/game-list.$id.$slug";
@@ -43,9 +43,9 @@ const SplatRoute = SplatRouteImport.update({
   path: "/$",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminRoute = AdminRouteImport.update({
-  id: "/admin",
-  path: "/admin",
+const AdminPanelRoute = AdminPanelRouteImport.update({
+  id: "/admin-panel",
+  path: "/admin-panel",
   getParentRoute: () => rootRouteImport,
 } as any);
 const FaqRoute = FaqRouteImport.update({
@@ -88,20 +88,20 @@ const TermsRoute = TermsRouteImport.update({
   path: "/terms",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: "/admin_/reports",
-  path: "/admin/reports",
+const AdminPanelReportsRoute = AdminPanelReportsRouteImport.update({
+  id: "/admin-panel_/reports",
+  path: "/admin-panel/reports",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminStoreMappingsRoute = AdminStoreMappingsRouteImport.update({
-  id: "/admin_/store-mappings",
-  path: "/admin/store-mappings",
+const AdminPanelStoreMappingsRoute = AdminPanelStoreMappingsRouteImport.update({
+  id: "/admin-panel_/store-mappings",
+  path: "/admin-panel/store-mappings",
   getParentRoute: () => rootRouteImport,
 } as any);
-const AdminTranslationSuggestionsRoute =
-  AdminTranslationSuggestionsRouteImport.update({
-    id: "/admin_/translation-suggestions",
-    path: "/admin/translation-suggestions",
+const AdminPanelTranslationSuggestionsRoute =
+  AdminPanelTranslationSuggestionsRouteImport.update({
+    id: "/admin-panel_/translation-suggestions",
+    path: "/admin-panel/translation-suggestions",
     getParentRoute: () => rootRouteImport,
   } as any);
 const CollectionIdSlugRoute = CollectionIdSlugRouteImport.update({
@@ -157,7 +157,7 @@ const GameListCompareFirstUserIdFirstUserSlugSecondUserIdSecondUserSlugRoute =
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
-  "/admin": typeof AdminRoute;
+  "/admin-panel": typeof AdminPanelRoute;
   "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
@@ -166,9 +166,9 @@ export interface FileRoutesByFullPath {
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
-  "/admin/reports": typeof AdminReportsRoute;
-  "/admin/store-mappings": typeof AdminStoreMappingsRoute;
-  "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/admin-panel/reports": typeof AdminPanelReportsRoute;
+  "/admin-panel/store-mappings": typeof AdminPanelStoreMappingsRoute;
+  "/admin-panel/translation-suggestions": typeof AdminPanelTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
   "/game-list/$id/$slug": typeof GameListIdSlugRoute;
@@ -182,7 +182,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
-  "/admin": typeof AdminRoute;
+  "/admin-panel": typeof AdminPanelRoute;
   "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
@@ -191,9 +191,9 @@ export interface FileRoutesByTo {
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
-  "/admin/reports": typeof AdminReportsRoute;
-  "/admin/store-mappings": typeof AdminStoreMappingsRoute;
-  "/admin/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/admin-panel/reports": typeof AdminPanelReportsRoute;
+  "/admin-panel/store-mappings": typeof AdminPanelStoreMappingsRoute;
+  "/admin-panel/translation-suggestions": typeof AdminPanelTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
   "/game-list/$id/$slug": typeof GameListIdSlugRoute;
@@ -208,7 +208,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/$": typeof SplatRoute;
-  "/admin": typeof AdminRoute;
+  "/admin-panel": typeof AdminPanelRoute;
   "/faq": typeof FaqRoute;
   "/import": typeof ImportRoute;
   "/notifications": typeof NotificationsRoute;
@@ -217,9 +217,9 @@ export interface FileRoutesById {
   "/search": typeof SearchRoute;
   "/settings": typeof SettingsRoute;
   "/terms": typeof TermsRoute;
-  "/admin_/reports": typeof AdminReportsRoute;
-  "/admin_/store-mappings": typeof AdminStoreMappingsRoute;
-  "/admin_/translation-suggestions": typeof AdminTranslationSuggestionsRoute;
+  "/admin-panel_/reports": typeof AdminPanelReportsRoute;
+  "/admin-panel_/store-mappings": typeof AdminPanelStoreMappingsRoute;
+  "/admin-panel_/translation-suggestions": typeof AdminPanelTranslationSuggestionsRoute;
   "/collection/$id/$slug": typeof CollectionIdSlugRoute;
   "/company/$id/$slug": typeof CompanyIdSlugRoute;
   "/game-list/$id/$slug": typeof GameListIdSlugRoute;
@@ -235,7 +235,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/$"
-    | "/admin"
+    | "/admin-panel"
     | "/faq"
     | "/import"
     | "/notifications"
@@ -244,9 +244,9 @@ export interface FileRouteTypes {
     | "/search"
     | "/settings"
     | "/terms"
-    | "/admin/reports"
-    | "/admin/store-mappings"
-    | "/admin/translation-suggestions"
+    | "/admin-panel/reports"
+    | "/admin-panel/store-mappings"
+    | "/admin-panel/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
     | "/game-list/$id/$slug"
@@ -260,7 +260,7 @@ export interface FileRouteTypes {
   to:
     | "/"
     | "/$"
-    | "/admin"
+    | "/admin-panel"
     | "/faq"
     | "/import"
     | "/notifications"
@@ -269,9 +269,9 @@ export interface FileRouteTypes {
     | "/search"
     | "/settings"
     | "/terms"
-    | "/admin/reports"
-    | "/admin/store-mappings"
-    | "/admin/translation-suggestions"
+    | "/admin-panel/reports"
+    | "/admin-panel/store-mappings"
+    | "/admin-panel/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
     | "/game-list/$id/$slug"
@@ -285,7 +285,7 @@ export interface FileRouteTypes {
     | "__root__"
     | "/"
     | "/$"
-    | "/admin"
+    | "/admin-panel"
     | "/faq"
     | "/import"
     | "/notifications"
@@ -294,9 +294,9 @@ export interface FileRouteTypes {
     | "/search"
     | "/settings"
     | "/terms"
-    | "/admin_/reports"
-    | "/admin_/store-mappings"
-    | "/admin_/translation-suggestions"
+    | "/admin-panel_/reports"
+    | "/admin-panel_/store-mappings"
+    | "/admin-panel_/translation-suggestions"
     | "/collection/$id/$slug"
     | "/company/$id/$slug"
     | "/game-list/$id/$slug"
@@ -311,7 +311,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   SplatRoute: typeof SplatRoute;
-  AdminRoute: typeof AdminRoute;
+  AdminPanelRoute: typeof AdminPanelRoute;
   FaqRoute: typeof FaqRoute;
   ImportRoute: typeof ImportRoute;
   NotificationsRoute: typeof NotificationsRoute;
@@ -320,9 +320,9 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute;
   SettingsRoute: typeof SettingsRoute;
   TermsRoute: typeof TermsRoute;
-  AdminReportsRoute: typeof AdminReportsRoute;
-  AdminStoreMappingsRoute: typeof AdminStoreMappingsRoute;
-  AdminTranslationSuggestionsRoute: typeof AdminTranslationSuggestionsRoute;
+  AdminPanelReportsRoute: typeof AdminPanelReportsRoute;
+  AdminPanelStoreMappingsRoute: typeof AdminPanelStoreMappingsRoute;
+  AdminPanelTranslationSuggestionsRoute: typeof AdminPanelTranslationSuggestionsRoute;
   CollectionIdSlugRoute: typeof CollectionIdSlugRoute;
   CompanyIdSlugRoute: typeof CompanyIdSlugRoute;
   GameListIdSlugRoute: typeof GameListIdSlugRoute;
@@ -350,11 +350,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SplatRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/admin": {
-      id: "/admin";
-      path: "/admin";
-      fullPath: "/admin";
-      preLoaderRoute: typeof AdminRouteImport;
+    "/admin-panel": {
+      id: "/admin-panel";
+      path: "/admin-panel";
+      fullPath: "/admin-panel";
+      preLoaderRoute: typeof AdminPanelRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/faq": {
@@ -413,25 +413,25 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof TermsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/admin_/reports": {
-      id: "/admin_/reports";
-      path: "/admin/reports";
-      fullPath: "/admin/reports";
-      preLoaderRoute: typeof AdminReportsRouteImport;
+    "/admin-panel_/reports": {
+      id: "/admin-panel_/reports";
+      path: "/admin-panel/reports";
+      fullPath: "/admin-panel/reports";
+      preLoaderRoute: typeof AdminPanelReportsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/admin_/store-mappings": {
-      id: "/admin_/store-mappings";
-      path: "/admin/store-mappings";
-      fullPath: "/admin/store-mappings";
-      preLoaderRoute: typeof AdminStoreMappingsRouteImport;
+    "/admin-panel_/store-mappings": {
+      id: "/admin-panel_/store-mappings";
+      path: "/admin-panel/store-mappings";
+      fullPath: "/admin-panel/store-mappings";
+      preLoaderRoute: typeof AdminPanelStoreMappingsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/admin_/translation-suggestions": {
-      id: "/admin_/translation-suggestions";
-      path: "/admin/translation-suggestions";
-      fullPath: "/admin/translation-suggestions";
-      preLoaderRoute: typeof AdminTranslationSuggestionsRouteImport;
+    "/admin-panel_/translation-suggestions": {
+      id: "/admin-panel_/translation-suggestions";
+      path: "/admin-panel/translation-suggestions";
+      fullPath: "/admin-panel/translation-suggestions";
+      preLoaderRoute: typeof AdminPanelTranslationSuggestionsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/collection/$id/$slug": {
@@ -503,7 +503,7 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
-  AdminRoute: AdminRoute,
+  AdminPanelRoute: AdminPanelRoute,
   FaqRoute: FaqRoute,
   ImportRoute: ImportRoute,
   NotificationsRoute: NotificationsRoute,
@@ -512,9 +512,9 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
-  AdminReportsRoute: AdminReportsRoute,
-  AdminStoreMappingsRoute: AdminStoreMappingsRoute,
-  AdminTranslationSuggestionsRoute: AdminTranslationSuggestionsRoute,
+  AdminPanelReportsRoute: AdminPanelReportsRoute,
+  AdminPanelStoreMappingsRoute: AdminPanelStoreMappingsRoute,
+  AdminPanelTranslationSuggestionsRoute: AdminPanelTranslationSuggestionsRoute,
   CollectionIdSlugRoute: CollectionIdSlugRoute,
   CompanyIdSlugRoute: CompanyIdSlugRoute,
   GameListIdSlugRoute: GameListIdSlugRoute,

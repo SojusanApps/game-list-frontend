@@ -16,6 +16,9 @@ function fakeWindow(reply: (message: Record<string, unknown>) => Record<string, 
   let listener: ((event: MessageEvent) => void) | undefined;
   const win = {
     location: { origin: ORIGIN },
+    get listener() {
+      return listener;
+    },
     addEventListener: (_: string, fn: (event: MessageEvent) => void) => {
       listener = fn;
     },
@@ -34,6 +37,13 @@ describe("detectExtension", () => {
   it("is ready when the extension answers PING with READY at the current contract version", async () => {
     const win = fakeWindow(m =>
       m.type === "PING" ? { source: "gamelist-extension", version: 2, type: "READY" } : null,
+    );
+    expect(await detectExtension(win as never)).toBe("ready");
+  });
+
+  it("is ready for an extension on contract version 3 as well", async () => {
+    const win = fakeWindow(m =>
+      m.type === "PING" ? { source: "gamelist-extension", version: 3, type: "READY" } : null,
     );
     expect(await detectExtension(win as never)).toBe("ready");
   });
@@ -71,6 +81,62 @@ describe("requestPlatformSync", () => {
       m.type === "SYNC" ? { source: "gamelist-extension", type: "SYNC_RESULT", requestId: m.requestId, result } : null,
     );
     expect(await requestPlatformSync("steam", win as never)).toEqual(result);
+  });
+
+  it("passes this request's progress on, ignoring other requests' progress", async () => {
+    const win = fakeWindow(() => null);
+    const seen: unknown[] = [];
+    const pending = requestPlatformSync("playstation", win as never, 5000, progress => seen.push(progress));
+    const { requestId } = win.postMessage.mock.calls[0]![0] as { requestId: string };
+    const post = (data: Record<string, unknown>) =>
+      win.listener?.({ data: { source: "gamelist-extension", ...data }, source: win, origin: ORIGIN } as never);
+    post({
+      type: "SYNC_PROGRESS",
+      requestId: "someone-else",
+      progress: { platform: "playstation", stage: "wishlist" },
+    });
+    post({
+      type: "SYNC_PROGRESS",
+      requestId,
+      progress: { platform: "playstation", stage: "resolving", done: 2, total: 9 },
+    });
+    post({
+      type: "SYNC_RESULT",
+      requestId,
+      result: { platform: "playstation", status: "ok", entries: [], count: 0 },
+    });
+    expect(await pending).toMatchObject({ status: "ok" });
+    expect(seen).toEqual([{ platform: "playstation", stage: "resolving", done: 2, total: 9 }]);
+  });
+
+  it("keeps waiting while progress keeps coming and gives up after silence", async () => {
+    vi.useFakeTimers();
+    const win = fakeWindow(() => null);
+    const pending = requestPlatformSync("playstation", win as never, 5000);
+    const { requestId } = win.postMessage.mock.calls[0]![0] as { requestId: string };
+    const progress = () =>
+      win.listener?.({
+        data: {
+          source: "gamelist-extension",
+          type: "SYNC_PROGRESS",
+          requestId,
+          progress: { platform: "playstation", stage: "collection" },
+        },
+        source: win,
+        origin: ORIGIN,
+      } as never);
+    let settled = false;
+    void pending.then(() => {
+      settled = true;
+    });
+    for (let i = 0; i < 4; i += 1) {
+      await vi.advanceTimersByTimeAsync(4000);
+      progress();
+    }
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(6000);
+    expect(await pending).toMatchObject({ status: "error", error: "timeout" });
+    vi.useRealTimers();
   });
 
   it("ignores results for other requests and reports a timeout error", async () => {

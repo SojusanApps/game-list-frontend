@@ -1,9 +1,12 @@
-import { Box, Stack, Text, Title, Group, Badge, Grid, ActionIcon, UnstyledButton } from "@mantine/core";
+import { Box, Stack, Text, TextInput, Title, Group, Badge, Grid, ActionIcon, UnstyledButton } from "@mantine/core";
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconDownload,
+  IconInfoCircle,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
+  IconSearch,
   IconX,
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -34,9 +37,23 @@ interface TitleMatchStepProps {
   onPick: (titleIndex: number, game: GameSimpleList) => void;
   onClear: (titleIndex: number) => void;
   onToggleNotAGame: (titleIndex: number) => void;
+  /** Games the import will add or link: the distinct picked games. */
+  importCount: number;
+  isImporting: boolean;
   onBack: () => void;
   onContinue: () => void;
 }
+
+/** Whether an import title matches the left-panel query: by its title or any of its store ids. */
+const matchesQuery = (item: MatchTitle, query: string) => {
+  const needle = query.trim().toLowerCase();
+  if (!needle) {
+    return true;
+  }
+  return (
+    item.title.toLowerCase().includes(needle) || item.storeRefs.some(ref => ref.store_id.toLowerCase().includes(needle))
+  );
+};
 
 /**
  * Matches every imported title to a catalogue game: the user activates a title
@@ -50,6 +67,8 @@ export const TitleMatchStep = ({
   onPick,
   onClear,
   onToggleNotAGame,
+  importCount,
+  isImporting,
   onBack,
   onContinue,
 }: TitleMatchStepProps) => {
@@ -60,6 +79,9 @@ export const TitleMatchStep = ({
   const [search, setSearch] = React.useState(firstOpen?.title ?? "");
   const [filters, setFilters] = React.useState<Record<string, unknown>>({});
   const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [titleQuery, setTitleQuery] = React.useState("");
+
+  const visibleTitles = titles.filter(item => matchesQuery(item, titleQuery));
 
   const resolvedCount = titles.filter(item => resolutions[item.titleIndex]).length;
 
@@ -71,8 +93,8 @@ export const TitleMatchStep = ({
 
   /** Move on to the next title still without a resolution, if there is one. */
   const advance = (from: number, resolved: number[]) => {
-    const start = titles.findIndex(item => item.titleIndex === from);
-    const next = [...titles.slice(start + 1), ...titles.slice(0, start)].find(
+    const start = visibleTitles.findIndex(item => item.titleIndex === from);
+    const next = [...visibleTitles.slice(start + 1), ...visibleTitles.slice(0, Math.max(start, 0))].find(
       item => !resolutions[item.titleIndex] && !resolved.includes(item.titleIndex),
     );
     if (next) {
@@ -98,6 +120,14 @@ export const TitleMatchStep = ({
     if (!isMarked && activeIndex === item.titleIndex) {
       advance(item.titleIndex, [item.titleIndex]);
     }
+  };
+
+  /** Row click activates the title, except on buttons (which act on their own) and the selectable store id. */
+  const handleRowClick = (event: React.MouseEvent<HTMLElement>, item: MatchTitle) => {
+    if ((event.target as HTMLElement).closest("button, [data-no-activate]")) {
+      return;
+    }
+    activate(item);
   };
 
   const renderStatus = (resolution: TitleResolution | undefined) => {
@@ -155,8 +185,21 @@ export const TitleMatchStep = ({
           <Grid gap={24}>
             {/* Titles to match */}
             <Grid.Col span={{ base: 12, md: 5 }} display={isCollapsed ? "none" : undefined}>
+              <TextInput
+                mb={8}
+                value={titleQuery}
+                onChange={event => setTitleQuery(event.currentTarget.value)}
+                placeholder={t("import.matchTitleSearchPlaceholder")}
+                aria-label={t("import.matchTitleSearchPlaceholder")}
+                leftSection={<IconSearch size={16} stroke={1.5} />}
+              />
               <Stack gap={8} className={styles.titleList}>
-                {titles.map(item => {
+                {visibleTitles.length === 0 && (
+                  <Text fz="sm" c="dimmed" ta="center" py={16}>
+                    {t("import.matchTitleSearchEmpty")}
+                  </Text>
+                )}
+                {visibleTitles.map(item => {
                   const resolution = resolutions[item.titleIndex];
                   return (
                     <Box
@@ -165,21 +208,22 @@ export const TitleMatchStep = ({
                         [styles.titleItemActive]: activeIndex === item.titleIndex,
                         [styles.titleItemResolved]: resolution !== undefined,
                       })}
+                      onClick={event => handleRowClick(event, item)}
                     >
-                      <UnstyledButton
-                        type="button"
-                        className={styles.titleItemMain}
-                        aria-current={activeIndex === item.titleIndex ? "true" : undefined}
-                        onClick={() => activate(item)}
-                      >
-                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                      <div className={styles.titleItemBody}>
+                        <UnstyledButton
+                          type="button"
+                          className={styles.titleItemMain}
+                          aria-current={activeIndex === item.titleIndex ? "true" : undefined}
+                          onClick={() => activate(item)}
+                        >
                           <TruncatedText fz="sm" fw={600} c="var(--color-text-900)" truncate>
                             {item.title}
                           </TruncatedText>
-                          <StoreRefList refs={item.storeRefs} />
-                          {renderStatus(resolution)}
-                        </Stack>
-                      </UnstyledButton>
+                        </UnstyledButton>
+                        <StoreRefList refs={item.storeRefs} selectable />
+                        {renderStatus(resolution)}
+                      </div>
                       {resolution?.kind === "game" ? (
                         <ActionIcon
                           type="button"
@@ -244,13 +288,26 @@ export const TitleMatchStep = ({
         </Stack>
       </Box>
 
+      <div className={styles.noticeBox}>
+        <IconInfoCircle size={20} style={{ color: "var(--color-primary-tint-text)", flexShrink: 0 }} />
+        <Text fz="sm" className={styles.noticeText}>
+          {t("import.matchPtpNotice")}
+        </Text>
+      </div>
+
       <Group justify="space-between">
         <Button variant="outline" onClick={onBack} leftSection={<IconArrowLeft size={16} stroke={1.5} />}>
           {t("import.backStepButton")}
         </Button>
-        <Button onClick={onContinue} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
-          {t("import.continueButton")}
-        </Button>
+        {importCount > 0 ? (
+          <Button onClick={onContinue} isLoading={isImporting} leftSection={<IconDownload size={16} />}>
+            {t("import.importButton", { count: importCount })}
+          </Button>
+        ) : (
+          <Button onClick={onContinue} isLoading={isImporting} rightSection={<IconArrowRight size={16} stroke={1.5} />}>
+            {t("import.continueButton")}
+          </Button>
+        )}
       </Group>
     </Stack>
   );
